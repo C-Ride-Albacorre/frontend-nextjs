@@ -24,37 +24,37 @@ const PRODUCTS = [
     name: 'Grilled Chicken & Chips',
     category: 'Top Sellers',
     price: '₦8,500',
-    image: '/assets/image/chicken.jpg',
+    image: '/assets/image/food/chicken.jpg',
   },
   {
     name: 'Jollof Rice Special',
     category: 'Nigerian Classics',
     price: '₦8,500',
-    image: '/assets/image/jellof.jpg',
+    image: '/assets/image/food/jellof.jpg',
   },
   {
     name: 'Chapman Mocktails',
     category: 'Drinks',
     price: '₦8,500',
-    image: '/assets/image/chapman.jpg',
+    image: '/assets/image/food/chapman.jpg',
   },
   {
     name: 'Peppered Snail',
     category: 'Appetizers',
     price: '₦3,500',
-    image: '/assets/image/snail.jpg',
+    image: '/assets/image/food/snail.jpg',
   },
   {
     name: 'Chapman Mocktails',
     category: 'Drinks',
     price: '₦8,500',
-    image: '/assets/image/chapman.jpg',
+    image: '/assets/image/food/chapman.jpg',
   },
   {
     name: 'Peppered Snail',
     category: 'Appetizers',
     price: '₦3,500',
-    image: '/assets/image/snail.jpg',
+    image: '/assets/image/food/snail.jpg',
   },
 ];
 
