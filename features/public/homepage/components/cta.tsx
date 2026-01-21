@@ -33,8 +33,8 @@ export default function Cta() {
               src="/assets/svg/google-play-icon.svg"
               alt="play-store"
               priority
-              width={32}
-              height={32}
+              width={40}
+              height={40}
             />
             <p className="md:text-left text-xs space-y-2">
               <span> Get on</span>
@@ -48,8 +48,8 @@ export default function Cta() {
               src="/assets/svg/apple.svg"
               alt="apple-store"
               priority
-              width={32}
-              height={32}
+              width={40}
+              height={40}
             />
             <p className="md:text-left md:text-xs space-y-2">
               <span> Get on</span>

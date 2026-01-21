@@ -66,7 +66,7 @@ export default function Fulfillment() {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, ease: 'easeOut' }}
-            className="relative h-96 md:h-128 w-full overflow-hidden rounded-xl order-1 md:order-2"
+            className="relative h-128 w-full overflow-hidden rounded-xl order-1 md:order-2"
           >
             <Image
               src="/assets/image/vendor.jpg"
@@ -85,7 +85,7 @@ export default function Fulfillment() {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, ease: 'easeOut' }}
-            className="relative h-96 md:h-128 w-full overflow-hidden rounded-xl"
+            className="relative h-128 w-full overflow-hidden rounded-xl"
           >
             <Image
               src="/assets/image/driver.jpg"

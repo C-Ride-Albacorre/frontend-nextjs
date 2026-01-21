@@ -38,7 +38,10 @@ export default function HowItWorksBody({
           <ul className="flex flex-col gap-6 text-sm text-primary-text-100">
             {TABS_CONTENT[activeTab].list.map((item) => (
               <li key={item} className="flex items-start gap-3">
-                <Check className="h-6 w-6 p-1.5 rounded-full bg-primary-text-100 text-primary" />
+                <div className="p-2">
+                  <Check className="h-6 w-6 p-1.5 rounded-full bg-primary-text-100 text-primary" />
+                </div>
+
                 <span>{item}</span>
               </li>
             ))}
