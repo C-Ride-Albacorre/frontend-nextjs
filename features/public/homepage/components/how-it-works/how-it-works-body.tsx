@@ -25,7 +25,7 @@ export default function HowItWorksBody({
           {/* Badge */}
           <div className="absolute bottom-0 right-0 -translate-x-1/2 translate-y-1/4 z-10">
             <Image
-              src="/assets/Svg/cride-green.svg"
+              src="/assets/svg/cride-green.svg"
               alt="C-ride badge"
               width={72}
               height={72}

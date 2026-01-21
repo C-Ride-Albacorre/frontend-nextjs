@@ -11,7 +11,7 @@ export default function HowItWorksTab({
     <>
       {/* ================= TABS ================= */}
       <div className="mt-8 flex justify-center">
-        <div className="flex rounded-2xl border border-border p-1 md:p-2 gap-2 bg-foreground-200 text-xs md:text-sm">
+        <div className="flex rounded-2xl border border-border px-1 py-1.5 md:px-2 md:py-2 gap-2 bg-foreground-200 text-xs md:text-sm">
           {(Object.keys(TABS_CONTENT) as TabKey[]).map((key) => (
             <button
               key={key}

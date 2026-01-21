@@ -9,7 +9,7 @@ export default function DashboardHeader({ name }: { name: string }) {
       <div className="mx-auto max-w-6xl">
         <div className="mb-5">
           <Image
-            src="/assets/Svg/logo-black.svg"
+            src="/assets/svg/logo-black.svg"
             alt="Logo"
             width={140}
             height={66}

@@ -44,7 +44,7 @@ export default function FAQSection() {
                   onClick={() => setActiveIndex(activeIndex === i ? null : i)}
                   className="flex w-full items-center justify-between text-left cursor-pointer"
                 >
-                  <span className="font-medium text-primary-text-100">
+                  <span className="font-medium text-primary-text-100 text-sm md:text-base">
                     {faq.question}
                   </span>
                   <ChevronDown

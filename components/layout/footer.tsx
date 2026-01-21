@@ -176,7 +176,7 @@ export default function Footer() {
 
             <p className="flex items-center gap-2 text-green-100">
               <Image
-                src="/assets/Svg/leaf.svg"
+                src="/assets/svg/leaf.svg"
                 alt="Leaf Icon"
                 width={16}
                 height={16}

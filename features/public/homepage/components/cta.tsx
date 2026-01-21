@@ -30,7 +30,7 @@ export default function Cta() {
         <div className="mt-8 flex flex-col md:flex-row justify-center items-center gap-4">
           <button className="rounded-xl bg-black px-12 md:px-10 py-4 text-sm text-white flex items-center justify-center gap-6 cursor-pointer w-full md:w-fit ">
             <Image
-              src="/assets/Svg/google-play-icon.svg"
+              src="/assets/svg/google-play-icon.svg"
               alt="play-store"
               priority
               width={32}
@@ -45,7 +45,7 @@ export default function Cta() {
 
           <button className="rounded-xl bg-black px-12 md:px-10 py-4 text-sm text-white flex items-center justify-center gap-6 cursor-pointer w-full md:w-fit ">
             <Image
-              src="/assets/Svg/apple.svg"
+              src="/assets/svg/apple.svg"
               alt="apple-store"
               priority
               width={32}
