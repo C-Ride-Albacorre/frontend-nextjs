@@ -50,7 +50,7 @@ export default function FoodMarquee() {
               className="relative h-48 min-w-55 overflow-hidden rounded-2xl"
             >
               <Image
-                src={`/assets/image/foods/${item.title.toLowerCase()}.jpg`}
+                src={`/assets/image/foods/${item.title}.jpg`}
                 alt={item.title}
                 fill
                 className="object-cover"

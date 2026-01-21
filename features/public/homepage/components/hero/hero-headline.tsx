@@ -32,7 +32,6 @@ export default function HeroHeadline({ active }: { active: HeroKey }) {
             {HERO_CONTENT[active].title.map((line, i) => (
               <span key={i}>
                 {line}
-                <br />
               </span>
             ))}
           </motion.h1>
