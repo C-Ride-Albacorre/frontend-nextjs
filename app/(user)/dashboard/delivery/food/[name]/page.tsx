@@ -24,37 +24,37 @@ const PRODUCTS = [
     name: 'Grilled Chicken & Chips',
     category: 'Top Sellers',
     price: '₦8,500',
-    image: '/assets/Image/chicken.jpg',
+    image: '/assets/image/chicken.jpg',
   },
   {
     name: 'Jollof Rice Special',
     category: 'Nigerian Classics',
     price: '₦8,500',
-    image: '/assets/Image/jellof.jpg',
+    image: '/assets/image/jellof.jpg',
   },
   {
     name: 'Chapman Mocktails',
     category: 'Drinks',
     price: '₦8,500',
-    image: '/assets/Image/chapman.jpg',
+    image: '/assets/image/chapman.jpg',
   },
   {
     name: 'Peppered Snail',
     category: 'Appetizers',
     price: '₦3,500',
-    image: '/assets/Image/snail.jpg',
+    image: '/assets/image/snail.jpg',
   },
   {
     name: 'Chapman Mocktails',
     category: 'Drinks',
     price: '₦8,500',
-    image: '/assets/Image/chapman.jpg',
+    image: '/assets/image/chapman.jpg',
   },
   {
     name: 'Peppered Snail',
     category: 'Appetizers',
     price: '₦3,500',
-    image: '/assets/Image/snail.jpg',
+    image: '/assets/image/snail.jpg',
   },
 ];
 
@@ -62,16 +62,14 @@ export default function FoodVendorsPage({ params }: { params: string }) {
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState('Sort by Category');
   return (
-    <main >
+    <main>
       <div>
-       
-
         {/* Vendor */}
         <div className="mt-8 rounded-2xl bg-foreground-200 border border-border p-4 flex items-center justify-between">
           <div className="flex items-center flex-1 gap-6">
             <div>
               <Image
-                src="/assets/Image/vendor.jpg"
+                src="/assets/image/vendor.jpg"
                 alt="Vendor"
                 width={100}
                 height={100}

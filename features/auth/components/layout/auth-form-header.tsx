@@ -6,7 +6,7 @@ export default function AuthFormHeader() {
     <div className="mb-8 text-center">
       <Link href="/" className="inline-block">
         <Image
-          src="/assets/Svg/logo-main.svg"
+          src="/assets/svg/logo-main.svg"
           alt="Logo"
           width={120}
           height={40}

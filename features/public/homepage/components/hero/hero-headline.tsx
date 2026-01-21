@@ -51,21 +51,21 @@ export default function HeroHeadline({ active }: { active: HeroKey }) {
         >
           <div className="hidden md:flex -space-x-1">
             <Image
-              src="/assets/Image/user1.png"
+              src="/assets/image/user1.png"
               alt="User"
               width={24}
               height={24}
               className="rounded-full"
             />
             <Image
-              src="/assets/Image/user2.png"
+              src="/assets/image/user2.png"
               alt="User"
               width={24}
               height={24}
               className="rounded-full"
             />
             <Image
-              src="/assets/Image/user3.png"
+              src="/assets/image/user3.png"
               alt="User"
               width={24}
               height={24}

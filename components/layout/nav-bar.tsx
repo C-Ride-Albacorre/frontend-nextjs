@@ -39,7 +39,7 @@ const NavBar = () => {
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 md:py-3">
           <Link href="/" className="lg:w-full">
             <Image
-              src="/assets/Svg/logo-main.svg"
+              src="/assets/svg/logo-main.svg"
               alt="Logo"
               width={120}
               height={40}
@@ -113,7 +113,7 @@ const NavBar = () => {
                 {/* HEADER */}
                 <div className="flex items-center justify-between px-4 py-6 border-b border-border">
                   <Image
-                    src="/assets/Svg/logo-main.svg"
+                    src="/assets/svg/logo-main.svg"
                     alt="Logo"
                     width={100}
                     height={48}

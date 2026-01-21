@@ -14,7 +14,7 @@ export default function FulfillmentPartnerPage() {
         publicData={
           PARTNER_BENEFITS as unknown as { title: string; desc: string }[]
         }
-        publicImageSrc="/assets/Image/driver.jpg"
+        publicImageSrc="/assets/image/driver.jpg"
         partner={true}
         label={<Truck className="h-6 w-6 text-primary-text-100" />}
         partnerTitle="Become A Driver"

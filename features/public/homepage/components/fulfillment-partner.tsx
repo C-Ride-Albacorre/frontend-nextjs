@@ -69,7 +69,7 @@ export default function Fulfillment() {
             className="relative h-128 w-full overflow-hidden rounded-xl order-1 md:order-2"
           >
             <Image
-              src="/assets/Image/vendor.jpg"
+              src="/assets/image/vendor.jpg"
               alt="Vendor"
               fill
               className="object-cover"
@@ -88,7 +88,7 @@ export default function Fulfillment() {
             className="relative h-128 w-full overflow-hidden rounded-xl"
           >
             <Image
-              src="/assets/Image/driver.jpg"
+              src="/assets/image/driver.jpg"
               alt="Fulfillment Partner"
               fill
               className="object-cover"

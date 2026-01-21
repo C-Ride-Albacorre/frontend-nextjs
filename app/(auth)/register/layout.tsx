@@ -13,22 +13,22 @@ export const metadata: Metadata = {
 
 const slides: AuthCarouselType[] = [
   {
-    src: '/assets/Image/signup-1.jpg',
+    src: '/assets/image/signup-1.jpg',
     title: 'Compassionate Care',
     subtitle: 'Your health journey starts with trust and empathy.',
   },
   {
-    src: '/assets/Image/signup-2.jpg',
+    src: '/assets/image/signup-2.jpg',
     title: 'Expert Professionals',
     subtitle: 'Connect with certified specialists anytime.',
   },
   {
-    src: '/assets/Image/signup-3.jpg',
+    src: '/assets/image/signup-3.jpg',
     title: 'Secure & Private',
     subtitle: 'Your data is protected with industry standards.',
   },
   {
-    src: '/assets/Image/signup-4.jpg',
+    src: '/assets/image/signup-4.jpg',
     title: 'Care That Moves With You',
     subtitle: 'Healthcare designed around your lifestyle.',
   },
@@ -48,7 +48,7 @@ export default function RegisterLayout({
         </div>
 
         {/* RIGHT — SCROLLS */}
-        <div className="bg-white rounded-3xl border border-border p-8 md:p-10">
+        <div className="bg-white rounded-3xl border border-border px-4  py-8 md:py-10 md:px-10">
           <AuthFormHeader />
           {children}
         </div>

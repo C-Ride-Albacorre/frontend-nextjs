@@ -25,7 +25,7 @@ export type HeroKey = keyof typeof HERO_CONTENT;
 
 export const TABS_CONTENT = {
   Onboarding: {
-    image: '/assets/Image/hero-3.jpg',
+    image: '/assets/image/hero-3.jpg',
     list: [
       'Access to 150+ premium restaurants across Lagos',
       'Temperature-controlled delivery preserves food quality',
@@ -36,7 +36,7 @@ export const TABS_CONTENT = {
     ],
   },
   'How it Works': {
-    image: '/assets/Image/hero-2.png',
+    image: '/assets/image/hero-2.png',
     list: [
       'A clean, impeccably maintained personal car (Sedan, SUV, or Hatchback)',
       'Valid driver’s license.',
@@ -45,7 +45,7 @@ export const TABS_CONTENT = {
     ],
   },
   'How to Earn': {
-    image: '/assets/Image/hero-3.jpg',
+    image: '/assets/image/hero-3.jpg',
     list: [
       'Sign up as a delivery partner with flexible hours',
       'Earn competitive rates with each delivery',

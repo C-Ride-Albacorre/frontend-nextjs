@@ -4,7 +4,7 @@ export const DELIVERY_TYPES = [
   {
     id: 'food',
     title: 'Food',
-    image: '/assets/Image/food.jpg',
+    image: '/assets/image/food.jpg',
     badge: 'Popular',
     subtitle: 'Nigerian',
     meta: '45+ restaurants',
@@ -14,7 +14,7 @@ export const DELIVERY_TYPES = [
   {
     id: 'grocery',
     title: 'Grocery',
-    image: '/assets/Image/food.jpg',
+    image: '/assets/image/food.jpg',
     badge: 'Popular',
     subtitle: 'Nigerian',
     meta: '45+ restaurants',
@@ -24,7 +24,7 @@ export const DELIVERY_TYPES = [
   {
     id: 'gift-items',
     title: 'Gift Items',
-    image: '/assets/Image/food.jpg',
+    image: '/assets/image/food.jpg',
     badge: 'Popular',
     subtitle: 'Nigerian',
     meta: '45+ restaurants',
@@ -34,7 +34,7 @@ export const DELIVERY_TYPES = [
   {
     id: 'gift',
     title: 'Gift',
-    image: '/assets/Image/food.jpg',
+    image: '/assets/image/food.jpg',
     badge: 'Popular',
     subtitle: 'Nigerian',
     meta: '45+ restaurants',

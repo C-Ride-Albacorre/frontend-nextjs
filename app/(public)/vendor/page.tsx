@@ -12,7 +12,7 @@ export default function VendorPage() {
         publicData={
           VENDOR_BENEFITS as unknown as { title: string; desc: string }[]
         }
-        publicImageSrc="/assets/Image/vendor.jpg"
+        publicImageSrc="/assets/image/vendor.jpg"
       />
     </>
   );

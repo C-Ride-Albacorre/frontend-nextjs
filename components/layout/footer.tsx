@@ -139,7 +139,7 @@ export default function Footer() {
             {/* Logo */}
             <div>
               <Image
-                src="/assets/Svg/logo-main.svg"
+                src="/assets/svg/logo-main.svg"
                 alt="C-ride"
                 width={120}
                 height={40}

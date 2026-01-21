@@ -9,7 +9,7 @@ const items = [
   { title: 'Burgers', count: '35+', category: 'Popular', status: true },
   { title: 'Swallow', count: '28+', category: 'Popular', status: null },
   { title: 'Italian', count: '28+', category: 'Newly added', status: false },
-    { title: 'Pizza', count: '15+', category: 'Popular', status: true },
+  { title: 'Pizza', count: '15+', category: 'Popular', status: true },
 ];
 
 export default function FoodMarquee() {
@@ -50,7 +50,7 @@ export default function FoodMarquee() {
               className="relative h-48 min-w-55 overflow-hidden rounded-2xl"
             >
               <Image
-                src={`/assets/Image/foods/${item.title.toLowerCase()}.jpg`}
+                src={`/assets/image/foods/${item.title.toLowerCase()}.jpg`}
                 alt={item.title}
                 fill
                 className="object-cover"
@@ -79,7 +79,9 @@ export default function FoodMarquee() {
 
               {/* Text */}
               <div className="absolute bottom-4 left-4 text-white">
-                <p className="text-lg font-semibold font-heading">{item.title}</p>
+                <p className="text-lg font-semibold font-heading">
+                  {item.title}
+                </p>
                 <p className="text-sm opacity-80">{item.count} restaurants</p>
               </div>
             </div>

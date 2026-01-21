@@ -24,7 +24,7 @@ export default function Location() {
           ].map((loc) => (
             <span
               key={loc}
-              className="rounded-full border border-white/30 px-8  md:px-10 py-4 text-sm text-white"
+              className="rounded-full border border-white/30 px-6  md:px-10 py-4 text-sm text-white"
             >
               {loc}
             </span>
