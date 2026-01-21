@@ -71,6 +71,7 @@ export default function Hero() {
                   alt="Food, grocery and gift delivery"
                   fill
                   sizes="100vw"
+                  priority
                   className="object-cover"
                 />
               </motion.div>

@@ -99,7 +99,7 @@ const NavBar = () => {
             />
 
             <motion.div
-              className="fixed flex flex-col justify-between inset-0 z-60 h-[60vh] bg-white origin-top-right p-4"
+              className="fixed flex flex-col justify-between inset-0 z-60 h-[75vh] bg-white origin-top-right p-4"
               initial={{ opacity: 0, scale: 0.85 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.85 }}
