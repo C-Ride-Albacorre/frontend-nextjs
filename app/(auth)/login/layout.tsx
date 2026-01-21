@@ -1,0 +1,58 @@
+import type { Metadata } from 'next';
+
+import AuthCarousel from '@/features/auth/components/layout/auth-carousel';
+import { AuthCarouselType } from '@/features/auth/types';
+import AuthFormHeader from '@/features/auth/components/layout/auth-form-header';
+
+export const metadata: Metadata = {
+  title: 'Login | YourApp',
+  description: 'Login to access your personalized delivery dashboard.',
+};
+
+const slides: AuthCarouselType[] = [
+  {
+    src: '/assets/Image/signup-1.jpg',
+    title: 'Compassionate Care',
+    subtitle: 'Your health journey starts with trust and empathy.',
+  },
+  {
+    src: '/assets/Image/signup-2.jpg',
+    title: 'Expert Professionals',
+    subtitle: 'Connect with certified specialists anytime.',
+  },
+  {
+    src: '/assets/Image/signup-3.jpg',
+    title: 'Secure & Private',
+    subtitle: 'Your data is protected with industry standards.',
+  },
+  {
+    src: '/assets/Image/signup-4.jpg',
+    title: 'Care That Moves With You',
+    subtitle: 'Healthcare designed around your lifestyle.',
+  },
+];
+
+export default function LoginLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <section className="min-h-screen bg-neutral-50 px-6 py-8">
+      <div className="mx-auto max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-10">
+        {/* LEFT — STICKY */}
+        <div className="hidden md:block sticky top-8 h-[calc(100vh-4rem)]">
+          <div className="h-full">
+            <AuthCarousel slides={slides} />
+          </div>
+        </div>
+
+        {/* RIGHT — SCROLLS */}
+        <div className="bg-white rounded-3xl border border-border p-8 md:p-10">
+          <AuthFormHeader />
+          {children}
+        </div>
+      </div>
+    </section>
+  );
+}

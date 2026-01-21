@@ -1,26 +1,116 @@
-@import "tailwindcss";
+/* globals.css */
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@200;400;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;400;900&display=swap');
+
+@import 'tailwindcss';
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --font-heading: 'Bricolage Grotesque', sans-serif;
+  --font-body: 'Poppins', sans-serif;
+
+  scroll-behavior: smooth;
+
+  --primary-color: #d4af37; /* Gold - Primary color */
+
+  --primary-hover-color: #c19b2e; /* Dark Gold - Primary color hover */
+
+  --text-100: #1A1A1A; /* Black - Text color */
+
+  --border-color: #e8e8e8; /* Light Grey - Border color */
+
+  --foreground-100: #f4f4f4;
+
+  --foreground-200: #F8F8F8; /* Light Grey - Foreground color */
+
+  --white-hover-100-color: rgba(
+    255,
+    255,
+    255,
+    0.08
+  ); /* Light Grey - White hover color 100 */
+
+  --white-hover-350-color: rgba(
+    255,
+    255,
+    255,
+    0.35
+  ); /* Dark Grey - White hover color 400 */
+
+  --fill-color: #edf6ed; /* Light Green - Stroke color */
+
+  --secondary-color: #525560; /* Gray - Supporting color */
+
+  --accent-color: #e83538; /* Yellow - Highlight color */
+
+  --accent-hover-color: #cf2e30; /* Red - Highlight color hover */
+
+  --primary-text-100: #1a1a1a; /* Black  - Text color */
+
+  --text-secondary-color: #555555; /* Dark grey - Secondary text color */
+
+  --green-100: #50C878; /* Emerald green - Success color */
+
+  --stroke-color: #d9d7d7; /* Grey white - Stroke color */
+
+  --footer-color: #2e4049; /* Dark grey - Footer color */
+
+  --footer-color-icon: #a8a8a8; /*Grey white - Footer color */
+
+  --aside-color: #2d3f49; /* Dark grey - Footer color */
+
+  --aside-color-logo: #27373f; /*Grey white - Footer color */
+
+  --secondary-button-color: #e4f4e4; /* Dark Green - Main color hover */
+
+  --secondary-button-hover-color: #c4e0c4; /* Dark Green - Main color hover */
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* {
+  box-sizing: border-box;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  font-family: var(--font-body);
 }
 
 body {
+  margin: 0;
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+}
+
+*::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+}
+
+@theme {
+  --font-heading: var(--font-heading);
+  --font-body: var(--font-body);
+  --color-primary: var(--primary-color);
+  --color-primary-hover: var(--primary-hover-color);
+  --color-primary-text-100: var(--primary-text-100);
+  --color-foreground-100: var(--foreground-100);
+  --color-foreground-200: var(--foreground-200);
+  --color-border: var(--border-color);
+  --color-white-hover-100: var(--white-hover-100-color);
+  --color-white-hover-400: var(--white-hover-400-color);
+  --color-green-100: var(--green-100);
 }
