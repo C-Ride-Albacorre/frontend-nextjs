@@ -30,13 +30,13 @@ export default function Footer() {
               Subscribe to our Newsletter
             </p>
 
-            <div className="mx-auto mt-6 flex max-w-xl items-center md:gap-2 rounded-xl border border-border p-2 overflow-hidden">
+            <div className="mx-auto mt-6 flex max-w-xl items-center sm:gap-2 rounded-xl border border-border p-2 overflow-hidden">
               <input
                 type="email"
                 placeholder="Enter Email Address"
-                className="flex-1 bg-transparent px-4 text-sm outline-none placeholder:text-white/40"
+                className="sm:flex-1 bg-transparent px-4 text-xs sm:text-sm outline-none placeholder:text-white/40"
               />
-              <button className="rounded-xl bg-white hover:bg-white/90 px-4 md:px-6 py-3 text-sm font-medium text-black cursor-pointer">
+              <button className="rounded-xl bg-white hover:bg-white/90 px-4 sm:px-6 py-3 text-xs sm:text-sm font-medium text-black cursor-pointer">
                 Subscribe
               </button>
             </div>
