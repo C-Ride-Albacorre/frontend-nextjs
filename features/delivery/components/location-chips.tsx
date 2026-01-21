@@ -1,4 +1,4 @@
-import { LOCATIONS } from '@/features/dashboard/delivery/data/delivery-data';
+import { LOCATIONS } from '@/features/delivery/data';
 
 export default function LocationChips() {
   return (

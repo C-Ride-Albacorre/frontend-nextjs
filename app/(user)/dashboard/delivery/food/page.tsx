@@ -1,8 +1,8 @@
 import DashboardHeader from '@/components/ui/dashboard-header';
-import CategoryIcons from '@/features/dashboard/delivery/components/category-icons';
-import Filters from '@/features/dashboard/delivery/components/filters';
-import LocationChips from '@/features/dashboard/delivery/components/location-chips';
-import StoreGrid from '@/features/dashboard/delivery/components/store-grid';
+import CategoryIcons from '@/features/delivery/components/category-icons';
+import Filters from '@/features/delivery/components/filters';
+import LocationChips from '@/features/delivery/components/location-chips';
+import StoreGrid from '@/features/delivery/components/store-grid';
 import Location from '@/features/public/homepage/components/location';
 import { Search } from 'lucide-react';
 
