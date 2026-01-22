@@ -42,7 +42,7 @@ export default function VerifyClient() {
 
   return (
     <section className="min-h-screen bg-neutral-50 flex items-center justify-center px-4">
-      <div className="w-full max-w-3xl bg-white border border-border rounded-3xl px-8 py-14 text-center">
+      <div className="w-full max-w-3xl bg-white border border-border rounded-3xl px-4 md:px-8 py-14 text-center">
         {/* LOGO */}
         <AuthFormHeader />
 
@@ -56,7 +56,8 @@ export default function VerifyClient() {
         </p>
 
         {/* OTP INPUTS */}
-        <div className="flex justify-center gap-4 mb-10">
+
+        <div className="flex justify-center gap-2 sm:gap-3 md:gap-4 mb-10">
           {code.map((digit, index) => (
             <input
               key={index}
@@ -68,10 +69,20 @@ export default function VerifyClient() {
               onKeyDown={(e) => handleKeyDown(e, index)}
               maxLength={1}
               inputMode="numeric"
-              className="h-14 w-14 rounded-xl border border-border text-center text-lg outline-none focus:ring-2 focus:ring-primary"
+              className="
+        aspect-square
+        w-10 sm:w-12 md:w-14
+        rounded-lg sm:rounded-xl
+        border border-border
+        text-center
+        text-base sm:text-lg
+        outline-none
+        focus:ring-2 focus:ring-primary
+      "
             />
           ))}
         </div>
+
 
         {/* CTA */}
         <Link

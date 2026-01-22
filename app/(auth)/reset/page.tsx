@@ -14,7 +14,7 @@ export default function ResetPasswordPage() {
   return (
     <>
       <section className="min-h-screen bg-neutral-50 flex items-center justify-center px-4">
-        <div className="w-full max-w-2xl bg-white border border-border rounded-3xl px-8 py-14 text-center flex flex-col gap-4">
+        <div className="w-full max-w-2xl bg-white border border-border rounded-3xl px-4 md:px-8 py-14 text-center flex flex-col gap-4">
           {/* LOGO */}
           <AuthFormHeader />
 

@@ -4,12 +4,12 @@ import { motion, useAnimation } from 'framer-motion';
 import Image from 'next/image';
 
 const items = [
-  { title: 'Nigerian', count: '45+', category: 'Popular', status: true },
-  { title: 'Asian', count: '25+', category: 'Newly added', status: false },
-  { title: 'Burgers', count: '35+', category: 'Popular', status: true },
-  { title: 'Swallow', count: '28+', category: 'Popular', status: null },
-  { title: 'Italian', count: '28+', category: 'Newly added', status: false },
-  { title: 'Pizza', count: '15+', category: 'Popular', status: true },
+  { title: 'Nigerian', count: '45+', category: 'Popular', imageSrc: '/assets/image/foods/nigerian.jpg', status: true },
+  { title: 'Asian', count: '25+', category: 'Newly added', imageSrc: '/assets/image/foods/asian.jpg', status: false },
+  { title: 'Burgers', count: '35+', category: 'Popular', imageSrc: '/assets/image/foods/burgers.jpg', status: true },
+  { title: 'Swallow', count: '28+', category: 'Popular', imageSrc: '/assets/image/foods/swallow.jpg', status: null },
+  { title: 'Italian', count: '28+', category: 'Newly added', imageSrc: '/assets/image/foods/italian.jpg', status: false },
+  { title: 'Pizza', count: '15+', category: 'Popular', imageSrc: '/assets/image/foods/pizza.jpg', status: true },
 ];
 
 export default function FoodMarquee() {
@@ -50,7 +50,7 @@ export default function FoodMarquee() {
               className="relative h-48 min-w-55 overflow-hidden rounded-2xl"
             >
               <Image
-                src={`/assets/image/foods/${item.title.toLowerCase()}.jpg`}
+                src={item.imageSrc}
                 alt={item.title}
                 fill
                 priority
