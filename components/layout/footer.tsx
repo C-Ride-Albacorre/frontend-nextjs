@@ -30,7 +30,7 @@ export default function Footer() {
               Subscribe to our Newsletter
             </p>
 
-            <div className="mx-auto mt-6 flex justify-between max-w-xl items-center gap-2 rounded-xl border border-border p-2 overflow-hidden">
+            <div className="mx-auto mt-6 flex justify-between max-w-xl items-center gap-2 rounded-xl border border-border p-3 overflow-hidden">
               <input
                 type="email"
                 placeholder="Enter Email Address"
