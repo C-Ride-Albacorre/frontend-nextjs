@@ -15,14 +15,14 @@ const items = [
     title: 'Asian',
     count: '25+',
     category: 'Newly added',
-    imageSrc: '/assets/image/Asian.jpg',
+    imageSrc: '/assets/image/asian.jpg', // ✅ FIXED
     status: false,
   },
   {
     title: 'Burgers',
     count: '35+',
     category: 'Popular',
-    imageSrc: '/assets/image/Burgers.jpg',
+    imageSrc: '/assets/image/burgers.jpg', // ✅ FIXED
     status: true,
   },
   {
@@ -47,6 +47,7 @@ const items = [
     status: true,
   },
 ];
+
 
 export default function FoodMarquee() {
   const controls = useAnimation();
