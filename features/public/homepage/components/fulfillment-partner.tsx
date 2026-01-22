@@ -30,7 +30,7 @@ export default function Fulfillment() {
         </motion.div>
 
         {/* ================= VENDOR SECTION ================= */}
-        <div className="md:mt-24 mt-16 grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+        <div className="md:mt-24 mt-16 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-center">
           {/* Text */}
           <motion.div
             initial="hidden"
@@ -78,7 +78,7 @@ export default function Fulfillment() {
         </div>
 
         {/* ================= PARTNER SECTION ================= */}
-        <div className="mt-28 grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+        <div className="mt-28 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-center">
           {/* Image */}
           <motion.div
             initial={{ opacity: 0, scale: 0.97 }}

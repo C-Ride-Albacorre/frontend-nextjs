@@ -14,13 +14,13 @@
 
   --primary-hover-color: #c19b2e; /* Dark Gold - Primary color hover */
 
-  --text-100: #1A1A1A; /* Black - Text color */
+  --text-100: #1a1a1a; /* Black - Text color */
 
   --border-color: #e8e8e8; /* Light Grey - Border color */
 
   --foreground-100: #f4f4f4;
 
-  --foreground-200: #F8F8F8; /* Light Grey - Foreground color */
+  --foreground-200: #f8f8f8; /* Light Grey - Foreground color */
 
   --white-hover-100-color: rgba(
     255,
@@ -48,7 +48,7 @@
 
   --text-secondary-color: #555555; /* Dark grey - Secondary text color */
 
-  --green-100: #50C878; /* Emerald green - Success color */
+  --green-100: #50c878; /* Emerald green - Success color */
 
   --stroke-color: #d9d7d7; /* Grey white - Stroke color */
 
@@ -71,12 +71,14 @@
 
 html {
   font-family: var(--font-body);
+  height: 100%;
 }
 
 body {
   margin: 0;
   background: var(--background);
   color: var(--foreground);
+  height: 100%;
 }
 
 *::-webkit-scrollbar {

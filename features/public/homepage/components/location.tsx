@@ -1,4 +1,4 @@
-import Link from 'next/link';
+
 
 import { MapPin } from 'lucide-react';
 
@@ -11,7 +11,7 @@ export default function Location() {
           <h6 className="font-heading text-xl">Now Delivering To:</h6>
         </div>
 
-        <div className="flex flex-wrap gap-3 md:justify-between md:items-center ">
+        <div className="flex flex-wrap gap-2 md:gap-3 md:justify-between md:items-center ">
           {[
             'Lekki Phase 1',
             'Ikoyi',
@@ -24,7 +24,7 @@ export default function Location() {
           ].map((loc) => (
             <span
               key={loc}
-              className="rounded-full border border-white/30 px-6  md:px-10 py-4 text-sm text-white"
+              className="rounded-full border border-white/30 px-6 py-3  md:px-10 md:py-4 text-sm text-white"
             >
               {loc}
             </span>
