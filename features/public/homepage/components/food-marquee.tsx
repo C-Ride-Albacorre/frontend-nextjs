@@ -4,12 +4,48 @@ import { motion, useAnimation } from 'framer-motion';
 import Image from 'next/image';
 
 const items = [
-  { title: 'Nigerian', count: '45+', category: 'Popular', imageSrc: '/assets/image/nigerian.jpg', status: true },
-  { title: 'Asian', count: '25+', category: 'Newly added', imageSrc: '/assets/image/asian.jpg', status: false },
-  { title: 'Burgers', count: '35+', category: 'Popular', imageSrc: '/assets/image/burgers.jpg', status: true },
-  { title: 'Swallow', count: '28+', category: 'Popular', imageSrc: '/assets/image/swallow.jpg', status: null },
-  { title: 'Italian', count: '28+', category: 'Newly added', imageSrc: '/assets/image/italian.jpg', status: false },
-  { title: 'Pizza', count: '15+', category: 'Popular', imageSrc: '/assets/image/pizza.jpg', status: true },
+  {
+    title: 'Nigerian',
+    count: '45+',
+    category: 'Popular',
+    imageSrc: '/assets/image/nigerian.jpg',
+    status: true,
+  },
+  {
+    title: 'Asian',
+    count: '25+',
+    category: 'Newly added',
+    imageSrc: '/assets/image/Asian.jpg',
+    status: false,
+  },
+  {
+    title: 'Burgers',
+    count: '35+',
+    category: 'Popular',
+    imageSrc: '/assets/image/Burgers.jpg',
+    status: true,
+  },
+  {
+    title: 'Swallow',
+    count: '28+',
+    category: 'Popular',
+    imageSrc: '/assets/image/swallow.jpg',
+    status: null,
+  },
+  {
+    title: 'Italian',
+    count: '28+',
+    category: 'Newly added',
+    imageSrc: '/assets/image/italian.jpg',
+    status: false,
+  },
+  {
+    title: 'Pizza',
+    count: '15+',
+    category: 'Popular',
+    imageSrc: '/assets/image/pizza.jpg',
+    status: true,
+  },
 ];
 
 export default function FoodMarquee() {
@@ -47,7 +83,7 @@ export default function FoodMarquee() {
           {[...items, ...items].map((item, index) => (
             <div
               key={`${item.title}-${index}`}
-              className="relative h-48 min-w-55 overflow-hidden rounded-2xl"
+              className="relative h-48 min-w-56 overflow-hidden rounded-2xl"
             >
               <Image
                 src={item.imageSrc}
