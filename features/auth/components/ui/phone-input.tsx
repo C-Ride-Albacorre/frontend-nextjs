@@ -10,7 +10,7 @@ export default function PhoneInput() {
         <input
           type="tel"
           placeholder="Enter phone number"
-          className="min-w-0 w-full rounded-xl border border-border px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary"
+          className="min-w-0 w-full rounded-xl border border-border px-4 py-3 text-base md:text-sm  outline-none focus:ring-2 focus:ring-primary"
         />
       </div>
     </div>

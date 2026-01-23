@@ -165,7 +165,7 @@ export default function FoodVendorsPage({ params }: { params: string }) {
               <Search size={16} />
               <input
                 placeholder="Search for item"
-                className="w-full bg-transparent text-sm outline-none"
+                className="w-full bg-transparent text-base md:text-sm outline-none"
               />
             </div>
           </div>

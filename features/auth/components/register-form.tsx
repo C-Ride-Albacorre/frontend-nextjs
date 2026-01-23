@@ -26,7 +26,7 @@ export default function RegisterForm() {
             <input
               type="text"
               placeholder="First name"
-              className="mt-2 w-full rounded-xl border border-border px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary"
+              className="mt-2 w-full rounded-xl border border-border px-4 py-3 text-base md:text-sm  outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
           <div>
@@ -34,7 +34,7 @@ export default function RegisterForm() {
             <input
               type="text"
               placeholder="Last name"
-              className="mt-2 w-full rounded-xl border border-border px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary"
+              className="mt-2 w-full rounded-xl border border-border px-4 py-3 text-base md:text-sm  outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
         </div>
@@ -46,7 +46,7 @@ export default function RegisterForm() {
             <input
               type="password"
               placeholder="Enter a strong password"
-              className="w-full rounded-xl border border-border px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary"
+              className="w-full rounded-xl border border-border px-4 py-3 text-base md:text-sm  outline-none focus:ring-2 focus:ring-primary"
             />
             <Eye
               size={18}
@@ -66,7 +66,7 @@ export default function RegisterForm() {
           <input
             type="text"
             placeholder="Enter code"
-            className="mt-2 w-full rounded-xl border border-border px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary"
+            className="mt-2 w-full rounded-xl border border-border px-4 py-3 text-base md:text-sm  outline-none focus:ring-2 focus:ring-primary"
           />
         </div>
 

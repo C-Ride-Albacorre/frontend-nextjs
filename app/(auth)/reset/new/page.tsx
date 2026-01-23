@@ -19,7 +19,7 @@ export default function NewPasswordPage() {
               <input
                 type="password"
                 placeholder="Enter a strong password"
-                className="w-full rounded-xl border border-border px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary"
+                className="w-full rounded-xl border border-border px-4 py-3 text-base md:text-sm outline-none focus:ring-2 focus:ring-primary"
               />
               <Eye
                 size={18}
@@ -38,7 +38,7 @@ export default function NewPasswordPage() {
               <input
                 type="password"
                 placeholder="Confirm your new password"
-                className="w-full rounded-xl border border-border px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary"
+                className="w-full rounded-xl border border-border px-4 py-3 text-base md:text-sm outline-none focus:ring-2 focus:ring-primary"
               />
               <Eye
                 size={18}

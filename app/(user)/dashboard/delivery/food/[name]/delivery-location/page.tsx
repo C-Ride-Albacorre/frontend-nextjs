@@ -87,7 +87,7 @@ export default function DeliveryLocation() {
             <input
               type="text"
               placeholder="Joseph Adebayo"
-              className="mt-2 w-full rounded-xl bg-white border border-border px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary"
+              className="mt-2 w-full rounded-xl bg-white border border-border px-4 py-3 text-base md:text-sm outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
           <div>
@@ -95,7 +95,7 @@ export default function DeliveryLocation() {
             <input
               type="text"
               placeholder="+234 800 000 0000"
-              className="mt-2 w-full rounded-xl bg-white border border-border px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary"
+              className="mt-2 w-full rounded-xl bg-white border border-border px-4 py-3 text-base md:text-sm outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
         </div>

@@ -34,7 +34,7 @@ export default function DeliveryTypePage() {
               type="radio"
               name="delivery-type"
               id="delivery-type"
-              className="w-5 h-5 text-primary-text-100"
+              className="w-5 h-5 text-primary-text-100 text-base md:text-sm"
             />
           </div>
         </li>
@@ -68,7 +68,7 @@ export default function DeliveryTypePage() {
               type="radio"
               name="delivery-type"
               id="delivery-type"
-              className="w-5 h-5 text-primary-text-100"
+              className="w-5 h-5 text-primary-text-100 text-base md:text-sm"
             />
           </div>
         </li>

@@ -8,7 +8,7 @@ export default function SavedAddresses() {
         <input
           aria-label="Search address"
           placeholder="Search saved locations..."
-          className="w-full bg-transparent text-sm outline-none"
+          className="w-full bg-transparent text-base md:text-sm outline-none"
         />
       </div>
 

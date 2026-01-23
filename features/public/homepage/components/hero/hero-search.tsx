@@ -10,20 +10,20 @@ export default function HeroSearch() {
       className="flex  w-full items-center justify-center"
     >
       <div className="flex flex-col md:flex-row w-full max-w-3xl items-center gap-4 rounded-2xl p-3 mx-4 md:mx-0 md:border md:border-border">
-        <div className="w-full flex md:flex-1 items-center gap-2 rounded-xl bg-foreground-100  px-4 py-3">
-          <MapPin className="h-6 w-6 text-neutral-500" />
+        <div className="w-full flex md:flex-1 items-center gap-2 rounded-xl bg-foreground-100  px-4 py-4">
+          <MapPin className="h-5 w-5 text-neutral-500" />
           <input
             aria-label="Delivery address"
             placeholder="Enter delivery address"
-            className="w-full bg-transparent text-sm outline-none"
+            className="w-full bg-transparent text-base md:text-sm outline-none"
           />
         </div>
-        <div className="w-full flex md:flex-1 items-center gap-2 rounded-xl bg-foreground-100 px-4 py-3">
-          <Search className="h-6 w-6 text-neutral-500" />
+        <div className="w-full flex md:flex-1 items-center gap-2 rounded-xl bg-foreground-100 px-4 py-4">
+          <Search className="h-5 w-5 text-neutral-500" />
           <input
             aria-label="Search items"
             placeholder="What can we get you"
-            className="w-full bg-transparent text-sm outline-none"
+            className="w-full bg-transparent text-base md:text-sm outline-none"
           />
         </div>
         <Link
