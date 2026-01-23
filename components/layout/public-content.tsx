@@ -176,7 +176,7 @@ export default function PublicContent({
   whileInView={{ opacity: 1, scale: 1 }}
   viewport={{ once: true }}
   transition={{ duration: 0.8, ease: 'easeOut' }}
-  className="relative w-full lg:col-span-2 min-h-65  sm:min-h-80 overflow-hidden "
+  className="relative w-full lg:col-span-2 min-h-56  sm:min-h-80 overflow-hidden "
 >
   <Image
     src="/assets/image/lagos-ride.png"
