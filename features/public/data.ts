@@ -1,7 +1,7 @@
 export const PARTNER_BENEFITS = [
   {
     title: 'Superior Income',
-    desc: 'Significantly higher earning potential compared to standard ride-hailing.',
+   text: 'Significantly higher earning potential compared to standard ride-hailing.',
   },
   {
     title: 'Priority Earnings',
@@ -10,7 +10,7 @@ export const PARTNER_BENEFITS = [
 
   {
     title: 'Work Autonomy',
-    desc: 'Complete flexibility—your schedule, your terms.',
+    text: 'Complete flexibility—your schedule, your terms.',
   },
 
   {
@@ -28,7 +28,7 @@ export const PARTNER_BENEFITS = [
 export const VENDOR_BENEFITS = [
   {
     title: 'Brand Alignment',
-    desc: 'A premium delivery service that seamlessly matches the quality of your product.',
+    text: 'A premium delivery service that seamlessly matches the quality of your product.',
   },
   {
     title: 'Versatile Logistics',
@@ -37,7 +37,7 @@ export const VENDOR_BENEFITS = [
 
   {
     title: 'Real-Time Assurance',
-    desc: 'Pinpoint delivery tracking and proactive status updates',
+    text: 'Pinpoint delivery tracking and proactive status updates',
   },
 
   {

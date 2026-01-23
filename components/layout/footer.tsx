@@ -30,16 +30,23 @@ export default function Footer() {
               Subscribe to our Newsletter
             </p>
 
-            <div className="mx-auto mt-6 flex max-w-xl items-center gap-2 rounded-xl border border-border p-3">
-              <input
-                type="email"
-                placeholder="Enter Email Address"
-                className="flex-1 bg-transparent px-4 text-xs md:text-sm outline-none placeholder:text-white/40"
-              />
-              <button className="shrink-0 rounded-xl bg-white hover:bg-white/90 px-4 sm:px-6 py-3 text-xs md:text-sm font-medium text-black">
-                Subscribe
-              </button>
-            </div>
+        
+
+
+<div className="w-full mt-6 mx-auto max-w-full sm:max-w-md md:max-w-lg lg:max-w-xl">
+  <div className="flex items-center rounded-xl border border-border overflow-hidden p-3">
+    <input
+      type="text"
+      placeholder="Enter Email Address"
+      className="flex-1 px-2 py-2 text-xs sm:text-sm md:text-base focus:outline-none placeholder:text-white/40 bg-transparent"
+    />
+    <button className="bg-white hover:bg-white/90 text-black px-2 sm:px-3 py-3 text-xs sm:text-sm md:text-base rounded-xl">
+      Subscribe
+    </button>
+  </div>
+</div>
+
+
           </motion.div>
         </div>
 

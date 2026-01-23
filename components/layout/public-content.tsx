@@ -77,7 +77,7 @@ export default function PublicContent({
         </div>
       </div>
 
-      <div className=" py-24 px-4 lg:px-0 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center max-w-6xl mx-auto ">
+      <div className=" py-24 px-4 lg:px-0 grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-16 items-center max-w-6xl mx-auto ">
         <div
           className="
             flex flex-col gap-6
@@ -107,7 +107,7 @@ export default function PublicContent({
           </ul>
         </div>
 
-        {/* Image (UNCHANGED POSITION) */}
+        {/* Image  */}
         <motion.div
           initial={{ opacity: 0, scale: 0.97 }}
           whileInView={{ opacity: 1, scale: 1 }}
@@ -122,6 +122,21 @@ export default function PublicContent({
             className="object-cover"
           />
         </motion.div>
+
+<motion.div
+        initial={{ opacity: 0, scale: 0.97 }}
+  whileInView={{ opacity: 1, scale: 1 }}
+  viewport={{ once: true }}
+  transition={{ duration: 0.8, ease: 'easeOut' }}
+  className="relative w-full min-h-80 sm:min-h-full rounded-xl overflow-hidden"
+>
+  <Image
+    src={publicImageSrc}
+    alt="Public Content"
+    fill
+    className="object-cover"
+  />
+</motion.div>
       </div>
 
       {/* ================= GOLD CTA SECTION ================= */}
@@ -156,20 +171,21 @@ export default function PublicContent({
               )}
             </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, scale: 0.97 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, ease: 'easeOut' }}
-              className="relative lg:col-span-2 w-full  rounded-xl ]"
-            >
-              <Image
-                src="/assets/image/lagos-ride.png"
-                alt="Vendor"
-                fill
-                className="object-cover"
-              />
-            </motion.div>
+         <motion.div
+  initial={{ opacity: 0, scale: 0.97 }}
+  whileInView={{ opacity: 1, scale: 1 }}
+  viewport={{ once: true }}
+  transition={{ duration: 0.8, ease: 'easeOut' }}
+  className="relative w-full lg:col-span-2 min-h-65  sm:min-h-80 overflow-hidden "
+>
+  <Image
+    src="/assets/image/lagos-ride.png"
+    alt="Vendor"
+    fill
+    className="object-cover"
+  />
+</motion.div>
+
           </div>
         </section>
       )}
