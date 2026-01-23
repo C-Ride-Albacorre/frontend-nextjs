@@ -2,7 +2,7 @@ import StoreCard from './store-card';
 
 export default function StoreGrid() {
   return (
-    <div className="grid grid-cols-3 gap-6 mt-12">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
       <StoreCard
         id="1"
         image="https://images.unsplash.com/photo-1600891964599-f61ba0e24092"

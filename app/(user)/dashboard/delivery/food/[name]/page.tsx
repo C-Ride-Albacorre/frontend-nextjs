@@ -24,49 +24,49 @@ const PRODUCTS = [
     name: 'Grilled Chicken & Chips',
     category: 'Top Sellers',
     price: '₦8,500',
-    image: '/assets/image/food/chicken.jpg',
+    image: '/assets/image/chicken.jpg',
   },
   {
     name: 'Jollof Rice Special',
     category: 'Nigerian Classics',
     price: '₦8,500',
-    image: '/assets/image/food/jellof.jpg',
+    image: '/assets/image/jellof.jpg',
   },
   {
     name: 'Chapman Mocktails',
     category: 'Drinks',
     price: '₦8,500',
-    image: '/assets/image/food/chapman.jpg',
+    image: '/assets/image/chapman.jpg',
   },
   {
     name: 'Peppered Snail',
     category: 'Appetizers',
     price: '₦3,500',
-    image: '/assets/image/food/snail.jpg',
+    image: '/assets/image/snail.jpg',
   },
   {
     name: 'Chapman Mocktails',
     category: 'Drinks',
     price: '₦8,500',
-    image: '/assets/image/food/chapman.jpg',
+    image: '/assets/image/chapman.jpg',
   },
   {
     name: 'Peppered Snail',
     category: 'Appetizers',
     price: '₦3,500',
-    image: '/assets/image/food/snail.jpg',
+    image: '/assets/image/snail.jpg',
   },
 ];
 
-export default function FoodVendorsPage({ params }: { params: string }) {
+export default function FoodVendorsPage({ params }: { params: { name: string } }) {
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState('Sort by Category');
   return (
     <main>
       <div>
         {/* Vendor */}
-        <div className="mt-8 rounded-2xl bg-foreground-200 border border-border p-4 flex items-center justify-between">
-          <div className="flex items-center flex-1 gap-6">
+        <div className="mt-8 rounded-2xl bg-foreground-200 border border-border p-4 lg:flex items-center justify-between space-y-6">
+          <div className="lg:flex items-center flex-1 gap-6 space-y-6 lg:space-y-0">
             <div>
               <Image
                 src="/assets/image/vendor.jpg"
@@ -111,7 +111,7 @@ export default function FoodVendorsPage({ params }: { params: string }) {
         </div>
 
         {/* Select Items */}
-        <div className="mt-12 flex items-center justify-between">
+        <div className="mt-12 space-y-4 md:space-y-0 md:flex items-center justify-between">
           <h2 className="text-lg font-semibold flex-1">Select Items</h2>
 
           <div className="flex items-center gap-3">
@@ -176,14 +176,14 @@ export default function FoodVendorsPage({ params }: { params: string }) {
           {PRODUCTS.map((item, i) => (
             <div
               key={i}
-              className="flex gap-6 rounded-2xl border border-border bg-foreground-200 p-6"
+              className="space-y-4 md:space-y-0 md:flex gap-6 rounded-2xl border border-border bg-foreground-200 p-6"
             >
               <Image
                 src={item.image}
                 alt={item.name}
                 width={160}
                 height={80}
-                className="rounded-xl object-cover"
+                className="rounded-xl object-cover w-full md:w-40"
               />
 
               <div className="flex flex-1 flex-col justify-between">
@@ -195,14 +195,14 @@ export default function FoodVendorsPage({ params }: { params: string }) {
                   </p>
                 </div>
 
-                <div className="flex gap-12 py-2">
-                  <button className="px-3 text-primary border border-primary rounded-xl flex justify-center items-center cursor-pointer">
+                <div className="flex gap-12 py-2 justify-center items-center md:justify-start">
+                  <button className="px-3 py-3 text-primary border border-primary rounded-xl flex justify-center items-center cursor-pointer">
                     <Minus size={16} />
                   </button>
 
                   <span className="px-4 py-2">1</span>
 
-                  <button className="px-3 bg-primary hover:bg-primary-hover rounded-xl shadow flex justify-center items-center cursor-pointer">
+                  <button className="px-3 py-3 bg-primary hover:bg-primary-hover rounded-xl shadow flex justify-center items-center cursor-pointer">
                     <Plus size={16} />
                   </button>
                 </div>
