@@ -20,7 +20,7 @@ export function HeroTabs({
         <button
           key={key}
           onClick={() => setActive(key as HeroKey)}
-          className={`flex-1 whitespace-nowrap rounded-xl px-4 py-3 text-sm transition-colors md:px-8 cursor-pointer
+          className={`flex-1 whitespace-nowrap rounded-xl px-2 py-3 text-xs md:text-sm transition-colors md:px-8 cursor-pointer 
             ${
               active === key
                 ? 'bg-primary font-medium text-primary-text-100 shadow-sm'

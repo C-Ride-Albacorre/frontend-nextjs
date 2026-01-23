@@ -9,9 +9,9 @@ export default function HowItWorksBody({
 }) {
   return (
     <>
-      <div className="mt-20 grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+      <div className=" mt-12 md:mt-20 grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
         {/* ================= IMAGE ================= */}
-        <div className="relative mx-auto aspect-square w-80 md:w-96 rounded-full overflow-visible">
+        <div className="relative mx-auto aspect-square w-64 md:w-96 rounded-full overflow-visible">
           <div className="relative w-full h-full rounded-full overflow-hidden">
             <Image
               src={TABS_CONTENT[activeTab].image}
