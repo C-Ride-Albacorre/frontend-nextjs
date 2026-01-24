@@ -6,21 +6,22 @@ import { AuthType } from '@/features/auth/types';
 
 type Props = {
   variant: AuthType;
+  href: string;
 };
-export default function AuthFooter({ variant }: Props) {
+export default function AuthFooter({ variant, href}: Props) {
   return (
     <div className="mt-6 text-center text-sm">
       {variant === 'register' ? (
         <p>
           Already have an account?{' '}
-          <Link href="/login" className="text-primary font-medium">
+          <Link href={href} className="text-primary font-medium">
             Login
           </Link>
         </p>
       ) : (
         <p>
           Don&apos;t have an account?{' '}
-          <Link href="/register" className="text-primary font-medium">
+          <Link href={href} className="text-primary font-medium">
             Register
           </Link>
         </p>

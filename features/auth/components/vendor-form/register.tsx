@@ -1,24 +1,13 @@
-'use client';
+import { Eye, Phone } from 'lucide-react';
 
-import { Eye } from 'lucide-react';
-
-import { useAuthMethod } from '@/features/auth/auth-method.context';
-
-import AuthMethod from '@/features/auth/components/auth-method';
 import PhoneInput from '@/features/auth/components/ui/phone-input';
 import EmailInput from '@/features/auth/components/ui/email-input';
 
-export default function RegisterForm() {
-  const { method } = useAuthMethod();
-
+export default function VendorRegisterForm() {
   return (
     <>
-      <AuthMethod />
-
       {/* FORM */}
       <form className="space-y-5">
-        {method === 'phone' ? <PhoneInput /> : <EmailInput />}
-
         {/* NAMES */}
         <div className="grid grid-cols-2 gap-4">
           <div>
@@ -39,6 +28,11 @@ export default function RegisterForm() {
           </div>
         </div>
 
+        <EmailInput />
+
+        <PhoneInput />
+
+        
         {/* PASSWORD */}
         <div>
           <label className="text-sm font-medium">Password</label>

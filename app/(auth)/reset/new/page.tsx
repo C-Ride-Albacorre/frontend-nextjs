@@ -49,7 +49,7 @@ export default function NewPasswordPage() {
 
           {/* CTA */}
           <Link
-            href="/login"
+            href="/user/login"
             type="submit"
             className="w-full block text-center rounded-xl bg-primary py-4 text-sm font-medium text-primary-text-100 hover:bg-primary-hover transition"
           >

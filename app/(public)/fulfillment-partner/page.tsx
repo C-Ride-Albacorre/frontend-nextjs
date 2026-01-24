@@ -20,7 +20,7 @@ export default function FulfillmentPartnerPage() {
         partnerTitle="Become A Driver"
         partnerSubtitle="Accept delivery requests, navigate routes, and track your
                   performance."
-        partnerHref="/"
+        partnerHref="/vendor/register"
       />
     </>
   );

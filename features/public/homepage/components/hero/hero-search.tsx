@@ -27,10 +27,10 @@ export default function HeroSearch() {
           />
         </div>
         <Link
-          href="/register"
+          href="/user/register"
           className="w-auto rounded-2xl bg-primary px-12 md:px-5 py-4 text-sm font-medium text-primary-text-100 hover:bg-primary-hover shadow-sm mt-4 md:mt-0"
         >
-      Search
+          Search
         </Link>
       </div>
     </motion.div>

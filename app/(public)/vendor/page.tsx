@@ -7,7 +7,7 @@ export default function VendorPage() {
       <PublicContent
         title="Deliver Unforgettable Customer Experiences"
         subtitle="Your reputation is defined by your last mile. C-Ride ensures your customers receive an experience that is consistent, safe, and premium, perfectly aligning with your brand's quality."
-        href="/"
+        href="/vendor/register"
         heroImageSrc="/assets/image/hero-3.jpg"
         publicData={
           VENDOR_BENEFITS as unknown as { title: string; desc: string }[]

@@ -59,13 +59,13 @@ const NavBar = () => {
 
             <div className="flex items-center gap-3">
               <Link
-                href="/login"
+                href="/user/login"
                 className="rounded-2xl border border-border hover:bg-white-hover-100 px-6 py-4 text-sm text-white"
               >
                 Login
               </Link>
               <Link
-                href="/register"
+                href="/user/register"
                 className="rounded-2xl  bg-primary px-6 py-4 text-sm text-primary-text-100 hover:bg-primary-hover font-medium shadow-sm"
               >
                 Get started
@@ -117,6 +117,7 @@ const NavBar = () => {
                     alt="Logo"
                     width={100}
                     height={48}
+                    priority
                   />
                   <button onClick={toggleMenu} aria-label="Close menu">
                     <X size={26} />
@@ -148,7 +149,7 @@ const NavBar = () => {
               {/* ACTION BUTTONS */}
               <div className="px-6 pb-6 space-y-4">
                 <Link
-                  href="/login"
+                  href="/user/login"
                   className="block w-full rounded-2xl border border-border py-4 text-center text-sm"
                   onClick={toggleMenu}
                 >
@@ -156,7 +157,7 @@ const NavBar = () => {
                 </Link>
 
                 <Link
-                  href="/register"
+                  href="/user/register"
                   className="block w-full rounded-2xl bg-primary py-4 text-center text-sm font-medium text-primary-text-100"
                   onClick={toggleMenu}
                 >
