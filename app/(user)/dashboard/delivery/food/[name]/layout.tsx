@@ -1,4 +1,4 @@
-import DeliveryHeader from '@/features/delivery/components/layout/delivery-header';
+import DeliveryHeader from '@/features/delivery/components/delivery-header';
 
 export default function AuthLayout({
   children,

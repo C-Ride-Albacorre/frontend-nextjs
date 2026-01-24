@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import { DELIVERY_TYPES } from '@/features/delivery/data';
-import DeliveryHeader from '@/features/delivery/components/layout/delivery-header';
+import DeliveryHeader from '@/features/delivery/components/delivery-header';
 
 export default function CreateDeliveryPage() {
   return (

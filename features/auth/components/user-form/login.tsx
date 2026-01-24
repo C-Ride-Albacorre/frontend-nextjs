@@ -1,6 +1,5 @@
 'use client';
 
-
 import Link from 'next/link';
 
 import { Eye } from 'lucide-react';
@@ -8,12 +7,11 @@ import { Eye } from 'lucide-react';
 import { useAuthMethod } from '@/features/auth/auth-method.context';
 
 import AuthMethod from '@/features/auth/components/auth-method';
-import PhoneInput from '@/features/auth/components/ui/phone-input';
-import EmailInput from '@/features/auth/components/ui/email-input';
+import PhoneInput from '@/components/ui/inputs/phone-input';
+import EmailInput from '@/components/ui/inputs/email-input';
 
 export default function UserLoginForm() {
   const { method } = useAuthMethod();
-
 
   return (
     <>

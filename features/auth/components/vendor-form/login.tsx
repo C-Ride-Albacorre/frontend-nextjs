@@ -2,11 +2,16 @@ import Link from 'next/link';
 
 import { Eye } from 'lucide-react';
 
-import EmailInput from '@/features/auth/components/ui/email-input';
+import EmailInput from '@/components/ui/inputs/email-input';
+import FormHeader from '@/components/ui/headers/form-header';
 
 export default function VendorLoginForm() {
   return (
     <>
+      <FormHeader
+        title="Login to your account"
+        subtitle="Please enter your credentials below."
+      />
       {/* FORM */}
       <form className="space-y-5 ">
         {<EmailInput />}

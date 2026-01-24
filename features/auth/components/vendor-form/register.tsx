@@ -1,11 +1,18 @@
-import { Eye, Phone } from 'lucide-react';
+import { Eye } from 'lucide-react';
 
-import PhoneInput from '@/features/auth/components/ui/phone-input';
-import EmailInput from '@/features/auth/components/ui/email-input';
+import PhoneInput from '@/components/ui/inputs/phone-input';
+import EmailInput from '@/components/ui/inputs/email-input';
+import FormHeader from '@/components/ui/headers/form-header';
+import Link from 'next/link';
 
 export default function VendorRegisterForm() {
   return (
     <>
+      <FormHeader
+        title="Create an Account"
+        subtitle="Please enter your credentials below."
+      />
+
       {/* FORM */}
       <form className="space-y-5">
         {/* NAMES */}
@@ -32,7 +39,6 @@ export default function VendorRegisterForm() {
 
         <PhoneInput />
 
-        
         {/* PASSWORD */}
         <div>
           <label className="text-sm font-medium">Password</label>
@@ -65,12 +71,13 @@ export default function VendorRegisterForm() {
         </div>
 
         {/* CTA */}
-        <button
-          type="submit"
-          className="w-full rounded-xl bg-primary py-4 text-sm font-medium text-primary-text-100 hover:bg-primary-hover transition"
+
+        <Link
+          href="/onboarding/business-info"
+          className="w-full block text-center rounded-xl bg-primary py-4 text-sm font-medium text-primary-text-100 hover:bg-primary-hover transition"
         >
           Continue
-        </button>
+        </Link>
       </form>
     </>
   );

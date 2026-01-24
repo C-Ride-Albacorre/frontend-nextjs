@@ -63,3 +63,12 @@ export const LOCATIONS = [
   'Yaba',
   'Surulere',
 ];
+
+export const STEPS = [
+  'Item Type',
+  'Vendor',
+  'Products',
+  'Delivery',
+  'Location',
+  'Confirm',
+];

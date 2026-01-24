@@ -1,11 +1,6 @@
-import {
-  Building2,
-  House,
-  MapPin,
-  Plus,
-  ChevronRight,
-  ChevronLeft,
-} from 'lucide-react';
+import ButtonPrevious from '@/components/ui/buttons/button-previous';
+import ButtonProceed from '@/components/ui/buttons/button-proceed';
+import { Building2, House, MapPin, Plus } from 'lucide-react';
 
 export default function DeliveryLocation() {
   return (
@@ -102,15 +97,9 @@ export default function DeliveryLocation() {
       </div>
 
       <div className="mt-12  flex items-center justify-center gap-8">
-        <button className=" px-16 py-4 bg-foreground-100 hover:bg-foreground-200 rounded-xl font-medium text-sm  cursor-pointer flex gap-4 items-center justify-center border border-border">
-          <ChevronLeft size={16} />
-          Back
-        </button>
+        <ButtonPrevious href="" buttonText="Back" />
 
-        <button className=" px-16 py-4 bg-primary hover:bg-primary-hover rounded-xl font-medium text-sm  cursor-pointer flex gap-4 items-center justify-center">
-          Continue
-          <ChevronRight size={16} />
-        </button>
+        <ButtonProceed href="" buttonText="Proceed" />
       </div>
     </>
   );

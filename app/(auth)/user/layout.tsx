@@ -1,12 +1,11 @@
 import type { Metadata } from 'next';
 
-
 import AuthCarousel from '@/features/auth/components/layout/auth-carousel';
 import AuthFormHeader from '@/features/auth/components/layout/auth-form-header';
 import { SLIDES } from '@/features/auth/data';
 
 export const metadata: Metadata = {
-  title: 'User Portal | YourApp',
+  title: 'User Portal | C-ride',
   description: 'Authenticate to access your personalized delivery dashboard.',
 };
 
@@ -15,9 +14,6 @@ export default function UserAuthLayout({
 }: {
   children: React.ReactNode;
 }) {
-    
-
-
   return (
     <section className="min-h-screen bg-neutral-50 px-6 py-8">
       <div className="mx-auto max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-10">

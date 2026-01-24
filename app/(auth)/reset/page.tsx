@@ -5,8 +5,8 @@ import { useAuthMethod } from '@/features/auth/auth-method.context';
 
 import AuthFormHeader from '@/features/auth/components/layout/auth-form-header';
 import AuthMethod from '@/features/auth/components/auth-method';
-import PhoneInput from '@/features/auth/components/ui/phone-input';
-import EmailInput from '@/features/auth/components/ui/email-input';
+import PhoneInput from '@/components/ui/inputs/phone-input';
+import EmailInput from '@/components/ui/inputs/email-input';
 
 export default function ResetPasswordPage() {
   const { method } = useAuthMethod();
