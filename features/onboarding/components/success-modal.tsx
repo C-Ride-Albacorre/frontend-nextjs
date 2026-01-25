@@ -12,7 +12,7 @@ export default function SuccessModal({
 }) {
   return (
     <Modal isModalOpen={isModalOpen} onClose={onClose}>
-      <div className=" p-4 md:p-8 space-y-12 text-center">
+      <div className="py-6  md:py-8 space-y-12 text-center">
         <div className="w-24 h-24 rounded-full bg-linear-to-b from-primary to-[#B8941F] mx-auto flex items-center justify-center">
           <Stars size={48} className="text-white" />
         </div>
@@ -62,9 +62,17 @@ export default function SuccessModal({
         </div>
 
         <div className="mt-12  flex flex-col md:flex-row items-center justify-between lg:justify-around gap-4">
-          <ButtonPrevious href="" buttonText="Contact Support" />
+          <ButtonPrevious
+            href=""
+            buttonText="Contact Support"
+            className="order-2 md:order-1"
+          />
 
-          <ButtonProceed href="/" buttonText="Return to Homepage" />
+          <ButtonProceed
+            href="/"
+            buttonText="Return to Homepage"
+            className="order-1 md:order-2"
+          />
         </div>
 
         <div className="py-6 border-t border-border ">
