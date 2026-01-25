@@ -43,7 +43,7 @@ export default function BusinessBankForm() {
           />
 
           <ButtonProceed
-            href="/vendor/register"
+            href="/onboarding/business-document"
             buttonText="Proceed"
           />
         </div>

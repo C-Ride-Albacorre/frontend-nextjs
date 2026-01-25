@@ -11,7 +11,7 @@ export default function ButtonProceed({
   return (
     <Link
       href={href}
-      className="px-3 py-3  lg:px-12 lg:py-4 bg-primary hover:bg-primary-hover rounded-xl font-medium text-sm  cursor-pointer flex gap-1 md:gap-4 items-center justify-center"
+      className="px-3 py-3  lg:px-8 lg:py-4 bg-primary hover:bg-primary-hover rounded-xl font-medium text-sm  cursor-pointer flex gap-1 md:gap-4 items-center justify-center"
     >
       {buttonText}
       <ChevronRight size={16} />

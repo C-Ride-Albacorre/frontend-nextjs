@@ -1,3 +1,9 @@
+import BusinessDocumentForm from '@/features/onboarding/components/forms/business-document';
+
 export default function BusinessDocumentPage() {
-  return <div>Business Document Page</div>;
+  return (
+    <>
+      <BusinessDocumentForm />
+    </>
+  );
 }

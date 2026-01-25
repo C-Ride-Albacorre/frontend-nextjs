@@ -1,7 +1,7 @@
 import { Store } from 'lucide-react';
 
 import Input from '@/components/ui/inputs/input';
-import Textarea from '@/components/ui/textarea';
+import Textarea from '@/components/ui/inputs/textarea';
 import ButtonPrevious from '@/components/ui/buttons/button-previous';
 import ButtonProceed from '@/components/ui/buttons/button-proceed';
 import OnboardingFormHeader from '../form-header';
