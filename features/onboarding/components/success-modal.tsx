@@ -69,7 +69,7 @@ export default function SuccessModal({
           />
 
           <ButtonProceed
-            href="/"
+            href="/vendor/dashboard"
             buttonText="Return to Homepage"
             className="order-1 md:order-2"
           />

@@ -14,7 +14,7 @@ export default function AuthInfo() {
 
   return (
     <div className="space-y-12 px-4  py-8 md:py-10 md:px-10">
-      <div>
+      <div className="flex flex-col gap-0.5">
         <Link href="/">
           <Image
             src="/assets/svg/logo-main.svg"

@@ -16,5 +16,9 @@ export default function AuthLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <AuthMethodProvider>{children}</AuthMethodProvider>;
+  return (
+    <AuthMethodProvider>
+      <main className="bg-[#FDFDFB]">{children}</main>
+    </AuthMethodProvider>
+  );
 }

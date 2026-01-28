@@ -26,7 +26,7 @@ export default function CreateDeliveryPage() {
           {DELIVERY_TYPES.map((item) =>
             item.highlighted ? (
               <Link
-                href={`/dashboard/delivery/${item.id}`}
+                href={`/user/dashboard/delivery/${item.id}`}
                 key={item.id}
                 className="relative flex  items-center justify-between rounded-2xl bg-primary px-6 py-4  text-left transition hover:opacity-95 cursor-pointer"
               >

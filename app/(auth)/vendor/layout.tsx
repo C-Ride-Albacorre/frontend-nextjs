@@ -14,7 +14,7 @@ export default function VendorAuthLayout({
   children: React.ReactNode;
 }) {
   return (
-    <section className="min-h-screen bg-neutral-50 px-6 py-8">
+    <section className="min-h-screen bg-[#FDFDFB]  px-6 py-8">
       <div className="mx-auto max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-10">
         <div className="hidden md:block sticky top-8 h-[calc(100vh-4rem)]">
           <AuthInfo />

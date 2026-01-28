@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-import { FileText } from 'lucide-react';
+import { ChevronRight, FileText, Info, InfoIcon } from 'lucide-react';
 import OnboardingFormHeader from '../form-header';
 import ButtonProceed from '@/components/ui/buttons/button-proceed';
 import ButtonPrevious from '@/components/ui/buttons/button-previous';
@@ -45,7 +45,8 @@ export default function BusinessDocumentForm() {
           // handleUpload={() => {}}
         />
 
-        <div className="mt-4 p-4 md:p-6 bg-primary/10 rounded-xl text-primary-text-100 ">
+        <div className="mt-4 p-4 md:p-6 bg-primary/10 rounded-xl text-primary-text-100 flex items-start gap-2">
+        <InfoIcon size={18} className=" text-primary" />
           <p className=" text-xs md:text-sm">
             All documents will be securely stored and reviewed by our
             verification team. This typically takes 24-48 hours.
@@ -59,13 +60,15 @@ export default function BusinessDocumentForm() {
           />
 
           <button
-            className="px-3 py-3  lg:px-8 lg:py-4 bg-primary hover:bg-primary-hover rounded-xl font-medium text-sm  cursor-pointer flex gap-1 md:gap-4 items-center justify-center"
+            className="px-3 py-3  lg:px-8 lg:py-4 bg-primary hover:bg-primary-hover rounded-xl font-medium text-sm  cursor-pointer flex gap-1 md:gap-4 items-center justify-center "
             onClick={(e) => {
               e.preventDefault();
               setIsModalOpen(true);
             }}
           >
             Proceed
+
+           <ChevronRight size={16} />
           </button>
         </div>
       </form>

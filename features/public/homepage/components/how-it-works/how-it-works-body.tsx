@@ -37,7 +37,7 @@ export default function HowItWorksBody({
         <div>
           <ul className="flex flex-col gap-6 text-sm text-primary-text-100">
             {TABS_CONTENT[activeTab].list.map((item) => (
-              <li key={item} className="flex items-start gap-3">
+              <li key={item} className="flex items-center gap-3">
                 <div className="p-2">
                   <Check className="h-6 w-6 p-1.5 rounded-full bg-primary-text-100 text-primary" />
                 </div>

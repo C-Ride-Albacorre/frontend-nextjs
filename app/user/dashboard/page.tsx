@@ -21,7 +21,7 @@ import QuickAction from '../../../features/user-dashboard/components/quick-actio
 
 import DeliverySummary from '../../../features/user-dashboard/components/delivery-summary';
 import Address from '../../../features/user-dashboard/components/address';
-import DashboardHeader from '@/components/ui/headers/dashboard-header';
+import DashboardHeader from '@/features/user-dashboard/layout/dashboard-header';
 
 export default function DashboardPage() {
   return (

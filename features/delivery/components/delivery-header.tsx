@@ -27,7 +27,7 @@ export default function DeliveryHeader({ id }: { id: string }) {
         </h1>
 
         <Link
-          href="/dashboard"
+          href="/user/dashboard"
           className="rounded-xl border border-border px-5 py-2 text-sm font-medium hover:bg-neutral-50"
         >
           Close

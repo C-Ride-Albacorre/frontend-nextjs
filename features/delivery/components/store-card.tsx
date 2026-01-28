@@ -15,7 +15,7 @@ export default function StoreCard({
 }: StoreCardProps) {
   return (
     <Link
-      href={`/dashboard/delivery/food/${id}`}
+      href={`/user/dashboard/delivery/food/${id}`}
       className="bg-white rounded-2xl overflow-hidden border border-border"
     >
       <div className="relative h-52">
