@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Sidebar from '@/features/vendor-dashboard/layout/sidebar';
+import { Menu, MenuIcon } from 'lucide-react';
 
 export default function OnboardingLayout({
   children,
@@ -13,34 +14,42 @@ export default function OnboardingLayout({
   return (
     <div className="relative flex min-h-screen overflow-hidden bg-[#FDFDFB] md:px-8">
       {/* SIDEBAR */}
-      <Sidebar
-        active="onboarding"
-        isOpen={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}
-      />
+      <div className='fixed z-50 overflow-y-scroll h-screen scroll-smooth'>
+        <Sidebar
+          active="onboarding"
+          isOpen={sidebarOpen}
+          onClose={() => setSidebarOpen(false)}
+        />
+      </div>
 
       {/* MAIN WRAPPER */}
       <div
-        className={`
-          relative flex-1 transition-transform duration-300 ease-out
+        className={` md:ml-72
+          relative flex-1 transition-transform duration-300 ease-out 
           ${sidebarOpen ? 'translate-x-72' : 'translate-x-0'}
         `}
       >
         {/* MOBILE TOP BAR */}
-    { !sidebarOpen&&   <div className="md:hidden flex items-center gap-3 px-6 py-4 border-b border-border bg-white">
+        <div
+          className={`
+    md:hidden fixed top-0 left-0 z-20 w-full
+    flex items-center gap-3
+    px-6 py-8 border-b border-border bg-white
+    transition-all duration-300 ease-out
+    ${
+      sidebarOpen
+        ? 'opacity-0 pointer-events-none -translate-y-2'
+        : 'opacity-100 translate-y-0'
+    }
+  `}
+        >
           <button onClick={() => setSidebarOpen(true)}>
-            <img
-              src="/assets/svg/logo-main.svg"
-              alt="Open menu"
-              className="h-8"
-            />
+            <MenuIcon size={22} />
           </button>
-        </div>}
+        </div>
 
         {/* CONTENT */}
-        <main>
-          {children}
-        </main>
+        <main>{children}</main>
 
         {/* SCRIM (NOT MODAL) */}
         {sidebarOpen && (

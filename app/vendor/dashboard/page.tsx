@@ -33,7 +33,7 @@ import { DOCUMENTS } from '@/features/vendor-dashboard/data';
 export default function VendorOnboardingDashboard() {
   return (
     <section>
-      <div className="space-y-6 py-6  ">
+      <div className="space-y-6 py-5  ">
         {/* ================= HEADER ================= */}
 
         <VendorDashboardHeader />

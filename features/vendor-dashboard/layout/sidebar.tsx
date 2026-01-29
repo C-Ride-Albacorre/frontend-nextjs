@@ -36,7 +36,7 @@ export default function Sidebar({ active, isOpen, onClose }: Props) {
       {/* ================= SIDEBAR ================= */}
       <aside
         className={`
-          fixed inset-y-0 left-0 z-50 w-[90%] max-w-xs
+           inset-y-0 left-0 z-50 w-[90%] max-w-xs
           bg-white border-r border-border
           transform transition-transform duration-300
           md:static md:translate-x-0 md:w-72
