@@ -6,6 +6,9 @@ import Image from 'next/image';
 
 import { Menu, X, ChevronRight } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { Button } from '../ui/buttons/button';
+import { IconButton } from '../ui/buttons/icon-button';
+import { Logo } from '../ui/Logo';
 
 const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
@@ -37,50 +40,40 @@ const NavBar = () => {
         `}
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 md:py-3">
-          <Link href="/" className="lg:w-full">
-            <Image
-              src="/assets/svg/logo-main.svg"
-              alt="Logo"
-              width={120}
-              height={40}
-              priority
-            />
-          </Link>
+          <div className="lg:w-full">
+            <Logo href="/" priority size="lg" />
+          </div>
 
           <div className="hidden md:flex gap-10 lg:gap-0 justify-between items-center lg:w-full">
             <div className="flex items-center gap-6 lg:gap-10 text-sm font-body  text-white">
-              <Link href="/" className="opacity-90 hover:opacity-100 p-2">
-                Membership
-              </Link>
-              <Link href="/" className="opacity-90 hover:opacity-100">
+              <Button href="/" size="sm" variant="white-nav-link">
                 How it Works
-              </Link>
+              </Button>
+
+              <Button href="/" size="sm" variant="white-nav-link">
+                Membership
+              </Button>
             </div>
 
             <div className="flex items-center gap-3">
-              <Link
-                href="/user/login"
-                className="rounded-2xl border border-border hover:bg-white-hover-100 px-6 py-4 text-sm text-white"
-              >
+              <Button href="/user/login" size="md" variant="white-outline">
                 Login
-              </Link>
-              <Link
-                href="/user/register"
-                className="rounded-2xl  bg-primary px-6 py-4 text-sm text-primary-text-100 hover:bg-primary-hover font-medium shadow-sm"
-              >
+              </Button>
+
+              <Button href="/user/register" size="md" variant="primary">
                 Get started
-              </Link>
+              </Button>
             </div>
           </div>
 
           {/* MOBILE MENU BUTTON */}
-          <button
+          <IconButton
             onClick={toggleMenu}
+            ariaLabel="Open menu"
             className="md:hidden text-primary-text-100"
-            aria-label="Open menu"
           >
             <Menu size={28} />
-          </button>
+          </IconButton>
         </div>
       </nav>
 
@@ -111,17 +104,16 @@ const NavBar = () => {
             >
               <div>
                 {/* HEADER */}
-                <div className="flex items-center justify-between px-4 py-6 border-b border-border">
-                  <Image
-                    src="/assets/svg/logo-main.svg"
-                    alt="Logo"
-                    width={100}
-                    height={48}
-                    priority
-                  />
-                  <button onClick={toggleMenu} aria-label="Close menu">
+                <div className="flex items-center justify-between px-4 py-6 border-b border-border bg-white">
+                  <Logo size="lg" href="/" />
+
+                  <IconButton
+                    onClick={toggleMenu}
+                    aria-label="Close menu"
+                    className="md:hidden"
+                  >
                     <X size={26} />
-                  </button>
+                  </IconButton>
                 </div>
 
                 {/* MENU LINKS */}
@@ -140,7 +132,7 @@ const NavBar = () => {
                     className="flex items-center justify-between py-6 px-2 text-base border-b border-border"
                     onClick={toggleMenu}
                   >
-                    How it Works
+                  How It Works
                     <ChevronRight size={18} />
                   </Link>
                 </div>
@@ -148,21 +140,18 @@ const NavBar = () => {
 
               {/* ACTION BUTTONS */}
               <div className="px-6 pb-6 space-y-4">
-                <Link
+                <Button
                   href="/user/login"
-                  className="block w-full rounded-2xl border border-border py-4 text-center text-sm"
+                  size="full"
+                  variant="outline"
                   onClick={toggleMenu}
                 >
                   Login
-                </Link>
+                </Button>
 
-                <Link
-                  href="/user/register"
-                  className="block w-full rounded-2xl bg-primary py-4 text-center text-sm font-medium text-primary-text-100"
-                  onClick={toggleMenu}
-                >
+                <Button href="/user/register" size="full" variant="primary">
                   Get started
-                </Link>
+                </Button>
               </div>
             </motion.div>
           </>

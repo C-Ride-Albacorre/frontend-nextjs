@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 
+import { Button } from '@/components/ui/buttons/button';
+
 import Image from 'next/image';
 import {
   Star,
@@ -16,6 +18,7 @@ import {
   X,
   ChevronRight,
 } from 'lucide-react';
+import Input from '@/components/ui/inputs/input';
 
 const CATEGORIES = ['All', 'Food', 'Grocery', 'Gift Items', 'Packages'];
 
@@ -58,7 +61,11 @@ const PRODUCTS = [
   },
 ];
 
-export default function FoodVendorsPage({ params }: { params: { name: string } }) {
+export default function FoodVendorsPage({
+  params,
+}: {
+  params: { name: string };
+}) {
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState('Sort by Category');
   return (
@@ -161,13 +168,12 @@ export default function FoodVendorsPage({ params }: { params: { name: string } }
             </div>
 
             {/* Search */}
-            <div className="flex w-full items-center gap-2 rounded-xl border border-border px-4 py-3">
-              <Search size={16} />
-              <input
-                placeholder="Search for item"
-                className="w-full bg-transparent text-base md:text-sm outline-none"
-              />
-            </div>
+
+            <Input
+              leftIcon={<Search size={16} />}
+              placeholder="Search for item"
+              spacing="none"
+            />
           </div>
         </div>
 
@@ -207,9 +213,14 @@ export default function FoodVendorsPage({ params }: { params: { name: string } }
                   </button>
                 </div>
 
-                <button className="mt-4 rounded-xl bg-primary py-4 text-sm font-medium hover:bg-primary-hover">
+                <Button
+                  type="button"
+                  size="lg"
+                  variant="primary"
+                  className="mt-4 w-full"
+                >
                   Add to Order
-                </button>
+                </Button>
               </div>
             </div>
           ))}
@@ -255,10 +266,13 @@ export default function FoodVendorsPage({ params }: { params: { name: string } }
         </div>
 
         <div className="mt-12  flex items-center justify-center">
-          <button className=" px-16 py-4 bg-primary hover:bg-primary-hover rounded-xl font-medium text-sm  cursor-pointer flex gap-4 items-center justify-center">
+          <Button
+            variant="primary"
+            size="lg"
+            rightIcon={<ChevronRight size={16} />}
+          >
             Continue to Delivery
-            <ChevronRight size={16} />
-          </button>
+          </Button>
         </div>
       </div>
     </main>

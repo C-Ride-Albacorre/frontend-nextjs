@@ -7,6 +7,7 @@ import { motion } from 'framer-motion';
 
 import { ChevronRight } from 'lucide-react';
 import { fadeUp } from '@/components/animations/fade-up';
+import { Button } from '@/components/ui/buttons/button';
 
 export default function Fulfillment() {
   return (
@@ -51,13 +52,15 @@ export default function Fulfillment() {
               Manage orders, track deliveries, and access performance analytics.
             </p>
 
-            <Link
+            <Button
               href="/vendor"
-              className="inline-flex w-fit items-center gap-2 rounded-xl bg-primary px-6 py-4 text-sm font-medium text-primary-text-100 hover:bg-primary-hover transition"
+              variant="primary"
+              size="md"
+              rightIcon={<ChevronRight size={18} />}
+              className="w-fit"
             >
-              Onboard Now
-              <ChevronRight size={18} />
-            </Link>
+              Onboard Now{' '}
+            </Button>
           </motion.div>
 
           {/* Image */}
@@ -116,13 +119,15 @@ export default function Fulfillment() {
               performance.
             </p>
 
-            <Link
+            <Button
               href="/fulfillment-partner"
-              className="inline-flex w-fit items-center gap-2 rounded-xl bg-green-100 px-6 py-4 text-sm font-medium text-primary-text-100 hover:bg-green-600 transition"
+              variant="green"
+              size="md"
+              rightIcon={<ChevronRight size={18} />}
+              className="w-fit"
             >
               Join Now
-              <ChevronRight size={18} />
-            </Link>
+            </Button>
           </motion.div>
         </div>
       </div>

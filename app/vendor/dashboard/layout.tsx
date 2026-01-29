@@ -5,6 +5,7 @@ import { useState } from 'react';
 import Sidebar from '@/features/vendor-dashboard/layout/sidebar';
 import { MenuIcon } from 'lucide-react';
 import Link from 'next/link';
+import { IconButton } from '@/components/ui/buttons/icon-button';
 
 export default function OnboardingLayout({
   children,
@@ -37,12 +38,12 @@ export default function OnboardingLayout({
       <div className="flex flex-1 flex-col lg:pl-72">
         {/* MOBILE HEADER */}
         <div className="lg:hidden flex items-center gap-3 px-4 py-4 shadow bg-white shrink-0 z-40">
-          <button
+          <IconButton
             onClick={() => setSidebarOpen(true)}
-            className="rounded-full p-2 hover:bg-neutral-100 border border-border"
+            ariaLabel="Open sidebar"
           >
             <MenuIcon size={20} />
-          </button>
+          </IconButton>
 
           <Link href="/vendor/dashboard">
             <Image

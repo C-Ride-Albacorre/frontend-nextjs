@@ -1,4 +1,15 @@
-import { Box, Dot, FileText, Info,  Shield, Stars, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Button } from '@/components/ui/buttons/button';
+import Input from '@/components/ui/inputs/input';
+import {
+  Box,
+  Dot,
+  FileText,
+  Info,
+  Shield,
+  Stars,
+  ChevronLeft,
+  ChevronRight,
+} from 'lucide-react';
 
 export default function DeliveryConfirmationPage() {
   return (
@@ -24,15 +35,11 @@ export default function DeliveryConfirmationPage() {
           <label className="text-sm font-medium block">Promo Code</label>
 
           <div className="flex justify-center items-center gap-6 mt-2">
-            <input
-              type="text"
-              placeholder="Enter promo code"
-              className="flex-1  rounded-xl bg-white border border-border px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary "
-            />
+            <Input type="text" placeholder="Enter promo code" spacing="none" />
 
-            <button className="px-4 py-3 rounded-xl border border-primary text-primary text-sm hover:bg-primary hover:text-primary-text-100 cursor-pointer">
+            <Button variant="primary-outline" type="submit" size="sm">
               Apply
-            </button>
+            </Button>
           </div>
         </div>
       </div>
@@ -105,28 +112,34 @@ export default function DeliveryConfirmationPage() {
         </div>
       </div>
 
-      <div className='p-6 rounded-xl bg-primary/10 flex gap-4 items-center mt-6'>
-      
-          <Stars fill="#FFC814" stroke="0" size={20} />
-       
+      <div className="p-6 rounded-xl bg-primary/10 flex gap-4 items-center mt-6">
+        <Stars fill="#FFC814" stroke="0" size={20} />
 
-        <span className='text-sm'>
+        <span className="text-sm">
           Your order will be handled with care by our premium delivery partners
         </span>
       </div>
 
-
-
-       <div className="mt-12  flex items-center justify-center gap-8">
-        <button className=" px-16 py-4 bg-foreground-100 hover:bg-foreground-200 rounded-xl font-medium text-sm  cursor-pointer flex gap-4 items-center justify-center border border-border">
-          <ChevronLeft size={16} />
+      <div className="mt-12  flex items-center justify-around gap-8">
+        <Button
+          href=""
+          variant="outline"
+          size="lg"
+          leftIcon={<ChevronLeft size={16} />}
+          className="px-12"
+        >
           Back
-        </button>
+        </Button>
 
-        <button className=" px-16 py-4 bg-primary hover:bg-primary-hover rounded-xl font-medium text-sm  cursor-pointer flex gap-4 items-center justify-center">
+        <Button
+          href=""
+          variant="primary"
+          size="lg"
+          rightIcon={<ChevronRight size={16} />}
+          className="px-12"
+        >
           Continue
-          <ChevronRight size={16} />
-        </button>
+        </Button>
       </div>
     </>
   );

@@ -15,6 +15,7 @@ import {
   X,
 } from 'lucide-react';
 import NavItem from '../components/nav-item';
+import { IconButton } from '@/components/ui/buttons/icon-button';
 
 type Props = {
   active?: string;
@@ -40,12 +41,13 @@ export default function Sidebar({ active, isOpen, onClose }: Props) {
                 />
               </Link>
 
-              <button
+              <IconButton
                 onClick={onClose}
-                className="lg:hidden rounded-full p-2 hover:bg-neutral-100 border border-border transition"
+                ariaLabel="Close sidebar"
+                className="lg:hidden"
               >
                 <X size={20} />
-              </button>
+              </IconButton>
 
               <div className="relative hidden lg:flex">
                 <Bell size={22} className="text-neutral-600" />

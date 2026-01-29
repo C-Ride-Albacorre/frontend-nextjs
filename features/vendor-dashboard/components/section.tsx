@@ -59,7 +59,7 @@ export function Section({
             )}
 
             {document && (
-              <div className="md:p-3 md:rounded-xl md:border md:border-border flex items-center gap-2 cursor-pointer hover:bg-foreground-200 hover:text-neutral-900 transition">
+              <div className="md:p-3 md:rounded-xl md:border md:border-border flex items-center gap-2 cursor-pointer hover:bg-foreground-200 hover:text-neutral-900 transition ">
                 <Upload size={16} />
 
                 <span className="hidden md:inline  text-xs">
