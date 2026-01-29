@@ -19,10 +19,10 @@ export default function NavItem({
   return (
     <Link
       href={href}
-      className={`flex items-center justify-between px-3 py-2 rounded-lg transition
+      className={`flex items-center justify-between px-3 py-4 rounded-lg transition
         ${
           active
-            ? 'bg-neutral-100 text-neutral-900 font-medium'
+            ? 'bg-primary shadow text-neutral-900 font-medium'
             : 'text-neutral-600 hover:bg-neutral-100'
         }`}
     >

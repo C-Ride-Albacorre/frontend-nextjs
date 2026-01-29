@@ -1,7 +1,7 @@
 'use client';
 
 import OnboardingStepsLayout from '@/features/vendor-dashboard/components/onboarding-steps';
-import VendorDashboardHeader from '@/features/vendor-dashboard/layout/dashboard-header';
+import VendorDashboardHeader from '@/features/vendor-dashboard/layout/header';
 import {
   InfoGrid,
   InfoRow,
@@ -33,16 +33,16 @@ import { DOCUMENTS } from '@/features/vendor-dashboard/data';
 export default function VendorOnboardingDashboard() {
   return (
     <section>
-      <div className="space-y-6 py-5  ">
+      <div className="space-y-6 py-5">
         {/* ================= HEADER ================= */}
 
         <VendorDashboardHeader />
 
-        <div className="pl-6 space-y-12">
+        <div className="space-y-12 px-4 lg:px-0 lg:pl-8">
           <OnboardingStepsLayout />
 
           <Section
-            icon={<Store size={22} />}
+            icon={<Store  />}
             title="Business Information"
             subtitle="Registered business details"
             status="Verified"
@@ -116,7 +116,7 @@ export default function VendorOnboardingDashboard() {
 
           {/* ================= BANK ================= */}
           <Section
-            icon={<CreditCard size={22} />}
+            icon={<CreditCard  />}
             title="Bank Account Details"
             subtitle="Payment settlement information"
             status="Verified"
@@ -134,7 +134,7 @@ export default function VendorOnboardingDashboard() {
 
           {/* ================= OPERATIONS ================= */}
           <Section
-            icon={<Settings size={22} />}
+            icon={<Settings  />}
             title="Operational Settings"
             subtitle="Service hours and delivery configuration"
             status="Active"
@@ -154,14 +154,14 @@ export default function VendorOnboardingDashboard() {
           {/* ================= DOCUMENTS ================= */}
 
           <Section
-            icon={<File size={22} />}
+            icon={<File  />}
             title="Documents & Verification"
             subtitle="Compliance and legal documents"
             document
             from="#F59E0B"
             to="#D97706"
           >
-            <div className="space-y-4">
+            <div className="space-y-4 px-4 md:px-10">
               {DOCUMENTS.map((doc) => (
                 <DocumentRow
                   key={doc.name}
