@@ -1,10 +1,10 @@
 'use client';
 
 import Image from 'next/image';
-
 import { useState } from 'react';
 import Sidebar from '@/features/vendor-dashboard/layout/sidebar';
 import { MenuIcon } from 'lucide-react';
+import Link from 'next/link';
 
 export default function OnboardingLayout({
   children,
@@ -14,26 +14,37 @@ export default function OnboardingLayout({
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="relative flex min-h-screen bg-[#FDFDFB] lg:px-8">
+    <div className="flex h-screen bg-[#FDFDFB] overflow-hidden">
       {/* SIDEBAR */}
-      <Sidebar
-        active="onboarding"
-        isOpen={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}
-      />
+      <div
+        className={`
+    fixed inset-y-0 left-0 z-50
+    w-[90vw] max-w-xs lg:w-72
+    h-screen
+    transition-transform duration-300 ease-out
+    ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+    lg:translate-x-0
+  `}
+      >
+        <Sidebar
+          active="onboarding"
+          isOpen={sidebarOpen}
+          onClose={() => setSidebarOpen(false)}
+        />
+      </div>
 
       {/* MAIN */}
-      <div
-        className="
-          relative flex-1 transition-transform duration-300 ease-out"
-      >
-        {/* MOBILE HEADER — FIXED */}
-        <div className="lg:hidden fixed top-0 left-0 right-0 z-30 flex items-center gap-3 px-4  py-6 border-b border-border bg-white">
-          <button className='flex items-center gap-4' onClick={() => setSidebarOpen(true)}>
-            <div className="lg:hidden rounded-full p-2 hover:bg-neutral-100 border border-border transition">
-              <MenuIcon size={20} />
-            </div>
+      <div className="flex flex-1 flex-col lg:pl-72">
+        {/* MOBILE HEADER */}
+        <div className="lg:hidden flex items-center gap-3 px-4 py-4 shadow bg-white shrink-0 z-40">
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="rounded-full p-2 hover:bg-neutral-100 border border-border"
+          >
+            <MenuIcon size={20} />
+          </button>
 
+          <Link href="/vendor/dashboard">
             <Image
               src="/assets/svg/logo-main.svg"
               alt="C-ride Logo"
@@ -41,22 +52,20 @@ export default function OnboardingLayout({
               height={32}
               priority
             />
-          </button>
+          </Link>
         </div>
 
-        {/* CONTENT */}
-        <main className="pt-20 lg:pt-0 h-screen overflow-y-auto max-w-full">
-          {children}
-        </main>
-
-        {/* SCRIM (VISUAL ONLY, NOT MODAL) */}
-        {sidebarOpen && (
-          <div
-            onClick={() => setSidebarOpen(false)}
-            className="absolute inset-0 bg-black/30 lg:hidden z-40"
-          />
-        )}
+        {/* CONTENT SCROLLS */}
+        <main className="flex-1 overflow-y-auto">{children}</main>
       </div>
+
+      {/* OVERLAY */}
+      {sidebarOpen && (
+        <div
+          onClick={() => setSidebarOpen(false)}
+          className="fixed inset-0 bg-black/30 z-40 lg:hidden"
+        />
+      )}
     </div>
   );
 }

@@ -1,6 +1,6 @@
 export default function VendorDashboardHeader() {
   return (
-    <header className="space-y-2 md:space-y-4 border-b border-border pb-6 px-4 md:px-8">
+    <header className="space-y-2 md:space-y-3.5 border-b border-border py-8 md:py-6  px-4 md:px-8">
       <h1 className=" text-xl md:text-3xl font-semibold text-neutral-900">
         Vendor Onboarding
       </h1>

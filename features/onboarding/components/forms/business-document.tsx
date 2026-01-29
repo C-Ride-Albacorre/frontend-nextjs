@@ -46,7 +46,7 @@ export default function BusinessDocumentForm() {
         />
 
         <div className="mt-4 p-4 md:p-6 bg-primary/10 rounded-xl text-primary-text-100 flex items-start gap-2">
-        <InfoIcon size={18} className=" text-primary" />
+        <InfoIcon  className=" text-primary h-5 w-5 lg:h-4 lg:w-4" />
           <p className=" text-xs md:text-sm">
             All documents will be securely stored and reviewed by our
             verification team. This typically takes 24-48 hours.

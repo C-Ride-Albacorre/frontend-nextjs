@@ -24,20 +24,12 @@ type Props = {
 
 export default function Sidebar({ active, isOpen, onClose }: Props) {
   return (
-    <aside
-      className={`
-        fixed inset-y-0 left-0 z-50 w-[90vw] max-w-xs
-        bg-white border-r border-border
-        transform transition-transform duration-300 ease-out
-        lg:static lg:translate-x-0 lg:w-72 
-        ${isOpen ? 'translate-x-0' : '-translate-x-full'}
-      `}
-    >
-      <div className="flex h-full flex-col overflow-y-auto py-6">
+    <aside className="h-screen w-full bg-white border-r border-border flex flex-col">
+      <div className="flex-1 overflow-y-auto py-6">
         {/* HEADER */}
         <div className="flex items-start justify-between border-b border-border pb-6 px-6">
           <div className="flex flex-col gap-1 w-full">
-            <div className='flex justify-between items-center'>
+            <div className="flex justify-between items-center">
               <Link href="/vendor/dashboard" onClick={onClose}>
                 <Image
                   src="/assets/svg/logo-main.svg"
@@ -54,24 +46,21 @@ export default function Sidebar({ active, isOpen, onClose }: Props) {
               >
                 <X size={20} />
               </button>
+
+              <div className="relative hidden lg:flex">
+                <Bell size={22} className="text-neutral-600" />
+                <span className="absolute -top-2 -right-2 h-4 w-4 rounded-full bg-red-500 text-[10px] text-white flex items-center justify-center">
+                  3
+                </span>
+              </div>
             </div>
 
             <span className="text-xs text-neutral-500 mt-2">Vendor Portal</span>
           </div>
-
-          {/* CLOSE (MOBILE ONLY) */}
-
-          {/* BELL (DESKTOP ONLY) */}
-          <div className="relative hidden lg:flex">
-            <Bell size={22} className="text-neutral-600" />
-            <span className="absolute -top-2 -right-2 h-4 w-4 rounded-full bg-red-500 text-[10px] text-white flex items-center justify-center">
-              3
-            </span>
-          </div>
         </div>
 
         {/* CONTENT */}
-        <div className="flex-1 space-y-12 px-6 pt-6">
+        <div className="flex-1 space-y-12 px-4 lg:px-6 pt-6">
           {/* STORE */}
           <div className="rounded-2xl bg-primary/10 border border-border p-4 space-y-4">
             <div>

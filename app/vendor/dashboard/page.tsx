@@ -26,23 +26,22 @@ import {
   Mail,
   Calendar,
   CheckCircle,
-  CircleCheck,
 } from 'lucide-react';
 import { DOCUMENTS } from '@/features/vendor-dashboard/data';
 
 export default function VendorOnboardingDashboard() {
   return (
     <section>
-      <div className="space-y-6 py-5">
+      <div className="space-y-6 pb-8">
         {/* ================= HEADER ================= */}
 
         <VendorDashboardHeader />
 
-        <div className="space-y-12 px-4 lg:px-0 lg:pl-8">
+        <div className="space-y-8 px-4 lg:px-8">
           <OnboardingStepsLayout />
 
           <Section
-            icon={<Store  />}
+            icon={<Store />}
             title="Business Information"
             subtitle="Registered business details"
             status="Verified"
@@ -116,7 +115,7 @@ export default function VendorOnboardingDashboard() {
 
           {/* ================= BANK ================= */}
           <Section
-            icon={<CreditCard  />}
+            icon={<CreditCard />}
             title="Bank Account Details"
             subtitle="Payment settlement information"
             status="Verified"
@@ -134,7 +133,7 @@ export default function VendorOnboardingDashboard() {
 
           {/* ================= OPERATIONS ================= */}
           <Section
-            icon={<Settings  />}
+            icon={<Settings />}
             title="Operational Settings"
             subtitle="Service hours and delivery configuration"
             status="Active"
@@ -154,7 +153,7 @@ export default function VendorOnboardingDashboard() {
           {/* ================= DOCUMENTS ================= */}
 
           <Section
-            icon={<File  />}
+            icon={<File />}
             title="Documents & Verification"
             subtitle="Compliance and legal documents"
             document

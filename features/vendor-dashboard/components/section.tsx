@@ -120,12 +120,10 @@ export function InfoRow({
 }
 
 export function DocumentRow({
-  key,
   name,
   desc,
   verified,
 }: {
-  key: string;
   name: string;
   desc: string;
   verified: boolean;
@@ -133,7 +131,7 @@ export function DocumentRow({
   return (
     <div
       className="flex flex-col md:flex-row items-center justify-between gap-6 rounded-xl border border-border px-6 py-6 "
-      key={key}
+    
     >
       <div className="flex flex-col md:flex-row items-center  gap-6">
         <div className=" text-primary h-12 w-12 flex items-center justify-center  bg-primary/10 rounded-xl">
