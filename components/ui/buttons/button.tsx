@@ -46,15 +46,15 @@ export function Button({
       'bg-green-100 hover:bg-green-600': variant === 'green',
 
       // sizes
-      'px-3 py-2 text-sm md:px-4 md:py-3': size === 'sm',
+      'px-3 py-2.5 text-sm md:px-4 md:py-3': size === 'sm',
 
-      'px-3 py-2.5 text-sm md:px-6 md:py-3.5': size === 'md',
+      'px-3 py-3 text-sm md:px-6 md:py-3.5': size === 'md',
 
-      'px-3 py-3 text-sm md:px-8 md:py-4': size === 'lg',
+      'px-4 py-4 text-sm md:px-8 md:py-4': size === 'lg',
 
-      'px-4 py-3 text-sm md:px-10 md:py-4': size === 'xl',
+      'px-4 py-4 text-sm md:px-10 md:py-4': size === 'xl',
 
-      'px-5 py-3 text-sm md:px-12 md:py-4': size === '2xl',
+      'px-5 py-4 text-sm md:px-12 md:py-4': size === '2xl',
 
       'px-8 py-3.5 text-sm md:px-14 md:py-4.5': size === '3xl',
 

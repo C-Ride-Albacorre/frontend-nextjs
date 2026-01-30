@@ -7,6 +7,7 @@ import { Check, ChevronRight, Truck } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 import { fadeUp } from '@/components/animations/fade-up';
+import { Button } from '../ui/buttons/button';
 
 export default function PublicContent({
   title,
@@ -57,12 +58,15 @@ export default function PublicContent({
           <p className="mt-6 text-neutral-400 max-w-2xl mx-auto">{subtitle}</p>
 
           <div className="flex justify-center items-center">
-            <Link
+            <Button
               href={href}
-              className="mt-10 flex items-center gap-2 rounded-xl bg-primary hover:bg-primary-hover transition px-6 md:px-8 py-4 text-sm font-medium text-primary-text-100 shadow-md"
+              variant="primary"
+              size="lg"
+              rightIcon={<ChevronRight size={18} />}
+              className="mt-10 shadow"
             >
-              Join Now <ChevronRight size={16} />
-            </Link>
+              Join Now
+            </Button>
           </div>
         </motion.div>
 
@@ -123,69 +127,112 @@ export default function PublicContent({
           />
         </motion.div>
 
-<motion.div
-        initial={{ opacity: 0, scale: 0.97 }}
-  whileInView={{ opacity: 1, scale: 1 }}
-  viewport={{ once: true }}
-  transition={{ duration: 0.8, ease: 'easeOut' }}
-  className="relative w-full min-h-80 sm:min-h-full rounded-xl overflow-hidden"
->
-  <Image
-    src={publicImageSrc}
-    alt="Public Content"
-    fill
-    className="object-cover"
-  />
-</motion.div>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.97 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, ease: 'easeOut' }}
+          className="relative w-full min-h-80 sm:min-h-full rounded-xl overflow-hidden"
+        >
+          <Image
+            src={publicImageSrc}
+            alt="Public Content"
+            fill
+            className="object-cover"
+          />
+        </motion.div>
       </div>
 
       {/* ================= GOLD CTA SECTION ================= */}
       {partner && (
         <section className="bg-primary text-black">
-          <div className="py-24 px-4 lg:px-0 grid grid-cols-1 lg:grid-cols-3 gap-16 items-center lg:items-stretch max-w-6xl mx-auto">
+          <div
+            className="
+      mx-auto max-w-6xl
+      px-4 sm:px-6 lg:px-0
+      py-16 sm:py-20 lg:py-24
+      grid grid-cols-1 md:grid-cols-3
+      gap-10 md:gap-14 lg:gap-16
+      items-center
+    "
+          >
+            {/* ================= CONTENT CARD ================= */}
             <motion.div
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
               variants={fadeUp}
-              className="rounded-2xl col-span-1 bg-white px-8 py-12 lg:py-8 lg:max-w-sm space-y-12 "
+              className="
+        col-span-1
+        bg-white rounded-2xl
+        px-6 sm:px-8
+        py-8 sm:py-10 lg:py-12
+        space-y-8
+        max-w-md mx-auto md:mx-0
+      "
             >
-              <div className=" flex justify-center items-center  h-12 w-12 rounded-lg bg-foreground-100">
+              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-foreground-100">
                 {label}
               </div>
 
-              <div className="space-y-6">
-                <h3 className="font-semibold text-lg text-primary-text-100">
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-primary-text-100">
                   {partnerTitle}
                 </h3>
-                <p className=" text-sm text-neutral-500">{partnerSubtitle}</p>
+                <p className="text-sm text-neutral-500 leading-relaxed">
+                  {partnerSubtitle}
+                </p>
               </div>
 
               {partnerHref && (
-                <Link
+                <Button
                   href={partnerHref}
-                  className="flex items-center justify-center gap-2 rounded-xl bg-primary px-8 md:px-5 py-4 text-sm font-medium shadow-sm w-fit"
+                  variant="primary"
+                  size="lg"
+                  rightIcon={<ChevronRight size={18} />}
+                  className="w-fit shadow-sm"
                 >
-                  Join Now <ChevronRight size={16} />
-                </Link>
+                  Join Now
+                </Button>
               )}
             </motion.div>
 
-         <motion.div
-  initial={{ opacity: 0, scale: 0.97 }}
-  whileInView={{ opacity: 1, scale: 1 }}
-  viewport={{ once: true }}
-  transition={{ duration: 0.8, ease: 'easeOut' }}
-  className="relative w-full lg:col-span-2 min-h-56  sm:min-h-80 overflow-hidden "
->
-  <Image
-    src="/assets/image/lagos-ride.png"
-    alt="Vendor"
-    fill
-    className="object-cover"
-  />
-</motion.div>
-
+            {/* ================= IMAGE ================= */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.98 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, ease: 'easeOut' }}
+              className="
+        col-span-1 md:col-span-2
+        w-full
+      "
+            >
+              {/* Aspect ratio wrapper */}
+              <div
+                className="
+          relative w-full
+          aspect-[16/9]
+          sm:aspect-[3/2]
+          lg:aspect-[4/2]
+          rounded-2xl
+          overflow-hidden
+        "
+              >
+                <Image
+                  src="/assets/image/lagos-ride.png"
+                  alt="Vendor"
+                  fill
+                  priority={false}
+                  className="object-contain"
+                  sizes="
+            (max-width: 640px) 100vw,
+            (max-width: 1024px) 66vw,
+            800px
+          "
+                />
+              </div>
+            </motion.div>
           </div>
         </section>
       )}
