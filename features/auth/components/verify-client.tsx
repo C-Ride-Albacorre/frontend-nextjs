@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 
 import AuthFormHeader from '@/features/auth/components/layout/auth-form-header';
+import { OtpInput } from '@/components/ui/inputs/otp-input';
 
 export default function VerifyClient() {
   const searchParams = useSearchParams();
@@ -56,10 +57,9 @@ export default function VerifyClient() {
         </p>
 
         {/* OTP INPUTS */}
-
         <div className="flex justify-center gap-2 sm:gap-3 md:gap-4 mb-10">
           {code.map((digit, index) => (
-            <input
+            <OtpInput
               key={index}
               ref={(el) => {
                 inputsRef.current[index] = el;
@@ -69,20 +69,9 @@ export default function VerifyClient() {
               onKeyDown={(e) => handleKeyDown(e, index)}
               maxLength={1}
               inputMode="numeric"
-              className="
-        aspect-square
-        w-10 sm:w-12 md:w-14
-        rounded-lg sm:rounded-xl
-        border border-border
-        text-center
-        text-base sm:text-lg
-        outline-none
-        focus:ring-2 focus:ring-primary
-      "
             />
           ))}
         </div>
-
 
         {/* CTA */}
         <Link

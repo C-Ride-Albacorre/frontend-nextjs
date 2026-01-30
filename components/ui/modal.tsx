@@ -1,5 +1,6 @@
 import { X } from 'lucide-react';
 import { ModalProps } from '@/types/modal';
+import { IconButton } from './buttons/icon-button';
 
 export default function Modal({ isModalOpen, onClose, children }: ModalProps) {
   if (!isModalOpen) return null;
@@ -24,26 +25,18 @@ export default function Modal({ isModalOpen, onClose, children }: ModalProps) {
         "
       >
         {/* CLOSE BUTTON (STICKY) */}
-        <button
+       
+
+        <IconButton
           onClick={onClose}
           className="
             absolute
             top-4
             right-4
-            z-10
-            w-9
-            h-9
-            rounded-full
-            bg-foreground-200
-            flex
-            items-center
-            justify-center
-            hover:bg-foreground-100
-            transition cursor-pointer
           "
         >
           <X size={20} />
-        </button>
+        </IconButton>
 
         {/* SCROLLABLE CONTENT */}
         <div className="overflow-y-auto p-6 md:p-8">{children}</div>

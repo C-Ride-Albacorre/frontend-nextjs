@@ -18,7 +18,7 @@ export default function AuthLayout({
 }) {
   return (
     <AuthMethodProvider>
-      <main className="bg-yellow-600 ">{children}</main>
+      <main>{children}</main>
     </AuthMethodProvider>
   );
 }

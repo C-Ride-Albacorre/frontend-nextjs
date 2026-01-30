@@ -1,8 +1,8 @@
-import { CreditCard } from 'lucide-react';
+import { ChevronLeft, ChevronRight, CreditCard } from 'lucide-react';
 import OnboardingFormHeader from '../form-header';
 import Input from '@/components/ui/inputs/input';
-import ButtonPrevious from '@/components/ui/buttons/button-previous';
-import ButtonProceed from '@/components/ui/buttons/button-proceed';
+
+import { Button } from '@/components/ui/buttons/button';
 
 export default function BusinessBankForm() {
   return (
@@ -37,15 +37,33 @@ export default function BusinessBankForm() {
         />
 
         <div className="mt-12  flex items-center justify-between lg:justify-around">
-          <ButtonPrevious
+          {/* <ButtonPrevious
             href="/onboarding/business-address"
             buttonText="Previous"
-          />
+          /> */}
 
-          <ButtonProceed
+          <Button
+            href="/onboarding/business-address"
+            variant="outline"
+            size="lg"
+            leftIcon={<ChevronLeft size={16} />}
+          >
+            Previous
+          </Button>
+
+          <Button
+            href="/onboarding/business-document"
+            variant="primary"
+            size="lg"
+            rightIcon={<ChevronRight size={16} />}
+          >
+           Proceed
+          </Button>
+
+          {/* <ButtonProceed
             href="/onboarding/business-document"
             buttonText="Proceed"
-          />
+          /> */}
         </div>
       </form>
     </section>

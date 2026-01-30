@@ -14,3 +14,22 @@ export type InputProps = {
   // value?: string;
   // onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
+
+export type TextareaProps = {
+  id: string;
+  label: string;
+  placeholder?: string;
+  value?: string;
+  rows?: number;
+  onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+};
+
+export type OtpInputProps = {
+  ref?: React.Ref<HTMLInputElement>;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+  maxLength?: number;
+  inputMode?: string;
+  className?: string;
+};

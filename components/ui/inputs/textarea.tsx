@@ -1,19 +1,12 @@
-type TextareaProps = {
-  id: string;
-  label: string;
-  placeholder?: string;
-  value?: string;
-  rows?: number;
-  onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
-};
+import { TextareaProps } from '@/types/input';
 
 export default function Textarea({
   id,
   label,
   placeholder,
-//   value,
+  //   value,
   rows = 4,
-//   onChange,
+  //   onChange,
 }: TextareaProps) {
   return (
     <div>

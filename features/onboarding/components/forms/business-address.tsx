@@ -1,8 +1,7 @@
-import { MapPin } from 'lucide-react';
+import { ChevronLeft, ChevronRight, MapPin } from 'lucide-react';
 import OnboardingFormHeader from '../form-header';
 import Input from '@/components/ui/inputs/input';
-import ButtonPrevious from '@/components/ui/buttons/button-previous';
-import ButtonProceed from '@/components/ui/buttons/button-proceed';
+import { Button } from '@/components/ui/buttons/button';
 
 export default function BusinessAddressForm() {
   return (
@@ -28,7 +27,25 @@ export default function BusinessAddressForm() {
         </div>
 
         <div className="mt-12  flex items-center justify-between lg:justify-around">
-          <ButtonPrevious
+          <Button
+            href="/onboarding/business-contact"
+            variant="outline"
+            size="lg"
+            leftIcon={<ChevronLeft size={16} />}
+          >
+            Previous
+          </Button>
+
+          <Button
+            href="/onboarding/business-bank"
+            variant="primary"
+            size="lg"
+            rightIcon={<ChevronRight size={16} />}
+          >
+            Proceed
+          </Button>
+
+          {/* <ButtonPrevious
             href="/onboarding/business-contact"
             buttonText="Previous"
           />
@@ -36,7 +53,7 @@ export default function BusinessAddressForm() {
           <ButtonProceed
             href="/onboarding/business-bank"
             buttonText="Proceed"
-          />
+          /> */}
         </div>
       </form>
     </section>

@@ -1,16 +1,17 @@
+import Input from '@/components/ui/inputs/input';
 import { Home, Search } from 'lucide-react';
 
 export default function SavedAddresses() {
   return (
     <div className="space-y-4">
-      <div className="w-full flex items-center gap-2 rounded-xl border border-border px-4 py-3">
-        <Search className="h-6 w-6 text-neutral-500" />
-        <input
-          aria-label="Search address"
-          placeholder="Search saved locations..."
-          className="w-full bg-transparent text-base md:text-sm outline-none"
-        />
-      </div>
+      
+
+      <Input
+        type="text"
+        aria-label="Search address"
+        placeholder="Search saved locations..."
+        leftIcon={<Search className="h-6 w-6 text-neutral-500" />}
+      />
 
       <div className="border border-border rounded-xl p-4 flex items-start">
         <div className="flex-1 flex items-center gap-4">

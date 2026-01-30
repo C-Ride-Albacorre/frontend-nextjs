@@ -9,7 +9,10 @@ export function Button({
   children,
   variant = 'primary',
   size = 'md',
+  spacing = 'md',
   href,
+  disabled,
+  loading,
   leftIcon,
   rightIcon,
   className,
@@ -43,10 +46,32 @@ export function Button({
       'bg-green-100 hover:bg-green-600': variant === 'green',
 
       // sizes
-      'px-4 py-3 text-sm': size === 'sm',
-      'px-6 py-4 text-sm': size === 'md',
-      'px-8 py-4 text-sm': size === 'lg',
-      'w-full px-6 py-4 text-sm': size === 'full',
+      'px-3 py-2 text-sm md:px-4 md:py-3': size === 'sm',
+
+      'px-3 py-2.5 text-sm md:px-6 md:py-3.5': size === 'md',
+
+      'px-3 py-3 text-sm md:px-8 md:py-4': size === 'lg',
+
+      'px-4 py-3 text-sm md:px-10 md:py-4': size === 'xl',
+
+      'px-5 py-3 text-sm md:px-12 md:py-4': size === '2xl',
+
+      'px-8 py-3.5 text-sm md:px-14 md:py-4.5': size === '3xl',
+
+      'px-10 py-4 text-sm md:px-16 md:py-5': size === '4xl',
+
+      'px-12 py-4 text-sm md:px-18 md:py-5': size === '5xl',
+
+      // special layouts
+      'w-full max-w-md mx-auto px-6 py-4 text-sm': size === '6xl',
+
+      'w-full px-5 py-3 text-sm md:px-6 md:py-4': size === 'full',
+
+      //spacing
+      'gap-1': spacing === 'sm',
+      'gap-2': spacing === 'md',
+      'gap-3': spacing === 'lg',
+      'gap-4': spacing === 'xl',
     },
     className,
   );
@@ -64,7 +89,7 @@ export function Button({
 
   // BUTTON MODE
   return (
-    <button className={classes} {...props}>
+    <button className={classes} disabled={disabled || loading} {...props}>
       {leftIcon}
       {children}
       {rightIcon}

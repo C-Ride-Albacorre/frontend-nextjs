@@ -1,7 +1,15 @@
-import ButtonPrevious from '@/components/ui/buttons/button-previous';
-import ButtonProceed from '@/components/ui/buttons/button-proceed';
+import { Button } from '@/components/ui/buttons/button';
 import Modal from '@/components/ui/modal';
-import { Check, Mail, Stars } from 'lucide-react';
+import {
+  Check,
+  ChevronLeft,
+  ChevronRight,
+  HomeIcon,
+  Mail,
+  Phone,
+  PhoneCall,
+  Stars,
+} from 'lucide-react';
 
 export default function SuccessModal({
   isModalOpen,
@@ -62,17 +70,25 @@ export default function SuccessModal({
         </div>
 
         <div className="mt-12  flex flex-col md:flex-row items-center justify-between lg:justify-around gap-4">
-          <ButtonPrevious
-            href=""
-            buttonText="Contact Support"
-            className="order-2 md:order-1"
-          />
+          <Button
+            href="/vendor/register"
+            variant="outline"
+            size="lg"
+            leftIcon={<Phone size={16} />}
+            className="order-2 md:order-1 w-full md:w-auto"
+          >
+            Contact Support
+          </Button>
 
-          <ButtonProceed
+          <Button
             href="/vendor/dashboard"
-            buttonText="Return to Homepage"
-            className="order-1 md:order-2"
-          />
+            variant="primary"
+            size="lg"
+            leftIcon={<HomeIcon size={16} />}
+            className="order-1 md:order-2 w-full md:w-auto"
+          >
+           Return to Homepage
+          </Button>
         </div>
 
         <div className="py-6 border-t border-border ">

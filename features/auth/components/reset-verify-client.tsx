@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 
 import AuthFormHeader from '@/features/auth/components/layout/auth-form-header';
+import { OtpInput } from '@/components/ui/inputs/otp-input';
+import { Button } from '@/components/ui/buttons/button';
 
 export default function ResetVerifyClient() {
   const searchParams = useSearchParams();
@@ -58,7 +60,7 @@ export default function ResetVerifyClient() {
         {/* OTP INPUTS */}
         <div className="flex justify-center gap-2 sm:gap-3 md:gap-4 mb-10">
           {code.map((digit, index) => (
-            <input
+            <OtpInput
               key={index}
               ref={(el) => {
                 inputsRef.current[index] = el;
@@ -68,29 +70,17 @@ export default function ResetVerifyClient() {
               onKeyDown={(e) => handleKeyDown(e, index)}
               maxLength={1}
               inputMode="numeric"
-              className="
-        aspect-square
-        w-10 sm:w-12 md:w-14
-        rounded-lg sm:rounded-xl
-        border border-border
-        text-center
-        text-base sm:text-lg
-        outline-none
-        focus:ring-2 focus:ring-primary
-      "
             />
           ))}
         </div>
         {/* CTA */}
-        <Link
-          href="/reset/new"
-          className="mx-auto block w-full text-center max-w-md rounded-xl bg-primary py-4 text-sm font-medium text-primary-text-100 hover:bg-primary-hover transition"
-        >
+
+        <Button href="/reset/new" variant="primary" size="6xl">
           Verify & Continue
-        </Link>
+        </Button>
 
         {/* ACTIONS */}
-        <div className="mt-8 space-y-3 text-sm">
+        <div className="mt-8 space-y-4 text-sm">
           <div className="block text-primary font-medium space-x-2 text-xs md:text-base ">
             <span className="text-primary-text-100 ">Wrong {label}?</span>
             <Link href="/reset">Change {label}</Link>
@@ -98,6 +88,7 @@ export default function ResetVerifyClient() {
 
           <div className="block text-primary font-medium space-x-2 text-xs md:text-base">
             <span className="text-primary-text-100">Didn’t get the code?</span>
+            
             <Link href="/reset">Resend Code</Link>
           </div>
         </div>

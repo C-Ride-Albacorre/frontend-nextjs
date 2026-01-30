@@ -14,6 +14,7 @@ export default function Input({
   className,
   leftIcon,
   rightIcon,
+  ...props
 }: InputProps) {
   const wrapperClasses = clsx(
     'flex w-full items-center gap-2 rounded-xl px-4 py-3 text-base md:text-sm outline-none',
@@ -52,6 +53,7 @@ export default function Input({
     text-base md:text-sm 
     outline-none 
     placeholder:text-sm placeholder:text-neutral-400"
+          {...props}
         />
 
         {rightIcon}

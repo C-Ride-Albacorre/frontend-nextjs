@@ -8,7 +8,7 @@ import { Menu, X, ChevronRight } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Button } from '../ui/buttons/button';
 import { IconButton } from '../ui/buttons/icon-button';
-import { Logo } from '../ui/Logo';
+import { Logo } from '../ui/logo';
 
 const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
@@ -71,8 +71,9 @@ const NavBar = () => {
             onClick={toggleMenu}
             ariaLabel="Open menu"
             className="md:hidden text-primary-text-100"
+             highlightOnRoutes={['/vendor', '/fulfillment-partner']}
           >
-            <Menu size={28} />
+            <Menu size={20} />
           </IconButton>
         </div>
       </nav>
@@ -92,7 +93,7 @@ const NavBar = () => {
             />
 
             <motion.div
-              className="fixed flex flex-col justify-between inset-0 z-60 h-[75vh] bg-white origin-top-right p-4"
+              className="fixed flex flex-col justify-between inset-0 z-60 h-[75vh] bg-white origin-top-right "
               initial={{ opacity: 0, scale: 0.85 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.85 }}
@@ -112,7 +113,7 @@ const NavBar = () => {
                     aria-label="Close menu"
                     className="md:hidden"
                   >
-                    <X size={26} />
+                    <X size={20} />
                   </IconButton>
                 </div>
 

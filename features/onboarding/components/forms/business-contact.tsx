@@ -1,8 +1,7 @@
-import { Mail } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Mail } from 'lucide-react';
 import OnboardingFormHeader from '../form-header';
 import Input from '@/components/ui/inputs/input';
-import ButtonPrevious from '@/components/ui/buttons/button-previous';
-import ButtonProceed from '@/components/ui/buttons/button-proceed';
+import { Button } from '@/components/ui/buttons/button';
 
 export default function BusinessContactInfoForm() {
   return (
@@ -30,7 +29,25 @@ export default function BusinessContactInfoForm() {
         />
 
         <div className="mt-12  flex items-center justify-between lg:justify-around">
-          <ButtonPrevious
+          <Button
+            href="/onboarding/business-info"
+            variant="outline"
+            size="lg"
+            leftIcon={<ChevronLeft size={16} />}
+          >
+            Previous
+          </Button>
+
+          <Button
+            href="/onboarding/business-address"
+            variant="primary"
+            size="lg"
+            rightIcon={<ChevronRight size={16} />}
+          >
+            Proceed
+          </Button>
+
+          {/* <ButtonPrevious
             href="/onboarding/business-info"
             buttonText="Previous"
           />
@@ -38,7 +55,7 @@ export default function BusinessContactInfoForm() {
           <ButtonProceed
             href="/onboarding/business-address"
             buttonText="Proceed"
-          />
+          /> */}
         </div>
       </form>
     </section>

@@ -1,10 +1,9 @@
-import { Store } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Store } from 'lucide-react';
 
 import Input from '@/components/ui/inputs/input';
 import Textarea from '@/components/ui/inputs/textarea';
-import ButtonPrevious from '@/components/ui/buttons/button-previous';
-import ButtonProceed from '@/components/ui/buttons/button-proceed';
 import OnboardingFormHeader from '../form-header';
+import { Button } from '@/components/ui/buttons/button';
 
 export default function BusinessInfoForm() {
   return (
@@ -37,9 +36,27 @@ export default function BusinessInfoForm() {
         />
 
         <div className="mt-12  flex items-center justify-between lg:justify-around">
-          <ButtonPrevious href="/vendor/register" buttonText="Previous" />
+          {/* <ButtonPrevious href="/vendor/register" buttonText="Previous" />
 
-          <ButtonProceed href="/onboarding/business-contact" buttonText="Proceed" />
+          <ButtonProceed href="/onboarding/business-contact" buttonText="Proceed" /> */}
+
+          <Button
+            href="/vendor/register"
+            variant="outline"
+            size="lg"
+            leftIcon={<ChevronLeft size={16} />}
+          >
+            Previous
+          </Button>
+
+          <Button
+            href="/onboarding/business-contact"
+            variant="primary"
+            size="lg"
+            rightIcon={<ChevronRight size={16} />}
+          >
+            Proceed
+          </Button>
         </div>
       </form>
     </section>

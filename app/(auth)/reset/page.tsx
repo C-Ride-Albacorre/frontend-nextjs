@@ -6,7 +6,7 @@ import { useAuthMethod } from '@/features/auth/auth-method.context';
 import AuthFormHeader from '@/features/auth/components/layout/auth-form-header';
 import AuthMethod from '@/features/auth/components/auth-method';
 import PhoneInput from '@/components/ui/inputs/phone-input';
-import EmailInput from '@/components/ui/inputs/email-input';
+import Input from '@/components/ui/inputs/input';
 
 export default function ResetPasswordPage() {
   const { method } = useAuthMethod();
@@ -31,7 +31,7 @@ export default function ResetPasswordPage() {
 
           {/* FORM */}
           <form className="space-y-12 text-left">
-            {method === 'phone' ? <PhoneInput /> : <EmailInput />}
+            {method === 'phone' ? <PhoneInput /> : <Input type="email" label="Email Address" placeholder="Enter your email" />}
 
             {/* CTA */}
             <Link

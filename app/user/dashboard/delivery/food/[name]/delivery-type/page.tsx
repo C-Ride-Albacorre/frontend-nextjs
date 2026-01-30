@@ -1,3 +1,4 @@
+import Input from '@/components/ui/inputs/input';
 import { Clock } from 'lucide-react';
 
 export default function DeliveryTypePage() {

@@ -40,6 +40,7 @@ export default function OnboardingLayout({
         <div className="lg:hidden flex items-center gap-3 px-4 py-4 shadow bg-white shrink-0 z-40">
           <IconButton
             onClick={() => setSidebarOpen(true)}
+            highlightOnRoutes={['/vendor', '/fulfillment-partner']}
             ariaLabel="Open sidebar"
           >
             <MenuIcon size={20} />

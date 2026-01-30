@@ -1,9 +1,9 @@
 import { Eye } from 'lucide-react';
 
 import PhoneInput from '@/components/ui/inputs/phone-input';
-import EmailInput from '@/components/ui/inputs/email-input';
 import FormHeader from '@/components/ui/headers/form-header';
-import Link from 'next/link';
+import Input from '@/components/ui/inputs/input';
+import { Button } from '@/components/ui/buttons/button';
 
 export default function VendorRegisterForm() {
   return (
@@ -17,67 +17,58 @@ export default function VendorRegisterForm() {
       <form className="space-y-5">
         {/* NAMES */}
         <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="text-sm font-medium">First Name</label>
-            <input
-              type="text"
-              placeholder="First name"
-              className="mt-2 w-full rounded-xl border border-border px-4 py-3 text-base md:text-sm  outline-none focus:ring-2 focus:ring-primary"
-            />
-          </div>
-          <div>
-            <label className="text-sm font-medium">Last Name</label>
-            <input
-              type="text"
-              placeholder="Last name"
-              className="mt-2 w-full rounded-xl border border-border px-4 py-3 text-base md:text-sm  outline-none focus:ring-2 focus:ring-primary"
-            />
-          </div>
+          <Input
+            type="text"
+            label="First Name"
+            spacing="sm"
+            placeholder="First name"
+          />
+          <Input
+            type="text"
+            label="Last Name"
+            spacing="sm"
+            placeholder="Last name"
+          />
         </div>
 
-        <EmailInput />
+        <Input
+          type="email"
+          label="Email Address"
+          spacing="sm"
+          placeholder="Enter your email"
+        />
+
+        {/* PHONE */}
 
         <PhoneInput />
 
         {/* PASSWORD */}
-        <div>
-          <label className="text-sm font-medium">Password</label>
-          <div className="relative mt-2">
-            <input
-              type="password"
-              placeholder="Enter a strong password"
-              className="w-full rounded-xl border border-border px-4 py-3 text-base md:text-sm  outline-none focus:ring-2 focus:ring-primary"
-            />
-            <Eye
-              size={18}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-400"
-            />
-          </div>
-          <p className="mt-1 text-xs text-neutral-400">
-            Password must contain at least one number
-          </p>
-        </div>
+        <Input
+          type="password"
+          label="Password"
+          placeholder="Enter a strong password"
+          spacing="sm"
+          inputInfo="Password must contain at least one number"
+          rightIcon={<Eye size={18} className="text-neutral-500" />}
+        />
 
         {/* REFERRAL */}
-        <div>
-          <label className="text-sm font-medium">
-            Referral Code (Optional)
-          </label>
-          <input
-            type="text"
-            placeholder="Enter code"
-            className="mt-2 w-full rounded-xl border border-border px-4 py-3 text-base md:text-sm  outline-none focus:ring-2 focus:ring-primary"
-          />
-        </div>
+        <Input
+          type="text"
+          label="Referral Code (Optional)"
+          spacing="sm"
+          placeholder="Enter code"
+        />
 
         {/* CTA */}
-
-        <Link
+        <Button
           href="/onboarding/business-info"
-          className="w-full block text-center rounded-xl bg-primary py-4 text-sm font-medium text-primary-text-100 hover:bg-primary-hover transition"
+          size="full"
+          variant="primary"
+          className="mt-4"
         >
           Continue
-        </Link>
+        </Button>
       </form>
     </>
   );

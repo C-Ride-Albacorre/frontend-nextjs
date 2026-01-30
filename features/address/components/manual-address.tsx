@@ -1,68 +1,54 @@
+import Input from '@/components/ui/inputs/input';
+import Textarea from '@/components/ui/inputs/textarea';
+import { Button } from '@/components/ui/buttons/button';
+
 export default function ManualAddressForm() {
   return (
     <>
       <form action="/" className="space-y-5">
-        <div>
-          <label className="text-sm font-medium">Location Name</label>
-          <input
-            type="text"
-            placeholder="e.g. Home, Office, Gym"
-            className="mt-2 w-full rounded-xl border border-border px-4 py-3 text-base md:text-sm outline-none focus:ring-2 focus:ring-primary"
-          />
-        </div>
+        <Input
+          label="Location Name"
+          type="text"
+          placeholder="e.g. Home, Office, Gym"
+          spacing="sm"
+        />
 
-        <div>
-          <label className="text-sm font-medium">Street Address</label>
-          <input
-            type="text"
-            placeholder="Home/Building number and street"
-            className="mt-2 w-full rounded-xl border border-border px-4 py-3 text-base md:text-sm outline-none focus:ring-2 focus:ring-primary"
-          />
-        </div>
+        <Input
+          label="Street Address"
+          type="text"
+          placeholder="Home/Building number and street"
+          spacing="sm"
+        />
 
         <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="text-sm font-medium">City</label>
-            <input
-              type="text"
-              placeholder="Select your city"
-              className="mt-2 w-full rounded-xl border border-border px-4 py-3 text-base md:text-sm outline-none focus:ring-2 focus:ring-primary"
-            />
-          </div>
-
-          <div>
-            <label className="text-sm font-medium">State</label>
-            <input
-              type="text"
-              placeholder="Lagos"
-              className="mt-2 w-full rounded-xl border border-border px-4 py-3 text-base md:text-sm outline-none focus:ring-2 focus:ring-primary"
-            />
-          </div>
-        </div>
-
-        <div>
-          <label className="text-sm font-medium">Nearby Landmark</label>
-          <input
+          <Input
+            label="City"
             type="text"
-            placeholder="eg. Near Shoprite"
-            className="mt-2 w-full rounded-xl border border-border px-4 py-3 text-base md:text-sm outline-none focus:ring-2 focus:ring-primary"
+            placeholder="Select your city"
+            spacing="sm"
           />
+
+          <Input label="State" type="text" placeholder="Lagos" spacing="sm" />
         </div>
 
-        <div>
-          <label className="text-sm font-medium">
-            Delivery Instructions (Optional)
-          </label>
-          <textarea
-            placeholder="Add any specific delivery instructions..."
-            className="mt-2 w-full rounded-xl border border-border px-4 py-3 text-base md:text-sm outline-none focus:ring-2 focus:ring-primary"
-          />
-        </div>
+        <Input
+          label="Nearby Landmark"
+          type="text"
+          placeholder="eg. Near Shoprite"
+          spacing="sm"
+        />
+
+        <Textarea
+          id="deliveryInstructions"
+          label="Delivery Instructions (Optional)"
+          placeholder="Add any specific delivery instructions..."
+          rows={4}
+        />
 
         <div className="text-center">
-          <button className=" px-16 py-4 bg-primary hover:bg-primary-hover rounded-xl font-medium text-sm  cursor-pointer">
+          <Button variant="primary" size="lg" className="px-12">
             Save & Use Location
-          </button>
+          </Button>
         </div>
       </form>
     </>

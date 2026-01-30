@@ -1,6 +1,7 @@
-import ButtonPrevious from '@/components/ui/buttons/button-previous';
-import ButtonProceed from '@/components/ui/buttons/button-proceed';
-import { Building2, House, MapPin, Plus } from 'lucide-react';
+import { Button } from '@/components/ui/buttons/button';
+
+import Input from '@/components/ui/inputs/input';
+import { Building2, ChevronLeft, ChevronRight, House, MapPin, Plus } from 'lucide-react';
 
 export default function DeliveryLocation() {
   return (
@@ -77,29 +78,30 @@ export default function DeliveryLocation() {
 
       <div className="p-8 bg-foreground-200 rounded-2xl ">
         <div className="grid grid-cols-2 gap-8">
-          <div>
-            <label className="text-sm font-medium">Recipient Name</label>
-            <input
-              type="text"
-              placeholder="Joseph Adebayo"
-              className="mt-2 w-full rounded-xl bg-white border border-border px-4 py-3 text-base md:text-sm outline-none focus:ring-2 focus:ring-primary"
-            />
-          </div>
-          <div>
-            <label className="text-sm font-medium">Recipient Phone</label>
-            <input
-              type="text"
-              placeholder="+234 800 000 0000"
-              className="mt-2 w-full rounded-xl bg-white border border-border px-4 py-3 text-base md:text-sm outline-none focus:ring-2 focus:ring-primary"
-            />
-          </div>
+          <Input
+            label="Recipient Name"
+            type="text"
+            placeholder="Joseph Adebayo"
+            spacing="sm"
+          />
+
+          <Input
+            label="Recipient Phone"
+            type="tel"
+            placeholder="+234 800 000 0000"
+            spacing="sm"
+          />
+         
         </div>
       </div>
 
-      <div className="mt-12  flex items-center justify-center gap-8">
-        <ButtonPrevious href="" buttonText="Back" />
+      <div className="mt-12  flex items-center justify-around gap-8">
 
-        <ButtonProceed href="" buttonText="Proceed" />
+      <Button href='' size='lg' variant='outline' leftIcon={<ChevronLeft size={16} />}>Back</Button>
+
+      <Button href='' size='lg' variant='primary' rightIcon={<ChevronRight size={16} />}>Proceed</Button>
+
+    
       </div>
     </>
   );
