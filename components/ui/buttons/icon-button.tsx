@@ -1,7 +1,9 @@
-import clsx from 'clsx';
+'use client';
 
-import { IconButtonProps } from '@/types/button';
+import clsx from 'clsx';
 import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { IconButtonProps } from '@/types/button';
 
 export function IconButton({
   children,
@@ -13,16 +15,31 @@ export function IconButton({
   ...props
 }: IconButtonProps) {
   const pathname = usePathname();
+  const [isAtTop, setIsAtTop] = useState(true);
 
-  const isHighlighted =
+  // Track scroll position
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsAtTop(window.scrollY === 0);
+    };
+
+    handleScroll(); // run once on mount
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const isRouteMatched =
     highlightOnRoutes?.some((route) => pathname === route) ?? false;
+
+  const shouldHighlight = isRouteMatched && isAtTop;
 
   return (
     <button
       {...props}
       aria-label={ariaLabel}
       className={clsx(
-        'inline-flex items-center justify-center rounded-full border transition cursor-pointer z-10 focus:outline-none',
+        'inline-flex items-center justify-center rounded-full border transition-all duration-200 cursor-pointer z-10 focus:outline-none',
         {
           'p-2': size === 'md',
           'p-1.5': size === 'sm',
@@ -30,8 +47,7 @@ export function IconButton({
           'border-border hover:bg-neutral-100': variant === 'default',
           'border-transparent hover:bg-neutral-100': variant === 'ghost',
 
-          //  route-based styling
-          'text-white border-border/10 hover:bg-white/10': isHighlighted,
+          'text-white border-border/10 hover:bg-white/10': shouldHighlight,
         },
         className,
       )}
