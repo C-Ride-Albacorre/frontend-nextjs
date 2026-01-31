@@ -23,7 +23,7 @@ export default function Stepper({
                   after:absolute
                   after:top-6
                   after:left-[calc(50%+38px)]
-                  after:h-[3px]
+                  after:h-0.75
                   after:w-[calc(100%-76px)]
                   after:rounded-full
                 `

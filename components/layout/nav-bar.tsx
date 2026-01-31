@@ -7,7 +7,7 @@ import { Menu, X, ChevronRight } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Button } from '../ui/buttons/button';
 import { IconButton } from '../ui/buttons/icon-button';
-import { Logo } from '../ui/logo';
+import { Logo } from '../ui/Logo';
 
 const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
@@ -70,7 +70,7 @@ const NavBar = () => {
             onClick={toggleMenu}
             ariaLabel="Open menu"
             className="md:hidden text-primary-text-100"
-             highlightOnRoutes={['/vendor', '/fulfillment-partner']}
+            highlightOnRoutes={['/vendor', '/fulfillment-partner']}
           >
             <Menu size={20} />
           </IconButton>
@@ -132,7 +132,7 @@ const NavBar = () => {
                     className="flex items-center justify-between py-6 px-2 text-base border-b border-border"
                     onClick={toggleMenu}
                   >
-                  How It Works
+                    How It Works
                     <ChevronRight size={18} />
                   </Link>
                 </div>
