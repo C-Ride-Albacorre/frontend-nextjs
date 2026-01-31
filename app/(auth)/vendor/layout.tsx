@@ -1,4 +1,4 @@
-import Image from 'next/image';
+
 
 import AuthInfo from '@/features/auth/components/layout/auth-info';
 import type { Metadata } from 'next';

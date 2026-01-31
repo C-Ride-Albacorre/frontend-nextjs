@@ -9,7 +9,7 @@ export default function AuthFormHeader() {
           src="/assets/svg/logo-main.svg"
           alt="Logo"
           width={120}
-          height={40}
+          height={48}
         />
       </Link>
 

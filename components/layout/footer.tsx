@@ -156,7 +156,7 @@ export default function Footer() {
                 src="/assets/svg/logo-main.svg"
                 alt="C-ride"
                 width={120}
-                height={40}
+                height={48}
                 priority
               />
               <p className="mt-2 text-xs text-white/50">

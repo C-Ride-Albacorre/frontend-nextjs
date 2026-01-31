@@ -7,7 +7,7 @@ import { Menu, X, ChevronRight } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Button } from '../ui/buttons/button';
 import { IconButton } from '../ui/buttons/icon-button';
-import { Logo } from '../ui/logo';
+import Image from 'next/image';
 
 const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
@@ -40,7 +40,16 @@ const NavBar = () => {
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 md:py-3">
           <div className="lg:w-full">
-            <Logo href="/" priority size="lg" />
+            <Link href="/">
+              <Image
+                src="/assets/svg/logo-main.svg"
+                alt="C-ride logo"
+                width={120}
+                height={48}
+                priority
+                className="select-none"
+              />
+            </Link>
           </div>
 
           <div className="hidden md:flex gap-10 lg:gap-0 justify-between items-center lg:w-full">
@@ -105,7 +114,16 @@ const NavBar = () => {
               <div>
                 {/* HEADER */}
                 <div className="flex items-center justify-between px-4 py-6 border-b border-border bg-white">
-                  <Logo size="lg" href="/" />
+                  <Link href="/">
+                    <Image
+                      src="/assets/svg/logo-main.svg"
+                      alt="C-ride logo"
+                      width={120}
+                      height={48}
+                      priority
+                      className="select-none"
+                    />
+                  </Link>
 
                   <IconButton
                     onClick={toggleMenu}

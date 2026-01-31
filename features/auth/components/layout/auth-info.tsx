@@ -20,7 +20,7 @@ export default function AuthInfo() {
             src="/assets/svg/logo-main.svg"
             alt="C-ride Logo"
             width={120}
-            height={40}
+            height={48}
             priority
           />
         </Link>
