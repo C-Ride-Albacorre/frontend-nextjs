@@ -7,7 +7,7 @@ import { Menu, X, ChevronRight } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Button } from '../ui/buttons/button';
 import { IconButton } from '../ui/buttons/icon-button';
-import { Logo } from '../ui/Logo';
+import { Logo } from '../ui/logo';
 
 const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);

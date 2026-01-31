@@ -33,3 +33,11 @@ export type OtpInputProps = {
   inputMode?: string;
   className?: string;
 };
+
+
+export type FileInputProps = {
+  title: string;
+  description: string;
+  verified?: boolean;
+  mode?: 'upload' | 'dashboard';
+};

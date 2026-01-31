@@ -75,7 +75,7 @@ export default function VerifyClient() {
 
         {/* CTA */}
         <Link
-          href="/"
+          href="/user/dashboard"
           className="mx-auto block w-full max-w-md rounded-xl bg-primary py-4 text-sm font-medium text-primary-text-100 hover:bg-primary-hover transition"
         >
           Verify & Continue

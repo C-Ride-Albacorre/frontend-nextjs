@@ -119,45 +119,6 @@ export function InfoRow({
   );
 }
 
-export function DocumentRow({
-  name,
-  desc,
-  verified,
-}: {
-  name: string;
-  desc: string;
-  verified: boolean;
-}) {
-  return (
-    <div
-      className="flex flex-col md:flex-row items-center justify-between gap-6 rounded-xl border border-border px-6 py-6 "
-    
-    >
-      <div className="flex flex-col md:flex-row items-center  gap-6">
-        <div className=" text-primary h-12 w-12 flex items-center justify-center  bg-primary/10 rounded-xl">
-          <FileText size={20} className="text-primary" />
-        </div>
-
-        <div className="space-y-3 text-center">
-          <p className="text-sm text-neutral-900">{name}</p>
-
-          <p className="text-sm text-neutral-500">{desc}</p>
-        </div>
-      </div>
-
-      {verified ? (
-        <span className="rounded-full border border-emerald-500 px-3 py-2 text-xs text-emerald-600 flex items-center gap-2 bg-emerald-500/10">
-          <CheckCircle size={16} />
-          Verified
-        </span>
-      ) : (
-        <button className="rounded-xl bg-primary px-4 py-3 text-sm text-primary-text-100">
-          Upload
-        </button>
-      )}
-    </div>
-  );
-}
 
 export function Support() {
   return (

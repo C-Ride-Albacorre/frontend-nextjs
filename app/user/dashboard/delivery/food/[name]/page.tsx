@@ -19,6 +19,7 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import Input from '@/components/ui/inputs/input';
+import { useParams } from 'next/navigation';
 
 const CATEGORIES = ['All', 'Food', 'Grocery', 'Gift Items', 'Packages'];
 
@@ -61,13 +62,13 @@ const PRODUCTS = [
   },
 ];
 
-export default function FoodVendorsPage({
-  params,
-}: {
-  params: { name: string };
-}) {
+export default function FoodVendorsPage() {
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState('Sort by Category');
+
+  const params = useParams();
+
+  const id = params.name;
   return (
     <main>
       <div>
@@ -267,6 +268,7 @@ export default function FoodVendorsPage({
 
         <div className="mt-12  flex items-center justify-center">
           <Button
+            href={`/user/dashboard/delivery/food/${id}/delivery-type`}
             variant="primary"
             size="lg"
             rightIcon={<ChevronRight size={16} />}

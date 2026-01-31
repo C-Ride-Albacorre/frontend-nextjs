@@ -81,7 +81,7 @@ export default function SuccessModal({
           </Button>
 
           <Button
-            href="/vendor/dashboard"
+            href="/"
             variant="primary"
             size="lg"
             leftIcon={<HomeIcon size={16} />}

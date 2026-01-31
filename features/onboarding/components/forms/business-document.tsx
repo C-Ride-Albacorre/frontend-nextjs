@@ -27,27 +27,24 @@ export default function BusinessDocumentForm() {
 
       <form action="" className="space-y-6">
         <FileInput
-          isUploaded={false}
+          mode="upload"
           title="CAC Certificate "
-          subtitle="Corporate Affairs Commission"
-          value=""
-          // handleUpload={() => {}}
+          description="Corporate Affairs Commission"
+        
         />
 
         <FileInput
-          isUploaded={false}
+          mode="upload"
           title="Business Permit"
-          subtitle="Operating license"
-          value=""
-          // handleUpload={() => {}}
+          description="Operating license"
+        
         />
 
         <FileInput
-          isUploaded={false}
+          mode="upload"
           title="Valid ID"
-          subtitle="Owner’s government-issued ID"
-          value=""
-          // handleUpload={() => {}}
+          description="Owner’s government-issued ID"
+        
         />
 
         <div className="mt-4 p-4 md:p-6 bg-primary/10 rounded-xl text-primary-text-100 flex items-start gap-2">

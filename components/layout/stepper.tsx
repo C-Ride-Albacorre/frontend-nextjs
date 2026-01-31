@@ -1,4 +1,4 @@
-export default function Stepper({
+export default function Stepper({ 
   STEPS,
   currentStep,
 }: {
@@ -9,6 +9,7 @@ export default function Stepper({
     <div className="mt-6 hidden rounded-xl bg-foreground-200 p-6 md:block py-10">
       <ol className="flex w-full items-start">
         {STEPS.map((step, index) => {
+          // Only show checkmark if we've moved PAST this step (not on it)
           const isCompleted = index < currentStep;
           const isActive = index === currentStep;
           const isLast = index === STEPS.length - 1;
@@ -42,11 +43,14 @@ export default function Stepper({
               <span
                 className={`z-10 flex h-12 w-12 items-center justify-center rounded-full text-sm font-medium
               ${
-                isCompleted || isActive
+                isCompleted
+                  ? 'bg-primary text-primary-text-100 border-4 border-border'
+                  : isActive
                   ? 'bg-primary text-primary-text-100 border-4 border-border'
                   : 'border border-[#E8E8E8] bg-white text-neutral-400'
               }`}
               >
+                {/* Only show checkmark for completed (past) steps, always show number for current and future */}
                 {isCompleted ? (
                   <svg
                     className="h-5 w-5"

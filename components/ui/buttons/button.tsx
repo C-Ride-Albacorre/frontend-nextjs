@@ -19,7 +19,7 @@ export function Button({
   ...props
 }: ButtonProps) {
   const classes = clsx(
-    'inline-flex items-center justify-center gap-2 rounded-xl font-medium transition focus:outline-none',
+    'inline-flex items-center justify-center gap-2 rounded-xl font-medium transition focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer',
     {
       // variants
       'text-primary': variant === 'default',
@@ -72,6 +72,9 @@ export function Button({
       'gap-2': spacing === 'md',
       'gap-3': spacing === 'lg',
       'gap-4': spacing === 'xl',
+
+      // disabled
+      'disabled:opacity-50 disabled:cursor-not-allowed': true,
     },
     className,
   );

@@ -21,7 +21,7 @@ export default function Textarea({
         // value={value}
         // onChange={onChange}
         placeholder={placeholder}
-        className="mt-2 w-full rounded-xl border border-border px-4 py-3 text-base md:text-sm outline-none focus:ring-2 focus:ring-primary"
+        className="mt-2 w-full rounded-xl border border-border px-4 py-3 text-base md:text-sm outline-none focus:ring-2 focus:ring-primary placeholder:text-sm placeholder:text-neutral-400"
       />
     </div>
   );

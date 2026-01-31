@@ -2,19 +2,23 @@
 
 import Link from 'next/link';
 import { ShoppingCart } from 'lucide-react';
-import { usePathname } from 'next/navigation';
+import { useParams, usePathname } from 'next/navigation';
 import Stepper from '@/components/layout/stepper';
 import { STEPS } from '@/features/delivery/data';
 
 export default function DeliveryHeader({ id }: { id: string }) {
   const path = usePathname();
 
+  const params = useParams
+
+  // Returns 0-based index: first step = 0, second step = 1, etc.
   const currentStep = (() => {
-    if (path.includes('vendor')) return 1;
-    if (path.includes('products')) return 2;
-    if (path.includes('delivery')) return 3;
-    if (path.includes('location')) return 4;
-    if (path.includes('confirm')) return 5;
+      if (path.includes('/delivery-confirmation')) return 5;
+    if (path.includes('/delivery-location')) return 4;
+    if (path.endsWith('/delivery-type')) return 3;
+     if (path.endsWith('/delivery/food/1')) return 2;
+    if (path.endsWith('/food')) return 1;
+    if (path.endsWith('/delivery')) return 0;
     return 0;
   })();
 
@@ -49,7 +53,6 @@ export default function DeliveryHeader({ id }: { id: string }) {
           </div>
 
           {/* Stepper */}
-
           <Stepper STEPS={STEPS} currentStep={currentStep} />
         </>
       )}

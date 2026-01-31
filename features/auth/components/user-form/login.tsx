@@ -45,7 +45,7 @@ export default function UserLoginForm() {
         </div>
 
         {/* CTA */}
-        <Button href="/verify" size="full" variant="primary" className='mt-4'>
+        <Button href="/user/dashboard" size="full" variant="primary" className='mt-4'>
           Continue
         </Button>
       </form>

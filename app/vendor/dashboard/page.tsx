@@ -5,7 +5,6 @@ import VendorDashboardHeader from '@/features/vendor-dashboard/layout/header';
 import {
   InfoGrid,
   InfoRow,
-  DocumentRow,
   Section,
   Support,
 } from '@/features/vendor-dashboard/components/section';
@@ -15,8 +14,6 @@ import {
   CreditCard,
   Settings,
   FileText,
-  AlertCircle,
-  HomeIcon,
   Building2,
   Briefcase,
   MapPin,
@@ -28,6 +25,7 @@ import {
   CheckCircle,
 } from 'lucide-react';
 import { DOCUMENTS } from '@/features/vendor-dashboard/data';
+import FileInput from '@/components/ui/inputs/file-input';
 
 export default function VendorOnboardingDashboard() {
   return (
@@ -162,11 +160,12 @@ export default function VendorOnboardingDashboard() {
           >
             <div className="space-y-4 px-4 md:px-10">
               {DOCUMENTS.map((doc) => (
-                <DocumentRow
+                <FileInput
                   key={doc.name}
-                  name={doc.name}
-                  desc={doc.desc}
+                  title={doc.name}
+                  description={doc.desc}
                   verified={doc.verified}
+                     mode="dashboard"
                 />
               ))}
             </div>
