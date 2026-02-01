@@ -6,7 +6,6 @@ export function Section({
   title,
   subtitle,
   status,
-
   from,
   to,
   document,

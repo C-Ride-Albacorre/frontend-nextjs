@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import {
   Bell,
-  Box,
+  Package,
   Store,
   Tag,
   BarChart3,
@@ -99,7 +99,7 @@ export default function Sidebar({ onClose }: { onClose: () => void }) {
             />
             <NavItem
               label="Products"
-              icon={Box}
+              icon={Package}
               active={isActive('/vendor/products')}
               href="/vendor/products"
               onClose={onClose}

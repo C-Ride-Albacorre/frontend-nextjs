@@ -17,7 +17,7 @@ export default function PhoneInput({
           type="tel"
           placeholder={placeholder}
           // placeholder="Enter phone number"
-          className="min-w-0 w-full rounded-xl border border-border px-4 py-3 text-base md:text-sm  outline-none focus:ring-2 focus:ring-primary placeholder:text-sm placeholder:text-neutral-400"
+          className="min-w-0 w-full rounded-xl border border-border px-4 py-3 text-base md:text-sm  outline-none focus:ring-2 focus:ring-primary placeholder:text-sm placeholder:font-normal placeholder:text-neutral-400"
         />
       </div>
     </div>

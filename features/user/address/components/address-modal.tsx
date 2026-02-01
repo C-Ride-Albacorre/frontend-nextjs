@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import Modal from '@/components/ui/modal';
+import Modal from '@/components/layout/modal';
 import AddressTabs from './address-tabs';
 import SavedAddresses from './saved-address';
 import MapLocations from './map-location';

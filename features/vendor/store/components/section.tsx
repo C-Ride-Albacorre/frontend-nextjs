@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/buttons/button';
 import Input from '@/components/ui/inputs/input';
 import Textarea from '@/components/ui/inputs/textarea';
 import { CheckCircle, Upload } from 'lucide-react';
-import Image from 'next/image';
+
 
 export function StoreInformation() {
   return (
@@ -73,16 +73,16 @@ export function OperatingHours() {
             'Saturday',
             'Sunday',
           ].map((day) => (
-            <div key={day} className="grid grid-cols-7 gap-4 items-center">
-              <span className="w-20 text-sm col-span-2">{day}</span>
-              <div className="col-span-2">
+            <div key={day} className="grid grid-cols-10 gap-4 items-center">
+              <span className="w-20 text-sm col-span-3">{day}</span>
+              <div className="col-span-3">
                 <Input />
               </div>
 
               <span className=" text-sm flex justify-center items-center">
                 to
               </span>
-              <div className="col-span-2">
+              <div className="col-span-3">
                 <Input />
               </div>
             </div>
@@ -111,7 +111,7 @@ export function StoreDetails() {
           <Textarea
             id="storeDescription"
             label="Store Description"
-            placeholder="Tell Customers about your store, specialities, and what makes you unique."
+            placeholder="Tell customers about your store, specialities, and what makes you unique."
             wrapperClassName="md:col-span-3"
           />
 

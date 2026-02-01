@@ -1,6 +1,6 @@
 import { X } from 'lucide-react';
 import { ModalProps } from '@/types/modal';
-import { IconButton } from './buttons/icon-button';
+import { IconButton } from '../ui/buttons/icon-button';
 
 export default function Modal({ isModalOpen, onClose, children }: ModalProps) {
   if (!isModalOpen) return null;
@@ -25,10 +25,10 @@ export default function Modal({ isModalOpen, onClose, children }: ModalProps) {
         "
       >
         {/* CLOSE BUTTON (STICKY) */}
-       
 
         <IconButton
           onClick={onClose}
+          variant="fill"
           className="
             absolute
             top-4

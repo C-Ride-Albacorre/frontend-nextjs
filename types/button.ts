@@ -2,6 +2,7 @@ type ButtonVariant =
   | 'default'
   | 'primary'
   | 'outline'
+  | 'fill'
   | 'primary-outline'
   | 'white-outline'
   | 'secondary'

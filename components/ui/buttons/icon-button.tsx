@@ -45,6 +45,9 @@ export function IconButton({
           'p-1.5': size === 'sm',
 
           'border-border hover:bg-neutral-100': variant === 'default',
+          'border-border bg-foreground-200 hover:bg-neutral-100':
+            variant === 'fill',
+
           'border-transparent hover:bg-neutral-100': variant === 'ghost',
 
           'text-white border-border/10 hover:bg-white/10': shouldHighlight,

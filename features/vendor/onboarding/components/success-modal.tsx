@@ -1,12 +1,6 @@
 import { Button } from '@/components/ui/buttons/button';
-import Modal from '@/components/ui/modal';
-import {
-  Check,
-  HomeIcon,
-  Mail,
-  Phone,
-  Stars,
-} from 'lucide-react';
+import Modal from '@/components/layout/modal';
+import { Check, HomeIcon, Mail, Phone, Stars } from 'lucide-react';
 
 export default function SuccessModal({
   isModalOpen,
@@ -44,16 +38,16 @@ export default function SuccessModal({
 
             <ul className="space-y-4">
               <li className="flex items-center text-xs md:text-sm gap-3 text-neutral-700 ">
-                <Check size={16} className="text-green-500" /> <p>We'll verify your
-                business documents</p> 
+                <Check size={16} className="text-green-500" />{' '}
+                <p>We'll verify your business documents</p>
               </li>
 
               <li className="flex items-center text-xs md:text-sm gap-3 text-neutral-700 ">
-                <Check size={16} className="text-green-500" /><p>Our team will
-                review your application</p> 
+                <Check size={16} className="text-green-500" />
+                <p>Our team will review your application</p>
               </li>
 
-              <li className="flex items-center text-xs md:text-sm gap-3 text-neutral-700 ">
+              <li className="flex items-start  lg:items-center text-xs md:text-sm gap-3 text-neutral-700 ">
                 <Check size={16} className="text-green-500" />
                 <p>
                   You’ll receive an email at{' '}
@@ -64,8 +58,8 @@ export default function SuccessModal({
               </li>
 
               <li className="flex items-center text-xs md:text-sm gap-3 text-neutral-700 ">
-                <Check size={16} className="text-green-500" /> <p>Start accepting
-                orders once approved</p> 
+                <Check size={16} className="text-green-500" />{' '}
+                <p>Start accepting orders once approved</p>
               </li>
             </ul>
           </div>
