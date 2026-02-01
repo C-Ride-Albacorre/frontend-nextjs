@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { fadeUp } from '@/components/animations/fade-up';
+import ActionInput from '../ui/inputs/action-input';
 
 export default function Footer() {
   return (
@@ -30,30 +31,19 @@ export default function Footer() {
               Subscribe to our Newsletter
             </p>
 
-            <form className="mt-6 mx-auto w-full max-w-full lg:max-w-md xl:max-w-lg">
-              <label className="mb-3 text-sm font-medium text-gray-900 sr-only dark:text-white">
-                Enter Email Address
-              </label>
-
-              <div className="relative">
-                <input
-                  type="text"
-                  className="block w-full py-5 px-4 ps-9 bg-neutral-secondary-medium border border-default-medium text-heading  rounded-xl md:text-sm text-base focus:outline-none placeholder:text-white/40 bg-transparent shadow-xs"
-                  placeholder="Enter Email Address"
-                  required
-                />
-
-                <button
-                  type="button"
-                 className="absolute end-2 top-1/2 -translate-y-1/2 bg-brand hover:bg-brand-strong border border-transparent focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-xl bg-white text-primary-text-100 text-xs px-2 sm:px-3 py-3 focus:outline-none"
-
-                >
-                  Subscribe
-                </button>
-              </div>
+            <form
+              action=""
+              className="mt-6 mx-auto w-full max-w-full lg:max-w-md xl:max-w-lg"
+            >
+              <ActionInput
+                ariaLabel="emailAddress"
+                placeholder="Enter Email Address"
+                buttonText="Subscribe"
+                buttonVariant="white"
+              />
             </form>
 
-            
+         
           </motion.div>
         </div>
 

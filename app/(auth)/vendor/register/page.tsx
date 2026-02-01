@@ -1,4 +1,4 @@
-import AuthFooter from '@/features/auth/components/layout/auth-footer';
+import AuthFooter from '@/components/layout/auth-footer';
 import VendorRegisterForm from '@/features/auth/components/vendor-form/register';
 
 export default function SignupPage() {

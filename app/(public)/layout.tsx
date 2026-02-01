@@ -1,5 +1,5 @@
 import Footer from '@/components/layout/footer';
-import NavBar from '@/components/layout/nav-bar';
+import NavBar from '@/components/navigation/nav-bar';
 import Cta from '@/features/public/homepage/components/cta';
 import FAQSection from '@/features/public/homepage/components/faq';
 import HowItWorks from '@/features/public/homepage/components/how-it-works-content';

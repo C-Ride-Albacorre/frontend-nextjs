@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-import AuthFormHeader from '@/features/auth/components/layout/auth-form-header';
+import AuthFormHeader from '@/components/ui/headers/auth-form-header';
 import Input from '@/components/ui/inputs/input';
 import { Button } from '@/components/ui/buttons/button';
 import { Eye } from 'lucide-react';

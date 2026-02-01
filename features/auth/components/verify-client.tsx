@@ -4,7 +4,7 @@ import { Suspense, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 
-import AuthFormHeader from '@/features/auth/components/layout/auth-form-header';
+import AuthFormHeader from '@/components/ui/headers/auth-form-header';
 import { OtpInput } from '@/components/ui/inputs/otp-input';
 
 export default function VerifyClient() {

@@ -4,7 +4,7 @@ import { useRef, useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 
-import AuthFormHeader from '@/features/auth/components/layout/auth-form-header';
+import AuthFormHeader from '@/components/ui/headers/auth-form-header';
 import { OtpInput } from '@/components/ui/inputs/otp-input';
 import { Button } from '@/components/ui/buttons/button';
 
@@ -88,7 +88,7 @@ export default function ResetVerifyClient() {
 
           <div className="block text-primary font-medium space-x-2 text-xs md:text-base">
             <span className="text-primary-text-100">Didn’t get the code?</span>
-            
+
             <Link href="/reset">Resend Code</Link>
           </div>
         </div>

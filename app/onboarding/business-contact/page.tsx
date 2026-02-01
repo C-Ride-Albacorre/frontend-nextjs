@@ -1,4 +1,4 @@
-import BusinessContactInfoForm from '@/features/onboarding/components/forms/business-contact';
+import BusinessContactInfoForm from '@/features/vendor/onboarding/components/forms/business-contact';
 
 export default function BusinessContactInfoPage() {
   return (

@@ -5,7 +5,7 @@ export default function FormHeader({
   subtitle,
 }: {
   title: string;
-  subtitle: string;
+  subtitle?: string;
 }) {
   return (
     <div className=" text-center space-y-2 mb-8 md:mb-12 ">

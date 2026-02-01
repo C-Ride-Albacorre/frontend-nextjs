@@ -15,13 +15,13 @@ import {
 import {
   AccountItem,
   Reward,
-} from '../../../features/user-dashboard/components/dashboard-section';
+} from '../../../features/user/dashboard/components/dashboard-section';
 
-import QuickAction from '../../../features/user-dashboard/components/quick-action';
+import QuickAction from '../../../features/user/dashboard/components/quick-action';
 
-import DeliverySummary from '../../../features/user-dashboard/components/delivery-summary';
-import Address from '../../../features/user-dashboard/components/address';
-import DashboardHeader from '@/features/user-dashboard/layout/dashboard-header';
+import DeliverySummary from '../../../features/user/dashboard/components/delivery-summary';
+import Address from '../../../features/user/dashboard/components/address';
+import DashboardHeader from '@/features/user/dashboard/layout/dashboard-header';
 
 export default function DashboardPage() {
   return (

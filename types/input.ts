@@ -22,6 +22,9 @@ export type TextareaProps = {
   value?: string;
   rows?: number;
   onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  className?: string;
+  wrapperClassName?: string;
+  props?: React.TextareaHTMLAttributes<HTMLTextAreaElement>;
 };
 
 export type OtpInputProps = {
@@ -33,7 +36,6 @@ export type OtpInputProps = {
   inputMode?: string;
   className?: string;
 };
-
 
 export type FileInputProps = {
   title: string;

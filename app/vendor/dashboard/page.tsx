@@ -1,13 +1,13 @@
 'use client';
 
-import OnboardingStepsLayout from '@/features/vendor-dashboard/components/onboarding-steps';
-import VendorDashboardHeader from '@/features/vendor-dashboard/layout/header';
+import OnboardingStepsLayout from '@/features/vendor/dashboard/components/onboarding-steps';
+import VendorDashboardHeader from '@/components/ui/headers/vendor-header';
 import {
   InfoGrid,
   InfoRow,
   Section,
   Support,
-} from '@/features/vendor-dashboard/components/section';
+} from '@/features/vendor/dashboard/components/section';
 
 import {
   Store,
@@ -24,7 +24,7 @@ import {
   Calendar,
   CheckCircle,
 } from 'lucide-react';
-import { DOCUMENTS } from '@/features/vendor-dashboard/data';
+import { DOCUMENTS } from '@/features/vendor/dashboard/data';
 import FileInput from '@/components/ui/inputs/file-input';
 
 export default function VendorOnboardingDashboard() {
@@ -33,7 +33,10 @@ export default function VendorOnboardingDashboard() {
       <div className="space-y-6 pb-8">
         {/* ================= HEADER ================= */}
 
-        <VendorDashboardHeader />
+        <VendorDashboardHeader
+          pageTitle="Vendor Onboarding"
+          pageDescription="Your registration information and account setup"
+        />
 
         <div className="space-y-8 px-4 lg:px-8">
           <OnboardingStepsLayout />
@@ -165,7 +168,7 @@ export default function VendorOnboardingDashboard() {
                   title={doc.name}
                   description={doc.desc}
                   verified={doc.verified}
-                     mode="dashboard"
+                  mode="dashboard"
                 />
               ))}
             </div>

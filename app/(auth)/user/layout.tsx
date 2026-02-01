@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
-import AuthCarousel from '@/features/auth/components/layout/auth-carousel';
-import AuthFormHeader from '@/features/auth/components/layout/auth-form-header';
+import AuthCarousel from '@/components/layout/auth-carousel';
+import AuthFormHeader from '@/components/ui/headers/auth-form-header';
 import { SLIDES } from '@/features/auth/data';
 
 export const metadata: Metadata = {

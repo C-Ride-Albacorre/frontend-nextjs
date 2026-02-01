@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 
-import OnboardingSteps from '@/features/onboarding/components/step';
+import OnboardingSteps from '@/features/vendor/onboarding/components/step';
 import FormHeader from '@/components/ui/headers/form-header';
 
 export const metadata: Metadata = {

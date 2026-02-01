@@ -1,4 +1,4 @@
-import BusinessDocumentForm from '@/features/onboarding/components/forms/business-document';
+import BusinessDocumentForm from '@/features/vendor/onboarding/components/forms/business-document';
 
 export default function BusinessDocumentPage() {
   return (

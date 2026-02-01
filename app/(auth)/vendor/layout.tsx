@@ -1,6 +1,6 @@
 
 
-import AuthInfo from '@/features/auth/components/layout/auth-info';
+import AuthInfo from '@/components/layout/auth-info';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
