@@ -2,12 +2,9 @@ import { Button } from '@/components/ui/buttons/button';
 import Modal from '@/components/ui/modal';
 import {
   Check,
-  ChevronLeft,
-  ChevronRight,
   HomeIcon,
   Mail,
   Phone,
-  PhoneCall,
   Stars,
 } from 'lucide-react';
 
@@ -47,23 +44,28 @@ export default function SuccessModal({
 
             <ul className="space-y-4">
               <li className="flex items-center text-xs md:text-sm gap-3 text-neutral-700 ">
-                <Check size={16} className="text-green-500" /> We'll verify your
-                business documents
+                <Check size={16} className="text-green-500" /> <p>We'll verify your
+                business documents</p> 
               </li>
 
               <li className="flex items-center text-xs md:text-sm gap-3 text-neutral-700 ">
-                <Check size={16} className="text-green-500" /> Our team will
-                review your application
+                <Check size={16} className="text-green-500" /><p>Our team will
+                review your application</p> 
               </li>
 
               <li className="flex items-center text-xs md:text-sm gap-3 text-neutral-700 ">
-                <Check size={16} className="text-green-500" /> You’ll receive an
-                email at Ziondavid17@yahoo.com
+                <Check size={16} className="text-green-500" />
+                <p>
+                  You’ll receive an email at{' '}
+                  <span className="block lg:inline font-medium mt-2 lg:mt-0 text-neutral-900">
+                    Ziondavid17@yahoo.com
+                  </span>
+                </p>
               </li>
 
               <li className="flex items-center text-xs md:text-sm gap-3 text-neutral-700 ">
-                <Check size={16} className="text-green-500" /> Start accepting
-                orders once approved
+                <Check size={16} className="text-green-500" /> <p>Start accepting
+                orders once approved</p> 
               </li>
             </ul>
           </div>
@@ -87,7 +89,7 @@ export default function SuccessModal({
             leftIcon={<HomeIcon size={16} />}
             className="order-1 md:order-2 w-full md:w-auto"
           >
-           Return to Homepage
+            Return to Homepage
           </Button>
         </div>
 

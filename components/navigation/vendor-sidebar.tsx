@@ -27,7 +27,7 @@ export default function Sidebar({ onClose }: { onClose: () => void }) {
   };
 
   return (
-    <aside className="h-screen w-full bg-white border-r border-border flex flex-col pb-10 md:pb-12 ">
+    <aside className="h-screen w-full bg-white border-r border-border flex flex-col pb-12 md:pb-16 ">
       {/* ================= HEADER ================= */}
       <div className="shrink-0 border-b border-border px-6 py-6 bg-white z-10">
         <div className="flex flex-col gap-2">
