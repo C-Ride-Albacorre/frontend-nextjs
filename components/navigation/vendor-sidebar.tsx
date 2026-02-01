@@ -27,7 +27,7 @@ export default function Sidebar({ onClose }: { onClose: () => void }) {
   };
 
   return (
-    <aside className="h-screen w-full bg-white border-r border-border flex flex-col">
+    <aside className="h-screen w-full bg-white border-r border-border flex flex-col pb-10 md:pb-12 ">
       {/* ================= HEADER ================= */}
       <div className="shrink-0 border-b border-border px-6 py-6 bg-white z-10">
         <div className="flex flex-col gap-2">
@@ -95,42 +95,61 @@ export default function Sidebar({ onClose }: { onClose: () => void }) {
               icon={ClipboardList}
               active={isActive('/vendor/orders')}
               href="/vendor/orders"
+              onClose={onClose}
             />
             <NavItem
               label="Products"
               icon={Box}
               active={isActive('/vendor/products')}
               href="/vendor/products"
+              onClose={onClose}
             />
             <NavItem
               label="Store"
               icon={Store}
               active={isActive('/vendor/store')}
               href="/vendor/store"
+              onClose={onClose}
             />
           </div>
 
           <div className="space-y-2">
             <p className="text-xs uppercase text-neutral-400">Business Tools</p>
-            <NavItem label="Promotions" icon={Tag} href="/vendor/promotions" />
+            <NavItem
+              label="Promotions"
+              icon={Tag}
+              href="/vendor/promotions"
+              onClose={onClose}
+            />
             <NavItem
               label="Analytics"
               icon={BarChart3}
               active={isActive('/vendor/analytics')}
               href="/vendor/analytics"
+              onClose={onClose}
             />
           </div>
 
           <div className="space-y-2">
-            <NavItem label="Settings" icon={Settings} href="/vendor/settings" />
-
-            <NavItem label="Logout" icon={LogOut} href="/logout" />
+            <NavItem
+              label="Settings"
+              icon={Settings}
+              href="/vendor/settings"
+              onClose={onClose}
+            />
+            <NavItem
+              label="Logout"
+              icon={LogOut}
+              href="/logout"
+              onClose={onClose}
+            />
 
             <NavItem
               label="Onboarding"
               icon={Settings}
               active={isActive('/vendor/dashboard')}
               href="/vendor/dashboard"
+              onClose={onClose}
             />
           </div>
         </nav>

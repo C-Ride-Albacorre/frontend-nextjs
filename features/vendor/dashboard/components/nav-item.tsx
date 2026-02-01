@@ -9,9 +9,11 @@ export default function NavItem({
   href = '#',
   active,
   count,
+  onClose,
 }: NavItemProps) {
   return (
     <Link
+    onClick={onClose}
       href={href}
       className={`flex items-center justify-between px-3 py-4 rounded-lg transition
         ${

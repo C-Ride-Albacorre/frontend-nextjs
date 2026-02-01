@@ -6,4 +6,5 @@ export type NavItemProps = {
   href?: string;
   active?: boolean;
   count?: number;
+  onClose?: () => void;
 };
