@@ -52,7 +52,7 @@ export default function Sidebar({ onClose }: { onClose: () => void }) {
 
             <div className="relative hidden lg:flex">
               <Bell size={22} className="text-neutral-600" />
-              <span className="absolute -top-2 -right-2 h-4 w-4 rounded-full bg-red-500 text-[10px] text-white flex items-center justify-center">
+              <span className="absolute -top-3 -right-3 h-4 w-4 rounded-full bg-red-500 text-[10px] text-white flex items-center justify-center shadow-md">
                 3
               </span>
             </div>

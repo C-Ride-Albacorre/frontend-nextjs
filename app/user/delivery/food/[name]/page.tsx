@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
 
 import { Button } from '@/components/ui/buttons/button';
 
@@ -20,6 +19,8 @@ import {
 } from 'lucide-react';
 import Input from '@/components/ui/inputs/input';
 import { useParams } from 'next/navigation';
+import { Select } from '@/components/ui/inputs/select';
+import clsx from 'clsx';
 
 const CATEGORIES = ['All', 'Food', 'Grocery', 'Gift Items', 'Packages'];
 
@@ -63,8 +64,7 @@ const PRODUCTS = [
 ];
 
 export default function FoodVendorsPage() {
-  const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState('Sort by Category');
+  const [sort, setSort] = useState('');
 
   const params = useParams();
 
@@ -123,58 +123,48 @@ export default function FoodVendorsPage() {
           <h2 className="text-lg font-semibold flex-1">Select Items</h2>
 
           <div className="flex items-center gap-3">
-            <div className="relative w-56">
-              <button
-                type="button"
-                onClick={() => setOpen((prev) => !prev)}
-                className="flex w-full items-center justify-between rounded-xl border border-border bg-white px-4 py-3 text-sm text-primary-text-100 hover:bg-foreground-100"
-              >
-                <span
-                  className={`truncate ${
-                    selected === 'Sort by Category' ? 'text-neutral-500' : ''
-                  }`}
-                >
-                  {selected}
-                </span>
+            {/* Sort Dropdown & Search */}
 
-                <span className="ml-2 flex flex-col">
-                  <ChevronUp
-                    size={14}
-                    className={`-mb-1 transition ${open ? 'text-primary' : ''}`}
-                  />
-                  <ChevronDown
-                    size={14}
-                    className={`transition ${open ? 'text-primary' : ''}`}
-                  />
-                </span>
-              </button>
-
-              {/* Dropdown */}
-              {open && (
-                <div className="absolute z-20 mt-2 w-full overflow-hidden rounded-xl border border-border bg-white shadow-lg">
-                  {CATEGORIES.map((item) => (
-                    <button
-                      key={item}
-                      onClick={() => {
-                        setSelected(item);
-                        setOpen(false);
-                      }}
-                      className="w-full px-4 py-3 text-left text-sm hover:bg-foreground-100"
-                    >
-                      {item}
-                    </button>
-                  ))}
-                </div>
-              )}
+            <div className="w-56">
+              <Select
+                id="sort"
+                value={sort}
+                onChange={setSort}
+                placeholder="Sort items"
+                variant="fill"
+                spacing="none"
+                options={CATEGORIES.map((category) => ({
+                  label: category,
+                  value: category.toLowerCase(),
+                }))}
+                rightIcon={(open) => (
+                  <span className="flex flex-col">
+                    <ChevronUp
+                      size={14}
+                      className={clsx('-mb-1 transition-transform', {
+                        'rotate-180 text-primary': open,
+                      })}
+                    />
+                    <ChevronDown
+                      size={14}
+                      className={clsx('transition-transform', {
+                        'rotate-180 text-primary': open,
+                      })}
+                    />
+                  </span>
+                )}
+              />
             </div>
 
             {/* Search */}
-
-            <Input
-              leftIcon={<Search size={16} />}
-              placeholder="Search for item"
-              spacing="none"
-            />
+            <div className="w-64">
+              <Input
+                leftIcon={<Search size={16} />}
+                placeholder="Search for item"
+                spacing="none"
+                variant="fill"
+              />
+            </div>
           </div>
         </div>
 
@@ -218,7 +208,7 @@ export default function FoodVendorsPage() {
 
                 <Button
                   type="button"
-                  size="lg"
+                  size="sm"
                   variant="primary"
                   className="mt-4 w-full"
                 >

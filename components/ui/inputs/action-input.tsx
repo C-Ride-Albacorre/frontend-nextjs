@@ -39,7 +39,7 @@ export default function ActionInput({
   return (
     <div
       className={clsx(
-        'w-full flex items-center gap-2 rounded-xl border px-4 py-2',
+        'w-full flex items-center gap-2 rounded-xl border px-4 py-2 ',
         {
           'border-border bg-foreground-200': buttonVariant === 'primary',
           'bg-neutral-secondary-medium border border-default-medium text-heading':

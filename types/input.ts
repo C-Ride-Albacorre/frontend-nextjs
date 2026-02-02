@@ -1,6 +1,8 @@
 export type InputProps = {
   id?: string;
   label?: string;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   variant?: 'default' | 'fill';
   ariaLabel?: string;
   type?: React.HTMLInputTypeAttribute;
@@ -11,6 +13,7 @@ export type InputProps = {
   className?: string;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
+  props?: React.InputHTMLAttributes<HTMLInputElement>;
   // value?: string;
   // onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
