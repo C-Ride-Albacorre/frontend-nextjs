@@ -1,11 +1,11 @@
 import Card from '@/components/layout/card';
-import { STEPS } from '@/features/vendor/dashboard/data';
+import { STEPS } from '../data';
 import { CheckCircle } from 'lucide-react';
 
 export default function OnboardingStepsLayout() {
   return (
     <Card>
-      <div className='px-4 md:px-8 space-y-12 py-6 '>
+      <div className="px-4 md:px-8 space-y-12 py-6 ">
         {/* ================= STATUS HEADER ================= */}
         <div className="flex items-start gap-4">
           <div
@@ -31,7 +31,7 @@ export default function OnboardingStepsLayout() {
 
             return (
               <div
-                key={step.label}
+                key={index}
                 className="relative flex md:flex-1 md:flex-col md:items-center gap-4 md:gap-2 text-left md:text-center"
               >
                 {/* CONNECTOR */}

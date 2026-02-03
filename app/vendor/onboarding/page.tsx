@@ -26,19 +26,18 @@ import {
 } from 'lucide-react';
 import { DOCUMENTS } from '@/features/vendor/dashboard/data';
 import FileInput from '@/components/ui/inputs/file-input';
+import MainLayout from '@/components/layout/main-layout';
+import SectionLayout from '@/components/layout/section-layout';
 
 export default function VendorOnboardingDashboard() {
   return (
-    <section>
-      <div className="space-y-6 pb-8">
+    <>
+      <MainLayout>
         {/* ================= HEADER ================= */}
 
-        <VendorDashboardHeader
-          pageTitle="Vendor Onboarding"
-          pageDescription="Your registration information and account setup"
-        />
+        <VendorDashboardHeader />
 
-        <div className="space-y-8 px-4 lg:px-8">
+        <SectionLayout>
           <OnboardingStepsLayout />
 
           <Section
@@ -176,8 +175,8 @@ export default function VendorOnboardingDashboard() {
 
           {/* ================= SUPPORT ================= */}
           <Support />
-        </div>
-      </div>
-    </section>
+        </SectionLayout>
+      </MainLayout>
+    </>
   );
 }

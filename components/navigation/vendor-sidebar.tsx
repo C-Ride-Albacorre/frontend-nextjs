@@ -10,12 +10,12 @@ import {
   BarChart3,
   Settings,
   LogOut,
-  ClipboardList,
+  ShoppingBag,
   Star,
   X,
 } from 'lucide-react';
 
-import NavItem from '../../features/vendor/dashboard/components/nav-item';
+import NavItem from '@/features/vendor/dashboard/components/nav-item';
 import { IconButton } from '@/components/ui/buttons/icon-button';
 import { usePathname } from 'next/navigation';
 
@@ -32,7 +32,7 @@ export default function Sidebar({ onClose }: { onClose: () => void }) {
       <div className="shrink-0 border-b border-border px-6 py-6 bg-white z-10">
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between">
-            <Link href="/vendor/dashboard" onClick={onClose}>
+            <Link href="/vendor/onboarding" onClick={onClose}>
               <Image
                 src="/assets/svg/logo-main.svg"
                 alt="C-ride Logo"
@@ -92,7 +92,7 @@ export default function Sidebar({ onClose }: { onClose: () => void }) {
             <p className="text-xs uppercase text-neutral-400">Main Menu</p>
             <NavItem
               label="Orders"
-              icon={ClipboardList}
+              icon={ShoppingBag}
               active={isActive('/vendor/orders')}
               href="/vendor/orders"
               onClose={onClose}
@@ -147,8 +147,8 @@ export default function Sidebar({ onClose }: { onClose: () => void }) {
             <NavItem
               label="Onboarding"
               icon={Settings}
-              active={isActive('/vendor/dashboard')}
-              href="/vendor/dashboard"
+              active={isActive('/vendor/onboarding')}
+              href="/vendor/onboarding"
               onClose={onClose}
             />
           </div>

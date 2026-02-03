@@ -41,7 +41,7 @@ export default function OnboardingLayout({
             <MenuIcon size={20} />
           </IconButton>
 
-          <Link href="/vendor/dashboard">
+          <Link href="/vendor/onboarding">
             <Image
               src="/assets/svg/logo-main.svg"
               alt="C-ride Logo"

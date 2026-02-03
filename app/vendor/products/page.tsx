@@ -9,6 +9,9 @@ import ProductRow from '@/features/vendor/products/components/product-row';
 import { Funnel, Plus, Search, Upload } from 'lucide-react';
 import { useState } from 'react';
 import AddProduct from '@/features/vendor/products/components/add-product';
+import MainLayout from '@/components/layout/main-layout';
+import SectionLayout from '@/components/layout/section-layout';
+import VendorToolbar from '@/components/layout/vendor-tool-bar';
 
 const CATEGORIES = [
   'All',
@@ -30,13 +33,10 @@ export default function ProductsPage() {
 
   return (
     <>
-      <div className="space-y-6 pb-8">
-        <VendorDashboardHeader
-          pageTitle="Products"
-          pageDescription="The Place Restaurant - Victoria Island, Lagos"
-        />
+      <MainLayout>
+        <VendorDashboardHeader />
 
-        <div className="space-y-8 px-4 lg:px-8">
+        <SectionLayout>
           <Card>
             <div className="px-4 md:px-8 flex justify-between items-start gap-8">
               <div className="space-y-8">
@@ -70,39 +70,13 @@ export default function ProductsPage() {
           </Card>
 
           {/* Select Items */}
-          <div className="mt-12 space-y-4 px-4 lg:px-0 md:space-y-0 md:flex md:items-center md:justify-between">
-            <h2 className="text-lg font-semibold">Product Catalog</h2>
-
-            <div className="flex  gap-3 w-full md:w-auto  md:items-center">
-              {/* Filter */}
-              <div className="w-full md:w-56">
-                <Select
-                  id="sort"
-                  value={sort}
-                  onChange={setSort}
-                  placeholder="Filter"
-                  variant="fill"
-                  spacing="none"
-                  options={CATEGORIES.map((category) => ({
-                    label: category,
-                    value: category.toLowerCase(),
-                  }))}
-                  leftIcon={<Funnel size={16} className="text-neutral-400" />}
-                />
-              </div>
-
-              {/* Search */}
-              <div className="w-full md:w-64">
-                <Input
-                  leftIcon={<Search size={16} className="text-neutral-400" />}
-                  placeholder="Search orders..."
-                  spacing="none"
-                  variant="fill"
-                />
-              </div>
-            </div>
-          </div>
-
+          <VendorToolbar
+            title="Product Catalog"
+            searchPlaceholder="Search products..."
+            sort={sort}
+            onSortChange={setSort}
+            categories={CATEGORIES}
+          />
           <Card>
             <ul className="px-4 md:px-8 space-y-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1">
               {[
@@ -146,8 +120,8 @@ export default function ProductsPage() {
               ))}
             </ul>
           </Card>
-        </div>
-      </div>
+        </SectionLayout>
+      </MainLayout>
 
       {isModalOpen && (
         <AddProduct

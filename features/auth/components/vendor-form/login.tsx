@@ -45,7 +45,12 @@ export default function VendorLoginForm() {
         </div>
 
         {/* CTA */}
-        <Button href="/vendor/dashboard" size="full" variant="primary" className="mt-4">
+        <Button
+          href="/vendor/onboarding"
+          size="full"
+          variant="primary"
+          className="mt-4"
+        >
           Continue
         </Button>
       </form>
