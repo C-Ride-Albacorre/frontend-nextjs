@@ -13,6 +13,10 @@ import {
   ShoppingBag,
   Star,
   X,
+  Truck,
+  Locate,
+  Navigation,
+  TrendingUp,
 } from 'lucide-react';
 
 import NavItem from '@/features/vendor/dashboard/components/nav-item';
@@ -118,6 +122,7 @@ export default function Sidebar({ onClose }: { onClose: () => void }) {
             <NavItem
               label="Promotions"
               icon={Tag}
+              active={isActive('/vendor/promotions')}
               href="/vendor/promotions"
               onClose={onClose}
             />
@@ -126,6 +131,30 @@ export default function Sidebar({ onClose }: { onClose: () => void }) {
               icon={BarChart3}
               active={isActive('/vendor/analytics')}
               href="/vendor/analytics"
+              onClose={onClose}
+            />
+
+            <NavItem
+              label="Performance"
+              icon={TrendingUp}
+              active={isActive('/vendor/performance')}
+              href="/vendor/performance"
+              onClose={onClose}
+            />
+
+            <NavItem
+              label="Delivery"
+              icon={Truck}
+              active={isActive('/vendor/delivery')}
+              href="/vendor/delivery"
+              onClose={onClose}
+            />
+
+            <NavItem
+              label="Active Deliveries"
+              icon={Navigation}
+              active={isActive('/vendor/active-deliveries')}
+              href="/vendor/active-deliveries"
               onClose={onClose}
             />
           </div>
