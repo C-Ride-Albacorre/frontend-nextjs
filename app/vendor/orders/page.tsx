@@ -5,14 +5,8 @@ import SectionLayout from '@/components/layout/section-layout';
 import VendorToolbar from '@/components/layout/vendor-tool-bar';
 import VendorDashboardHeader from '@/components/ui/headers/vendor-header';
 import OrderCard from '@/features/vendor/orders/components/order-card';
-import StatCard from '@/features/vendor/orders/components/stat-card';
-import {
-  Clock,
-
-  ShoppingBag,
-  Star,
-  TrendingUp,
-} from 'lucide-react';
+import StatCard from '@/components/layout/stat-card';
+import { Clock, ShoppingBag, Star, TrendingUp } from 'lucide-react';
 import { useState } from 'react';
 
 const CATEGORIES = [

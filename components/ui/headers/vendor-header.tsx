@@ -12,6 +12,7 @@ export default function VendorDashboardHeader() {
     'Product Management': pathName === '/vendor/products',
     'Store Management': pathName === '/vendor/store',
     'Vendor Onboarding': pathName === '/vendor/onboarding',
+    "Active Deliveries": pathName ==='/vendor/active-deliveries'
   });
 
   const pageDescription = clsx(

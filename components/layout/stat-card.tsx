@@ -22,12 +22,16 @@ export default function StatCard({
   negative?: boolean;
 }) {
   return (
-    <Card gap="sm" spacing="sm" className="bg-white rounded-xl border p-4">
+    <Card
+      gap="sm"
+      spacing="sm"
+      className="group bg-white rounded-xl border p-4 hover:bg-primary"
+    >
       <div className="flex items-center justify-between">
         <p className="text-sm text-neutral-500">{title}</p>
 
         <div
-          className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 aspect-square ${iconBackground}`}
+          className={` group-hover:bg-[#FBF7EB] group-hover:text-primary w-10 h-10 rounded-full flex items-center justify-center shrink-0 aspect-square  ${iconBackground} transition-transform `}
         >
           {icon}
         </div>
@@ -36,15 +40,22 @@ export default function StatCard({
 
       {trend && (
         <div
-          className={clsx('text-xs flex items-center gap-1.5', {
-            'text-green-600': positive,
-            'text-red-600': negative,
-            'text-neutral-500': !positive && !negative,
-          })}
+          className={clsx(
+            'text-xs flex items-center gap-1.5 ',
+            {
+              'text-green-600': positive,
+              'text-red-600': negative,
+              'text-neutral-500': !positive && !negative,
+            },
+          )}
         >
           <span>{trend}</span>
-          {positive && <ArrowUpRight className="w-4 h-4 text-green-600" />}
-          {negative && <ArrowDownRight className="w-4 h-4 text-red-600" />}
+          {positive && (
+            <ArrowUpRight className="w-4 h-4 text-green-600" />
+          )}
+          {negative && (
+            <ArrowDownRight className="w-4 h-4 text-red-600" />
+          )}
           {trendDuration && <span>{trendDuration}</span>}
         </div>
       )}

@@ -1,6 +1,6 @@
 export default function ComingSoon({
   title = 'Coming Soon',
-  subtitle = 'We’re working hard to bring this feature to life.',
+  subtitle = 'We’re working to bring this feature to life.',
 }) {
   return (
     <div className="min-h-screen flex items-center justify-center px-4">
