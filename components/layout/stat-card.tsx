@@ -11,6 +11,9 @@ export default function StatCard({
   positive,
   negative,
   trendDuration,
+  valueClassName,
+  valueInfo,
+  footNote,
 }: {
   title: string;
   value: string;
@@ -20,6 +23,9 @@ export default function StatCard({
   trendDuration?: string;
   positive?: boolean;
   negative?: boolean;
+  valueClassName?: string;
+  valueInfo?: string;
+  footNote?: string;
 }) {
   return (
     <Card
@@ -36,28 +42,28 @@ export default function StatCard({
           {icon}
         </div>
       </div>
-      <p className="text-3xl font-medium">{value}</p>
+
+      {valueInfo && <p className="text-sm text-neutral-500">{valueInfo}</p>}
+
+      <p className={`text-3xl font-medium ${valueClassName}`}>{value}</p>
 
       {trend && (
         <div
-          className={clsx(
-            'text-xs flex items-center gap-1.5 ',
-            {
-              'text-green-600': positive,
-              'text-red-600': negative,
-              'text-neutral-500': !positive && !negative,
-            },
-          )}
+          className={clsx('text-xs flex items-center gap-1.5 ', {
+            'text-green-600': positive,
+            'text-red-600': negative,
+            'text-neutral-500': !positive && !negative,
+          })}
         >
           <span>{trend}</span>
-          {positive && (
-            <ArrowUpRight className="w-4 h-4 text-green-600" />
-          )}
-          {negative && (
-            <ArrowDownRight className="w-4 h-4 text-red-600" />
-          )}
+          {positive && <ArrowUpRight className="w-4 h-4 text-green-600" />}
+          {negative && <ArrowDownRight className="w-4 h-4 text-red-600" />}
           {trendDuration && <span>{trendDuration}</span>}
         </div>
+      )}
+
+      {footNote && (
+        <p className="text-xs md:text-sm text-neutral-500">{footNote}</p>
       )}
     </Card>
   );

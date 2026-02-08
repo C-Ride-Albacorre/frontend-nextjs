@@ -22,7 +22,7 @@ export default function VendorActiveDeliveriesPage() {
         <VendorDashboardHeader />
 
         <SectionLayout>
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+          <div className="grid grid-cols-1 xl:grid-cols-5 gap-6">
             <StatCard
               title="Total Active"
               value="5"
@@ -68,7 +68,7 @@ export default function VendorActiveDeliveriesPage() {
             updatedAt="9:56:49 PM"
           />
 
-          <ul className="space-y-4">
+          <ul className="space-y-8">
             {activeOrders.map((order) => (
               <li key={order.orderId}>
                 <ActiveDeliveriesCard {...order} />

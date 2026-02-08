@@ -46,6 +46,7 @@ export function Button({
       'bg-green-100 hover:bg-green-600': variant === 'green',
 
       // sizes
+
       'px-3 py-2.5 text-sm md:px-4 md:py-3': size === 'sm',
 
       'px-3 py-3 text-sm md:px-6 md:py-3.5': size === 'md',
@@ -66,6 +67,10 @@ export function Button({
       'w-full max-w-md mx-auto px-6 py-4 text-sm': size === '6xl',
 
       'w-full px-5 py-3 text-sm md:px-6 md:py-4': size === 'full',
+
+      //square buttons
+      'p-2 text-xs md:p-4': size === 'icon',
+
 
       //spacing
       'gap-1': spacing === 'sm',

@@ -19,7 +19,8 @@ type ButtonSize =
   | '4xl'
   | '5xl'
   | '6xl'
-  | 'full';
+  | 'full'
+  | 'icon';
 
 export type ButtonProps = {
   children: React.ReactNode;
