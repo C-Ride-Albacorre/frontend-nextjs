@@ -17,6 +17,8 @@ import {
   Locate,
   Navigation,
   TrendingUp,
+  BadgeCheck,
+  BookOpen,
 } from 'lucide-react';
 
 import NavItem from '@/features/vendor/dashboard/components/nav-item';
@@ -93,7 +95,7 @@ export default function Sidebar({ onClose }: { onClose: () => void }) {
         {/* NAV */}
         <nav className="space-y-6 text-sm">
           <div className="space-y-2">
-            <p className="text-xs uppercase text-neutral-400">Main Menu</p>
+            <p className="text-xs capitalize  text-neutral-400">Main Menu</p>
             <NavItem
               label="Orders"
               icon={ShoppingBag}
@@ -118,7 +120,9 @@ export default function Sidebar({ onClose }: { onClose: () => void }) {
           </div>
 
           <div className="space-y-2">
-            <p className="text-xs uppercase text-neutral-400">Business Tools</p>
+            <p className="text-xs capitalize  text-neutral-400">
+              Business Tools
+            </p>
             <NavItem
               label="Promotions"
               icon={Tag}
@@ -160,16 +164,21 @@ export default function Sidebar({ onClose }: { onClose: () => void }) {
           </div>
 
           <div className="space-y-2">
+            <p className="text-xs capitalize text-neutral-400">Settings</p>
+
             <NavItem
-              label="Settings"
-              icon={Settings}
-              href="/vendor/settings"
+              label="Tutorials & Tips"
+              icon={BookOpen}
+              active={isActive('/vendor/tutorials-tips')}
+              href="/vendor/tutorials-tips"
               onClose={onClose}
             />
+
             <NavItem
-              label="Logout"
-              icon={LogOut}
-              href="/logout"
+              label="Partner Program"
+              icon={BadgeCheck}
+              active={isActive('/vendor/partner-program')}
+              href="/vendor/partner-program"
               onClose={onClose}
             />
 
@@ -178,6 +187,15 @@ export default function Sidebar({ onClose }: { onClose: () => void }) {
               icon={Settings}
               active={isActive('/vendor/onboarding')}
               href="/vendor/onboarding"
+              onClose={onClose}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <NavItem
+              label="Logout"
+              icon={LogOut}
+              href="/logout"
               onClose={onClose}
             />
           </div>

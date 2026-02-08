@@ -1,6 +1,7 @@
 import Card from '@/components/layout/card';
 import StatCard from '@/components/layout/stat-card';
 import {
+    ChartPie,
   CircleArrowOutUpRight,
   DollarSign,
   Package,
@@ -49,7 +50,7 @@ export default function AnalyticsStatCards({
           value={data.stats.commissionPaid}
           valueClassName="text-xl"
           icon={
-            <CircleArrowOutUpRight
+            <ChartPie
               size={18}
               className="text-primary-text-100"
             />

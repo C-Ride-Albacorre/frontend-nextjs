@@ -47,6 +47,8 @@ export function Button({
 
       // sizes
 
+      'p-0 text-sm': size === 'none',
+
       'px-3 py-2.5 text-sm md:px-4 md:py-3': size === 'sm',
 
       'px-3 py-3 text-sm md:px-6 md:py-3.5': size === 'md',
@@ -70,7 +72,6 @@ export function Button({
 
       //square buttons
       'p-2 text-xs md:p-4': size === 'icon',
-
 
       //spacing
       'gap-1': spacing === 'sm',

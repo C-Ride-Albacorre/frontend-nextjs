@@ -14,7 +14,7 @@ export default function Card({
   return (
     <section
       className={clsx(
-        'rounded-2xl border border-border bg-white',
+        'rounded-2xl border border-border',
         {
           'space-y-0': gap === 'none',
           'space-y-4': gap === 'sm',

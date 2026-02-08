@@ -10,6 +10,7 @@ type ButtonVariant =
   | 'green'
   | 'white-nav-link';
 type ButtonSize =
+  | 'none'
   | 'sm'
   | 'md'
   | 'lg'

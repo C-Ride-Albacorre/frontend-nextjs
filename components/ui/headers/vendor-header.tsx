@@ -1,14 +1,20 @@
 'use client';
 
 import clsx from 'clsx';
-import { header } from 'framer-motion/client';
+import { div, header } from 'framer-motion/client';
 import { usePathname } from 'next/navigation';
 import path from 'path';
 import { Button } from '../buttons/button';
-import { Download } from 'lucide-react';
+import { BadgeCheck, Download } from 'lucide-react';
 
 export default function VendorDashboardHeader() {
   const pathName = usePathname();
+
+  const excludedPaths = [
+    '/vendor/onboarding',
+    '/vendor/analytics',
+    '/vendor/partner-program',
+  ];
 
   const pageTitle = clsx({
     'Order Management': pathName === '/vendor/orders',
@@ -17,10 +23,10 @@ export default function VendorDashboardHeader() {
     'Vendor Onboarding': pathName === '/vendor/onboarding',
     'Active Deliveries': pathName === '/vendor/active-deliveries',
     'Financial & Earnings': pathName === '/vendor/analytics',
+    'Partner Program': pathName === '/vendor/partner-program',
   });
 
   const pageDescription = clsx(
-    'The Place Restaurant - Victoria Island, Lagos',
     {
       'Your registration information and account setup':
         pathName === '/vendor/onboarding',
@@ -29,6 +35,12 @@ export default function VendorDashboardHeader() {
       'Manage your payouts and track earnings':
         pathName === '/vendor/analytics',
     },
+    {
+      'Your partnership benefits and fee structure':
+        pathName === '/vendor/partner-program',
+    },
+    !excludedPaths.includes(pathName) &&
+      'The Place Restaurant - Victoria Island, Lagos',
   );
 
   return (
@@ -41,10 +53,17 @@ export default function VendorDashboardHeader() {
       </div>
 
       {pathName === '/vendor/analytics' && (
-        <Button variant="outline" size="icon" spacing="sm" className='text-xs'>
+        <Button variant="outline" size="icon" spacing="sm" className="text-xs">
           <Download size={16} />
           Export Data
         </Button>
+      )}
+
+      {pathName === '/vendor/partner-program' && (
+        <div className="flex items-center gap-2 bg-[#10B981] rounded-full text-white px-3 py-4 text-xs">
+          <BadgeCheck size={16} />
+          Active Partner
+        </div>
       )}
     </header>
   );
