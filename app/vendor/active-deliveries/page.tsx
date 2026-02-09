@@ -4,13 +4,12 @@ import { useState } from 'react';
 
 import VendorDashboardHeader from '@/components/ui/headers/vendor-header';
 import StatCard from '@/components/layout/stat-card';
-import { Clock, MapPin, Navigation, Package, Truck } from 'lucide-react';
+import { Clock, MapPin, Package, Truck } from 'lucide-react';
 import SectionLayout from '@/components/layout/section-layout';
 import MainLayout from '@/components/layout/main-layout';
 import VendorToolbar from '@/components/layout/vendor-tool-bar';
 import ActiveDeliveriesCard from '@/features/vendor/active-deliveries/components/active-cards';
 import { activeOrders } from '@/features/vendor/active-deliveries/data';
-import { li } from 'framer-motion/client';
 
 const STATUS = ['All status', 'Active', 'Preparing', 'In Transit', 'Nearby'];
 
@@ -68,7 +67,7 @@ export default function VendorActiveDeliveriesPage() {
             updatedAt="9:56:49 PM"
           />
 
-          <ul className="space-y-8">
+          <ul className="space-y-12">
             {activeOrders.map((order) => (
               <li key={order.orderId}>
                 <ActiveDeliveriesCard {...order} />

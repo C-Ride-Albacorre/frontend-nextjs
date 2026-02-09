@@ -1,13 +1,12 @@
-export type Order = {
-  orderId: string;
+export type OrderBase = {
   status: 'In Transit' | 'Delivered' | 'Pending';
   scheduleType?: 'Scheduled' | 'Instant';
-  percent?: number;
+
+  percent: number;
+  visible: boolean;
 
   customer: string;
-
   address: string;
-  distance: string;
   fee: string;
 
   driver: {
@@ -24,4 +23,18 @@ export type Order = {
     label: string;
     time: string;
   }[];
+};
+
+
+export type OrderProps = OrderBase & {
+  orderId: string;
+  distance: string;
+};
+
+export type DeliveryDetailsModalProps = OrderBase & {
+  openModal: boolean;
+  onClose: () => void;
+  statusClass: string;
+  scheduleClass?: string;
+  barRef: React.RefObject<HTMLDivElement | null>;
 };
