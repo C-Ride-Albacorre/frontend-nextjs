@@ -65,7 +65,7 @@ export default function DeliveryDetailsModal({
                 6789
               </li>
               <li className="flex justify-between">
-                <span className="text-neutral-500">Address:</span> {address}
+                <span className="text-neutral-500">Address:</span> <p className='text-right'>{address}</p>
               </li>
             </ul>
           </Card>

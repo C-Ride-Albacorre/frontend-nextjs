@@ -24,11 +24,11 @@ export default function AnalyticsCommission({
               </div>
 
               <div className="space-y-6 mb-0">
-                <p className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">
+                <p className="text-xs bg-primary/10 text-primary px-2 py-1 w-auto flex items-center justify-center rounded-full">
                   {item.rate}
                 </p>
 
-                <p className="text-neutral-500 text-sm">₦{item.value}</p>
+                <p className="text-neutral-500 text-sm">{item.value}</p>
               </div>
             </Card>
           </li>
