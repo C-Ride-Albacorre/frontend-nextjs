@@ -184,7 +184,7 @@ export default function ActiveDeliveriesCard({
             <Button
               onClick={() => setOpenModal(true)}
               variant="green"
-              className="w-full"
+              className="w-full text-white"
             >
               <Navigation size={18} />
               Track Driver

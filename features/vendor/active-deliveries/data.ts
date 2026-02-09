@@ -1,11 +1,13 @@
-import { Order } from './type';
+import { OrderBase, OrderProps } from "./type";
 
-export const activeOrders: Order[] = [
+
+export const activeOrders: OrderProps[] = [
   {
     orderId: '#CR-2851',
     status: 'In Transit',
     scheduleType: 'Scheduled',
     percent: 70,
+    visible: true,
     customer: 'Adebayo Williams',
     address: 'Plot 15, Adeola Odeku Street, Victoria Island, Lagos',
     distance: '3.2 km',
@@ -24,24 +26,5 @@ export const activeOrders: Order[] = [
       { label: 'Slot', time: '2:30 PM - 3:00 PM' },
     ],
   },
-  {
-    orderId: '#CR-2852',
-    status: 'In Transit',
-    scheduleType: 'Scheduled',
-    percent: 45,
-    customer: 'Funke Adebola',
-    address: 'Lekki Phase 1, Lagos',
-    distance: '5.1 km',
-    fee: '₦22,000',
-    driver: {
-      name: 'Sadiq Musa',
-      rating: 4.7,
-    },
-    items: [{ name: 'Ofada Rice', quantity: 1 }],
-    timeline: [
-      { label: 'Prepared', time: '1:40 PM' },
-      { label: 'Picked up', time: '1:55 PM' },
-      { label: 'Slot', time: '2:30 PM - 3:00 PM' },
-    ],
-  },
 ];
+
