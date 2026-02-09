@@ -32,7 +32,9 @@ export default function ActiveDeliveriesCard({
 }: OrderProps) {
   const barRef = useRef<HTMLDivElement | null>(null);
   const [visible, setVisible] = useState(false);
-  const [openModal, setOpenModal] = useState(false);
+  const [openDetailsModal, setOpenDetailsModal] = useState(false);
+
+  const [openTrackingModal, setOpenTrackingModal] = useState(false);
 
   useEffect(() => {
     if (!barRef.current) return;
@@ -169,7 +171,7 @@ export default function ActiveDeliveriesCard({
           <div className="w-full">
             <Button
               onClick={() => {
-                setOpenModal(true);
+                setOpenDetailsModal(true);
               }}
               type="submit"
               variant="primary"
@@ -182,7 +184,7 @@ export default function ActiveDeliveriesCard({
 
           <div className="flex flex-col sm:flex-row gap-4 w-full">
             <Button
-              onClick={() => setOpenModal(true)}
+              onClick={() => setOpenTrackingModal(true)}
               variant="green"
               className="w-full text-white"
             >
@@ -199,8 +201,8 @@ export default function ActiveDeliveriesCard({
       </Card>
 
       <DeliveryDetailsModal
-        openModal={openModal}
-        onClose={() => setOpenModal(false)}
+        openModal={openDetailsModal}
+        onClose={() => setOpenDetailsModal(false)}
         statusClass={statusClass}
         status={status}
         scheduleType={scheduleType}
@@ -217,8 +219,8 @@ export default function ActiveDeliveriesCard({
       />
 
       <DriverTrackingModal
-        open={openModal}
-        onClose={() => setOpenModal(false)}
+        open={openTrackingModal}
+        onClose={() => setOpenTrackingModal(false)}
       />
     </>
   );
