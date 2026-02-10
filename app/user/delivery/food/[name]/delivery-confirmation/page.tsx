@@ -1,3 +1,7 @@
+'use client';
+
+import { useState } from 'react';
+
 import { Button } from '@/components/ui/buttons/button';
 import Input from '@/components/ui/inputs/input';
 import {
@@ -10,8 +14,14 @@ import {
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react';
+import PaymentModal from '@/features/user/delivery/components/modals/payment';
+import PaymentSuccessModal from '@/features/user/delivery/components/modals/payment-success';
 
 export default function DeliveryConfirmationPage() {
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState<boolean>(false);
+  const [isPaymentSuccessModalOpen, setIsPaymentSuccessModalOpen] =
+    useState<boolean>(false);
+
   return (
     <>
       <div className="space-y-12 my-12">
@@ -132,7 +142,7 @@ export default function DeliveryConfirmationPage() {
         </Button>
 
         <Button
-          href=""
+          onClick={() => setIsPaymentModalOpen(true)}
           variant="primary"
           size="lg"
           rightIcon={<ChevronRight size={16} />}
@@ -141,6 +151,17 @@ export default function DeliveryConfirmationPage() {
           Continue
         </Button>
       </div>
+
+      <PaymentModal
+        isModalOpen={isPaymentModalOpen}
+        onClose={() => setIsPaymentModalOpen(false)}
+        setIsPaymentSuccessModalOpen={() => setIsPaymentSuccessModalOpen(true)}
+      />
+
+      <PaymentSuccessModal
+        isModalOpen={isPaymentSuccessModalOpen}
+        onClose={() => setIsPaymentSuccessModalOpen(false)}
+      />
     </>
   );
 }
