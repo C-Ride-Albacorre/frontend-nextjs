@@ -10,18 +10,26 @@ import {
   CreditCard,
   Gift,
   HelpCircle,
+  Truck,
+  MessageCircle,
+  Phone,
 } from 'lucide-react';
 
 import {
   AccountItem,
   Reward,
-} from '@/features/user/dashboard/components/dashboard-section';
+} from '@/features/user/dashboard/components/section';
 
 import QuickAction from '@/features/user/dashboard/components/quick-action';
 
 import DeliverySummary from '@/features/user/dashboard/components/delivery-summary';
 import Address from '@/features/user/dashboard/components/address';
 import DashboardHeader from '@/components/ui/headers/user-header';
+import { Button } from '@/components/ui/buttons/button';
+import Card from '@/components/layout/card';
+import { RouteItem } from '@/features/user/track-order/components/section';
+import Avatar from '@/components/ui/avatar';
+import ActiveDeliveries from '@/features/user/dashboard/components/active-deliveries';
 
 export default function DashboardPage() {
   return (
@@ -51,6 +59,8 @@ export default function DashboardPage() {
             label="Schedule"
           />
         </div>
+
+        <ActiveDeliveries />
 
         {/* LOCATIONS + SUMMARY */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

@@ -25,12 +25,12 @@ export function RouteItem({
       </div>
 
       <div className="space-y-3">
-        <p className="font-medium flex items-center gap-3">
+        <p className="font-medium flex items-center gap-3 text-sm">
           {title}
           {!highlight && <CheckCircle size={16} className="text-primary" />}
         </p>
         <p className="text-sm text-neutral-500">{address}</p>
-        <p className={`text-sm text-primary`}>{time}</p>
+        <p className={`text-xs text-primary`}>{time}</p>
       </div>
     </div>
   );
