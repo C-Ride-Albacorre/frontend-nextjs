@@ -14,21 +14,21 @@ export default function PaymentSuccessModal({
     <>
       <Modal isModalOpen={isModalOpen} onClose={onClose}>
         <div className="space-y-6 p-4 md:p-8">
-          <div className="bg-[#10B981]/20 w-28 h-28 shrink-0 aspect-square flex items-center justify-center rounded-full border-8 border-foreground-100 text-center mx-auto">
-            <CheckCircle2 size={54} className="text-[#10B981] mx-auto" />
+          <div className="bg-[#10B981]/20 w-24 h-24 shrink-0 aspect-square flex items-center justify-center rounded-full border-8 border-white/60 text-center mx-auto">
+            <CheckCircle2 size={48} className="text-[#10B981] mx-auto" />
           </div>
           <div className="space-y-2">
-            <p className=" text-lg md:text-xl font-medium  text-center">
+            <p className="  md:text-lg font-medium  text-center">
               Payment Successful!
             </p>
 
-            <p className=" text-neutral-500 text-center ">
+            <p className=" text-neutral-500 text-sm text-center ">
               Your order is now in care
             </p>
           </div>
 
           <Card className="p-4">
-            <ul className="space-y-6 text-sm md:text-base">
+            <ul className="space-y-6 text-sm">
               <li className="flex justify-between">
                 <p className="text-neutral-500">Amount Paid</p>{' '}
                 <p className="text-primary text-right font-medium">₦21,769</p>
@@ -53,7 +53,10 @@ export default function PaymentSuccessModal({
             </ul>
           </Card>
 
-          <Card gap='sm' className="bg-[#10B981]/10 border border-[#10B981] p-4 rounded-xl text-sm">
+          <Card
+            gap="sm"
+            className="bg-[#10B981]/10 border border-[#10B981] p-4 rounded-xl text-sm"
+          >
             <p>Beyond Delivery, It's Care</p>
 
             <p className="text-neutral-500">
@@ -63,7 +66,7 @@ export default function PaymentSuccessModal({
           </Card>
 
           <div className="text-center">
-            <Button variant="primary" size="2xl" onClick={onClose}>
+            <Button variant="primary" size="2xl" href="/user/track-order">
               Track Your Order
             </Button>
           </div>

@@ -27,6 +27,9 @@ export function Button({
       'bg-primary text-primary-text-100 hover:bg-primary-hover':
         variant === 'primary',
 
+      'bg-primary  text-primary-text-100  hover:bg-primary-text-100  hover:text-primary':
+        variant === 'primary-inverted',
+
       'bg-white text-primary-text-100 hover:bg-foreground-100':
         variant === 'secondary',
 
@@ -44,6 +47,11 @@ export function Button({
       'opacity-90 hover:opacity-100': variant === 'white-nav-link',
 
       'bg-green-100 hover:bg-green-600': variant === 'green',
+
+      'bg-primary-text-100  text-primary hover:bg-primary hover:text-primary-text-100':
+        variant === 'black',
+
+      'bg-[#E7000B] hover:bg-[#B0000A] text-white': variant === 'red',
 
       // sizes
 

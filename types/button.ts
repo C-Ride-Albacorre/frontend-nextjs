@@ -1,6 +1,7 @@
 type ButtonVariant =
   | 'default'
   | 'primary'
+  | 'primary-inverted'
   | 'outline'
   | 'fill'
   | 'primary-outline'
@@ -8,6 +9,8 @@ type ButtonVariant =
   | 'secondary'
   | 'ghost'
   | 'green'
+  | 'black'
+  | 'red'
   | 'white-nav-link';
 type ButtonSize =
   | 'none'
