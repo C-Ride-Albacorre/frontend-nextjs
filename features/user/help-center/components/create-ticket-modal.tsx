@@ -7,6 +7,7 @@ import { Select } from '@/components/ui/inputs/select';
 import Textarea from '@/components/ui/inputs/textarea';
 import { Button } from '@/components/ui/buttons/button';
 import { Send } from 'lucide-react';
+import TicketSuccessDetails from './ticket-success-details';
 
 const Categories = [
   {
@@ -30,6 +31,8 @@ export default function CreateTicketModal({
   onClose: () => void;
 }) {
   const [category, setCategory] = useState('Select Category');
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+
   return (
     <>
       <Modal isModalOpen={isModalOpen} onClose={onClose}>
@@ -62,10 +65,25 @@ export default function CreateTicketModal({
               Cancel
             </Button>
 
-            <Button leftIcon={<Send size={18}/>} size="lg">Submit</Button>
+            <Button
+              onClick={() => {
+                (setIsSuccessModalOpen(true), onClose());
+              }}
+              leftIcon={<Send size={18} />}
+              size="lg"
+            >
+              Submit
+            </Button>
           </div>
         </form>
       </Modal>
+
+      {isSuccessModalOpen && (
+        <TicketSuccessDetails
+          isModalOpen={isSuccessModalOpen}
+          onClose={() => setIsSuccessModalOpen(false)}
+        />
+      )}
     </>
   );
 }
