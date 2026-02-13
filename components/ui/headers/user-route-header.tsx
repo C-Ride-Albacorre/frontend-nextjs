@@ -21,6 +21,7 @@ export default function Header() {
     'Tracking Delivery': isOnTrackOrderPage,
     'Order History': pathName === '/user/order-history',
     'Profile & Address': pathName === '/user/profile',
+    'Help Center': pathName === '/user/help-center',
   });
 
   return (

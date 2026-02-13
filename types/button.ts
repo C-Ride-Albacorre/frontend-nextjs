@@ -3,6 +3,7 @@ type ButtonVariant =
   | 'primary'
   | 'primary-inverted'
   | 'primary-black-outline'
+  | 'primary-inverted-outline'
   | 'outline'
   | 'fill'
   | 'primary-outline'

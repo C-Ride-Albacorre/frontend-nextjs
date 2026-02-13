@@ -39,9 +39,14 @@ export function Button({
       'bg-primary  text-primary-text-100  hover:bg-primary-text-100  hover:text-primary':
         variant === 'primary-inverted',
 
-
-          ' border border-primary  text-primary-text-100  hover:bg-primary':
+      'border border-primary  text-primary-text-100  hover:bg-primary':
         variant === 'primary-black-outline',
+
+      'border border-primary text-primary hover:bg-primary hover:text-primary-text-100':
+        variant === 'primary-outline',
+
+      'border border-border text-primary hover:bg-primary hover:text-primary-text-100':
+        variant === 'primary-inverted-outline',
 
       'bg-white text-primary-text-100 hover:bg-foreground-100':
         variant === 'secondary',
@@ -52,32 +57,28 @@ export function Button({
       'border border-border bg-foreground-100 hover:bg-foreground-200':
         variant === 'outline',
 
-      'border border-primary text-primary hover:bg-primary hover:text-primary-text-100':
-        variant === 'primary-outline',
-
       'bg-transparent hover:bg-foreground-100': variant === 'ghost',
 
       'opacity-90 hover:opacity-100': variant === 'white-nav-link',
 
       'bg-[#10B981] hover:bg-green-600': variant === 'green',
 
-
-      
-      'border border-[#10B981] text-[#10B981] hover:bg-[#10B981] hover:text-white': variant === 'green-outline',
+      'border border-[#10B981] text-[#10B981] hover:bg-[#10B981] hover:text-white':
+        variant === 'green-outline',
 
       'bg-primary-text-100  text-primary hover:bg-primary hover:text-primary-text-100':
         variant === 'black',
 
       'bg-[#E7000B] hover:bg-[#B0000A] text-white': variant === 'red',
 
-        'border border-[#E7000B] text-[#E7000B] hover:bg-[#B0000A] hover:text-white': variant === 'red-outline',
+      'border border-[#E7000B] text-[#E7000B] hover:bg-[#B0000A] hover:text-white':
+        variant === 'red-outline',
 
       // sizes
 
       'p-0 text-sm': size === 'none',
 
       'p-2 text-xs': size === 'xs',
-
 
       'px-3 py-2.5 text-sm md:px-4 md:py-3': size === 'sm',
 
