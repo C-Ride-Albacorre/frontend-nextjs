@@ -2,18 +2,23 @@ type ButtonVariant =
   | 'default'
   | 'primary'
   | 'primary-inverted'
+  | 'primary-black-outline'
   | 'outline'
   | 'fill'
   | 'primary-outline'
   | 'white-outline'
+  | 'white-nav-link'
   | 'secondary'
   | 'ghost'
   | 'green'
+  | 'green-outline'
   | 'black'
   | 'red'
-  | 'white-nav-link';
+  | 'red-outline';
+
 type ButtonSize =
   | 'none'
+  | 'xs'
   | 'sm'
   | 'md'
   | 'lg'
@@ -51,6 +56,7 @@ export type ButtonProps = {
 export type IconButtonProps = {
   children: React.ReactNode;
   size?: 'sm' | 'md';
+  rounded?: 'none' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full';
   variant?: ButtonVariant;
   className?: string;
   ariaLabel?: string;

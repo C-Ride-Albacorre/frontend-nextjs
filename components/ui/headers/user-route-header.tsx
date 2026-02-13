@@ -20,6 +20,7 @@ export default function Header() {
   const pageTitle = clsx({
     'Tracking Delivery': isOnTrackOrderPage,
     'Order History': pathName === '/user/order-history',
+    'Profile & Address': pathName === '/user/profile',
   });
 
   return (

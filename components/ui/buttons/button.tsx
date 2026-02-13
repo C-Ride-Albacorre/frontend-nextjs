@@ -39,6 +39,10 @@ export function Button({
       'bg-primary  text-primary-text-100  hover:bg-primary-text-100  hover:text-primary':
         variant === 'primary-inverted',
 
+
+          ' border border-primary  text-primary-text-100  hover:bg-primary':
+        variant === 'primary-black-outline',
+
       'bg-white text-primary-text-100 hover:bg-foreground-100':
         variant === 'secondary',
 
@@ -55,16 +59,25 @@ export function Button({
 
       'opacity-90 hover:opacity-100': variant === 'white-nav-link',
 
-      'bg-green-100 hover:bg-green-600': variant === 'green',
+      'bg-[#10B981] hover:bg-green-600': variant === 'green',
+
+
+      
+      'border border-[#10B981] text-[#10B981] hover:bg-[#10B981] hover:text-white': variant === 'green-outline',
 
       'bg-primary-text-100  text-primary hover:bg-primary hover:text-primary-text-100':
         variant === 'black',
 
       'bg-[#E7000B] hover:bg-[#B0000A] text-white': variant === 'red',
 
+        'border border-[#E7000B] text-[#E7000B] hover:bg-[#B0000A] hover:text-white': variant === 'red-outline',
+
       // sizes
 
       'p-0 text-sm': size === 'none',
+
+      'p-2 text-xs': size === 'xs',
+
 
       'px-3 py-2.5 text-sm md:px-4 md:py-3': size === 'sm',
 

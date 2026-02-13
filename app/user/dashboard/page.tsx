@@ -10,9 +10,6 @@ import {
   CreditCard,
   Gift,
   HelpCircle,
-  Truck,
-  MessageCircle,
-  Phone,
 } from 'lucide-react';
 
 import {

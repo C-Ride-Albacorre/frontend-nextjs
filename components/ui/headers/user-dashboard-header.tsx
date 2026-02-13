@@ -28,7 +28,7 @@ export default function DashboardHeader({ name }: { name: string }) {
           </div>
 
           <Link
-            href="/user/dashboard"
+            href="/user/profile"
             className="flex p-3 items-center justify-center rounded-full bg-white/20"
           >
             <User className="h-5 w-5 text-primary-text-100" />
