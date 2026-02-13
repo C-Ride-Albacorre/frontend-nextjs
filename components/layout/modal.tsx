@@ -8,7 +8,7 @@ export default function Modal({ isModalOpen, onClose, children }: ModalProps) {
   return (
     <div
       onClick={onClose}
-      className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center px-4 py-8"
+      className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center px-4 py-8 h-full w-full"
     >
       {/* MODAL SHELL */}
       <div

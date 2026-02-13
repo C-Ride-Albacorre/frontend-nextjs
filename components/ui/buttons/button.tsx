@@ -10,6 +10,7 @@ export function Button({
   variant = 'primary',
   size = 'md',
   spacing = 'md',
+  justify = 'center',
   href,
   disabled,
   loading,
@@ -19,8 +20,16 @@ export function Button({
   ...props
 }: ButtonProps) {
   const classes = clsx(
-    'inline-flex items-center justify-center gap-2 rounded-xl font-medium transition focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer',
+    'inline-flex items-center rounded-xl font-medium transition focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer',
     {
+      //justify
+      'justify-center': justify === 'center',
+      'justify-start': justify === 'start',
+      'justify-end': justify === 'end',
+      'justify-between': justify === 'between',
+      'justify-around': justify === 'around',
+      'justify-evenly': justify === 'evenly',
+
       // variants
       'text-primary': variant === 'default',
 

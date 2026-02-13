@@ -1,0 +1,117 @@
+export const orders = [
+  {
+    id: "CRD-2024-1234",
+    status: "confirmed",
+    statusColor: "#10B981",
+    service: "Food Delivery",
+    date: "Nov 15, 2024",
+    time: "2:45 PM",
+    pickup: {
+      address: "Eko Hotel Restaurant, Victoria Island",
+      time: "2:15 PM",
+    },
+    dropoff: {
+      address: "12 Admiralty Way, Lekki Phase 1",
+      time: "2:47 PM (ETA)",
+    },
+    driver: {
+      name: "Chukwudi Okonkwo",
+      rating: 4.9,
+      trips: 1247,
+      avatar: "/assets/image/driver.jpg",
+    },
+    amount: "₦5,000.00",
+  },
+  {
+    id: "CRD-2024-1235",
+    status: "cancelled",
+    statusColor: "#EB5757",
+    service: "Grocery Delivery",
+    date: "Nov 18, 2024",
+    time: "11:20 AM",
+    pickup: {
+      address: "Shoprite, Lekki",
+      time: "10:50 AM",
+    },
+    dropoff: {
+      address: "7 Chevron Drive, Lekki",
+      time: "11:35 AM",
+    },
+    driver: {
+      name: "Ibrahim Musa",
+      rating: 4.7,
+      trips: 980,
+      avatar: "/assets/image/driver.jpg",
+    },
+    amount: "₦8,200.00",
+  },
+  {
+    id: "CRD-2024-1236",
+    status: "confirmed",
+    statusColor: "#10B981",
+    service: "Gift Delivery",
+    date: "Nov 20, 2024",
+    time: "4:10 PM",
+    pickup: {
+      address: "The Palms Mall, Oniru",
+      time: "3:40 PM",
+    },
+    dropoff: {
+      address: "22B Admiralty Road, Lekki",
+      time: "4:25 PM (ETA)",
+    },
+    driver: {
+      name: "Samuel Adeyemi",
+      rating: 4.8,
+      trips: 1432,
+      avatar: "/assets/image/driver.jpg",
+    },
+    amount: "₦6,500.00",
+  },
+  {
+    id: "CRD-2024-1237",
+    status: "cancelled",
+    statusColor: "#EB5757",
+    service: "Food Delivery",
+    date: "Nov 22, 2024",
+    time: "7:30 PM",
+    pickup: {
+      address: "KFC Ikoyi",
+      time: "7:00 PM",
+    },
+    dropoff: {
+      address: "3 Banana Island Road, Ikoyi",
+      time: "7:50 PM",
+    },
+    driver: {
+      name: "Daniel Eze",
+      rating: 4.6,
+      trips: 875,
+      avatar: "/assets/image/driver.jpg",
+    },
+    amount: "₦4,300.00",
+  },
+  {
+    id: "CRD-2024-1238",
+    status: "confirmed",
+    statusColor: "#10B981",
+    service: "Pharmacy Delivery",
+    date: "Nov 25, 2024",
+    time: "9:15 AM",
+    pickup: {
+      address: "HealthPlus Pharmacy, VI",
+      time: "8:45 AM",
+    },
+    dropoff: {
+      address: "15 Ajose Adeogun Street, Victoria Island",
+      time: "9:30 AM (ETA)",
+    },
+    driver: {
+      name: "Tunde Bakare",
+      rating: 4.9,
+      trips: 1560,
+      avatar: "/assets/image/driver.jpg",
+    },
+    amount: "₦3,750.00",
+  },
+];

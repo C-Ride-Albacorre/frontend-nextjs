@@ -1,6 +1,5 @@
-
 import MapOrderInfo from '@/features/user/track-order/components/map-order-info';
-import Header from '@/features/user/track-order/components/header';
+import Header from '@/components/ui/headers/user-route-header';
 import SideInfo from '@/features/user/track-order/components/side-info';
 
 export default function TrackingDeliveryPage() {

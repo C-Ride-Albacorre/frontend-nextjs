@@ -31,16 +31,18 @@ export default function StatCard({
     <Card
       gap="sm"
       spacing="sm"
-      className="group bg-white rounded-xl border p-4 hover:bg-primary"
+      className={`group bg-white rounded-xl border p-4 ${iconBackground && 'group-hover:bg-primary'} transition-colors cursor-pointer`}
     >
       <div className="flex items-center justify-between">
         <p className="text-sm text-neutral-500">{title}</p>
 
-        <div
-          className={` group-hover:bg-[#FBF7EB] group-hover:text-primary w-10 h-10 rounded-full flex items-center justify-center shrink-0 aspect-square  ${iconBackground} transition-transform `}
-        >
-          {icon}
-        </div>
+        {icon && (
+          <div
+            className={` group-hover:bg-[#FBF7EB] group-hover:text-primary w-10 h-10 rounded-full flex items-center justify-center shrink-0 aspect-square  ${iconBackground} transition-transform `}
+          >
+            {icon}
+          </div>
+        )}
       </div>
 
       {valueInfo && <p className="text-sm text-neutral-500">{valueInfo}</p>}

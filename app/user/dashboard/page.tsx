@@ -24,7 +24,7 @@ import QuickAction from '@/features/user/dashboard/components/quick-action';
 
 import DeliverySummary from '@/features/user/dashboard/components/delivery-summary';
 import Address from '@/features/user/dashboard/components/address';
-import DashboardHeader from '@/components/ui/headers/user-header';
+import DashboardHeader from '@/components/ui/headers/user-dashboard-header';
 import { Button } from '@/components/ui/buttons/button';
 import Card from '@/components/layout/card';
 import { RouteItem } from '@/features/user/track-order/components/section';

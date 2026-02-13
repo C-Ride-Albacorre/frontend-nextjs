@@ -1,7 +1,5 @@
-
-
-import { Gift, ChevronRight } from 'lucide-react';
-
+import { Button } from '@/components/ui/buttons/button';
+import { Gift, ChevronRight, Link } from 'lucide-react';
 
 export function Reward() {
   return (
@@ -32,7 +30,12 @@ export function AccountItem({
   badge?: string;
 }) {
   return (
-    <div className="flex items-center justify-between rounded-xl border border-border px-4 py-4 bg-foreground-200 hover:bg-foreground-100 transition">
+    <Button
+      justify="between"
+      variant="outline"
+      href={label.trim().toLowerCase().replace(/\s+/g, '-')}
+     
+    >
       <div className="flex items-center gap-3">
         <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
           {icon}
@@ -48,6 +51,6 @@ export function AccountItem({
         )}
         <ChevronRight size={20} className="text-neutral-400" />
       </div>
-    </div>
+    </Button>
   );
 }

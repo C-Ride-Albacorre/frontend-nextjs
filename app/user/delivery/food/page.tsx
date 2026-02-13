@@ -1,4 +1,4 @@
-import DashboardHeader from '@/components/ui/headers/user-header';
+import DashboardHeader from '@/components/ui/headers/user-dashboard-header';
 import CategoryIcons from '@/features/user/delivery/components/category-icons';
 import Filters from '@/features/user/delivery/components/filters';
 import LocationChips from '@/features/user/delivery/components/location-chips';

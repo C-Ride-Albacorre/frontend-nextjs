@@ -12,7 +12,7 @@ export function RouteItem({
   highlight?: boolean;
 }) {
   return (
-    <div className="flex gap-4">
+    <div className="flex gap-4 w-full">
       <div
         className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 aspect-square ${
           highlight

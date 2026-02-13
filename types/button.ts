@@ -26,12 +26,21 @@ type ButtonSize =
   | 'full'
   | 'icon';
 
+type JustifyOptions =
+  | 'center'
+  | 'start'
+  | 'end'
+  | 'between'
+  | 'around'
+  | 'evenly';
+
 export type ButtonProps = {
   children: React.ReactNode;
   variant?: ButtonVariant;
   disabled?: boolean;
   loading?: boolean;
   size?: ButtonSize;
+  justify?: JustifyOptions;
   spacing?: 'none' | 'sm' | 'md' | 'lg' | 'xl';
   href?: string;
   leftIcon?: React.ReactNode;
