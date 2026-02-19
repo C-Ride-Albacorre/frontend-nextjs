@@ -42,6 +42,7 @@ export function IconButton({
       className={clsx(
         'inline-flex items-center justify-center border transition-all duration-200 cursor-pointer z-10 focus:outline-none',
         {
+          'p-0': size === 'none',
           'p-1.5': size === 'sm',
           'p-2': size === 'md',
 
@@ -53,17 +54,17 @@ export function IconButton({
           'rounded-2xl': rounded === '2xl',
           'rounded-full': rounded === 'full',
 
-
-
           'border-border hover:bg-neutral-100': variant === 'default',
           'border-border bg-foreground-200 hover:bg-neutral-100':
             variant === 'fill',
 
           'border-transparent hover:bg-neutral-100': variant === 'ghost',
 
-          'border-[#EF4444] hover:bg-[#E7000B] hover:text-white text-[#EF4444] bg-white':variant === 'red',
+          'border-[#EF4444] hover:bg-[#E7000B] hover:text-white text-[#EF4444] bg-white':
+            variant === 'red',
 
-          
+          'border-transparent text-neutral-500 hover:text-neutral-600':
+            variant === 'gray',
 
           'text-white border-border/10 hover:bg-white/10': shouldHighlight,
         },

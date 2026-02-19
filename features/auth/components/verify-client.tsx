@@ -1,24 +1,38 @@
 'use client';
 
-import { Suspense, useRef, useState } from 'react';
-import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
-
-import AuthFormHeader from '@/components/ui/headers/auth-form-header';
+import { useActionState, useRef, useState } from 'react';
+import { VerifyCodeAction } from '@/features/auth/actions/verify-code';
 import { OtpInput } from '@/components/ui/inputs/otp-input';
+import { Button } from '@/components/ui/buttons/button';
+import { VerifyOtpState } from '../libs/verify-code.schema';
+import AuthFormHeader from '@/components/ui/headers/auth-form-header';
+import ResendOtpButton from './resend-otp-button';
 
-export default function VerifyClient() {
-  const searchParams = useSearchParams();
+type VerifyClientProps = {
+  identifier: string;
+  method: 'email' | 'phone';
+};
 
-  const method = searchParams.get('method') || 'phone';
-  const destination =
-    searchParams.get('to') ||
-    (method === 'email' ? 'jo***@gmail.com' : '+234 8** *** **89');
+type VerifyAction = (
+  state: VerifyOtpState | null,
+  formData: FormData,
+) => Promise<VerifyOtpState | null>;
 
+export default function VerifyClient({
+  identifier,
+  method,
+}: VerifyClientProps) {
   const label = method === 'email' ? 'email address' : 'phone number';
 
   const [code, setCode] = useState<string[]>(Array(6).fill(''));
   const inputsRef = useRef<Array<HTMLInputElement | null>>([]);
+
+  const actionFn = VerifyCodeAction as unknown as VerifyAction;
+
+  const [state, action, pending] = useActionState<
+    VerifyOtpState | null,
+    FormData
+  >(actionFn, null);
 
   const handleChange = (value: string, index: number) => {
     if (!/^[0-9]?$/.test(value)) return;
@@ -32,64 +46,76 @@ export default function VerifyClient() {
     }
   };
 
-  const handleKeyDown = (
-    e: React.KeyboardEvent<HTMLInputElement>,
-    index: number,
-  ) => {
-    if (e.key === 'Backspace' && !code[index] && index > 0) {
-      inputsRef.current[index - 1]?.focus();
-    }
-  };
+  const otp = code.join('');
 
   return (
     <section className="min-h-screen bg-neutral-50 flex items-center justify-center px-4">
       <div className="w-full max-w-3xl bg-white border border-border rounded-3xl px-4 md:px-8 py-14 text-center">
-        {/* LOGO */}
         <AuthFormHeader />
-
-        {/* TITLE */}
         <h1 className="text-2xl font-semibold mb-2">Verify your Identity</h1>
+
         <p className="text-sm text-neutral-500 mb-10">
           We've sent a verification code to your{' '}
-          <span className="font-medium text-neutral-700">{label}</span>
+          <span className="font-medium">{label}</span>
           <br />
-          <span className="font-medium text-neutral-700">{destination}</span>
+          <span className="font-medium">{identifier}</span>
         </p>
 
-        {/* OTP INPUTS */}
-        <div className="flex justify-center gap-2 sm:gap-3 md:gap-4 mb-10">
-          {code.map((digit, index) => (
-            <OtpInput
-              key={index}
-              ref={(el) => {
-                inputsRef.current[index] = el;
-              }}
-              value={digit}
-              onChange={(e) => handleChange(e.target.value, index)}
-              onKeyDown={(e) => handleKeyDown(e, index)}
-              maxLength={1}
-              inputMode="numeric"
-            />
-          ))}
-        </div>
+        {state?.errors?.otp?.[0] && (
+          <p className="text-red-500 text-sm mb-4">{state.errors.otp[0]}</p>
+        )}
 
-        {/* CTA */}
-        <Link
-          href="/user/dashboard"
-          className="mx-auto block w-full max-w-md rounded-xl bg-primary py-4 text-sm font-medium text-primary-text-100 hover:bg-primary-hover transition"
-        >
-          Verify & Continue
-        </Link>
+        <form action={action} className="flex flex-col items-center">
+          {/* send OTP only */}
+
+          <input type="hidden" name="otp" value={otp} />
+
+          <div className="flex justify-center gap-3 mb-6">
+            {code.map((digit, index) => (
+              <OtpInput
+                key={index}
+                name="otp"
+                ref={(el) => {
+                  inputsRef.current[index] = el;
+                }}
+                value={digit}
+                onChange={(e) => handleChange(e.target.value, index)}
+                maxLength={1}
+                inputMode="numeric"
+                onKeyDown={(e) => {
+                  if (e.key === 'Backspace' && !digit && index > 0) {
+                    inputsRef.current[index - 1]?.focus();
+                  }
+                }}
+              />
+            ))}
+          </div>
+
+          {state?.errors?.otp && (
+            <p className="text-red-500 text-sm mb-4">{state.errors.otp[0]}</p>
+          )}
+
+          {state?.message && (
+            <p className="text-red-500 text-sm mb-4">{state.message}</p>
+          )}
+
+          <Button size="6xl" variant="primary" type="submit" disabled={pending}>
+            {pending ? 'Verifying...' : 'Verify & Continue'}
+          </Button>
+        </form>
 
         {/* ACTIONS */}
         <div className="mt-8 space-y-3 text-sm">
-          <Link href="/signup" className="block text-primary font-medium">
+          <Button
+            href="/user/register"
+            size="none"
+            variant="default"
+            className="block text-primary font-medium"
+          >
             Change {label}?
-          </Link>
+          </Button>
 
-          <button className="block w-full text-primary font-medium">
-            Resend Code
-          </button>
+          <ResendOtpButton />
         </div>
       </div>
     </section>

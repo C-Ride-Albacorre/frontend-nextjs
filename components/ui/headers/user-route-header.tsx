@@ -22,6 +22,7 @@ export default function Header() {
     'Order History': pathName === '/user/order-history',
     'Profile & Address': pathName === '/user/profile',
     'Help Center': pathName === '/user/help-center',
+    'Payments Method': pathName === '/user/wallet',
   });
 
   return (

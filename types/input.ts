@@ -1,6 +1,7 @@
 export type InputProps = {
   id?: string;
   label?: string;
+  name?: string;
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   variant?: 'default' | 'fill';
@@ -8,14 +9,12 @@ export type InputProps = {
   type?: React.HTMLInputTypeAttribute;
   spacing?: 'none' | 'sm' | 'md' | 'lg';
   placeholder?: string;
-  errorMessage?: string;
+  errorMessage?: React.ReactNode | string | undefined;
   inputInfo?: string;
   className?: string;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
   props?: React.InputHTMLAttributes<HTMLInputElement>;
-  // value?: string;
-  // onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
 export type TextareaProps = {
@@ -32,9 +31,10 @@ export type TextareaProps = {
 
 export type OtpInputProps = {
   ref?: React.Ref<HTMLInputElement>;
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+  value?: string;
+  name?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   maxLength?: number;
   inputMode?: string;
   className?: string;

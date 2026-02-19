@@ -3,6 +3,7 @@ import { OtpInputProps } from '@/types/input';
 export function OtpInput({
   ref,
   value,
+  name,
   onChange,
   onKeyDown,
   maxLength,
@@ -15,6 +16,7 @@ export function OtpInput({
       ref={ref}
       type={inputMode}
       value={value}
+      name={name}
       onChange={onChange}
       onKeyDown={onKeyDown}
       maxLength={maxLength}

@@ -1,7 +1,7 @@
 // app/(auth)/layout.tsx
 import type { Metadata } from 'next';
 
-import { AuthMethodProvider } from '@/features/auth/auth-method.context';
+import { AuthMethodProvider } from '@/features/auth/hooks/auth-method.context';
 
 export const metadata: Metadata = {
   title: {

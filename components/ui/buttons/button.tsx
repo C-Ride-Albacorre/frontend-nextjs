@@ -51,6 +51,9 @@ export function Button({
       'bg-white text-primary-text-100 hover:bg-foreground-100':
         variant === 'secondary',
 
+      'bg-white border border-border  text-primary-text-100 hover:bg-white-foreground-100':
+        variant === 'white',
+
       'bg-transparent border border-border  text-white hover:bg-white-hover-100 ':
         variant === 'white-outline',
 

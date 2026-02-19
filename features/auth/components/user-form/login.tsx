@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 import { Eye } from 'lucide-react';
 
-import { useAuthMethod } from '@/features/auth/auth-method.context';
+import { useAuthMethod } from '@/features/auth/hooks/auth-method.context';
 
 import AuthMethod from '@/features/auth/components/auth-method';
 import PhoneInput from '@/components/ui/inputs/phone-input';
@@ -45,7 +45,12 @@ export default function UserLoginForm() {
         </div>
 
         {/* CTA */}
-        <Button href="/user/dashboard" size="full" variant="primary" className='mt-4'>
+        <Button
+          href="/user/dashboard"
+          size="full"
+          variant="primary"
+          className="mt-4"
+        >
           Continue
         </Button>
       </form>

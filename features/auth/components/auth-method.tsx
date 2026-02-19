@@ -1,6 +1,5 @@
 import { Phone, Mail } from 'lucide-react';
-import { AuthMethodProps } from '@/features/auth/types';
-import { useAuthMethod } from '@/features/auth/auth-method.context';
+import { useAuthMethod } from '@/features/auth/hooks/auth-method.context';
 
 export default function AuthMethod() {
   const { method, setMethod } = useAuthMethod();

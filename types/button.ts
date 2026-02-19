@@ -7,10 +7,12 @@ type ButtonVariant =
   | 'outline'
   | 'fill'
   | 'primary-outline'
+  | 'white'
   | 'white-outline'
   | 'white-nav-link'
   | 'secondary'
   | 'ghost'
+  | 'gray'
   | 'green'
   | 'green-outline'
   | 'black'
@@ -56,7 +58,7 @@ export type ButtonProps = {
 
 export type IconButtonProps = {
   children: React.ReactNode;
-  size?: 'sm' | 'md';
+  size?: 'none' | 'sm' | 'md';
   rounded?: 'none' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full';
   variant?: ButtonVariant;
   className?: string;

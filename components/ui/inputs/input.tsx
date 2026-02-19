@@ -4,6 +4,7 @@ import { InputProps } from '@/types/input';
 export default function Input({
   id,
   label,
+  name,
   type = 'text',
   ariaLabel,
   variant = 'default',
@@ -46,7 +47,7 @@ export default function Input({
 
         <input
           id={id}
-          name={id}
+          name={name}
           type={type}
           aria-label={ariaLabel}
           value={value}
@@ -63,7 +64,9 @@ export default function Input({
         {rightIcon}
       </div>
 
-      {errorMessage && <p className="text-xs text-red-600">{errorMessage}</p>}
+      {errorMessage && (
+        <div className="text-xs text-red-600">{errorMessage}</div>
+      )}
 
       {inputInfo && <p className="text-xs text-neutral-500">{inputInfo}</p>}
     </div>

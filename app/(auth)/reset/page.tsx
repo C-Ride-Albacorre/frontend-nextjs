@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useAuthMethod } from '@/features/auth/auth-method.context';
+import { useAuthMethod } from '@/features/auth/hooks/auth-method.context';
 
 import AuthFormHeader from '@/components/ui/headers/auth-form-header';
 import AuthMethod from '@/features/auth/components/auth-method';
