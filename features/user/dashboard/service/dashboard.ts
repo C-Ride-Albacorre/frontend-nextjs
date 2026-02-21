@@ -7,9 +7,9 @@ import { redirect } from 'next/navigation';
 
 export async function dashboardService() {
 
-  const accessToken = getCookie('access_token') 
+const accessToken = await getCookie('accessToken');
 
-  // ✅ no token at all — redirect before even calling the API
+
   if (!accessToken) {
     redirect('/user/login');
   }
