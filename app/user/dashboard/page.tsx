@@ -23,10 +23,21 @@ import DashboardHeader from '@/components/ui/headers/user-dashboard-header';
 
 import ActiveDeliveries from '@/features/user/dashboard/components/active-deliveries';
 import { dashboardService } from '@/features/user/dashboard/service/dashboard';
+import { ApiError } from '@/features/libs/api-error';
+import { redirect } from 'next/navigation';
 
 export default async function DashboardPage() {
-  const { data } = await dashboardService();
+  let data;
 
+  try {
+    const result = await dashboardService();
+    data = result.data;
+  } catch (error) {
+    if (error instanceof ApiError && error.statusCode === 401) {
+      redirect('/user/login');
+    }
+    throw error;
+  }
   return (
     <main className="w-full bg-background">
       {/* ================= HEADER ================= */}

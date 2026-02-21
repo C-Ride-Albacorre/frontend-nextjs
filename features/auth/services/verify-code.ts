@@ -1,5 +1,5 @@
 import { BASE_URL } from '@/config/api';
-import { ApiError } from '../libs/api-error';
+import { ApiError } from '../../libs/api-error';
 
 export async function verifyOtpService(data: {
   identifier: string;

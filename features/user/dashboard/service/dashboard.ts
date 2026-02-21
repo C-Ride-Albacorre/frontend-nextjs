@@ -1,21 +1,34 @@
 import { BASE_URL } from '@/config/api';
+import { ApiError } from '@/features/libs/api-error';
+import { getCookie } from '@/utils/cookies';
 import { cookies } from 'next/headers';
 
-export async function dashboardService() {
-  const cookiesStore = await cookies();
-  const accessToken = cookiesStore.get('accessToken')?.value;
+import { redirect } from 'next/navigation';
 
-  const res = await fetch(`${BASE_URL}/dashboard`, {
+export async function dashboardService() {
+
+  const accessToken = getCookie('access_token') 
+
+  // ✅ no token at all — redirect before even calling the API
+  if (!accessToken) {
+    redirect('/user/login');
+  }
+
+  const res = await fetch(`${BASE_URL}/auth/profile`, {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
+    cache: 'no-store', // ✅ never cache profile data
   });
 
   const data = await res.json();
 
   if (!res.ok) {
-    throw new Error(data?.message || 'Failed to fetch dashboard data');
+    throw new ApiError(
+      data?.message || 'Failed to fetch profile',
+      data?.statusCode ?? res.status,
+    );
   }
 
   return data;
