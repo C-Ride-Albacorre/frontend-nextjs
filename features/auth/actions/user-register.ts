@@ -46,13 +46,13 @@ export async function userRegisterAction(
       await setCookie({
         name: 'verify_identifier',
         value: result.data.verificationIdentifier,
-        maxAge: 60 * 10,
+        maxAge: 60 * 30,
       });
 
       await setCookie({
         name: 'registration_method',
         value: registrationMethod,
-        maxAge: 60 * 10,
+        maxAge: 60 * 30,
       });
 
       redirectTo = `/verify`;
