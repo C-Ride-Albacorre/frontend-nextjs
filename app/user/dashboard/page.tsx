@@ -33,7 +33,6 @@ export default async function DashboardPage() {
     const result = await dashboardService();
     data = result.data;
 
-    console.log(result);
   } catch (error) {
     if (error instanceof ApiError && error.statusCode === 401) {
       redirect('/user/login');
