@@ -3,7 +3,8 @@
 import { redirect } from 'next/navigation';
 import { LoginFormSchema, LoginFormState } from '../libs/user-login.schema';
 import { LoginPayload, loginUser } from '../services/user-login';
-import { setAuthCookies } from '@/utils/cookies'; // reuse the helper we created
+import { setAuthCookies, setCookie } from '@/utils/cookies'; // reuse the helper we created
+import { ApiError } from '../libs/api-error';
 
 export async function userLoginAction(
   _state: LoginFormState,
@@ -46,10 +47,23 @@ export async function userLoginAction(
     await setAuthCookies(accessToken, refreshToken);
 
     redirectTo = safeCallback;
-  } catch (error: any) {
-    // Account exists but not verified yet
-    if (error?.statusCode === 403 && error?.reason === 'UNVERIFIED') {
-      redirectTo = `/verify?method=${isPhone ? 'phone' : 'email'}`;
+  } catch (error) {
+    if (
+      error instanceof ApiError &&
+      error.statusCode === 403 &&
+      error.reason === 'UNVERIFIED'
+    ) {
+      await setCookie({
+        name: 'verify_identifier',
+        value: rawIdentifier,
+        maxAge: 60 * 10,
+      });
+      await setCookie({
+        name: 'registration_method',
+        value: isPhone ? 'phone' : 'email',
+        maxAge: 60 * 10,
+      });
+      redirectTo = `/verify`;
     } else {
       return {
         status: 'error',

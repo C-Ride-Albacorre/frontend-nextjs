@@ -24,7 +24,7 @@ export default function ResendOtpButton() {
 
       if (result.status === 'success') {
         toast.success(result.message);
-        setSecondsLeft(COOLDOWN_SECONDS); // reset cooldown
+        setSecondsLeft(COOLDOWN_SECONDS);
       } else if (result.status === 'error') {
         toast.error(result.message);
       }
@@ -35,7 +35,9 @@ export default function ResendOtpButton() {
 
   return (
     <div className="text-sm text-neutral-500">
-      {canResend ? (
+      {isPending ? (
+        <span>Sending...</span>
+      ) : canResend ? (
         <Button
           variant="default"
           size="none"

@@ -1,7 +1,8 @@
 'use server';
 
-import { cookies } from 'next/headers';
+
 import { resendOtpService } from '../services/resend-otp';
+import { getCookie } from '@/utils/cookies';
 
 export type ResendOtpState =
   | { status: 'idle' }
@@ -9,8 +10,7 @@ export type ResendOtpState =
   | { status: 'error'; message: string };
 
 export async function resendOtpAction(): Promise<ResendOtpState> {
-  const cookieStore = await cookies();
-  const identifier = cookieStore.get('verify_identifier')?.value;
+  const identifier = await getCookie('verify_identifier');
 
   if (!identifier) {
     return {

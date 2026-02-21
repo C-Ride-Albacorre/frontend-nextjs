@@ -1,9 +1,9 @@
 'use server';
 
 import { redirect } from 'next/navigation';
-import { cookies } from 'next/headers';
 import { RegisterFormSchema, FormState } from '../libs/register.schema';
 import { registerUser } from '../services/user-register';
+import { setCookie } from '@/utils/cookies';
 
 export async function userRegisterAction(
   _state: FormState,
@@ -25,34 +25,44 @@ export async function userRegisterAction(
     };
   }
 
-  const { password, email, ...rest } = validatedFields.data;
-  const method = email ? 'email' : 'phone';
-
   let redirectTo: string | null = null;
 
   try {
-    const result = await registerUser({ ...rest, email, password });
+    const result = await registerUser({ ...validatedFields.data });
 
-    if (!result.success) {
+    if (!result.data) {
       return {
         status: 'error',
         message: result.message ?? 'Registration failed.',
       };
     }
 
-    if (result.requiresVerification && !result.user.isVerified) {
-      const cookieStore = await cookies();
-      cookieStore.set('verify_identifier', result.verificationIdentifier, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
-        path: '/',
+    const registrationMethod = result.data.registrationMethod.toLowerCase();
+
+    if (
+      result.data.requiresVerification &&
+      result.data.verificationIdentifier
+    ) {
+      await setCookie({
+        name: 'verify_identifier',
+        value: result.data.verificationIdentifier,
         maxAge: 60 * 10,
       });
 
-      redirectTo = `/verify?method=${method}`;
+      await setCookie({
+        name: 'registration_method',
+        value: registrationMethod,
+        maxAge: 60 * 10,
+      });
+
+      redirectTo = `/verify`;
+    } else if (!result.data.requiresVerification) {
+      redirectTo = '/user/dashboard';
     } else {
-      redirectTo = '/dashboard';
+      return {
+        status: 'error',
+        message: 'Invalid registration state.',
+      };
     }
   } catch (error) {
     return {

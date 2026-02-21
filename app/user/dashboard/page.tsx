@@ -1,5 +1,3 @@
-'use client';
-
 import {
   Box,
   Wallet,
@@ -22,18 +20,18 @@ import QuickAction from '@/features/user/dashboard/components/quick-action';
 import DeliverySummary from '@/features/user/dashboard/components/delivery-summary';
 import Address from '@/features/user/dashboard/components/address';
 import DashboardHeader from '@/components/ui/headers/user-dashboard-header';
-import { Button } from '@/components/ui/buttons/button';
-import Card from '@/components/layout/card';
-import { RouteItem } from '@/features/user/track-order/components/section';
-import Avatar from '@/components/ui/avatar';
-import ActiveDeliveries from '@/features/user/dashboard/components/active-deliveries';
 
-export default function DashboardPage() {
+import ActiveDeliveries from '@/features/user/dashboard/components/active-deliveries';
+import { dashboardService } from '@/features/user/dashboard/service/dashboard';
+
+export default async function DashboardPage() {
+  const { data } = await dashboardService();
+
   return (
     <main className="w-full bg-background">
       {/* ================= HEADER ================= */}
 
-      <DashboardHeader name="Adewale" />
+      <DashboardHeader name={data.name} />
 
       {/* ================= CONTENT ================= */}
       <section className="mx-auto max-w-6xl px-6 py-10 space-y-12">

@@ -1,8 +1,8 @@
 import VerifyClient from '@/features/auth/components/verify-client';
-import { cookies } from 'next/headers';
 import { Suspense } from 'react';
 import { redirect } from 'next/navigation';
 import { VerifyPageSkeleton } from '@/features/auth/components/verify-page-skeleton';
+import { getCookie } from '@/utils/cookies';
 
 function maskIdentifier(identifier: string, method: 'email' | 'phone') {
   if (method === 'email') {
@@ -12,27 +12,24 @@ function maskIdentifier(identifier: string, method: 'email' | 'phone') {
   return `${identifier.slice(0, 4)}****${identifier.slice(-2)}`;
 }
 
-export default async function VerifyPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ method?: string }>;
-}) {
-  const { method } = await searchParams;
-  const resolvedMethod: 'email' | 'phone' =
-    method === 'phone' ? 'phone' : 'email';
+export default async function VerifyPage() {
+  const registrationMethod = await getCookie('registration_method');
 
-  const cookieStore = await cookies();
-  const identifier = cookieStore.get('verify_identifier')?.value;
+  const identifier = await getCookie('verify_identifier');
 
-  if (!identifier) {
+  if (!identifier || !registrationMethod) {
     redirect('/user/register');
   }
 
-  const maskedIdentifier = maskIdentifier(identifier, resolvedMethod);
+  // now both are guaranteed strings
+  const method: 'email' | 'phone' =
+    registrationMethod === 'phone' ? 'phone' : 'email';
+
+  const maskedIdentifier = maskIdentifier(identifier, method);
 
   return (
     <Suspense fallback={<VerifyPageSkeleton />}>
-      <VerifyClient identifier={maskedIdentifier} method={resolvedMethod} />
+      <VerifyClient identifier={maskedIdentifier} method={method} />
     </Suspense>
   );
 }

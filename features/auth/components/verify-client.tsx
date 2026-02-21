@@ -95,11 +95,12 @@ export default function VerifyClient({
             <p className="text-red-500 text-sm mb-4">{state.errors.otp[0]}</p>
           )}
 
-          {state?.message && (
-            <p className="text-red-500 text-sm mb-4">{state.message}</p>
-          )}
-
-          <Button size="6xl" variant="primary" type="submit" disabled={pending}>
+          <Button
+            size="6xl"
+            variant="primary"
+            type="submit"
+            disabled={pending || otp.length < 6}
+          >
             {pending ? 'Verifying...' : 'Verify & Continue'}
           </Button>
         </form>
@@ -111,6 +112,7 @@ export default function VerifyClient({
             size="none"
             variant="default"
             className="block text-primary font-medium"
+            disabled={pending}
           >
             Change {label}?
           </Button>

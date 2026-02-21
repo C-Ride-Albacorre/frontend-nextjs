@@ -1,4 +1,5 @@
 import { BASE_URL } from '@/config/api';
+import { ApiError } from '../libs/api-error';
 
 export async function resendOtpService(data: { identifier: string }) {
   const res = await fetch(`${BASE_URL}/auth/customer/resend-otp`, {
@@ -10,7 +11,10 @@ export async function resendOtpService(data: { identifier: string }) {
   const result = await res.json();
 
   if (!res.ok) {
-    throw new Error(result?.message || 'Failed to resend OTP');
+    throw new ApiError(
+      result?.message || 'Failed to resend OTP',
+      result?.statusCode ?? res.status,
+    );
   }
 
   return result;
