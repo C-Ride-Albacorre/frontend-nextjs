@@ -9,6 +9,7 @@ import SavedAddress from '@/features/user/profile/components/saved-address';
 import DeleteAccountButton from '@/features/user/profile/components/delete-account';
 import { ApiError } from 'next/dist/server/api-utils';
 import { redirect } from 'next/navigation';
+import Logout from '@/features/user/profile/components/logout';
 
 export default async function UserProfilePage() {
   let data;
@@ -111,10 +112,7 @@ export default async function UserProfilePage() {
         <ProfileSettings />
 
         <section className="flex flex-col md:flex-row gap-4 justify-center  md:gap-6">
-          <Button variant="primary-black-outline" size="lg">
-            Logout from Account
-          </Button>
-
+          <Logout />
           <Button variant="primary-black-outline" size="lg">
             Back to Portal Selection
           </Button>

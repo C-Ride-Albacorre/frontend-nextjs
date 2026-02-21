@@ -64,7 +64,7 @@ export function Button({
 
       'opacity-90 hover:opacity-100': variant === 'white-nav-link',
 
-      'bg-[#10B981] hover:bg-green-600': variant === 'green',
+      'bg-[#10B981] hover:bg-green-700 text-white': variant === 'green',
 
       'border border-[#10B981] text-[#10B981] hover:bg-[#10B981] hover:text-white':
         variant === 'green-outline',
