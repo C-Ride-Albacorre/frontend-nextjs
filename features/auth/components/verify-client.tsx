@@ -65,6 +65,10 @@ export default function VerifyClient({
           <p className="text-red-500 text-sm mb-4">{state.errors.otp[0]}</p>
         )}
 
+        {state?.message && (
+          <p className="text-red-500 text-sm mb-4">{state.message}</p>
+        )}
+
         <form action={action} className="flex flex-col items-center">
           {/* send OTP only */}
 
@@ -90,10 +94,6 @@ export default function VerifyClient({
               />
             ))}
           </div>
-
-          {state?.errors?.otp && (
-            <p className="text-red-500 text-sm mb-4">{state.errors.otp[0]}</p>
-          )}
 
           <Button
             size="6xl"

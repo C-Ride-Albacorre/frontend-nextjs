@@ -31,20 +31,20 @@ export async function VerifyCodeAction(
       otp: validated.data.otp,
     });
 
-    if (!result?.accessToken) {
+    if (!result?.data?.accessToken) {
       return { message: 'Invalid or expired OTP.' };
     }
 
     await setCookie({
       name: 'accessToken',
-      value: result.accessToken,
-      maxAge: getTokenExpiry(result.accessToken),
+      value: result.data.accessToken,
+      maxAge: getTokenExpiry(result.data.accessToken),
     });
 
     await setCookie({
       name: 'refreshToken',
-      value: result.refreshToken,
-      maxAge: getTokenExpiry(result.refreshToken),
+      value: result.data.refreshToken,
+      maxAge: getTokenExpiry(result.data.refreshToken),
     });
 
     await deleteCookie('verify_identifier');
