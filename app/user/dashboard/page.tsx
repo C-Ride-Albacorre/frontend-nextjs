@@ -22,17 +22,16 @@ import Address from '@/features/user/dashboard/components/address';
 import DashboardHeader from '@/components/ui/headers/user-dashboard-header';
 
 import ActiveDeliveries from '@/features/user/dashboard/components/active-deliveries';
-import { dashboardService } from '@/features/user/dashboard/service/dashboard';
 import { ApiError } from '@/features/libs/api-error';
 import { redirect } from 'next/navigation';
+import { profileService } from '@/features/user/profile/service/profile';
 
 export default async function DashboardPage() {
   let data;
 
   try {
-    const result = await dashboardService();
+    const result = await profileService();
     data = result.data;
-
   } catch (error) {
     if (error instanceof ApiError && error.statusCode === 401) {
       redirect('/user/login');

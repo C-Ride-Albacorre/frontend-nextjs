@@ -12,12 +12,6 @@ export const COOKIE_KEYS = {
 
 type CookieKey = (typeof COOKIE_KEYS)[keyof typeof COOKIE_KEYS];
 
-interface SetCookieOptions {
-  name: CookieKey | string;
-  value: string;
-  maxAge?: number;
-}
-
 // Default cookie options
 const defaultOptions = {
   httpOnly: true,

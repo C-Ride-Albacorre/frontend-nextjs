@@ -3,7 +3,7 @@
 import { redirect } from 'next/navigation';
 import { LoginFormSchema, LoginFormState } from '../libs/user-login.schema';
 import { LoginPayload, loginUser } from '../services/user-login';
-import { setAuthCookies, setCookie } from '@/utils/cookies'; // reuse the helper we created
+import { setAuthCookies, setCookie } from '@/utils/cookies'; 
 import { ApiError } from '../../libs/api-error';
 
 export async function userLoginAction(
@@ -56,12 +56,12 @@ export async function userLoginAction(
       await setCookie({
         name: 'verify_identifier',
         value: rawIdentifier,
-        maxAge: 60 * 10,
+        maxAge: 60 * 30, 
       });
       await setCookie({
         name: 'registration_method',
         value: isPhone ? 'phone' : 'email',
-        maxAge: 60 * 10,
+        maxAge: 60 * 30, 
       });
       redirectTo = `/verify`;
     } else {

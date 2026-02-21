@@ -1,7 +1,29 @@
 'use client';
 
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
+
+const PRIMARY_COLORS = [
+  '#2563EB', // blue-600
+  '#DC2626', // red-600
+  '#16A34A', // green-600
+  '#7C3AED', // violet-600
+  '#EA580C', // orange-600
+  '#DB2777', // pink-600
+  '#0891B2', // cyan-600
+  '#4F46E5', // indigo-600
+];
+
+function getColorFromName(name?: string) {
+  if (!name) return PRIMARY_COLORS[0];
+
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+
+  return PRIMARY_COLORS[Math.abs(hash) % PRIMARY_COLORS.length];
+}
 
 const Avatar = ({
   src,
@@ -23,10 +45,16 @@ const Avatar = ({
     .slice(0, 2)
     .toUpperCase();
 
+  const backgroundColor = useMemo(() => getColorFromName(name), [name]);
+
   return (
     <div
-      className="relative shrink-0 overflow-hidden rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-medium"
-      style={{ width: size, height: size }}
+      className="relative shrink-0 overflow-hidden rounded-full flex items-center justify-center text-white font-medium"
+      style={{
+        width: size,
+        height: size,
+        backgroundColor,
+      }}
     >
       {src && !error ? (
         <Image
