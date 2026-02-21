@@ -20,7 +20,7 @@ export default function DashboardHeader({ name }: { name: string }) {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-xl lg:text-[2rem] font-semibold text-primary-text-100">
-              Welcome back, {name}
+              Welcome back, <span className="capitalize">{name}</span>
             </h1>
             <p className="mt-1 text-sm text-primary-text-100/80">
               How may we serve you today?

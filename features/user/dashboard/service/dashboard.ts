@@ -1,7 +1,6 @@
 import { BASE_URL } from '@/config/api';
 import { ApiError } from '@/features/libs/api-error';
 import { getCookie } from '@/utils/cookies';
-import { cookies } from 'next/headers';
 
 import { redirect } from 'next/navigation';
 
@@ -19,7 +18,7 @@ const accessToken = await getCookie('accessToken');
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
-    cache: 'no-store', // ✅ never cache profile data
+    cache: 'no-store', 
   });
 
   const data = await res.json();

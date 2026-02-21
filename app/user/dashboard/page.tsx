@@ -32,17 +32,22 @@ export default async function DashboardPage() {
   try {
     const result = await dashboardService();
     data = result.data;
+
+    console.log(result);
   } catch (error) {
     if (error instanceof ApiError && error.statusCode === 401) {
       redirect('/user/login');
     }
     throw error;
   }
+
+  const firstName = data.firstName.toLowerCase();
+
   return (
     <main className="w-full bg-background">
       {/* ================= HEADER ================= */}
 
-      <DashboardHeader name={data.name} />
+      <DashboardHeader name={firstName} />
 
       {/* ================= CONTENT ================= */}
       <section className="mx-auto max-w-6xl px-6 py-10 space-y-12">
