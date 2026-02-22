@@ -2,7 +2,7 @@ import { X } from 'lucide-react';
 import { ModalProps } from '@/types/modal';
 import { IconButton } from '../ui/buttons/icon-button';
 
-export default function Modal({ isModalOpen, onClose, children }: ModalProps) {
+export default function Modal({ isModalOpen, onClose, children, wrapperClassName }: ModalProps) {
   if (!isModalOpen) return null;
 
   return (
@@ -13,7 +13,7 @@ export default function Modal({ isModalOpen, onClose, children }: ModalProps) {
       {/* MODAL SHELL */}
       <div
         onClick={(e) => e.stopPropagation()}
-        className="
+        className={`
           relative
           w-full
           max-w-3xl
@@ -22,7 +22,9 @@ export default function Modal({ isModalOpen, onClose, children }: ModalProps) {
           max-h-[calc(100vh-4rem)]
           flex
           flex-col
-        "
+          ${wrapperClassName}
+          
+        `}
       >
         {/* CLOSE BUTTON (STICKY) */}
 

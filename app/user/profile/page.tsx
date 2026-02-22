@@ -9,7 +9,7 @@ import SavedAddress from '@/features/user/profile/components/saved-address';
 import DeleteAccountButton from '@/features/user/profile/components/delete-account';
 import { ApiError } from 'next/dist/server/api-utils';
 import { redirect } from 'next/navigation';
-import Logout from '@/features/user/profile/components/logout';
+import Logout from '@/features/auth/components/logout/logout';
 
 export default async function UserProfilePage() {
   let data;

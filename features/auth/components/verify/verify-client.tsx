@@ -4,7 +4,7 @@ import { useActionState, useRef, useState } from 'react';
 import { VerifyCodeAction } from '@/features/auth/actions/verify-code';
 import { OtpInput } from '@/components/ui/inputs/otp-input';
 import { Button } from '@/components/ui/buttons/button';
-import { VerifyOtpState } from '../libs/verify-code.schema';
+import { VerifyOtpState } from '../../libs/verify-code.schema';
 import AuthFormHeader from '@/components/ui/headers/auth-form-header';
 import ResendOtpButton from './resend-otp-button';
 

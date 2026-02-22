@@ -118,7 +118,7 @@ export default function PhoneInput({
           type="button"
           onClick={() => setOpen((v) => !v)}
           disabled={loading}
-          className="flex items-center gap-1.5 w-28 shrink-0 px-3 rounded-l-xl border border-r-0 border-border text-sm hover:bg-neutral-50 transition-colors disabled:opacity-50"
+          className="flex items-center gap-1.5 w-28 shrink-0 px-3 rounded-l-xl border border-r-0 border-border text-sm hover:bg-neutral-50 transition-colors disabled:opacity-50 cursor-pointer"
         >
           <img
             src={`https://flagcdn.com/w40/${selected.code.toLowerCase()}.png`}

@@ -1,7 +1,7 @@
-import VerifyClient from '@/features/auth/components/verify-client';
+import VerifyClient from '@/features/auth/components/verify/verify-client';
 import { Suspense } from 'react';
 import { redirect } from 'next/navigation';
-import { VerifyPageSkeleton } from '@/features/auth/components/verify-page-skeleton';
+import { VerifyPageSkeleton } from '@/features/auth/components/verify/verify-page-skeleton';
 import { getCookie } from '@/utils/cookies';
 
 function maskIdentifier(identifier: string, method: 'email' | 'phone') {

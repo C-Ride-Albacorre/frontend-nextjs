@@ -1,7 +1,7 @@
 'use server';
 
 import { redirect } from 'next/navigation';
-import { logoutService } from '../service/logout';
+import { logoutService } from '../services/logout';
 import { clearAuthCookies, getCookie } from '@/utils/cookies';
 
 export async function logoutAction() {

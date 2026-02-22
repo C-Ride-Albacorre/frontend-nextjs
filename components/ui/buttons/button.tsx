@@ -64,7 +64,7 @@ export function Button({
 
       'opacity-90 hover:opacity-100': variant === 'white-nav-link',
 
-      'bg-[#10B981] hover:bg-green-700 text-white': variant === 'green',
+      'bg-[#10B981] hover:bg-[#10B981]/90 text-white': variant === 'green',
 
       'border border-[#10B981] text-[#10B981] hover:bg-[#10B981] hover:text-white':
         variant === 'green-outline',
@@ -72,7 +72,7 @@ export function Button({
       'bg-primary-text-100  text-primary hover:bg-primary hover:text-primary-text-100':
         variant === 'black',
 
-      'bg-[#E7000B] hover:bg-[#B0000A] text-white': variant === 'red',
+      'bg-[#E7000B] hover:bg-[#E7000B]/90 text-white': variant === 'red',
 
       'border border-[#E7000B] text-[#E7000B] hover:bg-[#B0000A] hover:text-white':
         variant === 'red-outline',

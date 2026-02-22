@@ -1,8 +1,8 @@
-import UserLoginForm from '@/features/auth/components/user-form/login';
+import UserLoginForm from '@/features/auth/components/user/user-form/login';
 
 import AuthFooter from '@/components/layout/auth-footer';
 import { Suspense } from 'react';
-import { LoginFormSkeleton } from '@/features/auth/components/user-form/login-form-skeleton';
+import { LoginFormSkeleton } from '@/features/auth/components/user/login-form-skeleton';
 
 export default function LoginPage() {
   return (

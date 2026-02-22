@@ -1,5 +1,5 @@
 import AuthFooter from '@/components/layout/auth-footer';
-import VendorLoginForm from '@/features/auth/components/vendor-form/login';
+import VendorLoginForm from '@/features/auth/components/vendor/vendor-form/login';
 
 export default function LoginPage() {
   return (

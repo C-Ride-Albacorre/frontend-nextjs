@@ -1,5 +1,5 @@
 import AuthFooter from '@/components/layout/auth-footer';
-import UserRegisterForm from '@/features/auth/components/user-form/register';
+import UserRegisterForm from '@/features/auth/components/user/user-form/register';
 
 export default function SignupPage() {
   return (

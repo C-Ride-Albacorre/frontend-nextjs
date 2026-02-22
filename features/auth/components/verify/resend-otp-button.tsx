@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useTransition } from 'react';
-import { resendOtpAction, ResendOtpState } from '../actions/resend-otp';
+import { resendOtpAction, ResendOtpState } from '../../actions/resend-otp';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/buttons/button';
 
