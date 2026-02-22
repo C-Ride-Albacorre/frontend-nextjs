@@ -1,20 +1,12 @@
 'use server';
 
-import { redirect } from 'next/navigation';
-
+import { ResetRequestSchema, ResetRequestState } from '../libs/reset.schema';
 import { resetPasswordService } from '../services/reset';
-import { setCookie } from '@/utils/cookies';
-import { ResetRequestSchema } from '../libs/reset.schema';
-
-export type ResetPasswordState =
-  | undefined
-  | { status: 'error'; errors?: { identifier?: string[] }; message?: string }
-  | { status: 'success' };
 
 export async function resetPasswordAction(
-  _state: ResetPasswordState,
+  _state: ResetRequestState,
   formData: FormData,
-): Promise<ResetPasswordState> {
+): Promise<ResetRequestState> {
   const rawIdentifier = formData.get('identifier')?.toString().trim() ?? '';
 
   const validatedData = ResetRequestSchema.safeParse({
@@ -29,28 +21,13 @@ export async function resetPasswordAction(
   }
 
   const isPhone = /^\+?\d{7,}$/.test(rawIdentifier);
-
   const payload = isPhone
     ? { phoneNumber: rawIdentifier }
     : { email: rawIdentifier };
 
-  let redirectTo: string | null = null;
-
   try {
-    const result = await resetPasswordService(payload);
-
-    await setCookie({
-      name: 'reset_identifier',
-      value: result.data?.identifier,
-      maxAge: 60 * 30,
-    });
-    await setCookie({
-      name: 'reset_method',
-      value: result.data?.method,
-      maxAge: 60 * 30,
-    });
-
-    redirectTo = `/reset/verify`;
+    await resetPasswordService(payload);
+    return { status: 'success' };
   } catch (error) {
     return {
       status: 'error',
@@ -60,7 +37,4 @@ export async function resetPasswordAction(
           : 'Password reset failed. Please try again.',
     };
   }
-
-  if (redirectTo) redirect(redirectTo);
-  return { status: 'success' };
 }
