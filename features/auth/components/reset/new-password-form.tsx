@@ -49,7 +49,7 @@ export default function NewPasswordForm() {
           Your password has been updated. You can now log in with your new
           password.
         </p>
-        <Button href="/user/login" variant="primary" size="full">
+        <Button href="/user/login" variant="primary" size="6xl">
           Go to Login
         </Button>
       </div>
@@ -67,7 +67,7 @@ export default function NewPasswordForm() {
         <p className="text-sm text-neutral-500 max-w-md mx-auto">
           {state.message}
         </p>
-        <Button href="/reset" variant="primary" size="full">
+        <Button href="/reset" variant="primary" size="6xl">
           Request New Link
         </Button>
       </div>
