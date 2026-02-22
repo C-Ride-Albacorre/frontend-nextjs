@@ -1,6 +1,5 @@
 'use server';
 
-import { redirect } from 'next/navigation';
 import { ResetPasswordSchema, ResetPasswordState } from '../libs/reset.schema';
 import { newPasswordService } from '../services/new-password';
 
@@ -40,5 +39,5 @@ export async function newPasswordAction(
     };
   }
 
-  redirect('/user/login?reset=success');
+  return { status: 'success' };
 }
