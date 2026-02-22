@@ -3,10 +3,10 @@ import { ApiError } from '@/features/libs/api-error';
 
 export async function newPasswordService(payload: {
   token: string;
-  password: string;
+  newPassword: string;
 }) {
   const res = await fetch(`${BASE_URL}/auth/reset-password`, {
-    method: 'POST',
+    method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
   });

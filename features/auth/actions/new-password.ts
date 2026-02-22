@@ -29,7 +29,7 @@ export async function newPasswordAction(
   }
 
   try {
-    await newPasswordService({ token, password: validated.data.password });
+    await newPasswordService({ token, newPassword: validated.data.password });
   } catch (error) {
     return {
       status: 'error',
