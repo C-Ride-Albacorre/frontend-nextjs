@@ -3,12 +3,14 @@ import Link from 'next/link';
 import { Icon } from '@iconify/react';
 
 import { AuthType } from '@/features/auth/types';
+import { Button } from '../ui/buttons/button';
+import GoogleAuthButton from '@/features/auth/components/socials/google-auth-button';
 
 type Props = {
   variant: AuthType;
   href: string;
 };
-export default function AuthFooter({ variant, href}: Props) {
+export default function AuthFooter({ variant, href }: Props) {
   return (
     <div className="mt-6 text-center text-sm">
       {variant === 'register' ? (
@@ -33,15 +35,17 @@ export default function AuthFooter({ variant, href}: Props) {
         <span className="h-px flex-1 bg-border" />
       </div>
 
-      <button className="w-full rounded-xl border border-border py-3 text-sm flex items-center justify-center gap-2 mb-3 cursor-pointer">
-        <Icon icon="logos:google-icon" width={18} height={18} />
-        Continue with Google
-      </button>
+      <div className="space-y-4">
+        <GoogleAuthButton />
 
-      <button className="w-full rounded-xl border border-border py-3 text-sm flex items-center justify-center gap-2 cursor-pointer">
-        <Icon icon="logos:apple" width={18} height={18} />
-        Continue with Apple
-      </button>
+        <Button
+          variant="white"
+          size="full"
+          leftIcon={<Icon icon="logos:apple" width={18} height={18} />}
+        >
+          Continue with Apple
+        </Button>
+      </div>
 
       {variant === 'register' && (
         <p className="mt-6 text-xs text-neutral-400">
