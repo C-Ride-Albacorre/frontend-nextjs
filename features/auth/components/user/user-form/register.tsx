@@ -11,7 +11,6 @@ import Input from '@/components/ui/inputs/input';
 import { Button } from '@/components/ui/buttons/button';
 import PhoneInput from '@/components/ui/inputs/phone-input';
 import { IconButton } from '@/components/ui/buttons/icon-button';
-import { set } from 'zod';
 
 type FieldValues = {
   firstName: string;
@@ -62,7 +61,6 @@ export default function UserRegisterForm() {
 
   useEffect(() => {
     if (state?.status === 'success') {
-      setFormValues(INITIAL_VALUES);
       setAcceptedTerms(false);
     }
   }, [state]);
@@ -153,6 +151,7 @@ export default function UserRegisterForm() {
             type="checkbox"
             checked={acceptedTerms}
             onChange={(e) => setAcceptedTerms(e.target.checked)}
+            className="h-4 w-4 rounded-md border-border accent-primary cursor-pointer "
           />
           I agree to the Terms & Conditions
         </label>
