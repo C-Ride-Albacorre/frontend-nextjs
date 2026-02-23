@@ -1,14 +1,16 @@
 import { BASE_URL } from '@/config/api';
 import { getCookie } from '@/utils/cookies';
+import { refreshSession } from '@/utils/refresh-session';
+import { redirect } from 'next/navigation';
 
 export async function profileService() {
   const accessToken = await getCookie('accessToken');
 
   if (!accessToken) {
-    throw new Error('No access token found');
+    redirect('/user/login');
   }
 
-  const res = await fetch(`${BASE_URL}/auth/profile`, {
+  let res = await fetch(`${BASE_URL}/auth/profile`, {
     method: 'GET',
 
     headers: {
@@ -18,10 +20,25 @@ export async function profileService() {
     cache: 'no-store',
   });
 
+  if (res.status === 401) {
+    const newToken = await refreshSession();
+
+    if (!newToken) redirect('/user/login');
+
+    res = await fetch(`${BASE_URL}/auth/profile`, {
+      method: 'GET',
+      headers: { Authorization: `Bearer ${newToken}` },
+      cache: 'no-store',
+    });
+  }
+
   const data = await res.json();
 
   if (!res.ok) {
-    throw new Error(data?.message || 'Failed to fetch profile', data?.statusCode ?? res.status);
+    throw new Error(
+      data?.message || 'Failed to fetch profile',
+      data?.statusCode ?? res.status,
+    );
   }
 
   return data;
