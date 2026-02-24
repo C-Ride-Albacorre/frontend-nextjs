@@ -7,7 +7,11 @@ import { Button } from '@/components/ui/buttons/button';
 
 const COOLDOWN_SECONDS = 60;
 
-export default function ResendOtpButton() {
+type ResendOtpButtonProps = {
+  type: 'user' | 'vendor-email' | 'vendor-phone';
+};
+
+export default function ResendOtpButton({ type }: ResendOtpButtonProps) {
   const [secondsLeft, setSecondsLeft] = useState(COOLDOWN_SECONDS);
   const [isPending, startTransition] = useTransition();
 
@@ -20,7 +24,7 @@ export default function ResendOtpButton() {
 
   function handleResend() {
     startTransition(async () => {
-      const result: ResendOtpState = await resendOtpAction();
+      const result: ResendOtpState = await resendOtpAction(type);
 
       if (result.status === 'success') {
         toast.success(result.message);

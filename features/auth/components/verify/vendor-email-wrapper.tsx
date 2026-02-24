@@ -33,9 +33,11 @@ export default function VendorEmailWrapper({
     <VerifyClient
       identifier={identifier}
       method={method}
+      verifyType="vendor-email"
       action={action}
       pending={pending}
       state={state}
+      redirectHref="/vendor/register"
     />
   );
 }

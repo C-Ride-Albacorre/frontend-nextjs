@@ -9,18 +9,22 @@ import ResendOtpButton from './resend-otp-button';
 type VerifyClientProps = {
   identifier: string;
   method: 'email' | 'phone';
+  verifyType: 'user' | 'vendor-email' | 'vendor-phone';
 };
 
 export default function VerifyClient({
   identifier,
   method: label,
+  verifyType,
   action,
   pending,
   state,
+  redirectHref,
 }: VerifyClientProps & {
   action: (payload: FormData) => void;
   pending: boolean;
   state: VerifyOtpState | null;
+  redirectHref: string;
 }) {
   const [code, setCode] = useState<string[]>(Array(6).fill(''));
   const inputsRef = useRef<Array<HTMLInputElement | null>>([]);
@@ -54,7 +58,7 @@ export default function VerifyClient({
         <p className="text-red-500 text-sm mb-4">{state.errors.otp[0]}</p>
       )}
 
-      {state?.message && (
+      {state?.message && state?.status === 'error' && (
         <p className="text-red-500 text-sm mb-4">{state.message}</p>
       )}
 
@@ -97,7 +101,7 @@ export default function VerifyClient({
       {/* ACTIONS */}
       <div className="mt-8 space-y-3 text-sm">
         <Button
-          href="/user/register"
+          href={redirectHref}
           size="none"
           variant="default"
           className="block text-primary font-medium"
@@ -106,7 +110,7 @@ export default function VerifyClient({
           Change {label}?
         </Button>
 
-        <ResendOtpButton />
+        <ResendOtpButton type={verifyType} />
       </div>
     </div>
   );

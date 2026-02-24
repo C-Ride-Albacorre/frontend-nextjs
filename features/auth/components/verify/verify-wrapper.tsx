@@ -23,9 +23,11 @@ export default function VerifyWrapper({
     <VerifyClient
       identifier={identifier}
       method={method}
+      verifyType="user"
       action={action}
       pending={pending}
       state={state}
+      redirectHref="/user/register"
     />
   );
 }

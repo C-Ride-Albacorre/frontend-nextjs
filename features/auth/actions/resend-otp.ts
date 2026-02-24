@@ -1,6 +1,5 @@
 'use server';
 
-
 import { resendOtpService } from '../services/resend-otp';
 import { getCookie } from '@/utils/cookies';
 
@@ -9,8 +8,17 @@ export type ResendOtpState =
   | { status: 'success'; message: string }
   | { status: 'error'; message: string };
 
-export async function resendOtpAction(): Promise<ResendOtpState> {
-  const identifier = await getCookie('verify_identifier');
+export async function resendOtpAction(
+  type: 'user' | 'vendor-email' | 'vendor-phone',
+): Promise<ResendOtpState> {
+  const cookieMap = {
+    user: 'verify_identifier',
+    'vendor-email': 'vendor_email',
+    'vendor-phone': 'vendor_phone_number',
+  };
+
+  const identifier =
+    (await getCookie(cookieMap[type]));
 
   if (!identifier) {
     return {

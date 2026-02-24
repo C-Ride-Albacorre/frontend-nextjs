@@ -33,9 +33,11 @@ export default function VendorPhoneWrapper({
     <VerifyClient
       identifier={identifier}
       method={method}
+      verifyType="vendor-phone"
       action={action}
       pending={pending}
       state={state}
+      redirectHref="/vendor/register"
     />
   );
 }
