@@ -1,7 +1,7 @@
 'use client';
 
 import { useActionState, useEffect, useState } from 'react';
-import { CheckCircle2, Eye, EyeOff, Mail } from 'lucide-react';
+import { CheckCircle2, ChevronRight, Eye, EyeOff, Mail } from 'lucide-react';
 import PhoneInput from '@/components/ui/inputs/phone-input';
 import FormHeader from '@/components/ui/headers/form-header';
 import Input from '@/components/ui/inputs/input';
@@ -223,8 +223,12 @@ export default function VendorRegisterForm() {
             </ul>
           </div>
 
-          <Button rightIcon={<Mail size={18} />} href="/verify-email" size="6xl">
-          Proceed to Email Verification
+          <Button
+            rightIcon={<ChevronRight size={18} />}
+            href="/verify-email"
+            size="6xl"
+          >
+            Proceed to Email Verification
           </Button>
         </section>
       </Modal>

@@ -56,5 +56,5 @@ export async function VerifyCodeAction(
     };
   }
 
-  redirect('/user/dashboard');
+  redirect('/user/delivery/food');
 }

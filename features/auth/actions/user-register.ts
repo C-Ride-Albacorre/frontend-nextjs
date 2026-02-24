@@ -57,7 +57,7 @@ export async function userRegisterAction(
 
       redirectTo = `/verify`;
     } else if (!result.data.requiresVerification) {
-      redirectTo = '/user/dashboard';
+      redirectTo = '/user/delivery/food';
     } else {
       return {
         status: 'error',

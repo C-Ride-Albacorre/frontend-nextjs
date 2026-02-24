@@ -37,13 +37,13 @@ export async function vendorRegisterAction(
     }
 
     await setCookie({
-      name: 'vendorEmail',
+      name: 'vendor_email',
       value: result.data.vendor.email,
       maxAge: 60 * 30,
     });
 
     await setCookie({
-      name: 'vendorPhoneNumber',
+      name: 'vendor_phone_number',
       value: result.data.vendor.phoneNumber,
       maxAge: 60 * 30,
     });

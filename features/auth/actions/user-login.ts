@@ -13,7 +13,7 @@ export async function userLoginAction(
   const rawIdentifier = formData.get('identifier')?.toString().trim() ?? '';
   const password = formData.get('password')?.toString() ?? '';
   const callbackUrl =
-    formData.get('callbackUrl')?.toString() ?? '/user/dashboard';
+    formData.get('callbackUrl')?.toString() ?? '/user/delivery/food';
 
   const validated = LoginFormSchema.safeParse({
     identifier: rawIdentifier,
@@ -36,7 +36,7 @@ export async function userLoginAction(
 
   const safeCallback = callbackUrl.startsWith('/')
     ? callbackUrl
-    : '/user/dashboard';
+    : '/user/delivery/food';
 
   let redirectTo: string | null = null;
 

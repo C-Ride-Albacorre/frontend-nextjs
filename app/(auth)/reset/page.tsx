@@ -8,6 +8,7 @@ import AuthMethod from '@/features/auth/components/auth-method';
 import PhoneInput from '@/components/ui/inputs/phone-input';
 import Input from '@/components/ui/inputs/input';
 import { Button } from '@/components/ui/buttons/button';
+import { ChevronLeft } from 'lucide-react';
 
 type FieldValues = { identifier: string };
 
@@ -43,7 +44,12 @@ export default function ResetPasswordForm() {
               spam folder.
             </p>
           </div>
-          <Button href="/user/login" variant="primary" size="6xl">
+          <Button
+            href="/user/login"
+            variant="primary"
+            leftIcon={<ChevronLeft size={18} />}
+            size="6xl"
+          >
             Back to Login
           </Button>
         </div>
