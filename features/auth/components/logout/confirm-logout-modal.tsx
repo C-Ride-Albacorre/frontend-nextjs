@@ -28,9 +28,10 @@ export default function ConfirmLogoutModal({
             </p>
           </div>
 
-          <div className="flex gap-4 mt-6">
+          <div className="flex gap-4 mt-6 w-full">
             <Button
               variant="green"
+              size='full'
               onClick={() => setConfirmLogout(false)}
               disabled={isPending}
             >
@@ -38,6 +39,7 @@ export default function ConfirmLogoutModal({
             </Button>
             <Button
               variant="red"
+              size='full'
               onClick={handleLogout}
               loading={isPending}
               disabled={isPending}

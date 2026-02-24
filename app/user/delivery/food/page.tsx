@@ -10,7 +10,7 @@ import ActionInput from '@/components/ui/inputs/action-input';
 export default function FoodDeliveryPage() {
   return (
     <section>
-      <DashboardHeader name="Adewale" />
+      <DashboardHeader />
 
       <div className="px-4 py-8 xl:px-0 md:py-12 mx-auto max-w-6xl space-y-12">
         <div className="space-y-4">
@@ -20,19 +20,6 @@ export default function FoodDeliveryPage() {
           </p>
         </div>
 
-        {/* <div className="w-full flex items-center gap-2 rounded-2xl border border-border px-4 py-3 bg-foreground-200">
-          <Search className="h-6 w-6 text-neutral-500" />
-
-          <input
-            aria-label="Search items"
-            placeholder="Find what you want today"
-            className="w-full bg-transparent  outline-none text-base md:text-sm"
-          />
-
-          <button className="h-full px-5 py-3 bg-primary hover:bg-primary-hover rounded-xl font-medium text-sm cursor-pointer">
-            Search
-          </button>
-        </div> */}
         <form action="">
           <ActionInput
             ariaLabel="Search items"

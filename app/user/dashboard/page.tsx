@@ -22,30 +22,13 @@ import Address from '@/features/user/dashboard/components/address';
 import DashboardHeader from '@/components/ui/headers/user-dashboard-header';
 
 import ActiveDeliveries from '@/features/user/dashboard/components/active-deliveries';
-import { ApiError } from '@/features/libs/api-error';
-import { redirect } from 'next/navigation';
-import { profileService } from '@/features/user/profile/service/profile';
 
-export default async function DashboardPage() {
-  let data;
-
-  try {
-    const result = await profileService();
-    data = result.data;
-  } catch (error) {
-    if (error instanceof ApiError && error.statusCode === 401) {
-      redirect('/user/login');
-    }
-    throw error;
-  }
-
-  const firstName = data.firstName.toLowerCase();
-
+export default function DashboardPage() {
   return (
     <main className="w-full bg-background">
       {/* ================= HEADER ================= */}
 
-      <DashboardHeader name={firstName} />
+      <DashboardHeader />
 
       {/* ================= CONTENT ================= */}
       <section className="mx-auto max-w-6xl px-6 py-10 space-y-12">

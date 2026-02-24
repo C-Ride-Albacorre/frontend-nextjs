@@ -27,10 +27,10 @@ export default function CategoryIcons() {
             key={cat.name}
             className="flex flex-col justify-center items-center"
           >
-            <div className="w-14 h-14 rounded-full bg-primary hover:bg-primary-hover cursor-pointer flex items-center justify-center">
+            <div className="w-10 h-10 lg:w-14 lg:h-14 rounded-full bg-primary hover:bg-primary-hover cursor-pointer flex items-center justify-center">
               {cat.icon}
             </div>
-            <p className="mt-3 text-sm text-primary-text-100">{cat.name}</p>
+            <p className="mt-3 text-xs md:text-sm text-primary-text-100">{cat.name}</p>
           </div>
         ))}
       </div>
