@@ -36,7 +36,7 @@ export async function VendorVerifyEmailAction(
   }
 
   // ✅ email verified — go to phone verification
-  redirect('/vendor/verify-phone');
+  redirect('/verify/vendor-phone');
 }
 
 export async function VendorVerifyPhoneAction(

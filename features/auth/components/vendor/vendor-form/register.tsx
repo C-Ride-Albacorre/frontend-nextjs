@@ -225,7 +225,7 @@ export default function VendorRegisterForm() {
 
           <Button
             rightIcon={<ChevronRight size={18} />}
-            href="/verify-email"
+            href="/verify/vendor-email"
             size="6xl"
           >
             Proceed to Email Verification
