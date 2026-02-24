@@ -162,7 +162,7 @@ export default function UserRegisterForm() {
           loading={pending}
           disabled={pending || !acceptedTerms}
         >
-          Continue
+          {pending ? 'Registering...' : 'Register'}
         </Button>
 
         {isError && (

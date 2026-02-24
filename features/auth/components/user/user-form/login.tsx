@@ -115,7 +115,7 @@ export default function UserLoginForm() {
           disabled={pending}
           className="mt-4"
         >
-          Continue
+          {pending ? 'Logging in...' : 'Login'}
         </Button>
       </form>
     </>

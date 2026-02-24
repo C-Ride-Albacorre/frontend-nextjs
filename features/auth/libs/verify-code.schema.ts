@@ -5,8 +5,11 @@ export const VerifyOtpSchema = z.object({
 });
 
 export type VerifyOtpState = {
+  status?: 'success' | 'error';
   errors?: {
     otp?: string[];
   };
   message?: string;
+  redirectTo?: string;
 };
+  

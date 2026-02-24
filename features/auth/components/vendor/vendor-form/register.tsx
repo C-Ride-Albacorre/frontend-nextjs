@@ -8,9 +8,9 @@ import Input from '@/components/ui/inputs/input';
 import { Button } from '@/components/ui/buttons/button';
 import { vendorRegisterAction } from '@/features/auth/actions/vendor-register';
 import { IconButton } from '@/components/ui/buttons/icon-button';
-import { stat } from 'fs';
 import { toast } from 'sonner';
 import Modal from '@/components/layout/modal';
+import SuccessModal from './success-modal';
 
 type FieldValues = {
   firstName: string;
@@ -191,7 +191,7 @@ export default function VendorRegisterForm() {
           loading={pending}
           disabled={pending || !acceptedTerms}
         >
-          Continue
+          {pending ? 'Registering...' : 'Register'}
         </Button>
 
         {isError && (
@@ -201,37 +201,22 @@ export default function VendorRegisterForm() {
         )}
       </form>
 
-      <Modal
-        isModalOpen={showSuccessModal}
-        onClose={() => setShowSuccessModal(false)}
-        wrapperClassName="max-w-md"
-      >
-        <section className="flex flex-col items-center justify-center gap-10">
-          <div className="w-16 h-16 bg-[#10B981] flex justify-center items-center aspect-square shrink-0 rounded-full ">
-            <CheckCircle2 size={32} className="text-white" />
-          </div>
-
-          <div className="text-center space-y-3">
-            <h2 className="text-lg font-medium text-neutral-900">
-              Registration Successful
-            </h2>
-            <ul className="text-sm text-neutral-600 space-y-3">
-              {state?.status === 'success' &&
-                state?.data?.nextSteps?.map((step: string) => (
-                  <li key={step}>{step}</li>
-                ))}
-            </ul>
-          </div>
-
-          <Button
-            rightIcon={<ChevronRight size={18} />}
-            href="/verify/vendor-email"
-            size="6xl"
-          >
-            Proceed to Email Verification
-          </Button>
-        </section>
-      </Modal>
+      <SuccessModal
+        icon={<CheckCircle2 size={32} className="text-white" />}
+        messageTitle=" Registration Successful!"
+        showSuccessModal={showSuccessModal}
+        setShowSuccessModal={setShowSuccessModal}
+        message={
+          <ul className="text-sm text-neutral-600 space-y-3">
+            {state?.status === 'success' &&
+              state?.data?.nextSteps?.map((step: string) => (
+                <li key={step}>{step}</li>
+              ))}
+          </ul>
+        }
+        buttonText="Proceed to Email Verification"
+        buttonHref="/verify/vendor-email"
+      />
     </>
   );
 }
