@@ -5,7 +5,7 @@ import {
   verifyVendorEmailService,
   verifyVendorPhoneService,
 } from '../services/vendor-verify';
-import { getCookie, deleteCookie, setAuthCookies } from '@/utils/cookies';
+import { getCookie, setAuthCookies } from '@/utils/cookies';
 
 export async function VendorVerifyEmailAction(
   prevState: VerifyOtpState | null,
@@ -68,14 +68,11 @@ export async function VendorVerifyPhoneAction(
       otp: validated.data.otp,
     });
 
-    // ✅ both verified — set auth cookies if API returns tokens
     if (result?.data?.accessToken) {
       await setAuthCookies(result.data.accessToken, result.data.refreshToken);
     }
 
-    // ✅ clean up verification cookies
-    await deleteCookie('vendor_email');
-    await deleteCookie('vendor_phone_number');
+    
   } catch (error) {
     return {
       status: 'error',
@@ -87,6 +84,6 @@ export async function VendorVerifyPhoneAction(
   return {
     status: 'success',
     message: 'Phone number verified successfully!',
-    redirectTo: '/onboarding/business-info',
+   
   };
 }

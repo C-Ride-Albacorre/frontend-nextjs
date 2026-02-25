@@ -1,11 +1,10 @@
 'use client';
 
-import { useActionState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { toast } from 'sonner';
+import { useActionState, useEffect, useState } from 'react';
 import VerifyClient from './verify-client';
 import { VerifyOtpState } from '../../libs/verify-code.schema';
 import { VendorVerifyPhoneAction } from '../../actions/vendor-verify';
+import VerificationSuccessModal from './verification-success-modal';
 
 export default function VendorPhoneWrapper({
   identifier,
@@ -14,7 +13,8 @@ export default function VendorPhoneWrapper({
   identifier: string;
   method: 'phone';
 }) {
-  const router = useRouter();
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+
   const [state, action, pending] = useActionState<
     VerifyOtpState | null,
     FormData
@@ -22,22 +22,26 @@ export default function VendorPhoneWrapper({
 
   useEffect(() => {
     if (state?.status === 'success') {
-      toast.success(state.message);
-      if (state.redirectTo) {
-        router.push(state.redirectTo);
-      }
+      setShowSuccessModal(true);
     }
-  }, [state, router]);
+  }, [state]);
 
   return (
-    <VerifyClient
-      identifier={identifier}
-      method={method}
-      verifyType="vendor-phone"
-      action={action}
-      pending={pending}
-      state={state}
-      redirectHref="/vendor/register"
-    />
+    <>
+      <VerifyClient
+        identifier={identifier}
+        method={method}
+        verifyType="vendor-phone"
+        action={action}
+        pending={pending}
+        state={state}
+        redirectHref="/vendor/register"
+      />
+      <VerificationSuccessModal
+        isOpen={showSuccessModal}
+        onClose={() => setShowSuccessModal(false)}
+        redirectTo="/onboarding/business-info"
+      />
+    </>
   );
 }

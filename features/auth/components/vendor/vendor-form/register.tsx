@@ -1,7 +1,11 @@
 'use client';
 
 import { useActionState, useEffect, useState } from 'react';
-import { CheckCircle2, ChevronRight, Eye, EyeOff, Mail } from 'lucide-react';
+import {
+  CheckCircle,
+  Eye,
+  EyeOff,
+} from 'lucide-react';
 import PhoneInput from '@/components/ui/inputs/phone-input';
 import FormHeader from '@/components/ui/headers/form-header';
 import Input from '@/components/ui/inputs/input';
@@ -9,8 +13,8 @@ import { Button } from '@/components/ui/buttons/button';
 import { vendorRegisterAction } from '@/features/auth/actions/vendor-register';
 import { IconButton } from '@/components/ui/buttons/icon-button';
 import { toast } from 'sonner';
-import Modal from '@/components/layout/modal';
-import SuccessModal from './success-modal';
+
+import RegisterSuccessModal from './register-success-modal';
 
 type FieldValues = {
   firstName: string;
@@ -201,16 +205,22 @@ export default function VendorRegisterForm() {
         )}
       </form>
 
-      <SuccessModal
-        icon={<CheckCircle2 size={32} className="text-white" />}
+      <RegisterSuccessModal
+        icon={<CheckCircle size={32} className="text-white" />}
         messageTitle=" Registration Successful!"
         showSuccessModal={showSuccessModal}
         setShowSuccessModal={setShowSuccessModal}
         message={
-          <ul className="text-sm text-neutral-600 space-y-3">
+          <ul className="text-sm text-neutral-600 space-y-6 text-left">
             {state?.status === 'success' &&
-              state?.data?.nextSteps?.map((step: string) => (
-                <li key={step}>{step}</li>
+              state?.data?.nextSteps?.map((step: string, index: number) => (
+                <li className="flex items-start gap-2" key={step}>
+                  <span className="w-5 h-5 rounded-full bg-primary/10 text-primary text-xs flex items-center justify-center font-medium">
+                    {index + 1}
+                  </span>
+
+                  {step}
+                </li>
               ))}
           </ul>
         }
