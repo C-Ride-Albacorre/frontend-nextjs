@@ -42,18 +42,10 @@ export default function BusinessAddressForm() {
             size="lg"
             rightIcon={<ChevronRight size={16} />}
           >
-            Proceed
+           Save & Proceed
           </Button>
 
-          {/* <ButtonPrevious
-            href="/onboarding/business-contact"
-            buttonText="Previous"
-          />
-
-          <ButtonProceed
-            href="/onboarding/business-bank"
-            buttonText="Proceed"
-          /> */}
+       
         </div>
       </form>
     </section>

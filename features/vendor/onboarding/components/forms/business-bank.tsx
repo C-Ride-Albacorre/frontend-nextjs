@@ -37,11 +37,7 @@ export default function BusinessBankForm() {
         />
 
         <div className="mt-12  flex items-center justify-between lg:justify-around">
-          {/* <ButtonPrevious
-            href="/onboarding/business-address"
-            buttonText="Previous"
-          /> */}
-
+        
           <Button
             href="/onboarding/business-address"
             variant="outline"
@@ -57,13 +53,10 @@ export default function BusinessBankForm() {
             size="lg"
             rightIcon={<ChevronRight size={16} />}
           >
-           Proceed
+           Save & Proceed
           </Button>
 
-          {/* <ButtonProceed
-            href="/onboarding/business-document"
-            buttonText="Proceed"
-          /> */}
+        
         </div>
       </form>
     </section>

@@ -19,6 +19,7 @@ export type InputProps = {
 
 export type TextareaProps = {
   id: string;
+  name?: string;
   label: string;
   placeholder?: string;
   value?: string;

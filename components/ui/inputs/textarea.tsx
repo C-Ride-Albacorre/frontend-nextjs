@@ -3,12 +3,12 @@ import { p } from 'framer-motion/client';
 
 export default function Textarea({
   id,
+  name,
   label,
-  placeholder = '',
-
-  //   value,
+  placeholder,
+  value,
   rows = 4,
-  //   onChange,
+  onChange,
   className,
   wrapperClassName,
   ...props
@@ -21,11 +21,11 @@ export default function Textarea({
 
       <textarea
         id={id}
-        name={id}
+        name={name}
         rows={rows}
         {...props}
-        // value={value}
-        // onChange={onChange}
+        value={value}
+        onChange={onChange}
         placeholder={placeholder}
         className={`mt-2 w-full rounded-xl border border-border px-4 py-3 text-base md:text-sm outline-none focus:ring-2 focus:ring-primary placeholder:text-sm placeholder:text-neutral-400 placeholder:font-normal ${className}`}
       />
