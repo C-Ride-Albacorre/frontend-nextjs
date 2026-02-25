@@ -5,7 +5,7 @@ import {
   verifyVendorEmailService,
   verifyVendorPhoneService,
 } from '../services/vendor-verify';
-import { getCookie, setAuthCookies } from '@/utils/cookies';
+import { getCookie, setAuthCookies, setCookie } from '@/utils/cookies';
 
 export async function VendorVerifyEmailAction(
   prevState: VerifyOtpState | null,
@@ -72,7 +72,11 @@ export async function VendorVerifyPhoneAction(
       await setAuthCookies(result.data.accessToken, result.data.refreshToken);
     }
 
-    
+    await setCookie({
+      name: 'vendor_id',
+      value: result.data.vendor.id,
+      maxAge: 60 * 60,
+    });
   } catch (error) {
     return {
       status: 'error',
@@ -84,6 +88,5 @@ export async function VendorVerifyPhoneAction(
   return {
     status: 'success',
     message: 'Phone number verified successfully!',
-   
   };
 }

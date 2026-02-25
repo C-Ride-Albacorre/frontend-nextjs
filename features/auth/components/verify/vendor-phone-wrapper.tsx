@@ -1,6 +1,7 @@
 'use client';
 
 import { useActionState, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 import VerifyClient from './verify-client';
 import { VerifyOtpState } from '../../libs/verify-code.schema';
 import { VendorVerifyPhoneAction } from '../../actions/vendor-verify';
@@ -22,7 +23,11 @@ export default function VendorPhoneWrapper({
 
   useEffect(() => {
     if (state?.status === 'success') {
+      toast.success(state.message ?? 'Phone number verified successfully!');
       setShowSuccessModal(true);
+    }
+    if (state?.status === 'error' && state.message) {
+      toast.error(state.message);
     }
   }, [state]);
 
