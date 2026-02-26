@@ -1,9 +1,48 @@
+'use client';
+
 import { ChevronLeft, ChevronRight, MapPin } from 'lucide-react';
 import OnboardingFormHeader from '../form-header';
 import Input from '@/components/ui/inputs/input';
 import { Button } from '@/components/ui/buttons/button';
+import { businessAddressAction } from '../../action';
+import { useActionState, useEffect, useState } from 'react';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
 export default function BusinessAddressForm() {
+  const [fields, setFields] = useState({
+    businessAddress: '',
+    businessCity: '',
+    businessState: '',
+  });
+
+  const handleChange =
+    (field: string) =>
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      setFields((prev) => ({ ...prev, [field]: e.target.value }));
+    };
+
+  const [state, action, pending] = useActionState(
+    businessAddressAction,
+    undefined,
+  );
+
+  const isError = state?.status === 'error';
+
+  const router = useRouter();
+
+  useEffect(() => {
+    if (state?.status === 'error' && state.message) {
+      toast.error(state.message);
+    }
+
+    if (state?.status === 'success') {
+      toast.success(state.message ?? 'Saved successfully!');
+
+      setTimeout(() => router.push('/onboarding/business-bank'), 1500);
+    }
+  }, [state, router]);
+
   return (
     <section className="space-y-12">
       <OnboardingFormHeader
@@ -12,24 +51,52 @@ export default function BusinessAddressForm() {
         headerIcon={<MapPin size={24} className="text-primary" />}
       />
 
-      <form action="" className="space-y-6">
+      <form action={action} className="space-y-6">
         <Input
           id="businessAddress"
+          name="businessAddress"
           label="Business Street Address"
           type="text"
           placeholder="123 Business Street"
+          value={fields.businessAddress}
+          onChange={handleChange('businessAddress')}
+          errorMessage={
+            isError ? state?.errors?.businessAddress?.[0] : undefined
+          }
         />
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <Input id="city" label="City" type="text" placeholder="Lekki" />
+          <Input
+            id="businessCity"
+            name="businessCity"
+            label="City"
+            type="text"
+            placeholder="Lekki"
+            value={fields.businessCity}
+            onChange={handleChange('businessCity')}
+            errorMessage={
+              isError ? state?.errors?.businessCity?.[0] : undefined
+            }
+          />
 
-          <Input id="state" label="State" type="text" placeholder="Lagos" />
+          <Input
+            id="businessState"
+            name="businessState"
+            label="State"
+            type="text"
+            placeholder="Lagos"
+            value={fields.businessState}
+            onChange={handleChange('businessState')}
+            errorMessage={
+              isError ? state?.errors?.businessState?.[0] : undefined
+            }
+          />
         </div>
 
         <div className="mt-12  flex items-center justify-between lg:justify-around">
           <Button
             href="/onboarding/business-contact"
-            variant="outline"
+            variant="white"
             size="lg"
             leftIcon={<ChevronLeft size={16} />}
           >
@@ -37,15 +104,20 @@ export default function BusinessAddressForm() {
           </Button>
 
           <Button
-            href="/onboarding/business-bank"
+            type="submit"
             variant="primary"
             size="lg"
+            loading={pending}
+            disabled={
+              pending ||
+              !fields.businessAddress.trim() ||
+              !fields.businessCity.trim() ||
+              !fields.businessState.trim()
+            }
             rightIcon={<ChevronRight size={16} />}
           >
-           Save & Proceed
+            Save & Proceed
           </Button>
-
-       
         </div>
       </form>
     </section>

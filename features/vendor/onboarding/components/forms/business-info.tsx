@@ -1,6 +1,9 @@
 'use client';
 
 import { useActionState, useState, useEffect } from 'react';
+
+import { useRouter } from 'next/navigation';
+
 import { ChevronLeft, ChevronRight, Store } from 'lucide-react';
 import { toast } from 'sonner';
 import Input from '@/components/ui/inputs/input';
@@ -13,8 +16,12 @@ export default function BusinessInfoForm() {
   const [fields, setFields] = useState({
     businessName: '',
     businessType: '',
+    businessRegistrationNo: '',
+    tinNo: '',
     businessDescription: '',
   });
+
+  const router = useRouter();
 
   const [state, action, pending] = useActionState(
     businessInfoAction,
@@ -32,7 +39,13 @@ export default function BusinessInfoForm() {
     if (state?.status === 'error' && state.message) {
       toast.error(state.message);
     }
-  }, [state]);
+
+    if (state?.status === 'success') {
+      toast.success(state.message ?? 'Saved successfully!');
+
+      setTimeout(() => router.push('/onboarding/business-contact'), 1500);
+    }
+  }, [state, router]);
 
   return (
     <section className="space-y-12">
@@ -65,6 +78,30 @@ export default function BusinessInfoForm() {
           errorMessage={isError ? state.errors?.businessType?.[0] : undefined}
         />
 
+        <Input
+          id="businessRegistrationNo"
+          name="businessRegistrationNo"
+          label="Business Registration No."
+          type="text"
+          placeholder="Enter your business registration number"
+          value={fields.businessRegistrationNo}
+          onChange={handleChange('businessRegistrationNo')}
+          errorMessage={
+            isError ? state.errors?.businessRegistrationNo?.[0] : undefined
+          }
+        />
+
+        <Input
+          id="tinNo"
+          name="tinNo"
+          label="TIN No."
+          type="text"
+          placeholder="Enter your TIN number"
+          value={fields.tinNo}
+          onChange={handleChange('tinNo')}
+          errorMessage={isError ? state.errors?.tinNo?.[0] : undefined}
+        />
+
         <Textarea
           id="businessDescription"
           name="businessDescription"
@@ -78,7 +115,7 @@ export default function BusinessInfoForm() {
           <Button
             href="/vendor/register"
             type="button"
-            variant="outline"
+            variant="white"
             size="lg"
             leftIcon={<ChevronLeft size={16} />}
           >
@@ -93,7 +130,9 @@ export default function BusinessInfoForm() {
             disabled={
               pending ||
               !fields.businessName.trim() ||
-              !fields.businessType.trim()
+              !fields.businessType.trim() ||
+              !fields.businessRegistrationNo.trim() ||
+              !fields.tinNo.trim()
             }
             rightIcon={<ChevronRight size={16} />}
           >
