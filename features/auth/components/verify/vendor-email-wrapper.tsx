@@ -1,11 +1,11 @@
 'use client';
 
-import { useActionState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useActionState, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import VerifyClient from './verify-client';
 import { VendorVerifyEmailAction } from '../../actions/vendor-verify';
 import { VerifyOtpState } from '../../libs/verify-code.schema';
+import VerificationSuccessModal from './verification-success-modal';
 
 export default function VendorEmailWrapper({
   identifier,
@@ -14,7 +14,8 @@ export default function VendorEmailWrapper({
   identifier: string;
   method: 'email';
 }) {
-  const router = useRouter();
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+
   const [state, action, pending] = useActionState<
     VerifyOtpState | null,
     FormData
@@ -22,22 +23,31 @@ export default function VendorEmailWrapper({
 
   useEffect(() => {
     if (state?.status === 'success') {
-      toast.success(state.message);
-      if (state.redirectTo) {
-        router.push(state.redirectTo);
-      }
+      toast.success(state.message ?? 'Email verified successfully!');
+      setShowSuccessModal(true);
     }
-  }, [state, router]);
+    if (state?.status === 'error' && state.message) {
+      toast.error(state.message);
+    }
+  }, [state]);
 
   return (
-    <VerifyClient
-      identifier={identifier}
-      method={method}
-      verifyType="vendor-email"
-      action={action}
-      pending={pending}
-      state={state}
-      redirectHref="/vendor/register"
-    />
+    <>
+      <VerifyClient
+        identifier={identifier}
+        method={method}
+        verifyType="vendor-email"
+        action={action}
+        pending={pending}
+        state={state}
+        redirectHref="/vendor/register"
+      />
+
+      <VerificationSuccessModal
+        isOpen={showSuccessModal}
+        onClose={() => setShowSuccessModal(false)}
+        redirectTo="/onboarding/business-info"
+      />
+    </>
   );
 }

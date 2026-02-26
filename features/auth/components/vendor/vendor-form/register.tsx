@@ -224,8 +224,8 @@ export default function VendorRegisterForm() {
               ))}
           </ul>
         }
-        buttonText="Proceed to Email Verification"
-        buttonHref="/verify/vendor-email"
+        buttonText="Proceed to Phone Verification"
+        buttonHref="/verify/vendor-phone"
       />
     </>
   );

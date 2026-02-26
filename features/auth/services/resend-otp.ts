@@ -2,7 +2,7 @@ import { BASE_URL } from '@/config/api';
 import { ApiError } from '../../libs/api-error';
 
 export async function resendOtpService(data: { identifier: string }) {
-  const res = await fetch(`${BASE_URL}/auth/customer/resend-otp`, {
+  const res = await fetch(`${BASE_URL}/auth/resend-otp`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),

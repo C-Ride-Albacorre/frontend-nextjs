@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
+import { NavItemProps } from '@/config/sidebar';
 
-import { NavItemProps } from '../type';
+
 
 export default function NavItem({
   label,
@@ -22,7 +23,7 @@ export default function NavItem({
             : 'text-neutral-600 hover:bg-neutral-100'
         }`}
     >
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 text-sm">
         <Icon size={18} />
         {label}
       </div>

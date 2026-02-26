@@ -6,9 +6,9 @@ import Sidebar from '@/components/navigation/sidebar';
 import { MenuIcon } from 'lucide-react';
 import Link from 'next/link';
 import { IconButton } from '@/components/ui/buttons/icon-button';
-import { VENDOR_SIDEBAR_CONFIG } from '@/config/sidebar';
+import { ADMIN_SIDEBAR_CONFIG } from '@/config/sidebar';
 
-export default function OnboardingLayout({
+export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -30,7 +30,7 @@ export default function OnboardingLayout({
       >
         <Sidebar
           onClose={() => setSidebarOpen(false)}
-          config={VENDOR_SIDEBAR_CONFIG}
+          config={ADMIN_SIDEBAR_CONFIG}
         />
       </div>
 
@@ -45,7 +45,7 @@ export default function OnboardingLayout({
             <MenuIcon size={20} />
           </IconButton>
 
-          <Link href="/vendor/onboarding">
+          <Link href="/admin">
             <Image
               src="/assets/svg/logo-main.svg"
               alt="C-ride Logo"

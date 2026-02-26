@@ -1,11 +1,11 @@
 import { BASE_URL } from '@/config/api';
 import { ApiError } from '../../libs/api-error';
 
-export async function verifyVendorEmailService(data: {
-  email: string;
+export async function verifyVendorPhoneService(data: {
+  phoneNumber: string;
   otp: string;
 }) {
-  const res = await fetch(`${BASE_URL}/auth/vendor/verify/email`, {
+  const res = await fetch(`${BASE_URL}/auth/vendor/verify/phone`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
@@ -22,11 +22,11 @@ export async function verifyVendorEmailService(data: {
   return res.json();
 }
 
-export async function verifyVendorPhoneService(data: {
-  phoneNumber: string;
+export async function verifyVendorEmailService(data: {
+  email: string;
   otp: string;
 }) {
-  const res = await fetch(`${BASE_URL}/auth/verify/phone`, {
+  const res = await fetch(`${BASE_URL}/auth/vendor/verify/email`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
