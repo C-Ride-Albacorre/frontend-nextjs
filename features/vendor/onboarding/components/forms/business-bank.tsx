@@ -1,6 +1,5 @@
 'use client';
 
-
 import { ChevronLeft, ChevronRight, CreditCard } from 'lucide-react';
 import OnboardingFormHeader from '../form-header';
 import Input from '@/components/ui/inputs/input';
@@ -14,9 +13,9 @@ import { toast } from 'sonner';
 
 export default function BusinessBankForm() {
   const [fields, setFields] = useState({
-    businessBankName: '',
-    businessAccountNumber: '',
-    businessAccountName: '',
+    bankName: '',
+    accountNumber: '',
+    accountName: '',
   });
 
   const handleChange =
@@ -56,43 +55,42 @@ export default function BusinessBankForm() {
 
       <form action={action} className="space-y-6">
         <Input
-          id="businessBankName"
-          name="businessBankName"
+          id="bankName"
+          name="bankName"
           label="Business Bank Name"
           type="text"
           placeholder="Enter your business Bank name"
-          value={fields.businessBankName}
-          onChange={handleChange('businessBankName')}
-          errorMessage={
-            isError ? state?.errors?.businessBankName?.[0] : undefined
-          }
+          value={fields.bankName}
+          onChange={handleChange('bankName')}
+          errorMessage={isError ? state?.errors?.bankName?.[0] : undefined}
         />
 
         <Input
-          id="businessAccountNumber"
-          name="businessAccountNumber"
+          id="accountNumber"
+          name="accountNumber"
           label="Business Account Number"
-          type="number"
+          type="text"
           placeholder="Enter your business account number"
-          value={fields.businessAccountNumber}
-          onChange={handleChange('businessAccountNumber')}
-          errorMessage={
-            isError ? state?.errors?.businessAccountNumber?.[0] : undefined
+          value={fields.accountNumber}
+          onChange={(e) =>
+            setFields((prev) => ({
+              ...prev,
+              accountNumber: e.target.value.replace(/\D/g, ''),
+            }))
           }
+          errorMessage={isError ? state?.errors?.accountNumber?.[0] : undefined}
         />
 
         <Input
-          id="businessAccountName"
-          name="businessAccountName"
+          id="accountName"
+          name="accountName"
           label="Business Account Name"
           type="text"
           placeholder="Enter your account name"
           inputInfo="Must match your business name"
-          value={fields.businessAccountName}
-          onChange={handleChange('businessAccountName')}
-          errorMessage={
-            isError ? state?.errors?.businessAccountName?.[0] : undefined
-          }
+          value={fields.accountName}
+          onChange={handleChange('accountName')}
+          errorMessage={isError ? state?.errors?.accountName?.[0] : undefined}
         />
 
         <div className="mt-12  flex items-center justify-between lg:justify-around">
@@ -106,20 +104,19 @@ export default function BusinessBankForm() {
           </Button>
 
           <Button
-            href="/onboarding/business-document"
             type="submit"
             loading={pending}
             disabled={
               pending ||
-              !fields.businessBankName.trim() ||
-              !fields.businessAccountNumber.trim() ||
-              !fields.businessAccountName.trim()
+              !fields.bankName.trim() ||
+              !fields.accountNumber.trim() ||
+              !fields.accountName.trim()
             }
             variant="primary"
             size="lg"
             rightIcon={<ChevronRight size={16} />}
           >
-            Save & Proceed
+            {pending ? 'Submitting...' : 'Save & Proceed'}
           </Button>
         </div>
       </form>

@@ -10,6 +10,7 @@ export async function refreshTokenService(payload: {
     headers: {
       'Content-Type': 'application/json',
     },
+    credentials: 'include',
     body: JSON.stringify({
       refreshToken: payload.refreshToken,
       previousAccessToken: payload.previousAccessToken,

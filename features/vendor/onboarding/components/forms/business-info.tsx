@@ -16,9 +16,9 @@ export default function BusinessInfoForm() {
   const [fields, setFields] = useState({
     businessName: '',
     businessType: '',
-    businessRegistrationNo: '',
-    tinNo: '',
-    businessDescription: '',
+    registrationNumber: '',
+    taxId: '',
+    description: '',
   });
 
   const router = useRouter();
@@ -79,36 +79,36 @@ export default function BusinessInfoForm() {
         />
 
         <Input
-          id="businessRegistrationNo"
-          name="businessRegistrationNo"
+          id="registrationNumber"
+          name="registrationNumber"
           label="Business Registration No."
           type="text"
           placeholder="Enter your business registration number"
-          value={fields.businessRegistrationNo}
-          onChange={handleChange('businessRegistrationNo')}
+          value={fields.registrationNumber}
+          onChange={handleChange('registrationNumber')}
           errorMessage={
-            isError ? state.errors?.businessRegistrationNo?.[0] : undefined
+            isError ? state.errors?.registrationNumber?.[0] : undefined
           }
         />
 
         <Input
-          id="tinNo"
-          name="tinNo"
+          id="taxId"
+          name="taxId"
           label="TIN No."
           type="text"
           placeholder="Enter your TIN number"
-          value={fields.tinNo}
-          onChange={handleChange('tinNo')}
-          errorMessage={isError ? state.errors?.tinNo?.[0] : undefined}
+          value={fields.taxId}
+          onChange={handleChange('taxId')}
+          errorMessage={isError ? state.errors?.taxId?.[0] : undefined}
         />
 
         <Textarea
-          id="businessDescription"
-          name="businessDescription"
+          id="description"
+          name="description"
           label="Business Description"
           placeholder="Briefly describe what your business offers"
-          value={fields.businessDescription}
-          onChange={handleChange('businessDescription')}
+          value={fields.description}
+          onChange={handleChange('description')}
         />
 
         <div className="mt-12 flex items-center justify-between lg:justify-around">
@@ -131,8 +131,8 @@ export default function BusinessInfoForm() {
               pending ||
               !fields.businessName.trim() ||
               !fields.businessType.trim() ||
-              !fields.businessRegistrationNo.trim() ||
-              !fields.tinNo.trim()
+              !fields.registrationNumber.trim() ||
+              !fields.taxId.trim()
             }
             rightIcon={<ChevronRight size={16} />}
           >

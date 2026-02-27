@@ -9,12 +9,12 @@ export const BusinessInfoSchema = z.object({
     .string()
     .trim()
     .min(2, { message: 'Business type is required.' }),
-  businessRegistrationNo: z
+  registrationNumber: z
     .string()
     .trim()
     .min(2, { message: 'Business registration number is required.' }),
-  tinNo: z.string().trim().min(2, { message: 'TIN number is required.' }),
-  businessDescription: z
+  taxId: z.string().trim().min(2, { message: 'Tax ID number is required.' }),
+  description: z
     .string()
     .trim()
     .min(2, { message: 'Business description is required.' }),
@@ -35,30 +35,30 @@ export const BusinessContactSchema = z.object({
 });
 
 export const BusinessAddressSchema = z.object({
-  businessAddress: z
+  address: z
     .string()
     .trim()
     .min(2, { message: 'Business address is required.' }),
-  businessCity: z
+  city: z
     .string()
     .trim()
     .min(2, { message: 'Business city is required.' }),
-  businessState: z
+  state: z
     .string()
     .trim()
     .min(2, { message: 'Business state is required.' }),
 });
 
 export const BusinessBankSchema = z.object({
-  businessBankName: z
+ bankName: z
     .string()
     .trim()
     .min(2, { message: 'Business bank name is required.' }),
-  businessAccountNumber: z
+  accountNumber: z
     .string()
     .trim()
     .min(2, { message: 'Business account number is required.' }),
-  businessAccountName: z
+  accountName: z
     .string()
     .trim()
     .min(2, { message: 'Business account name is required.' }),

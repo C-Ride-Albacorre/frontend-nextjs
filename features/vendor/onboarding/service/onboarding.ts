@@ -1,4 +1,6 @@
-// business-info/service.ts
+// service.ts
+'use server';
+
 import { BASE_URL } from '@/config/api';
 import { ApiError } from '@/features/libs/api-error';
 import { getCookie } from '@/utils/cookies';
@@ -6,33 +8,32 @@ import { getCookie } from '@/utils/cookies';
 interface OnboardingData {
   businessName: string;
   businessType: string;
-  businessRegistrationNo: string;
-  tinNo: string;
-  businessDescription: string;
+  registrationNumber: string;
+  taxId: string;
+  description: string;
   businessEmail: string;
   businessPhone: string;
-  businessAddress: string;
-  businessCity: string;
-  businessState: string;
-  businessBankName: string;
-  businessAccountNumber: string;
-  businessAccountName: string;
+  address: string;
+  city: string;
+  state: string;
+  bankName: string;
+  accountNumber: string;
+  accountName: string;
 }
 
 export async function onboardingService(
-  step: 1 | 2 | 3 | 4 | 5,
+  step: 1 | 2 | 3 | 4,
   data: Partial<OnboardingData>,
 ) {
-  const vendorId = await getCookie('vendor_id');
   const accessToken = await getCookie('accessToken');
-
-  if (!vendorId) throw new ApiError('Vendor session expired.', 401);
 
   const res = await fetch(`${BASE_URL}/auth/vendor/onboarding/${step}`, {
     method: 'POST',
     headers: {
+      Authorization: `Bearer ${accessToken}`,
       'Content-Type': 'application/json',
     },
+    credentials: 'include',
     body: JSON.stringify(data),
   });
 
@@ -46,4 +47,9 @@ export async function onboardingService(
   }
 
   return result;
+}
+
+
+export async function getAccessToken() {
+  return getCookie('accessToken');
 }

@@ -7,6 +7,7 @@ export async function logoutService(accessToken: string) {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
+    credentials: 'include',
     cache: 'no-store',
   });
 

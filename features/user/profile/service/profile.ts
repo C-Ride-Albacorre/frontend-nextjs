@@ -6,21 +6,21 @@ import { redirect } from 'next/navigation';
 export async function profileService() {
   const accessToken = await getCookie('accessToken');
 
-  if (!accessToken) {
-    redirect('/user/login');
+  // Build headers - include Authorization only if we have a local token
+  const headers: HeadersInit = {};
+  if (accessToken) {
+    headers['Authorization'] = `Bearer ${accessToken}`;
   }
 
   let res = await fetch(`${BASE_URL}/auth/profile`, {
     method: 'GET',
-
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-
+    headers,
+    credentials: 'include', // Required for backend HTTP-only cookies (Google auth)
     cache: 'no-store',
   });
 
-  if (res.status === 401) {
+  // If unauthorized and we have a local token, try refreshing
+  if (res.status === 401 && accessToken) {
     const newToken = await refreshSession();
 
     if (!newToken) redirect('/user/login');
@@ -28,8 +28,14 @@ export async function profileService() {
     res = await fetch(`${BASE_URL}/auth/profile`, {
       method: 'GET',
       headers: { Authorization: `Bearer ${newToken}` },
+      credentials: 'include',
       cache: 'no-store',
     });
+  }
+
+  // If still unauthorized (no local token or refresh failed), redirect to login
+  if (res.status === 401) {
+    redirect('/user/login');
   }
 
   const data = await res.json();

@@ -1,6 +1,5 @@
 'use client';
 
-
 import { ChevronLeft, ChevronRight, Mail } from 'lucide-react';
 import OnboardingFormHeader from '../form-header';
 import Input from '@/components/ui/inputs/input';
@@ -43,8 +42,6 @@ export default function BusinessContactInfoForm() {
     }
   }, [state, router]);
 
-  
-
   return (
     <section className="space-y-12">
       <OnboardingFormHeader
@@ -56,6 +53,7 @@ export default function BusinessContactInfoForm() {
       <form action={action} className="space-y-6">
         <Input
           id="businessEmail"
+          name="businessEmail"
           label="Business Email Address"
           type="email"
           placeholder="Enter your business email"
@@ -66,12 +64,18 @@ export default function BusinessContactInfoForm() {
 
         <Input
           id="businessPhone"
+          name="businessPhone"
           label="Business Phone Number"
           type="tel"
           placeholder="Enter your business phone number"
           inputInfo="For urgent order update"
           value={fields.businessPhone}
-          onChange={handleChange('businessPhone')}
+          onChange={(e) =>
+            setFields((prev) => ({
+              ...prev,
+              businessPhone: e.target.value.replace(/\s/g, ''),
+            }))
+          }
           errorMessage={isError ? state?.errors?.businessPhone?.[0] : undefined}
         />
 
@@ -87,7 +91,6 @@ export default function BusinessContactInfoForm() {
           </Button>
 
           <Button
-            href="/onboarding/business-address"
             variant="primary"
             type="submit"
             loading={pending}

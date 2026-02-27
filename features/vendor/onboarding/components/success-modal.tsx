@@ -5,9 +5,11 @@ import { Check, HomeIcon, Mail, Phone, Stars } from 'lucide-react';
 export default function SuccessModal({
   isModalOpen,
   onClose,
+  email,
 }: {
   isModalOpen: boolean;
   onClose: () => void;
+  email?: string;
 }) {
   return (
     <Modal isModalOpen={isModalOpen} onClose={onClose}>
@@ -52,7 +54,7 @@ export default function SuccessModal({
                 <p>
                   You’ll receive an email at{' '}
                   <span className="block lg:inline font-medium mt-2 lg:mt-0 text-neutral-900">
-                    Ziondavid17@yahoo.com
+                    {email || 'your registered email'}
                   </span>
                 </p>
               </li>

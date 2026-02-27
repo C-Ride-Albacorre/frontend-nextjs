@@ -46,4 +46,7 @@ export type FileInputProps = {
   description: string;
   verified?: boolean;
   mode?: 'upload' | 'dashboard';
+
+  onFileSelect?: (file: File) => void;
+  uploadStatus?: 'idle' | 'uploading' | 'done' | 'error';
 };

@@ -11,9 +11,9 @@ import { useRouter } from 'next/navigation';
 
 export default function BusinessAddressForm() {
   const [fields, setFields] = useState({
-    businessAddress: '',
-    businessCity: '',
-    businessState: '',
+    address: '',
+    city: '',
+    state: '',
   });
 
   const handleChange =
@@ -53,42 +53,42 @@ export default function BusinessAddressForm() {
 
       <form action={action} className="space-y-6">
         <Input
-          id="businessAddress"
-          name="businessAddress"
+          id="address"
+          name="address"
           label="Business Street Address"
           type="text"
           placeholder="123 Business Street"
-          value={fields.businessAddress}
-          onChange={handleChange('businessAddress')}
+          value={fields.address}
+          onChange={handleChange('address')}
           errorMessage={
-            isError ? state?.errors?.businessAddress?.[0] : undefined
+            isError ? state?.errors?.address?.[0] : undefined
           }
         />
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <Input
-            id="businessCity"
-            name="businessCity"
+            id="city"
+            name="city"
             label="City"
             type="text"
             placeholder="Lekki"
-            value={fields.businessCity}
-            onChange={handleChange('businessCity')}
+            value={fields.city}
+            onChange={handleChange('city')}
             errorMessage={
-              isError ? state?.errors?.businessCity?.[0] : undefined
+              isError ? state?.errors?.city?.[0] : undefined
             }
           />
 
           <Input
-            id="businessState"
-            name="businessState"
+            id="state"
+            name="state"
             label="State"
             type="text"
             placeholder="Lagos"
-            value={fields.businessState}
-            onChange={handleChange('businessState')}
+            value={fields.state}
+            onChange={handleChange('state')}
             errorMessage={
-              isError ? state?.errors?.businessState?.[0] : undefined
+              isError ? state?.errors?.state?.[0] : undefined
             }
           />
         </div>
@@ -110,9 +110,9 @@ export default function BusinessAddressForm() {
             loading={pending}
             disabled={
               pending ||
-              !fields.businessAddress.trim() ||
-              !fields.businessCity.trim() ||
-              !fields.businessState.trim()
+              !fields.address.trim() ||
+              !fields.city.trim() ||
+              !fields.state.trim()
             }
             rightIcon={<ChevronRight size={16} />}
           >

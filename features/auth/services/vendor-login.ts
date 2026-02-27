@@ -1,7 +1,7 @@
 import { BASE_URL } from '@/config/api';
 import { ApiError } from '../../libs/api-error';
 
-export type LoginApiResponse = {
+export type VendorLoginApiResponse = {
   status: string;
   statusCode: number;
   data: {
@@ -12,17 +12,21 @@ export type LoginApiResponse = {
       email: string;
       role: string;
     };
+    onboardingStatus: 'PENDING' | 'COMPLETED';
+    onboardingStep: number;
+    status: 'PENDING' | 'UNDER_REVIEW' | 'APPROVED' | 'REJECTED';
   };
 };
 
-export type LoginPayload =
-  | { email: string; password: string }
-  | { phoneNumber: string; password: string };
+export type VendorLoginPayload = {
+  email: string;
+  password: string;
+};
 
-export async function loginUser(
-  payload: LoginPayload,
-): Promise<LoginApiResponse> {
-  const res = await fetch(`${BASE_URL}/auth/customer/login`, {
+export async function loginVendor(
+  payload: VendorLoginPayload,
+): Promise<VendorLoginApiResponse> {
+  const res = await fetch(`${BASE_URL}/auth/vendor/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     credentials: 'include',
