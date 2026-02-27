@@ -8,7 +8,7 @@ import { CheckCircle, Upload } from 'lucide-react';
 export function StoreInformation() {
   return (
     <Card>
-      <form className="px-4 md:px-8 space-y-6 md:space-y-10">
+      <div className="px-4 md:px-8 space-y-6 md:space-y-10">
         <p className="text-neutral-900 font-medium">Store Information</p>
         <div className="space-y-6">
           <Input
@@ -43,7 +43,7 @@ export function StoreInformation() {
           />
         </div>
 
-        <div className="w-full text-center">
+        {/* <div className="w-full text-center">
           <Button
             leftIcon={<CheckCircle size={18} />}
             variant="primary"
@@ -52,8 +52,8 @@ export function StoreInformation() {
           >
             Update Store Information
           </Button>
-        </div>
-      </form>
+        </div> */}
+      </div>
     </Card>
   );
 }
@@ -61,7 +61,7 @@ export function StoreInformation() {
 export function OperatingHours() {
   return (
     <Card>
-      <form className="px-4 md:px-8 space-y-6 md:space-y-10">
+      <div className="px-4 md:px-8 space-y-6 md:space-y-10">
         <p className="text-neutral-900 font-medium">Operating Hours</p>
         <div className="space-y-6">
           {[
@@ -89,12 +89,12 @@ export function OperatingHours() {
           ))}
         </div>
 
-        <div className="w-full text-center">
+        {/* <div className="w-full text-center">
           <Button variant="primary" size="lg" type="submit">
             Save Operating Hours
           </Button>
-        </div>
-      </form>
+        </div> */}
+      </div>
     </Card>
   );
 }
@@ -102,7 +102,7 @@ export function OperatingHours() {
 export function StoreDetails() {
   return (
     <Card>
-      <form className="px-4 md:px-8 space-y-6 md:space-y-10">
+      <div className="px-4 md:px-8 space-y-6 md:space-y-10">
         {' '}
         <p className="text-neutral-900 font-medium">
           Store Description & Details
@@ -121,12 +121,12 @@ export function StoreDetails() {
 
           <Input label="Preparation Time" placeholder="30 mins" />
         </div>
-        <div className="w-full text-center">
+        {/* <div className="w-full text-center">
           <Button variant="primary" size="lg" type="submit">
             Update Details
           </Button>
-        </div>
-      </form>
+        </div> */}
+      </div>
     </Card>
   );
 }
