@@ -6,17 +6,28 @@ export async function GET(request: NextRequest) {
   const success = searchParams.get('success');
   const error = searchParams.get('error');
 
+  // ✅ log everything to diagnose
+  console.log('Google callback hit:', {
+    success,
+    error,
+    url: request.url,
+    cookies: request.cookies.getAll().map(c => c.name),
+    accessToken: request.cookies.get('accessToken')?.value ? 'present' : 'missing',
+    refreshToken: request.cookies.get('refreshToken')?.value ? 'present' : 'missing',
+  });
+
   if (error || success !== 'true') {
+    console.log('Failed at success check:', { success, error });
     return NextResponse.redirect(
       new URL('/user/login?error=google_failed', request.url),
     );
   }
 
-  // ✅ read tokens from cookies the backend set
   const accessToken = request.cookies.get('accessToken')?.value;
   const refreshToken = request.cookies.get('refreshToken')?.value;
 
   if (!accessToken) {
+    console.log('Failed at accessToken check — all cookies:', request.cookies.getAll());
     return NextResponse.redirect(
       new URL('/user/login?error=google_failed', request.url),
     );

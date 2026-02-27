@@ -14,6 +14,14 @@ const AUTH_ROUTES = [
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+
+    if (pathname.startsWith('/google/callback')) {
+    return NextResponse.next();
+  }
+
+
+  
   const accessToken = request.cookies.get('accessToken')?.value;
 
   const isProtectedRoute = PROTECTED_ROUTES.some((route) =>
@@ -21,6 +29,9 @@ export function middleware(request: NextRequest) {
   );
 
   const isAuthRoute = AUTH_ROUTES.some((route) => pathname.startsWith(route));
+
+
+  
 
   // ✅ No token + trying to access protected route → send to login
   if (isProtectedRoute && !accessToken) {
@@ -46,6 +57,7 @@ export const config = {
      * - favicon.ico
      * - public files
      */
-    '/((?!_next/static|_next/image|favicon.ico|api/auth/google|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+  '/((?!_next/static|_next/image|favicon.ico|google/callback|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+
   ],
 };
