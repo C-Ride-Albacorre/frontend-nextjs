@@ -28,7 +28,7 @@ export default function ConfirmLogoutModal({
             </p>
           </div>
 
-          <div className="flex gap-4 mt-6 w-full md:w-auto">
+          <div className="flex gap-4 mt-6 w-full">
             <Button
               variant="green"
               size='full'

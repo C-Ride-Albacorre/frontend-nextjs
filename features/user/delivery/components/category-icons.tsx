@@ -21,7 +21,7 @@ const categories = [
 export default function CategoryIcons() {
   return (
     <section>
-      <div className="flex flex-wrap gap-8 justify-between items-center">
+      <div className="flex flex-wrap gap-12 justify-center md:justify-between items-center">
         {categories.map((cat) => (
           <div
             key={cat.name}

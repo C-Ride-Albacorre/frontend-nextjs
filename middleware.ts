@@ -4,7 +4,13 @@ import { NextRequest, NextResponse } from 'next/server';
 const PROTECTED_ROUTES = ['/user/dashboard', '/user/profile', '/user/settings'];
 
 // Routes that should redirect to dashboard if already authenticated
-const AUTH_ROUTES = ['/user/register', '/user/login', '/verify' , '/reset' , '/reset/reset-password'];
+const AUTH_ROUTES = [
+  '/user/register',
+  '/user/login',
+  '/verify',
+  '/reset',
+  '/reset/reset-password',
+];
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -40,6 +46,6 @@ export const config = {
      * - favicon.ico
      * - public files
      */
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/((?!_next/static|_next/image|favicon.ico|api/auth/google|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 };

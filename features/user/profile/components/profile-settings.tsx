@@ -17,14 +17,14 @@ export default function ProfileSettings() {
       <div className="flex justify-between items-center">
         <p className="text-sm font-medium">Account Settings</p>
 
-        <Button
+        {/* <Button
           variant="outline"
           size="icon"
           className="bg-white"
           leftIcon={<Edit size={16} />}
         >
           Edit Settings
-        </Button>
+        </Button> */}
       </div>
 
       <div className="space-y-6">

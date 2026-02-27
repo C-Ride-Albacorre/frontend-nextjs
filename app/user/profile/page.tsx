@@ -54,7 +54,7 @@ export default async function UserProfilePage() {
             <Avatar src="" alt="driver" name={fullName} size={100} />
 
             <div className="space-y-4">
-              <p className="font-medium text-lg">{fullName}</p>
+              <p className="font-medium text-lg capitalize">{fullName}</p>
 
               <Button
                 size="icon"
@@ -70,19 +70,19 @@ export default async function UserProfilePage() {
           <Card className="bg-foreground-200">
             <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 text-sm">
               <li className="space-y-4">
-                <p className="font-medium">Other Names</p>
-                <p className="text-neutral-500 capitalize">{firstName}</p>
+                <p className="font-medium">First Name</p>
+                <p className="text-neutral-600 capitalize">{firstName}</p>
               </li>
 
               <li className="space-y-4">
                 <p className="font-medium">Last Name</p>
-                <p className="text-neutral-500 capitalize">{lastName}</p>
+                <p className="text-neutral-600 capitalize">{lastName}</p>
               </li>
 
               {email && (
                 <li className="space-y-4">
                   <p className="font-medium">Email Address</p>
-                  <p className="text-neutral-500 flex items-center gap-2">
+                  <p className="text-neutral-600 flex items-center gap-2">
                     <Mail size={16} />
                     {email ? email : null}
                   </p>
@@ -92,7 +92,7 @@ export default async function UserProfilePage() {
               {phone && (
                 <li className="space-y-4">
                   <p className="font-medium">Phone Number</p>
-                  <p className="text-neutral-500 flex items-center gap-2">
+                  <p className="text-neutral-600 flex items-center gap-2">
                     <Phone size={16} /> {phone ? phone : null}
                   </p>
                 </li>
@@ -100,7 +100,7 @@ export default async function UserProfilePage() {
 
               <li className="space-y-4">
                 <p className="font-medium">Date of Birth</p>
-                <p className="text-neutral-500 flex items-center gap-2">
+                <p className="text-neutral-600 flex items-center gap-2">
                   <Calendar size={16} />
                 </p>
               </li>

@@ -70,9 +70,9 @@ export default function SavedAddress() {
                       )}
                     </div>
 
-                    <p className="text-neutral-500">{option.address}</p>
+                    <p className="text-neutral-600">{option.address}</p>
 
-                    <p className="text-neutral-500">{option.location}</p>
+                    <p className="text-neutral-600">{option.location}</p>
                   </div>
                 </div>
 
