@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { Bell, Shield, Star, X } from 'lucide-react';
+import { Bell, Shield, X } from 'lucide-react';
 
 
 import { IconButton } from '@/components/ui/buttons/icon-button';
@@ -13,11 +13,13 @@ import NavItem from './nav-item';
 type SidebarProps = {
   onClose: () => void;
   config?: SidebarConfig;
+  storeCard?: React.ReactNode;
 };
 
 export default function Sidebar({
   onClose,
   config = VENDOR_SIDEBAR_CONFIG,
+  storeCard,
 }: SidebarProps) {
   const pathName = usePathname();
 
@@ -64,28 +66,7 @@ export default function Sidebar({
       {/* ================= SCROLLABLE CONTENT ================= */}
       <div className="flex-1 overflow-y-auto overscroll-contain px-4 lg:px-6 py-6 space-y-12">
         {/* STORE CARD - only shown for vendor */}
-        {config.showStoreCard && (
-          <div className="rounded-2xl bg-primary/10 border border-border p-4 space-y-4">
-            <div>
-              <p className="font-medium text-primary-text-100 text-sm">
-                The Place Restaurant
-              </p>
-              <span className="text-xs text-neutral-400">
-                Victoria Island, Lagos
-              </span>
-            </div>
-
-            <span className="flex w-fit items-center gap-2 rounded-full border border-emerald-500 bg-emerald-500/10 px-2 py-1 text-xs text-emerald-600">
-              <Star strokeWidth={0} size={14} fill="#10B981" />
-              Premium Partner
-            </span>
-
-            <div className="flex justify-between text-xs">
-              <span className="text-neutral-500">Store Rating</span>
-              <span className="font-medium text-primary">4.9/5.0</span>
-            </div>
-          </div>
-        )}
+        {config.showStoreCard && storeCard}
 
         {config.showAdminCard && (
           <div className="rounded-2xl bg-primary/10 border border-border p-4 space-y-4">

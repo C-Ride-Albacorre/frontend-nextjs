@@ -17,6 +17,7 @@ export default function Input({
   className,
   leftIcon,
   rightIcon,
+  disabled,
   ...props
 }: InputProps) {
   const wrapperClasses = clsx(
@@ -26,6 +27,7 @@ export default function Input({
       ' bg-white': variant === 'default',
       'bg-foreground-100': variant === 'fill',
       'border-red-500 focus-within:ring-red-500': errorMessage,
+      'opacity-60 cursor-not-allowed bg-gray-50': disabled,
 
       //sizes
       'mt-0': spacing === 'none',
@@ -54,10 +56,11 @@ export default function Input({
           onChange={onChange}
           aria-invalid={!!errorMessage}
           placeholder={placeholder}
+          disabled={disabled}
           className=" w-full bg-transparent 
     text-base md:text-sm 
     outline-none  placeholder:font-normal
-    placeholder:text-sm placeholder:text-neutral-400"
+    placeholder:text-sm placeholder:text-neutral-400 disabled:cursor-not-allowed"
           {...props}
         />
 

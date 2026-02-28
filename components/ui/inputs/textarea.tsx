@@ -1,5 +1,4 @@
 import { TextareaProps } from '@/types/input';
-import { p } from 'framer-motion/client';
 
 export default function Textarea({
   id,
@@ -11,6 +10,7 @@ export default function Textarea({
   onChange,
   className,
   wrapperClassName,
+  disabled,
   ...props
 }: TextareaProps) {
   return (
@@ -27,7 +27,8 @@ export default function Textarea({
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        className={`mt-2 w-full rounded-xl border border-border px-4 py-3 text-base md:text-sm outline-none focus:ring-2 focus:ring-primary placeholder:text-sm placeholder:text-neutral-400 placeholder:font-normal ${className}`}
+        disabled={disabled}
+        className={`mt-2 w-full rounded-xl border border-border px-4 py-3 text-base md:text-sm outline-none focus:ring-2 focus:ring-primary placeholder:text-sm placeholder:text-neutral-400 placeholder:font-normal disabled:opacity-60 disabled:cursor-not-allowed disabled:bg-gray-50 ${className}`}
       />
     </div>
   );

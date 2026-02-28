@@ -10,6 +10,7 @@ interface TimePickerProps {
   onChange?: (value: string) => void;
   placeholder?: string;
   label?: string;
+  disabled?: boolean;
 }
 
 const HOURS = Array.from({ length: 12 }, (_, i) =>
@@ -23,6 +24,7 @@ export default function TimePicker({
   value = '',
   onChange,
   placeholder = 'Select time',
+  disabled,
 }: TimePickerProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [hour, setHour] = useState('09');
@@ -105,12 +107,14 @@ export default function TimePicker({
       {/* Display button */}
       <button
         type="button"
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => !disabled && setIsOpen(!isOpen)}
+        disabled={disabled}
         className={clsx(
           'w-full flex items-center justify-between gap-2 rounded-xl px-4 py-3',
           'border border-border bg-white text-sm',
           'focus:ring-2 focus:ring-primary outline-none transition',
           !displayValue && 'text-neutral-400',
+          disabled ? 'opacity-60 cursor-not-allowed bg-gray-50' : 'cursor-pointer',
         )}
       >
         <span>{displayValue || placeholder}</span>
@@ -119,14 +123,14 @@ export default function TimePicker({
 
       {/* Dropdown */}
       {isOpen && (
-        <div className="absolute z-50 mt-2 left-0 min-w-[200px] bg-white border border-border rounded-xl shadow-lg p-4">
+        <div className="absolute z-50 mt-2 left-0 min-w-50 bg-white border border-border rounded-xl shadow-lg p-4 cursor-pointer">
           <div className="flex items-center justify-center gap-2">
             {/* Hour */}
             <div className="flex flex-col items-center">
               <button
                 type="button"
                 onClick={() => adjustHour(1)}
-                className="p-1 hover:bg-foreground-100 rounded"
+                className="p-1 hover:bg-foreground-100 rounded cursor-pointer"
               >
                 <ChevronUp size={16} />
               </button>
@@ -136,7 +140,7 @@ export default function TimePicker({
               <button
                 type="button"
                 onClick={() => adjustHour(-1)}
-                className="p-1 hover:bg-foreground-100 rounded"
+                className="p-1 hover:bg-foreground-100 rounded cursor-pointer"
               >
                 <ChevronDown size={16} />
               </button>
@@ -149,7 +153,7 @@ export default function TimePicker({
               <button
                 type="button"
                 onClick={() => adjustMinute(1)}
-                className="p-1 hover:bg-foreground-100 rounded"
+                className="p-1 hover:bg-foreground-100 rounded cursor-pointer"
               >
                 <ChevronUp size={16} />
               </button>
@@ -159,7 +163,7 @@ export default function TimePicker({
               <button
                 type="button"
                 onClick={() => adjustMinute(-1)}
-                className="p-1 hover:bg-foreground-100 rounded"
+                className="p-1 hover:bg-foreground-100 rounded cursor-pointer"
               >
                 <ChevronDown size={16} />
               </button>
@@ -170,7 +174,7 @@ export default function TimePicker({
               <button
                 type="button"
                 onClick={() => setPeriod(period === 'AM' ? 'PM' : 'AM')}
-                className="p-1 hover:bg-foreground-100 rounded"
+                className="p-1 hover:bg-foreground-100 rounded cursor-pointer"
               >
                 <ChevronUp size={16} />
               </button>
@@ -180,7 +184,7 @@ export default function TimePicker({
               <button
                 type="button"
                 onClick={() => setPeriod(period === 'AM' ? 'PM' : 'AM')}
-                className="p-1 hover:bg-foreground-100 rounded"
+                className="p-1 hover:bg-foreground-100 rounded cursor-pointer"
               >
                 <ChevronDown size={16} />
               </button>
@@ -191,7 +195,7 @@ export default function TimePicker({
           <button
             type="button"
             onClick={handleConfirm}
-            className="mt-4 w-full py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary-hover transition"
+            className="mt-4 w-full py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary-hover transition cursor-pointer"
           >
             Confirm
           </button>

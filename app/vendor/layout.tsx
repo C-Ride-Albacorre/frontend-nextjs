@@ -7,6 +7,7 @@ import { MenuIcon } from 'lucide-react';
 import Link from 'next/link';
 import { IconButton } from '@/components/ui/buttons/icon-button';
 import { VENDOR_SIDEBAR_CONFIG } from '@/config/sidebar';
+import VendorStoreCard from '@/features/vendor/store/components/store-card';
 
 export default function OnboardingLayout({
   children,
@@ -31,6 +32,7 @@ export default function OnboardingLayout({
         <Sidebar
           onClose={() => setSidebarOpen(false)}
           config={VENDOR_SIDEBAR_CONFIG}
+          storeCard={<VendorStoreCard />}
         />
       </div>
 

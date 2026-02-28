@@ -2,19 +2,14 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getTokenExpiry } from '@/utils/jwt';
 
 export async function GET(request: NextRequest) {
+  console.log('🔥 CALLBACK ROUTE HIT', {
+    url: request.url,
+    cookies: request.cookies.getAll().map((c) => c.name),
+  });
+
   const { searchParams } = new URL(request.url);
   const success = searchParams.get('success');
   const error = searchParams.get('error');
-
-  // ✅ log everything to diagnose
-  console.log('Google callback hit:', {
-    success,
-    error,
-    url: request.url,
-    cookies: request.cookies.getAll().map(c => c.name),
-    accessToken: request.cookies.get('accessToken')?.value ? 'present' : 'missing',
-    refreshToken: request.cookies.get('refreshToken')?.value ? 'present' : 'missing',
-  });
 
   if (error || success !== 'true') {
     console.log('Failed at success check:', { success, error });
@@ -26,14 +21,18 @@ export async function GET(request: NextRequest) {
   const accessToken = request.cookies.get('accessToken')?.value;
   const refreshToken = request.cookies.get('refreshToken')?.value;
 
+  console.log('Cookie check:', {
+    accessToken: accessToken ? 'present' : 'missing',
+    refreshToken: refreshToken ? 'present' : 'missing',
+    allCookies: request.cookies.getAll().map((c) => c.name),
+  });
+
   if (!accessToken) {
-    console.log('Failed at accessToken check — all cookies:', request.cookies.getAll());
     return NextResponse.redirect(
       new URL('/user/login?error=google_failed', request.url),
     );
   }
 
-  // ✅ re-set them properly with correct maxAge so they persist
   const response = NextResponse.redirect(
     new URL('/user/dashboard', request.url),
   );

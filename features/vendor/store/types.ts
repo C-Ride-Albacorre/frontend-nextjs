@@ -28,6 +28,24 @@ export interface CreateStoreData {
   logo?: File;
 }
 
+export interface StoreData {
+  id: string;
+  storeName: string;
+  storeCategory: string;
+  storeDescription?: string;
+  storeAddress: string;
+  phoneNumber: string;
+  email: string;
+  minimumOrder?: number;
+  deliveryFee?: number;
+  preparationTime?: number;
+  operatingHours: OperatingHour[];
+  storeLogo?: string;
+  status?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface StoreResponse {
   id: string;
   storeName: string;
@@ -40,9 +58,17 @@ export interface StoreResponse {
   deliveryFee?: number;
   preparationTime?: number;
   operatingHours: OperatingHour[];
-  logoUrl?: string;
+  storeLogo?: string;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface StoreApiResponse {
+  status: string;
+  statusCode: number;
+  timestamp: string;
+  path: string;
+  data: StoreData[];
 }
 
 export type StoreFormState =

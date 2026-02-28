@@ -20,15 +20,17 @@ interface StoreInformationProps {
   values: StoreFormValues;
   onChange: (field: keyof StoreFormValues, value: string) => void;
   errors?: Record<string, string[]>;
+  disabled?: boolean;
 }
 
 export function StoreInformation({
   values,
   onChange,
   errors,
+  disabled,
 }: StoreInformationProps) {
   return (
-    <Card className="bg-white">
+    <Card className={`bg-white ${disabled ? 'opacity-50 pointer-events-none' : ''}`}>
       <div className="px-4 md:px-8 space-y-6 md:space-y-10">
         <p className="text-neutral-900 font-medium">Store Information</p>
         <div className="space-y-6">
@@ -40,6 +42,7 @@ export function StoreInformation({
             value={values.storeName}
             onChange={(e) => onChange('storeName', e.target.value)}
             errorMessage={errors?.storeName?.[0]}
+            disabled={disabled}
           />
 
           <Input
@@ -50,6 +53,7 @@ export function StoreInformation({
             value={values.storeCategory}
             onChange={(e) => onChange('storeCategory', e.target.value)}
             errorMessage={errors?.storeCategory?.[0]}
+            disabled={disabled}
           />
 
           <Input
@@ -60,6 +64,7 @@ export function StoreInformation({
             value={values.storeAddress}
             onChange={(e) => onChange('storeAddress', e.target.value)}
             errorMessage={errors?.storeAddress?.[0]}
+            disabled={disabled}
           />
 
           <Input
@@ -71,6 +76,7 @@ export function StoreInformation({
             value={values.phoneNumber}
             onChange={(e) => onChange('phoneNumber', e.target.value)}
             errorMessage={errors?.phoneNumber?.[0]}
+            disabled={disabled}
           />
 
           <Input
@@ -82,6 +88,7 @@ export function StoreInformation({
             value={values.email}
             onChange={(e) => onChange('email', e.target.value)}
             errorMessage={errors?.email?.[0]}
+            disabled={disabled}
           />
         </div>
       </div>
@@ -93,6 +100,7 @@ interface OperatingHoursProps {
   values: StoreFormValues;
   onTimeChange: (day: string, type: 'open' | 'close', value: string) => void;
   errors?: Record<string, string[]>;
+  disabled?: boolean;
 }
 
 const DAYS = [
@@ -109,9 +117,10 @@ export function OperatingHours({
   values,
   onTimeChange,
   errors,
+  disabled,
 }: OperatingHoursProps) {
   return (
-    <Card className="bg-white">
+    <Card className={`bg-white ${disabled ? 'opacity-50 pointer-events-none' : ''}`}>
       <div className="px-4 md:px-8 space-y-6 md:space-y-10">
         <p className="text-neutral-900 font-medium">Operating Hours</p>
         {errors?.operatingHours && (
@@ -129,6 +138,7 @@ export function OperatingHours({
                     value={values.operatingHours[dayKey]?.open || ''}
                     onChange={(val) => onTimeChange(dayKey, 'open', val)}
                     placeholder="Open"
+                    disabled={disabled}
                   />
                 </div>
 
@@ -141,6 +151,7 @@ export function OperatingHours({
                     value={values.operatingHours[dayKey]?.close || ''}
                     onChange={(val) => onTimeChange(dayKey, 'close', val)}
                     placeholder="Close"
+                    disabled={disabled}
                   />
                 </div>
               </div>
@@ -156,11 +167,12 @@ interface StoreDetailsProps {
   values: StoreFormValues;
   onChange: (field: keyof StoreFormValues, value: string) => void;
   errors?: Record<string, string[]>;
+  disabled?: boolean;
 }
 
-export function StoreDetails({ values, onChange, errors }: StoreDetailsProps) {
+export function StoreDetails({ values, onChange, errors, disabled }: StoreDetailsProps) {
   return (
-    <Card className="bg-white">
+    <Card className={`bg-white ${disabled ? 'opacity-50 pointer-events-none' : ''}`}>
       <div className="px-4 md:px-8 space-y-6 md:space-y-10">
         <p className="text-neutral-900 font-medium">
           Store Description & Details
@@ -174,6 +186,7 @@ export function StoreDetails({ values, onChange, errors }: StoreDetailsProps) {
             wrapperClassName="md:col-span-3"
             value={values.storeDescription}
             onChange={(e) => onChange('storeDescription', e.target.value)}
+            disabled={disabled}
           />
 
           <Input
@@ -184,6 +197,7 @@ export function StoreDetails({ values, onChange, errors }: StoreDetailsProps) {
             value={values.minimumOrder}
             onChange={(e) => onChange('minimumOrder', e.target.value)}
             errorMessage={errors?.minimumOrder?.[0]}
+            disabled={disabled}
           />
 
           <Input
@@ -194,6 +208,7 @@ export function StoreDetails({ values, onChange, errors }: StoreDetailsProps) {
             value={values.deliveryFee}
             onChange={(e) => onChange('deliveryFee', e.target.value)}
             errorMessage={errors?.deliveryFee?.[0]}
+            disabled={disabled}
           />
 
           <Input
@@ -204,6 +219,7 @@ export function StoreDetails({ values, onChange, errors }: StoreDetailsProps) {
             value={values.preparationTime}
             onChange={(e) => onChange('preparationTime', e.target.value)}
             errorMessage={errors?.preparationTime?.[0]}
+            disabled={disabled}
           />
         </div>
       </div>

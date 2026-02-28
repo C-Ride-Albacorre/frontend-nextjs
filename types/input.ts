@@ -14,6 +14,7 @@ export type InputProps = {
   className?: string;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
+  disabled?: boolean;
   props?: React.InputHTMLAttributes<HTMLInputElement>;
 };
 
@@ -27,6 +28,7 @@ export type TextareaProps = {
   onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   className?: string;
   wrapperClassName?: string;
+  disabled?: boolean;
   props?: React.TextareaHTMLAttributes<HTMLTextAreaElement>;
 };
 

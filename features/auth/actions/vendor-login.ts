@@ -49,6 +49,8 @@ export async function vendorLoginAction(
     // Set auth cookies
     await setAuthCookies(accessToken, refreshToken);
 
+    console.log('Vendor login successful:', result);
+
     // Determine redirect based on vendor status
     if (status === 'UNDER_REVIEW') {
       // Vendor is under review - show success modal on login page

@@ -3,7 +3,7 @@
 import { BASE_URL } from '@/config/api';
 import { ApiError } from '@/features/libs/api-error';
 import { getCookie } from '@/utils/cookies';
-import { StoreResponse } from '../types';
+import { StoreApiResponse, StoreResponse } from '../types';
 
 export async function createStoreService(
   formData: FormData,
@@ -31,7 +31,7 @@ export async function createStoreService(
   return result;
 }
 
-export async function getStoreService(): Promise<StoreResponse> {
+export async function getStoreService(): Promise<StoreApiResponse | null> {
   const accessToken = await getCookie('accessToken');
 
   const res = await fetch(`${BASE_URL}/vendor/stores`, {
@@ -45,9 +45,74 @@ export async function getStoreService(): Promise<StoreResponse> {
 
   const result = await res.json();
 
+  // Return null if no store found (404 or empty)
+  if (res.status === 404 || result?.statusCode === 404) {
+    return null;
+  }
+
   if (!res.ok) {
     throw new ApiError(
       result?.message || 'Failed to fetch store',
+      result?.statusCode ?? res.status,
+    );
+  }
+
+  return result;
+}
+
+export async function updateStoreService(
+  storeId: string,
+  formData: FormData,
+): Promise<StoreResponse> {
+  const accessToken = await getCookie('accessToken');
+
+  const res = await fetch(`${BASE_URL}/vendor/stores/${storeId}`, {
+    method: 'PUT',
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+    credentials: 'include',
+    body: formData,
+  });
+
+  const result = await res.json();
+
+  if (!res.ok) {
+    throw new ApiError(
+      result?.message || 'Failed to update store',
+      result?.statusCode ?? res.status,
+    );
+  }
+
+  return result;
+}
+
+export async function updateOperatingHoursService(
+  storeId: string,
+  operatingHours: Array<{
+    dayOfWeek: string;
+    isOpen: boolean;
+    openingTime: string | null;
+    closingTime: string | null;
+  }>,
+): Promise<StoreResponse> {
+  const accessToken = await getCookie('accessToken');
+
+  const res = await fetch(`${BASE_URL}/vendor/stores/${storeId}/operating-hours`, {
+    method: 'PUT',
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+    body: JSON.stringify(operatingHours),
+  });
+
+  const result = await res.json();
+
+  if (!res.ok) {
+    throw new ApiError(
+      result?.message || 'Failed to update operating hours',
       result?.statusCode ?? res.status,
     );
   }
