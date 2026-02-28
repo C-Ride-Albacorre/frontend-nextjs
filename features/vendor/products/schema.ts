@@ -11,7 +11,7 @@ export const ProductSchema = z.object({
     .min(1, { message: 'Category is required.' }),
   sku: z.string().trim().min(1, { message: 'SKU is required.' }),
   description: z.string().trim().optional(),
-  productType: z.enum(['SIMPLE', 'VARIABLE'], {
+  productType: z.enum(['SINGLE', 'VARIABLE'], {
     message: 'Product type is required.',
   }),
   stockStatus: z.enum(['IN_STOCK', 'LOW_STOCK', 'OUT_OF_STOCK'], {

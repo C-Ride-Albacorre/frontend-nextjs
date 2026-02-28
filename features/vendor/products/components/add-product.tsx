@@ -22,7 +22,7 @@ const CATEGORIES = [
 ];
 
 const PRODUCT_TYPES = [
-  { label: 'Simple', value: 'SIMPLE' },
+  { label: 'Single', value: 'SINGLE' },
   { label: 'Variable', value: 'VARIABLE' },
 ];
 
@@ -62,7 +62,7 @@ export default function ProductForm({
     editProduct?.description || '',
   );
   const [productType, setProductType] = useState(
-    editProduct?.productType || 'SIMPLE',
+    editProduct?.productType || 'SINGLE',
   );
   const [stockStatus, setStockStatus] = useState(
     editProduct?.stockStatus || 'IN_STOCK',
@@ -110,7 +110,7 @@ export default function ProductForm({
       setProductCategory('');
       setSku('');
       setDescription('');
-      setProductType('SIMPLE');
+      setProductType('SINGLE');
       setStockStatus('IN_STOCK');
       setProductStatus('ACTIVE');
       setBasePrice('');
@@ -244,7 +244,7 @@ export default function ProductForm({
               placeholder="Select type"
               options={PRODUCT_TYPES}
               value={productType}
-              onChange={(value) => setProductType(value as "SIMPLE" | "VARIABLE")}
+              onChange={(value) => setProductType(value as "SINGLE" | "VARIABLE")}
               errorMessage={errors?.productType?.[0]}
             />
 

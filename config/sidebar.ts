@@ -146,7 +146,7 @@ const ADMIN_SIDEBAR_SECTIONS: SidebarSection[] = [
       {
         label: 'Dashboard',
         icon: LayoutDashboard,
-        href: '/admin',
+        href: '/admin/dashboard',
       },
       {
         label: 'Analytics',

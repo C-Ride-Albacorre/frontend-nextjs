@@ -90,7 +90,7 @@ export default function SuccessModal({
         </div>
 
         <div className="py-6 border-t border-border ">
-          <p className=" text-xs md:text-sm">Application ID: VEN-39200022</p>
+          <p className=" text-xs md:text-sm">Vendor's ID': VEN-39200022</p>
         </div>
       </div>
     </Modal>

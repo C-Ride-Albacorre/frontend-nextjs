@@ -36,7 +36,7 @@ export function StoreInformation({
         <div className="space-y-6">
           <Input
             name="storeName"
-            label="Business Name"
+            label="Store Name"
             placeholder="Enter your business name"
             spacing="sm"
             value={values.storeName}
@@ -47,7 +47,7 @@ export function StoreInformation({
 
           <Input
             name="storeCategory"
-            label="Business Category"
+            label="Store Category"
             placeholder="Select type"
             spacing="sm"
             value={values.storeCategory}
@@ -191,7 +191,7 @@ export function StoreDetails({ values, onChange, errors, disabled }: StoreDetail
 
           <Input
             name="minimumOrder"
-            label="Minimum Order"
+            label="Minimum Order/per day"
             type="number"
             placeholder="5000"
             value={values.minimumOrder}

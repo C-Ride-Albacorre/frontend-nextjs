@@ -1,6 +1,6 @@
 import Card from '@/components/layout/card';
 import clsx from 'clsx';
-import { ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { ArrowUpRight, ArrowDownRight, TrendingUp, TrendingDown } from 'lucide-react';
 
 export default function StatCard({
   title,
@@ -58,8 +58,8 @@ export default function StatCard({
           })}
         >
           <span>{trend}</span>
-          {positive && <ArrowUpRight className="w-4 h-4 text-green-600" />}
-          {negative && <ArrowDownRight className="w-4 h-4 text-red-600" />}
+          {positive && <TrendingUp className="w-4 h-4 text-green-600" />}
+          {negative && <TrendingDown className="w-4 h-4 text-red-600" />}
           {trendDuration && <span>{trendDuration}</span>}
         </div>
       )}
