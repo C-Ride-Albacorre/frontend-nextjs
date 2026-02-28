@@ -43,12 +43,12 @@ export default function RecentAlerts() {
         </Button>
       </div>
 
-      <div className="space-y-6 md:space-y-4 max-h-96 overflow-y-auto">
+      <div className="space-y-6 md:space-y-4 max-h-96 overflow-y-auto text-sm">
         {alerts.map((alert, index) => (
-          <Card gap='sm' key={index} className="space-y-1">
+          <Card gap="sm" key={index} className="space-y-1">
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-2 font-medium">
-                <AlertTriangle size={16} className='text-red-600' />
+                <AlertTriangle size={16} className="text-red-600" />
                 {alert.title}
               </div>
 
@@ -60,9 +60,8 @@ export default function RecentAlerts() {
             </div>
 
             <p className="text-sm text-neutral-500">{alert.desc}</p>
-
-            <div className="flex items-center gap-1 text-xs text-neutral-400">
-              <Clock size={12} />
+            <div className="flex items-center gap-2 text-xs text-neutral-500">
+              <Clock size={14} />
               {alert.time}
             </div>
           </Card>

@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/buttons/button';
 import Modal from '@/components/layout/modal';
-import { Clock, HomeIcon, Mail, Phone } from 'lucide-react';
+import { Clock, HomeIcon, Mail, Phone, Store, StoreIcon } from 'lucide-react';
 import Card from '@/components/layout/card';
 
 export default function UnderReviewModal({
@@ -15,7 +15,7 @@ export default function UnderReviewModal({
   email?: string;
 }) {
   return (
-    <Modal isModalOpen={isModalOpen} onClose={onClose}>
+    <Modal isModalOpen={isModalOpen}>
       <div className="py-6 md:py-8 space-y-8 text-center">
         <div className="w-24 h-24 rounded-full bg-linear-to-b from-primary to-[#B8941F] mx-auto flex items-center justify-center">
           <Clock size={48} className="text-white" />
@@ -29,7 +29,7 @@ export default function UnderReviewModal({
           <div className="flex flex-col md:flex-row  items-start gap-4">
             <Mail size={18} className="text-primary shrink-0" />
 
-            <div className='space-y-2'>
+            <div className="space-y-2">
               <p className="text-sm text-neutral-700">
                 We'll notify you at{' '}
                 <span className="font-medium text-neutral-900">
@@ -59,13 +59,13 @@ export default function UnderReviewModal({
           </Button>
 
           <Button
-            href="/"
+            href="/vendor/store"
             variant="primary"
             size="lg"
-            leftIcon={<HomeIcon size={16} />}
+            leftIcon={<Store size={16} />}
             className="w-full md:w-auto"
           >
-            Return to Homepage
+            Setup Storefront
           </Button>
         </div>
       </div>

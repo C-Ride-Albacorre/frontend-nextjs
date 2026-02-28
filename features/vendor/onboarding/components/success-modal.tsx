@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/buttons/button';
 import Modal from '@/components/layout/modal';
-import { Check, HomeIcon, Mail, Phone, Stars } from 'lucide-react';
+import { Check, HomeIcon, Mail, Phone, Stars, Store } from 'lucide-react';
 
 export default function SuccessModal({
   isModalOpen,
@@ -69,7 +69,7 @@ export default function SuccessModal({
 
         <div className="mt-12  flex flex-col md:flex-row items-center justify-between lg:justify-around gap-4">
           <Button
-            href="/vendor/register"
+           href="mailto:support@c-ride.com"
             variant="outline"
             size="lg"
             leftIcon={<Phone size={16} />}
@@ -79,18 +79,18 @@ export default function SuccessModal({
           </Button>
 
           <Button
-            href="/"
+            href="/vendor/store"
             variant="primary"
             size="lg"
-            leftIcon={<HomeIcon size={16} />}
+            leftIcon={<Store size={16} />}
             className="order-1 md:order-2 w-full md:w-auto"
           >
-            Return to Homepage
+            Setup Storefront
           </Button>
         </div>
 
         <div className="py-6 border-t border-border ">
-          <p className=" text-xs md:text-sm">Vendor's ID': VEN-39200022</p>
+          <p className=" text-xs md:text-sm">Vendor's ID: VEN-39200022</p>
         </div>
       </div>
     </Modal>

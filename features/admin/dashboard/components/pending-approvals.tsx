@@ -34,7 +34,7 @@ export default function PendingApprovals() {
 
               <div className="space-y-2">
                 <p className="font-medium text-sm">{item.name}</p>
-                <div className="flex items-center gap-1 text-sm text-neutral-500">
+                <div className="flex items-center gap-2 text-xs text-neutral-500">
                   <Clock size={14} />
                   {item.time}
                 </div>
