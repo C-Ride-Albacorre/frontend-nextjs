@@ -11,6 +11,7 @@ type FileDropzoneProps = {
   value?: File | null;
   onChange: (file: File | null) => void;
   className?: string;
+  existingImageUrl?: string | null;
 };
 
 export default function FileDropzone({
@@ -20,6 +21,7 @@ export default function FileDropzone({
   value,
   onChange,
   className,
+  existingImageUrl,
 }: FileDropzoneProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -76,6 +78,17 @@ export default function FileDropzone({
             >
               <X size={14} />
             </button>
+          </div>
+        ) : existingImageUrl ? (
+          <div className="relative">
+            <img
+              src={existingImageUrl}
+              alt="Current image"
+              className="h-24 w-24 rounded-lg object-cover"
+            />
+            <p className="text-xs text-neutral-500 mt-2">
+              Click to replace image
+            </p>
           </div>
         ) : (
           <>

@@ -10,6 +10,7 @@ export default function Textarea({
   onChange,
   className,
   wrapperClassName,
+    errorMessage,
   disabled,
   ...props
 }: TextareaProps) {
@@ -30,6 +31,11 @@ export default function Textarea({
         disabled={disabled}
         className={`mt-2 w-full rounded-xl border border-border px-4 py-3 text-base md:text-sm outline-none focus:ring-2 focus:ring-primary placeholder:text-sm placeholder:text-neutral-400 placeholder:font-normal disabled:opacity-60 disabled:cursor-not-allowed disabled:bg-gray-50 ${className}`}
       />
+
+      
+      {errorMessage && (
+        <div className="text-xs text-red-600">{errorMessage}</div>
+      )}
     </div>
   );
 }

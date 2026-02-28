@@ -28,6 +28,7 @@ export type TextareaProps = {
   onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   className?: string;
   wrapperClassName?: string;
+  errorMessage?: React.ReactNode | string | undefined;
   disabled?: boolean;
   props?: React.TextareaHTMLAttributes<HTMLTextAreaElement>;
 };

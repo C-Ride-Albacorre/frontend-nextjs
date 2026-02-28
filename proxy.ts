@@ -20,12 +20,9 @@ const VENDOR_PROTECTED_ROUTES = [
 ];
 
 const USER_AUTH_ROUTES = ['/user/register', '/user/login'];
-
 const VENDOR_AUTH_ROUTES = ['/vendor/register', '/vendor/login'];
-
 const SHARED_AUTH_ROUTES = ['/verify', '/reset', '/reset/reset-password'];
 
-// Helper to decode JWT payload (without verification)
 function decodeJwtPayload(token: string): { role?: string } | null {
   try {
     const payload = token.split('.')[1];
@@ -36,69 +33,48 @@ function decodeJwtPayload(token: string): { role?: string } | null {
   }
 }
 
-// ✅ must be named 'proxy' or default export in Next.js 16
-export function proxy(request: NextRequest) {
+export function proxy(request: NextRequest){
   const { pathname } = request.nextUrl;
-
-  if (pathname.startsWith('/google/callback')) {
-    return NextResponse.next();
-  }
 
   const accessToken = request.cookies.get('accessToken')?.value;
   const userRole = accessToken ? decodeJwtPayload(accessToken)?.role : null;
 
-  const isUserProtectedRoute = USER_PROTECTED_ROUTES.some((route) =>
-    pathname.startsWith(route),
+  const isUserProtected = USER_PROTECTED_ROUTES.some((r) =>
+    pathname.startsWith(r),
   );
-  const isVendorProtectedRoute = VENDOR_PROTECTED_ROUTES.some((route) =>
-    pathname.startsWith(route),
+  const isVendorProtected = VENDOR_PROTECTED_ROUTES.some((r) =>
+    pathname.startsWith(r),
   );
-  const isUserAuthRoute = USER_AUTH_ROUTES.some((route) =>
-    pathname.startsWith(route),
-  );
-  const isVendorAuthRoute = VENDOR_AUTH_ROUTES.some((route) =>
-    pathname.startsWith(route),
-  );
-  const isSharedAuthRoute = SHARED_AUTH_ROUTES.some((route) =>
-    pathname.startsWith(route),
-  );
+  const isUserAuth = USER_AUTH_ROUTES.some((r) => pathname.startsWith(r));
+  const isVendorAuth = VENDOR_AUTH_ROUTES.some((r) => pathname.startsWith(r));
+  const isSharedAuth = SHARED_AUTH_ROUTES.some((r) => pathname.startsWith(r));
 
-  // Redirect unauthenticated users to appropriate login
-  if (isUserProtectedRoute && !accessToken) {
-    const loginUrl = new URL('/user/login', request.url);
-    loginUrl.searchParams.set('callbackUrl', pathname);
-    return NextResponse.redirect(loginUrl);
+  // --- Unauthenticated: redirect to login ---
+  if (isUserProtected && !accessToken) {
+    const url = new URL('/user/login', request.url);
+    url.searchParams.set('callbackUrl', pathname);
+    return NextResponse.redirect(url);
   }
 
-  if (isVendorProtectedRoute && !accessToken) {
-    const loginUrl = new URL('/vendor/login', request.url);
-    loginUrl.searchParams.set('callbackUrl', pathname);
-    return NextResponse.redirect(loginUrl);
+  if (isVendorProtected && !accessToken) {
+    const url = new URL('/vendor/login', request.url);
+    url.searchParams.set('callbackUrl', pathname);
+    return NextResponse.redirect(url);
   }
 
-  // Role-based access control: prevent wrong role from accessing routes
-  if (isUserProtectedRoute && userRole === 'VENDOR') {
+  // --- Wrong role: redirect to correct dashboard ---
+  if (isUserProtected && userRole === 'VENDOR') {
     return NextResponse.redirect(new URL('/vendor/store', request.url));
   }
 
-  if (isVendorProtectedRoute && userRole === 'USER') {
+  if (isVendorProtected && userRole === 'CUSTOMER') {
     return NextResponse.redirect(new URL('/user/dashboard', request.url));
   }
 
-  // Redirect authenticated users away from auth routes to their respective dashboards
-  if (isUserAuthRoute && accessToken) {
-    const redirectUrl = userRole === 'VENDOR' ? '/vendor/store' : '/user/dashboard';
-    return NextResponse.redirect(new URL(redirectUrl, request.url));
-  }
-
-  if (isVendorAuthRoute && accessToken) {
-    const redirectUrl = userRole === 'VENDOR' ? '/vendor/store' : '/user/dashboard';
-    return NextResponse.redirect(new URL(redirectUrl, request.url));
-  }
-
-  if (isSharedAuthRoute && accessToken) {
-    const redirectUrl = userRole === 'VENDOR' ? '/vendor/store' : '/user/dashboard';
-    return NextResponse.redirect(new URL(redirectUrl, request.url));
+  // --- Authenticated: redirect away from auth pages ---
+  if ((isUserAuth || isVendorAuth || isSharedAuth) && accessToken) {
+    const dest = userRole === 'VENDOR' ? '/vendor/store' : '/user/dashboard';
+    return NextResponse.redirect(new URL(dest, request.url));
   }
 
   return NextResponse.next();
@@ -106,6 +82,13 @@ export function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
+    /*
+     * Match all paths EXCEPT:
+     * - _next/static, _next/image (Next.js internals)
+     * - favicon.ico
+     * - /google/callback (OAuth callback — handled by the page itself)
+     * - Static file extensions
+     */
     '/((?!_next/static|_next/image|favicon.ico|google/callback|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 };
