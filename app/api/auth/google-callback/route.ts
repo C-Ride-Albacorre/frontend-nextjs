@@ -6,11 +6,9 @@ export async function GET(request: NextRequest) {
   try {
     const cookieHeader = request.headers.get('cookie') ?? '';
 
-    console.log('=== GOOGLE CALLBACK DEBUG ===');
-    console.log('BASE_URL:', BASE_URL);
-    console.log('Incoming cookies:', cookieHeader || 'NONE');
-    console.log('All cookies:', request.cookies.getAll().map((c) => c.name));
+    console.log('Incoming cookies from browser:', cookieHeader || 'NONE ❌');
 
+    // Forward browser cookies to backend profile endpoint
     const res = await fetch(`${BASE_URL}/auth/profile`, {
       method: 'GET',
       headers: {
@@ -20,23 +18,22 @@ export async function GET(request: NextRequest) {
       cache: 'no-store',
     });
 
-    console.log('Profile response status:', res.status);
-
-    // Log what cookies the backend is sending back
-    console.log('Set-Cookie from backend:', res.headers.get('set-cookie'));
+    console.log('Profile status:', res.status);
+    console.log(
+      'Set-Cookie header back:',
+      res.headers.get('set-cookie') ?? 'NONE',
+    );
 
     if (!res.ok) {
-      const body = await res.text();
-      console.log('Profile error body:', body);
-      return NextResponse.json(
-        { success: false, debug: { status: res.status, body } },
-        { status: 401 },
-      );
+      const text = await res.text();
+      console.log('Profile failed:', text);
+      return NextResponse.json({ success: false }, { status: 401 });
     }
 
     const profile = await res.json();
-    console.log('Profile data:', profile);
+    console.log('Profile:', profile);
 
+    // Try to get token from incoming cookies OR from backend's set-cookie response
     const accessToken =
       request.cookies.get('accessToken')?.value ??
       extractTokenFromSetCookie(res.headers.get('set-cookie'), 'accessToken');
@@ -45,15 +42,8 @@ export async function GET(request: NextRequest) {
       request.cookies.get('refreshToken')?.value ??
       extractTokenFromSetCookie(res.headers.get('set-cookie'), 'refreshToken');
 
-    console.log('accessToken found:', !!accessToken);
-    console.log('refreshToken found:', !!refreshToken);
-
-    if (!accessToken) {
-      return NextResponse.json(
-        { success: false, debug: 'no accessToken found anywhere' },
-        { status: 401 },
-      );
-    }
+    console.log('accessToken:', accessToken ? '✅ found' : '❌ missing');
+    console.log('refreshToken:', refreshToken ? '✅ found' : '❌ missing');
 
     const isProd = process.env.NODE_ENV === 'production';
     const response = NextResponse.json({
@@ -61,13 +51,15 @@ export async function GET(request: NextRequest) {
       role: profile.role,
     });
 
-    response.cookies.set('accessToken', accessToken, {
-      httpOnly: true,
-      secure: isProd,
-      sameSite: 'lax',
-      path: '/',
-      maxAge: getTokenExpiry(accessToken),
-    });
+    if (accessToken) {
+      response.cookies.set('accessToken', accessToken, {
+        httpOnly: true,
+        secure: isProd,
+        sameSite: 'lax',
+        path: '/',
+        maxAge: getTokenExpiry(accessToken),
+      });
+    }
 
     if (refreshToken) {
       response.cookies.set('refreshToken', refreshToken, {
@@ -81,19 +73,20 @@ export async function GET(request: NextRequest) {
 
     return response;
   } catch (err) {
-    console.error('Google callback error:', err);
-    return NextResponse.json({ success: false, error: String(err) }, { status: 500 });
+    console.error('Callback error:', err);
+    return NextResponse.json(
+      { success: false, error: String(err) },
+      { status: 500 },
+    );
   }
 }
 
 function extractTokenFromSetCookie(
-  setCookieHeader: string | null,
-  cookieName: string,
+  header: string | null,
+  name: string,
 ): string | null {
-  if (!setCookieHeader) return null;
-  const match = setCookieHeader
-    .split(',')
-    .find((part) => part.trim().startsWith(`${cookieName}=`));
+  if (!header) return null;
+  const match = header.split(',').find((p) => p.trim().startsWith(`${name}=`));
   if (!match) return null;
   return match.trim().split(';')[0].split('=')[1] ?? null;
 }

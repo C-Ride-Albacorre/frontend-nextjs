@@ -10,27 +10,29 @@ function GoogleCallbackHandler() {
 
   useEffect(() => {
     const error = searchParams.get('error');
+    const success = searchParams.get('success');
 
-    if (error) {
+    if (error || success !== 'true') {
       router.replace('/user/login?error=google_failed');
       return;
     }
 
-   fetch('/api/auth/google-callback', { method: 'GET' })
-  .then((res) => res.json())
-  .then((data) => {
-    console.log('=== CALLBACK RESPONSE ===', data); // 👈 add this
-    if (!data.success) {
-      router.replace('/user/login?error=google_failed');
-      return;
-    }
-    const dest = data.role === 'VENDOR' ? '/vendor/store' : '/user/dashboard';
-    router.replace(dest);
-  })
-  .catch((err) => {
-    console.error('Callback fetch error:', err); // 👈 and this
-    router.replace('/user/login?error=google_failed');
-  });
+    fetch('/api/auth/google-callback', { method: 'GET' })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log('Callback response:', data);
+        if (!data.success) {
+          router.replace('/user/login?error=google_failed');
+          return;
+        }
+        const dest =
+          data.role === 'VENDOR' ? '/vendor/store' : '/user/dashboard';
+        router.replace(dest);
+      })
+      .catch((err) => {
+        console.error('Callback fetch failed:', err);
+        router.replace('/user/login?error=google_failed');
+      });
   }, [router, searchParams]);
 
   return (
