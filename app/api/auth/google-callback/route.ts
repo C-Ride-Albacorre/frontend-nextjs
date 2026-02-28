@@ -4,27 +4,39 @@ import { getTokenExpiry } from '@/utils/jwt';
 
 export async function GET(request: NextRequest) {
   try {
-    // Forward all cookies from the browser to the backend
-    // This is how the backend's httpOnly cookies reach /auth/profile
     const cookieHeader = request.headers.get('cookie') ?? '';
+
+    console.log('=== GOOGLE CALLBACK DEBUG ===');
+    console.log('BASE_URL:', BASE_URL);
+    console.log('Incoming cookies:', cookieHeader || 'NONE');
+    console.log('All cookies:', request.cookies.getAll().map((c) => c.name));
 
     const res = await fetch(`${BASE_URL}/auth/profile`, {
       method: 'GET',
       headers: {
-        cookie: cookieHeader, // forward browser cookies to backend
+        cookie: cookieHeader,
         'Content-Type': 'application/json',
       },
       cache: 'no-store',
     });
 
+    console.log('Profile response status:', res.status);
+
+    // Log what cookies the backend is sending back
+    console.log('Set-Cookie from backend:', res.headers.get('set-cookie'));
+
     if (!res.ok) {
-      return NextResponse.json({ success: false }, { status: 401 });
+      const body = await res.text();
+      console.log('Profile error body:', body);
+      return NextResponse.json(
+        { success: false, debug: { status: res.status, body } },
+        { status: 401 },
+      );
     }
 
     const profile = await res.json();
+    console.log('Profile data:', profile);
 
-    // Extract the tokens the backend set — they'll be in Set-Cookie on the
-    // profile response or you can grab them from the incoming request cookies
     const accessToken =
       request.cookies.get('accessToken')?.value ??
       extractTokenFromSetCookie(res.headers.get('set-cookie'), 'accessToken');
@@ -33,17 +45,22 @@ export async function GET(request: NextRequest) {
       request.cookies.get('refreshToken')?.value ??
       extractTokenFromSetCookie(res.headers.get('set-cookie'), 'refreshToken');
 
+    console.log('accessToken found:', !!accessToken);
+    console.log('refreshToken found:', !!refreshToken);
+
     if (!accessToken) {
-      return NextResponse.json({ success: false }, { status: 401 });
+      return NextResponse.json(
+        { success: false, debug: 'no accessToken found anywhere' },
+        { status: 401 },
+      );
     }
 
     const isProd = process.env.NODE_ENV === 'production';
     const response = NextResponse.json({
       success: true,
-      role: profile.role, // e.g. 'CUSTOMER' or 'VENDOR'
+      role: profile.role,
     });
 
-    // Set tokens as Next.js httpOnly cookies so middleware can read them
     response.cookies.set('accessToken', accessToken, {
       httpOnly: true,
       secure: isProd,
@@ -65,11 +82,10 @@ export async function GET(request: NextRequest) {
     return response;
   } catch (err) {
     console.error('Google callback error:', err);
-    return NextResponse.json({ success: false }, { status: 500 });
+    return NextResponse.json({ success: false, error: String(err) }, { status: 500 });
   }
 }
 
-// Helper: pull a specific cookie value out of a Set-Cookie header string
 function extractTokenFromSetCookie(
   setCookieHeader: string | null,
   cookieName: string,
