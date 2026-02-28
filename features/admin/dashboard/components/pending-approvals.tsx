@@ -1,3 +1,5 @@
+import Card from '@/components/layout/card';
+import { Button } from '@/components/ui/buttons/button';
 import { Clock, Truck } from 'lucide-react';
 
 export default function PendingApprovals() {
@@ -8,33 +10,30 @@ export default function PendingApprovals() {
   ];
 
   return (
-    <div className="bg-white rounded-2xl border p-6 space-y-6">
+    <Card>
       <div className="flex justify-between items-start">
-        <div>
+        <div className="space-y-2">
           <h2 className="font-semibold text-lg">Pending Approvals</h2>
-          <p className="text-sm text-neutral-500">
+          <p className="text-xs text-neutral-500">
             Requires immediate attention
           </p>
         </div>
 
-        <span className="text-sm bg-orange-100 text-orange-600 px-3 py-1 rounded-full">
+        <span className="text-xs bg-[#F59E0B]/10 text-[#F59E0B] px-3 py-1 rounded-full">
           3 Pending
         </span>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-6 md:space-y-4 max-h-105 overflow-y-auto">
         {approvals.map((item, index) => (
-          <div
-            key={index}
-            className="flex justify-between items-center border rounded-xl p-4"
-          >
-            <div className="flex items-center gap-3">
+          <Card key={index} className="flex justify-between items-center">
+            <div className="flex items-center gap-4 mb-0 text-sm">
               <div className="p-2 rounded-full bg-blue-100">
                 <Truck size={18} className="text-blue-600" />
               </div>
 
-              <div>
-                <p className="font-medium">{item.name}</p>
+              <div className="space-y-2">
+                <p className="font-medium text-sm">{item.name}</p>
                 <div className="flex items-center gap-1 text-sm text-neutral-500">
                   <Clock size={14} />
                   {item.time}
@@ -42,12 +41,12 @@ export default function PendingApprovals() {
               </div>
             </div>
 
-            <button className="bg-green-600 text-white px-4 py-2 rounded-lg text-sm">
+            <Button variant="green" size="sm">
               Review
-            </button>
-          </div>
+            </Button>
+          </Card>
         ))}
       </div>
-    </div>
+    </Card>
   );
 }

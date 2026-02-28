@@ -1,3 +1,6 @@
+import Card from '@/components/layout/card';
+import { Star, Store } from 'lucide-react';
+
 export default function TopVendors() {
   const vendors = [
     {
@@ -11,35 +14,39 @@ export default function TopVendors() {
   ];
 
   return (
-    <div className="bg-white rounded-2xl border p-6 space-y-6">
-      <div>
-        <h2 className="font-semibold text-lg">Top Vendors</h2>
-        <p className="text-sm text-neutral-500">This month's performers</p>
+    <Card>
+      <div className="flex justify-between items-start">
+        <div className="space-y-2">
+          <h2 className="font-semibold text-lg">Top Vendors</h2>
+          <p className="text-xs text-neutral-500">This month's performers</p>
+        </div>
+
+        <div className="bg-green-50 w-10 h-10 flex items-center justify-center rounded-full aspect-square shrink-0">
+          <Store size={20} className="text-green-600" />
+        </div>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-6 md:space-y-4 max-h-96 overflow-y-auto">
         {vendors.map((vendor, index) => (
-          <div
-            key={index}
-            className="flex justify-between items-center border rounded-xl p-4"
-          >
-            <div className="flex items-center gap-4">
-              <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-sm font-semibold">
+          <Card key={index} className="flex justify-between items-center  p-4">
+            <div className="flex items-center gap-4 mb-0">
+              <div className="w-8 h-8 rounded-full bg-linear-to-b from-blue-400 to-blue-600 text-white flex items-center justify-center text-sm">
                 #{index + 1}
               </div>
 
-              <div>
+              <div className="space-y-2">
                 <p className="font-medium">{vendor.name}</p>
-                <p className="text-sm text-neutral-500">
-                  {vendor.orders} orders • ⭐ {vendor.rating}
+                <p className="text-xs text-neutral-500 flex items-center gap-1 ">
+                  {vendor.orders} orders • <Star stroke="0" fill="#D4AF37" size={18} />{' '}
+                  {vendor.rating}
                 </p>
               </div>
             </div>
 
             <span className="text-green-600 font-medium">{vendor.revenue}</span>
-          </div>
+          </Card>
         ))}
       </div>
-    </div>
+    </Card>
   );
 }
