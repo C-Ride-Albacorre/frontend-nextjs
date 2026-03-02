@@ -32,7 +32,7 @@ export default function TimePicker({
   const [period, setPeriod] = useState('AM');
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Parse initial value if provided (expects HH:mm format in 24h)
+  // Parse value prop into internal state (expects HH:mm format in 24h)
   useEffect(() => {
     if (value) {
       const [h, m] = value.split(':');
@@ -52,7 +52,7 @@ export default function TimePicker({
       }
       setMinute(m || '00');
     }
-  }, []);
+  }, [value]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -114,7 +114,9 @@ export default function TimePicker({
           'border border-border bg-white text-sm',
           'focus:ring-2 focus:ring-primary outline-none transition',
           !displayValue && 'text-neutral-400',
-          disabled ? 'opacity-60 cursor-not-allowed bg-gray-50' : 'cursor-pointer',
+          disabled
+            ? 'opacity-60 cursor-not-allowed bg-gray-50'
+            : 'cursor-pointer',
         )}
       >
         <span>{displayValue || placeholder}</span>

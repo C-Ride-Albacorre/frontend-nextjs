@@ -11,6 +11,7 @@ export function Button({
   size = 'md',
   spacing = 'md',
   justify = 'center',
+  rounded = 'xl',
   href,
   disabled,
   loading,
@@ -20,8 +21,17 @@ export function Button({
   ...props
 }: ButtonProps) {
   const classes = clsx(
-    'inline-flex items-center rounded-xl font-medium transition focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer',
+    'inline-flex items-center  font-medium transition focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer',
     {
+      // rounded
+      'rounded-none': rounded === 'none',
+      'rounded-sm': rounded === 'sm',
+      'rounded-md': rounded === 'md',
+      'rounded-lg': rounded === 'lg',
+      'rounded-xl': rounded === 'xl',
+      'rounded-2xl': rounded === '2xl',
+      'rounded-full': rounded === 'full',
+
       //justify
       'justify-center': justify === 'center',
       'justify-start': justify === 'start',
@@ -83,6 +93,8 @@ export function Button({
 
       'p-2 text-xs': size === 'xs',
 
+      'p-2 text-sm md:px-3 md:py-2': size === '1xs',
+
       'px-3 py-2.5 text-sm md:px-4 md:py-3': size === 'sm',
 
       'px-3 py-3 text-sm md:px-6 md:py-3.5': size === 'md',
@@ -105,7 +117,7 @@ export function Button({
       'w-full px-5 py-3 text-sm md:px-6 md:py-4': size === 'full',
 
       //square buttons
-      'p-2 text-xs md:p-4': size === 'icon',
+      'p-3 text-xs md:p-4': size === 'icon',
 
       //spacing
       'gap-1': spacing === 'sm',

@@ -76,3 +76,26 @@ export type StoreFormState =
   | { status: 'error'; errors?: Record<string, string[]>; message?: string }
   | { status: 'success'; message: string };
 
+// Props for StoreCatalogue row component
+export interface StoreCatalogueProps {
+  storeData: StoreData;
+  onView: () => void;
+  onEdit: () => void;
+  onDelete: () => void;
+}
+
+// Props for ViewStoreModal
+export interface ViewStoreModalProps {
+  isModalOpen: boolean;
+  setIsModalOpen: (isOpen: boolean) => void;
+  store: StoreData | null;
+  onEdit?: () => void;
+}
+
+// Props for DeleteStoreModal
+export interface DeleteStoreModalProps {
+  isModalOpen: boolean;
+  setIsModalOpen: (isOpen: boolean) => void;
+  store: StoreData | null;
+  onSuccess?: () => void;
+}

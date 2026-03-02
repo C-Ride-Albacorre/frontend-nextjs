@@ -22,6 +22,7 @@ type ButtonVariant =
 type ButtonSize =
   | 'none'
   | 'xs'
+  | '1xs'
   | 'sm'
   | 'md'
   | 'lg'
@@ -42,6 +43,8 @@ type JustifyOptions =
   | 'around'
   | 'evenly';
 
+type rounded = 'none' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full';
+
 export type ButtonProps = {
   children: React.ReactNode;
   variant?: ButtonVariant;
@@ -51,6 +54,7 @@ export type ButtonProps = {
   justify?: JustifyOptions;
   spacing?: 'none' | 'sm' | 'md' | 'lg' | 'xl';
   href?: string;
+  rounded?: rounded;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
   className?: string;

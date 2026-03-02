@@ -4,7 +4,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Bell, Shield, X } from 'lucide-react';
 
-
 import { IconButton } from '@/components/ui/buttons/icon-button';
 import { usePathname } from 'next/navigation';
 import { SidebarConfig, VENDOR_SIDEBAR_CONFIG } from '@/config/sidebar';
@@ -24,7 +23,7 @@ export default function Sidebar({
   const pathName = usePathname();
 
   const isActive = (path: string) => {
-    return pathName === path;
+    return pathName.startsWith(path) || pathName === path;
   };
 
   return (

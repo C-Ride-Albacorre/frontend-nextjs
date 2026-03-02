@@ -19,7 +19,7 @@ export default function VendorDashboardHeader() {
   const pageTitle = clsx({
     'Order Management': pathName === '/vendor/orders',
     'Product Management': pathName === '/vendor/products',
-    'Store Management': pathName === '/vendor/store',
+    'Store Management': pathName.startsWith('/vendor/store'),
     'Vendor Onboarding': pathName === '/vendor/onboarding',
     'Active Deliveries': pathName === '/vendor/active-deliveries',
     'Financial & Earnings': pathName === '/vendor/analytics',

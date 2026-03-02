@@ -2,6 +2,8 @@ import Card from '@/components/layout/card';
 import Input from '@/components/ui/inputs/input';
 import Textarea from '@/components/ui/inputs/textarea';
 import TimePicker from '@/components/ui/inputs/time-picker';
+import { Button } from '@/components/ui/buttons/button';
+import { Copy } from 'lucide-react';
 
 export interface StoreFormValues {
   storeName: string;
@@ -30,7 +32,9 @@ export function StoreInformation({
   disabled,
 }: StoreInformationProps) {
   return (
-    <Card className={`bg-white ${disabled ? 'opacity-50 pointer-events-none' : ''}`}>
+    <Card
+      className={`bg-white ${disabled ? 'opacity-50 pointer-events-none' : ''}`}
+    >
       <div className="px-4 md:px-8 space-y-6 md:space-y-10">
         <p className="text-neutral-900 font-medium">Store Information</p>
         <div className="space-y-6">
@@ -99,6 +103,8 @@ export function StoreInformation({
 interface OperatingHoursProps {
   values: StoreFormValues;
   onTimeChange: (day: string, type: 'open' | 'close', value: string) => void;
+  onApplyToAll: (day: string) => void;
+  lastChangedDay?: string | null;
   errors?: Record<string, string[]>;
   disabled?: boolean;
 }
@@ -116,47 +122,94 @@ const DAYS = [
 export function OperatingHours({
   values,
   onTimeChange,
+  onApplyToAll,
+  lastChangedDay,
   errors,
   disabled,
 }: OperatingHoursProps) {
   return (
-    <Card className={`bg-white ${disabled ? 'opacity-50 pointer-events-none' : ''}`}>
+    <Card
+      className={`bg-white ${disabled ? 'opacity-50 pointer-events-none' : ''}`}
+    >
       <div className="px-4 md:px-8 space-y-6 md:space-y-10">
         <p className="text-neutral-900 font-medium">Operating Hours</p>
         {errors?.operatingHours && (
           <p className="text-xs text-red-600">{errors.operatingHours[0]}</p>
         )}
         <div className="space-y-6">
-          {DAYS.map((day) => {
-            const dayKey = day.toLowerCase();
-            return (
-              <div key={day} className="grid grid-cols-10 gap-4 items-center">
-                <span className="w-20 text-sm col-span-3">{day}</span>
-                <div className="col-span-3">
-                  <TimePicker
-                    name={`${dayKey}Open`}
-                    value={values.operatingHours[dayKey]?.open || ''}
-                    onChange={(val) => onTimeChange(dayKey, 'open', val)}
-                    placeholder="Open"
-                    disabled={disabled}
-                  />
-                </div>
+          {(() => {
+            // The day to show the button on is the last changed day (if it has both times)
+            const targetDay = lastChangedDay ?? undefined;
+            const hasTarget =
+              targetDay != null &&
+              Boolean(values.operatingHours[targetDay]?.open) &&
+              Boolean(values.operatingHours[targetDay]?.close);
 
-                <span className="text-sm flex justify-center items-center">
-                  to
-                </span>
-                <div className="col-span-3">
-                  <TimePicker
-                    name={`${dayKey}Close`}
-                    value={values.operatingHours[dayKey]?.close || ''}
-                    onChange={(val) => onTimeChange(dayKey, 'close', val)}
-                    placeholder="Close"
-                    disabled={disabled}
-                  />
+            // Check if all days already share the same times
+            const allSame =
+              hasTarget &&
+              DAYS.every((d) => {
+                const dk = d.toLowerCase();
+                return (
+                  values.operatingHours[dk]?.open ===
+                    values.operatingHours[targetDay!]?.open &&
+                  values.operatingHours[dk]?.close ===
+                    values.operatingHours[targetDay!]?.close
+                );
+              });
+
+            return DAYS.map((day) => {
+              const dayKey = day.toLowerCase();
+
+              return (
+                <div key={day} className="space-y-2">
+                  <div className="grid grid-cols-10 gap-4 items-center">
+                    <span className="w-20 text-sm col-span-3">{day}</span>
+                    <div className="col-span-3">
+                      <TimePicker
+                        name={`${dayKey}Open`}
+                        value={values.operatingHours[dayKey]?.open || ''}
+                        onChange={(val) => onTimeChange(dayKey, 'open', val)}
+                        placeholder="Open"
+                        disabled={disabled}
+                      />
+                    </div>
+
+                    <span className="text-sm flex justify-center items-center">
+                      to
+                    </span>
+                    <div className="col-span-3">
+                      <TimePicker
+                        name={`${dayKey}Close`}
+                        value={values.operatingHours[dayKey]?.close || ''}
+                        onChange={(val) => onTimeChange(dayKey, 'close', val)}
+                        placeholder="Close"
+                        disabled={disabled}
+                      />
+                    </div>
+                  </div>
+
+                  {dayKey === targetDay &&
+                    hasTarget &&
+                    !allSame &&
+                    !disabled && (
+                      <div className="flex justify-end">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="xs"
+                          rounded="md"
+                          leftIcon={<Copy size={12} />}
+                          onClick={() => onApplyToAll(dayKey)}
+                        >
+                          Apply to all
+                        </Button>
+                      </div>
+                    )}
                 </div>
-              </div>
-            );
-          })}
+              );
+            });
+          })()}
         </div>
       </div>
     </Card>
@@ -170,9 +223,16 @@ interface StoreDetailsProps {
   disabled?: boolean;
 }
 
-export function StoreDetails({ values, onChange, errors, disabled }: StoreDetailsProps) {
+export function StoreDetails({
+  values,
+  onChange,
+  errors,
+  disabled,
+}: StoreDetailsProps) {
   return (
-    <Card className={`bg-white ${disabled ? 'opacity-50 pointer-events-none' : ''}`}>
+    <Card
+      className={`bg-white ${disabled ? 'opacity-50 pointer-events-none' : ''}`}
+    >
       <div className="px-4 md:px-8 space-y-6 md:space-y-10">
         <p className="text-neutral-900 font-medium">
           Store Description & Details

@@ -4,7 +4,7 @@ import Card from '@/components/layout/card';
 import { Button } from '@/components/ui/buttons/button';
 import VendorDashboardHeader from '@/components/ui/headers/vendor-header';
 import ProductRow from '@/features/vendor/products/components/product-row';
-import { Loader2, Plus, Upload } from 'lucide-react';
+import { Loader2, Package, Plus, Upload } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import ProductForm from '@/features/vendor/products/components/add-product';
 import ViewProductModal from '@/features/vendor/products/components/view-product-modal';
@@ -15,6 +15,7 @@ import VendorToolbar from '@/components/layout/vendor-tool-bar';
 import { Product } from '@/features/vendor/products/type';
 import { getProductsAction } from '@/features/vendor/products/action';
 import { getStoreAction } from '@/features/vendor/store/action';
+import { IconButton } from '@/components/ui/buttons/icon-button';
 
 const CATEGORIES = [
   'All',
@@ -135,13 +136,9 @@ export default function ProductsPage() {
                 </Button>
               </div>
 
-              <button
-                onClick={handleAddProduct}
-                disabled={!storeId}
-                className="bg-primary/10 hover:bg-primary/20 rounded-full h-10 w-10 md:h-14 md:w-14 shrink-0 aspect-square flex items-center justify-center cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <Upload size={20} className="text-primary" />
-              </button>
+              <IconButton onClick={handleAddProduct} disabled={!storeId}>
+                <Upload size={18} className="text-primary" />
+              </IconButton>
             </div>
           </Card>
 
@@ -162,6 +159,8 @@ export default function ProductsPage() {
               </div>
             ) : error ? (
               <div className="text-center py-12">
+                <Package size={60} className="mx-auto mb-4 text-neutral-500" />
+
                 <p className="text-red-600 mb-4">{error}</p>
                 <Button variant="outline" size="md" onClick={fetchData}>
                   Try Again

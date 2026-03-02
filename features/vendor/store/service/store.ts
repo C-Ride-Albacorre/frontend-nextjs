@@ -45,7 +45,6 @@ export async function getStoreService(): Promise<StoreApiResponse | null> {
 
   const result = await res.json();
 
-  // Return null if no store found (404 or empty)
   if (res.status === 404 || result?.statusCode === 404) {
     return null;
   }
@@ -98,15 +97,18 @@ export async function updateOperatingHoursService(
 ): Promise<StoreResponse> {
   const accessToken = await getCookie('accessToken');
 
-  const res = await fetch(`${BASE_URL}/vendor/stores/${storeId}/operating-hours`, {
-    method: 'PUT',
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      'Content-Type': 'application/json',
+  const res = await fetch(
+    `${BASE_URL}/vendor/stores/${storeId}/operating-hours`,
+    {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+      body: JSON.stringify(operatingHours),
     },
-    credentials: 'include',
-    body: JSON.stringify(operatingHours),
-  });
+  );
 
   const result = await res.json();
 
@@ -118,4 +120,24 @@ export async function updateOperatingHoursService(
   }
 
   return result;
+}
+
+export async function deleteStoreService(storeId: string): Promise<void> {
+  const accessToken = await getCookie('accessToken');
+
+  const res = await fetch(`${BASE_URL}/vendor/stores/${storeId}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+    credentials: 'include',
+  });
+
+  if (!res.ok) {
+    const result = await res.json().catch(() => null);
+    throw new ApiError(
+      result?.message || 'Failed to delete store',
+      result?.statusCode ?? res.status,
+    );
+  }
 }

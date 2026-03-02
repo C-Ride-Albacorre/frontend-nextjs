@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import {
   createStoreService,
+  deleteStoreService,
   getStoreService,
   updateStoreService,
   updateOperatingHoursService,
@@ -24,7 +25,6 @@ export async function getStoreAction(): Promise<StoreData | null> {
   try {
     const response = await getStoreService();
 
-    // API returns an array of stores, get the first one for editing
     const stores = response?.data;
     if (Array.isArray(stores) && stores.length > 0) {
       return stores[0];
@@ -32,6 +32,32 @@ export async function getStoreAction(): Promise<StoreData | null> {
     return null;
   } catch {
     return null;
+  }
+}
+
+export async function getStoresAction(): Promise<StoreData[]> {
+  try {
+    const response = await getStoreService();
+    const stores = response?.data;
+    return Array.isArray(stores) ? stores : [];
+  } catch {
+    return [];
+  }
+}
+
+export async function deleteStoreAction(
+  storeId: string,
+): Promise<{ success: boolean; message: string }> {
+  try {
+    await deleteStoreService(storeId);
+    revalidatePath('/vendor/store');
+    return { success: true, message: 'Store deleted successfully' };
+  } catch (error) {
+    return {
+      success: false,
+      message:
+        error instanceof Error ? error.message : 'Failed to delete store',
+    };
   }
 }
 
@@ -92,7 +118,9 @@ export async function createStoreAction(
     return {
       status: 'error',
       message: 'Please set operating hours for at least one day',
-      errors: { operatingHours: ['Operating hours required for at least one day'] },
+      errors: {
+        operatingHours: ['Operating hours required for at least one day'],
+      },
     };
   }
 
@@ -109,7 +137,10 @@ export async function createStoreAction(
     apiFormData.append('storeDescription', result.data.storeDescription);
   }
 
-  if (result.data.minimumOrder && typeof result.data.minimumOrder === 'number') {
+  if (
+    result.data.minimumOrder &&
+    typeof result.data.minimumOrder === 'number'
+  ) {
     apiFormData.append('minimumOrder', String(result.data.minimumOrder));
   }
 
@@ -117,7 +148,10 @@ export async function createStoreAction(
     apiFormData.append('deliveryFee', String(result.data.deliveryFee));
   }
 
-  if (result.data.preparationTime && typeof result.data.preparationTime === 'number') {
+  if (
+    result.data.preparationTime &&
+    typeof result.data.preparationTime === 'number'
+  ) {
     apiFormData.append('preparationTime', String(result.data.preparationTime));
   }
 
@@ -132,10 +166,10 @@ export async function createStoreAction(
 
   try {
     await createStoreService(apiFormData);
-    
+
     // Revalidate the store page to fetch fresh data
     revalidatePath('/vendor/store');
-    
+
     return {
       status: 'success',
       message: 'Store created successfully',
@@ -215,7 +249,9 @@ export async function updateStoreAction(
     return {
       status: 'error',
       message: 'Please set operating hours for at least one day',
-      errors: { operatingHours: ['Operating hours required for at least one day'] },
+      errors: {
+        operatingHours: ['Operating hours required for at least one day'],
+      },
     };
   }
 
@@ -231,11 +267,17 @@ export async function updateStoreAction(
     apiFormData.append('storeDescription', result.data.storeDescription);
   }
 
-  if (result.data.minimumOrder && typeof result.data.minimumOrder === 'number') {
+  if (
+    result.data.minimumOrder &&
+    typeof result.data.minimumOrder === 'number'
+  ) {
     apiFormData.append('minimumOrder', String(result.data.minimumOrder));
   }
 
-  if (result.data.preparationTime && typeof result.data.preparationTime === 'number') {
+  if (
+    result.data.preparationTime &&
+    typeof result.data.preparationTime === 'number'
+  ) {
     apiFormData.append('preparationTime', String(result.data.preparationTime));
   }
 
