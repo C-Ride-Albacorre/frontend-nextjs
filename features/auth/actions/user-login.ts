@@ -46,8 +46,13 @@ export async function userLoginAction(
 
     await setAuthCookies(accessToken, refreshToken);
 
+     console.log('User login successful:', result);
+
     redirectTo = safeCallback;
   } catch (error) {
+
+
+      // console.log('User login failed:', error);
     if (
       error instanceof ApiError &&
       error.statusCode === 403 &&

@@ -35,6 +35,8 @@ export default function ProductsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const [storeError, setStoreError] = useState<boolean>(false);
+
   // Modal states
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
@@ -50,7 +52,7 @@ export default function ProductsPage() {
       // Get store first
       const store = await getStoreAction();
       if (!store) {
-        setError('No store found. Please create a store first.');
+        setStoreError(true);
         setIsLoading(false);
         return;
       }
@@ -159,11 +161,28 @@ export default function ProductsPage() {
               </div>
             ) : error ? (
               <div className="text-center py-12">
-                <Package size={60} className="mx-auto mb-4 text-neutral-500" />
+                <Package size={60} className="mx-auto mb-4 text-neutral-300" />
 
                 <p className="text-red-600 mb-4">{error}</p>
                 <Button variant="outline" size="md" onClick={fetchData}>
                   Try Again
+                </Button>
+              </div>
+            ) : storeError ? (
+              <div className="text-center py-12">
+                <Package size={60} className="mx-auto mb-4 text-neutral-300" />
+
+                <h2 className="text-lg font-medium mb-2">No Store Found</h2>
+                <p className="text-neutral-600 mb-4 text-sm">
+                  {' '}
+                  Please create a store first before adding products.
+                </p>
+                <Button
+                  variant="primary"
+                  size="md"
+                  href="/vendor/store/new-store"
+                >
+                  Create Store
                 </Button>
               </div>
             ) : filteredProducts.length === 0 ? (

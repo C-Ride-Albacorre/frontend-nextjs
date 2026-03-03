@@ -36,6 +36,10 @@ export async function loginVendor(
   const data = await res.json();
 
   if (!res.ok) {
+
+      console.log('Login API error response:', data);
+
+      
     throw new ApiError(
       data?.message || 'Login failed',
       data?.statusCode ?? res.status,
