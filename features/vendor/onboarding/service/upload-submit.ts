@@ -3,17 +3,11 @@
 
 import { BASE_URL } from '@/config/api';
 import { ApiError } from '@/features/libs/api-error';
-import { getCookie } from '@/utils/cookies';
+import { authFetch } from '@/features/libs/auth-fetch';
 
 export async function submitOnboardingService(formData: FormData) {
-  const accessToken = await getCookie('accessToken');
-
-  const res = await fetch(`${BASE_URL}/auth/vendor/onboarding/submit`, {
+  const res = await authFetch(`${BASE_URL}/auth/vendor/onboarding/submit`, {
     method: 'POST',
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-    credentials: 'include',
     body: formData,
   });
 

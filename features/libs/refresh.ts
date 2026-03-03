@@ -1,5 +1,5 @@
 import { BASE_URL } from '@/config/api';
-import { ApiError } from '@/features/libs/api-error';
+import { ApiError } from './api-error';
 
 export async function refreshTokenService(payload: {
   refreshToken: string;

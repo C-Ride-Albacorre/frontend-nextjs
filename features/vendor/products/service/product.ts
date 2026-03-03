@@ -2,7 +2,7 @@
 
 import { BASE_URL } from '@/config/api';
 import { ApiError } from '@/features/libs/api-error';
-import { getCookie } from '@/utils/cookies';
+import { authFetch } from '@/features/libs/auth-fetch';
 import { Product, ProductApiResponse } from '../type';
 
 /**
@@ -12,14 +12,8 @@ export async function createProductService(
   storeId: string,
   formData: FormData,
 ): Promise<ProductApiResponse> {
-  const accessToken = await getCookie('accessToken');
-
-  const res = await fetch(`${BASE_URL}/vendor/stores/${storeId}/products`, {
+  const res = await authFetch(`${BASE_URL}/vendor/stores/${storeId}/products`, {
     method: 'POST',
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-    credentials: 'include',
     body: formData,
   });
 
@@ -46,14 +40,8 @@ export async function createProductService(
 export async function getProductsService(
   storeId: string,
 ): Promise<ProductApiResponse | null> {
-  const accessToken = await getCookie('accessToken');
-
-  const res = await fetch(`${BASE_URL}/vendor/stores/${storeId}/products`, {
+  const res = await authFetch(`${BASE_URL}/vendor/stores/${storeId}/products`, {
     method: 'GET',
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-    credentials: 'include',
     cache: 'no-store',
   });
 
@@ -85,16 +73,10 @@ export async function getProductService(
   storeId: string,
   productId: string,
 ): Promise<Product | null> {
-  const accessToken = await getCookie('accessToken');
-
-  const res = await fetch(
+  const res = await authFetch(
     `${BASE_URL}/vendor/stores/${storeId}/products/${productId}`,
     {
       method: 'GET',
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-      credentials: 'include',
       cache: 'no-store',
     },
   );
@@ -125,8 +107,6 @@ export async function updateProductService(
   productId: string,
   formData: FormData,
 ): Promise<ProductApiResponse> {
-  const accessToken = await getCookie('accessToken');
-
   // Log what fields are being sent
   console.log('[updateProductService] FormData fields:');
   for (const [key, value] of formData.entries()) {
@@ -137,14 +117,10 @@ export async function updateProductService(
     }
   }
 
-  const res = await fetch(
+  const res = await authFetch(
     `${BASE_URL}/vendor/stores/${storeId}/products/${productId}`,
     {
       method: 'PUT',
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-      credentials: 'include',
       body: formData,
     },
   );
@@ -173,18 +149,11 @@ export async function deleteProductService(
   storeId: string,
   productId: string,
 ): Promise<void> {
-  const accessToken = await getCookie('accessToken');
-  console.log('[deleteProductService] Access Token:', accessToken);
-
   const url = `${BASE_URL}/vendor/stores/${storeId}/products/${productId}`;
   console.log('[deleteProductService] DELETE Request URL:', url);
 
-  const res = await fetch(url, {
+  const res = await authFetch(url, {
     method: 'DELETE',
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-    credentials: 'include',
   });
 
   console.log('[deleteProductService] Response status:', res.status);

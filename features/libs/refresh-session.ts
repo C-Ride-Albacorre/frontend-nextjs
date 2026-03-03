@@ -1,6 +1,6 @@
-import { clearAuthCookies, getAuthTokens, setCookie } from './cookies';
+import { clearAuthCookies, getAuthTokens, setCookie } from '@/utils/cookies';
 import { refreshTokenService } from './refresh';
-import { getTokenExpiry } from './jwt';
+import { getTokenExpiry } from '@/utils/jwt';
 
 export async function refreshSession() {
   const { refreshToken, accessToken } = await getAuthTokens();

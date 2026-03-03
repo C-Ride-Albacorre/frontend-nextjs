@@ -2,20 +2,14 @@
 
 import { BASE_URL } from '@/config/api';
 import { ApiError } from '@/features/libs/api-error';
-import { getCookie } from '@/utils/cookies';
+import { authFetch } from '@/features/libs/auth-fetch';
 import { StoreApiResponse, StoreResponse } from '../types';
 
 export async function createStoreService(
   formData: FormData,
 ): Promise<StoreResponse> {
-  const accessToken = await getCookie('accessToken');
-
-  const res = await fetch(`${BASE_URL}/vendor/stores`, {
+  const res = await authFetch(`${BASE_URL}/vendor/stores`, {
     method: 'POST',
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-    credentials: 'include',
     body: formData,
   });
 
@@ -32,14 +26,8 @@ export async function createStoreService(
 }
 
 export async function getStoreService(): Promise<StoreApiResponse | null> {
-  const accessToken = await getCookie('accessToken');
-
-  const res = await fetch(`${BASE_URL}/vendor/stores`, {
+  const res = await authFetch(`${BASE_URL}/vendor/stores`, {
     method: 'GET',
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-    credentials: 'include',
     cache: 'no-store',
   });
 
@@ -63,14 +51,8 @@ export async function updateStoreService(
   storeId: string,
   formData: FormData,
 ): Promise<StoreResponse> {
-  const accessToken = await getCookie('accessToken');
-
-  const res = await fetch(`${BASE_URL}/vendor/stores/${storeId}`, {
+  const res = await authFetch(`${BASE_URL}/vendor/stores/${storeId}`, {
     method: 'PUT',
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-    credentials: 'include',
     body: formData,
   });
 
@@ -95,17 +77,13 @@ export async function updateOperatingHoursService(
     closingTime: string | null;
   }>,
 ): Promise<StoreResponse> {
-  const accessToken = await getCookie('accessToken');
-
-  const res = await fetch(
+  const res = await authFetch(
     `${BASE_URL}/vendor/stores/${storeId}/operating-hours`,
     {
       method: 'PUT',
       headers: {
-        Authorization: `Bearer ${accessToken}`,
         'Content-Type': 'application/json',
       },
-      credentials: 'include',
       body: JSON.stringify(operatingHours),
     },
   );
@@ -123,14 +101,8 @@ export async function updateOperatingHoursService(
 }
 
 export async function deleteStoreService(storeId: string): Promise<void> {
-  const accessToken = await getCookie('accessToken');
-
-  const res = await fetch(`${BASE_URL}/vendor/stores/${storeId}`, {
+  const res = await authFetch(`${BASE_URL}/vendor/stores/${storeId}`, {
     method: 'DELETE',
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-    credentials: 'include',
   });
 
   if (!res.ok) {

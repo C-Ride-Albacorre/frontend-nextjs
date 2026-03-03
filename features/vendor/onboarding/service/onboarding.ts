@@ -3,7 +3,7 @@
 
 import { BASE_URL } from '@/config/api';
 import { ApiError } from '@/features/libs/api-error';
-import { getCookie } from '@/utils/cookies';
+import { authFetch } from '@/features/libs/auth-fetch';
 
 interface OnboardingData {
   businessName: string;
@@ -25,15 +25,11 @@ export async function onboardingService(
   step: 1 | 2 | 3 | 4,
   data: Partial<OnboardingData>,
 ) {
-  const accessToken = await getCookie('accessToken');
-
-  const res = await fetch(`${BASE_URL}/auth/vendor/onboarding/${step}`, {
+  const res = await authFetch(`${BASE_URL}/auth/vendor/onboarding/${step}`, {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${accessToken}`,
       'Content-Type': 'application/json',
     },
-    credentials: 'include',
     body: JSON.stringify(data),
   });
 
@@ -47,9 +43,4 @@ export async function onboardingService(
   }
 
   return result;
-}
-
-
-export async function getAccessToken() {
-  return getCookie('accessToken');
 }
