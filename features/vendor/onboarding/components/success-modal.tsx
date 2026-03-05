@@ -85,7 +85,7 @@ export default function SuccessModal({
             leftIcon={<Store size={16} />}
             className="order-1 md:order-2 w-full md:w-auto"
           >
-            Setup Storefront
+            Setup Store-front
           </Button>
         </div>
 

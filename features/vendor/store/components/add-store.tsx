@@ -3,9 +3,8 @@ import { Button } from '@/components/ui/buttons/button';
 import { Plus, Upload } from 'lucide-react';
 
 export default function AddStore() {
- 
   return (
-    <Card>
+    <Card className="bg-white">
       <div className="flex justify-between items-start gap-8">
         <div className="space-y-8">
           <div className="space-y-2 md:space-y-2.5 flex-1">
@@ -24,7 +23,6 @@ export default function AddStore() {
             variant="primary"
             size="icon"
             type="button"
-          
             leftIcon={<Plus size={18} />}
           >
             Add Store

@@ -81,7 +81,8 @@ export interface StoreCatalogueProps {
   storeData: StoreData;
   onView: () => void;
   onEdit: () => void;
-  onDelete: () => void;
+  onSelectStore: (store: StoreData) => void;
+  isSelected?: boolean;
 }
 
 // Props for ViewStoreModal
@@ -96,6 +97,6 @@ export interface ViewStoreModalProps {
 export interface DeleteStoreModalProps {
   isModalOpen: boolean;
   setIsModalOpen: (isOpen: boolean) => void;
-  store: StoreData | null;
+  stores: StoreData[];
   onSuccess?: () => void;
 }

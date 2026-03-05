@@ -45,18 +45,18 @@ export async function getStoresAction(): Promise<StoreData[]> {
   }
 }
 
-export async function deleteStoreAction(
-  storeId: string,
+export async function deleteStoresAction(
+  storeIds: string[],
 ): Promise<{ success: boolean; message: string }> {
   try {
-    await deleteStoreService(storeId);
+    await deleteStoreService(storeIds);
     revalidatePath('/vendor/store');
-    return { success: true, message: 'Store deleted successfully' };
+    return { success: true, message: 'Store(s) deleted successfully' };
   } catch (error) {
     return {
       success: false,
       message:
-        error instanceof Error ? error.message : 'Failed to delete store',
+        error instanceof Error ? error.message : 'Failed to delete store(s)',
     };
   }
 }

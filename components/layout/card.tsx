@@ -2,7 +2,7 @@ import clsx from 'clsx';
 
 export default function Card({
   gap = 'lg',
-  spacing = 'sm',
+  spacing = 'md',
   border = 'default',
   children,
   className,
@@ -25,8 +25,8 @@ export default function Card({
           'space-y-8 lg:space-y-12': gap === 'lg',
 
           'p-0': spacing === 'none',
-          'p-4 md:p-6': spacing === 'sm',
-          'p-6': spacing === 'md',
+          'p-4': spacing === 'sm',
+          'p-4 md:p-6': spacing === 'md',
           'p-8 lg:p-12': spacing === 'lg',
 
           'border border-border': border === 'default',

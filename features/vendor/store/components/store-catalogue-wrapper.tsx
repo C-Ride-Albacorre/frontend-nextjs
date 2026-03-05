@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Loader2, Store } from 'lucide-react';
+import { Loader2, Store, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/buttons/button';
 import Card from '@/components/layout/card';
 import VendorToolbar from '@/components/layout/vendor-tool-bar';
@@ -11,7 +11,6 @@ import ViewStoreModal from './view-store-modal';
 import DeleteStoreModal from './delete-store-modal';
 import { StoreData } from '../types';
 import { getStoresAction } from '../action';
-import { div } from 'framer-motion/client';
 
 const CATEGORIES = ['All'];
 
@@ -31,6 +30,10 @@ export default function StoreCatalogueWrapper({
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedStore, setSelectedStore] = useState<StoreData | null>(null);
+  const [selectedStoreIds, setSelectedStoreIds] = useState<Set<string>>(
+    new Set(),
+  );
+  const [isDeletingMultiple, setIsDeletingMultiple] = useState(false);
 
   // Refresh store list
   const fetchStores = useCallback(async () => {
@@ -63,13 +66,33 @@ export default function StoreCatalogueWrapper({
 
   // Handle delete store
   const handleDeleteStore = (store: StoreData) => {
-    setSelectedStore(store);
+    setSelectedStoreIds(new Set([store.id]));
     setIsDeleteModalOpen(true);
   };
 
-  // Handle delete success — refresh list
+  // Handle bulk delete — open modal for selected stores
+  const handleDeleteSelectedStores = () => {
+    if (selectedStoreIds.size === 0) return;
+    setSelectedStore(null);
+    setIsDeleteModalOpen(true);
+  };
+
+  // Handle delete success — refresh list and clear selection
   const handleDeleteSuccess = () => {
+    setSelectedStoreIds(new Set());
     fetchStores();
+  };
+
+  const selectStore = (store: StoreData) => {
+    setSelectedStoreIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(store.id)) {
+        next.delete(store.id);
+      } else {
+        next.add(store.id);
+      }
+      return next;
+    });
   };
 
   return (
@@ -81,6 +104,22 @@ export default function StoreCatalogueWrapper({
         onSortChange={setSort}
         categories={CATEGORIES}
       />
+      {selectedStoreIds.size > 0 && (
+        <div className="flex justify-end">
+          <Button
+            variant="red-secondary"
+            rounded="lg"
+            leftIcon={<Trash2 size={14} />}
+            size="icon"
+            onClick={handleDeleteSelectedStores}
+            disabled={isDeletingMultiple}
+          >
+            {isDeletingMultiple
+              ? 'Deleting...'
+              : `Delete Selected Store (${selectedStoreIds.size})`}
+          </Button>
+        </div>
+      )}
 
       {isLoading ? (
         <Card>
@@ -108,7 +147,8 @@ export default function StoreCatalogueWrapper({
               storeData={store}
               onView={() => handleViewStore(store)}
               onEdit={() => handleEditStore(store)}
-              onDelete={() => handleDeleteStore(store)}
+              onSelectStore={selectStore}
+              isSelected={selectedStoreIds.has(store.id)}
             />
           ))}
         </div>
@@ -131,7 +171,7 @@ export default function StoreCatalogueWrapper({
       <DeleteStoreModal
         isModalOpen={isDeleteModalOpen}
         setIsModalOpen={setIsDeleteModalOpen}
-        store={selectedStore}
+        stores={stores.filter((s) => selectedStoreIds.has(s.id))}
         onSuccess={handleDeleteSuccess}
       />
     </>

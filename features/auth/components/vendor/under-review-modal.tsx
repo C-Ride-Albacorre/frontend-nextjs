@@ -65,7 +65,7 @@ export default function UnderReviewModal({
             leftIcon={<Store size={16} />}
             className="w-full md:w-auto"
           >
-            Setup Storefront
+            Setup Store-front
           </Button>
         </div>
       </div>

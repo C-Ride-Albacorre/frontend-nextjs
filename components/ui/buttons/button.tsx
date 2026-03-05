@@ -87,6 +87,9 @@ export function Button({
       'border border-[#E7000B] text-[#E7000B] hover:bg-[#B0000A] hover:text-white':
         variant === 'red-outline',
 
+      'border border-red-200 hover:bg-red-50 text-red-500 bg-white':
+        variant === 'red-secondary',
+
       // sizes
 
       'p-0 text-sm': size === 'none',

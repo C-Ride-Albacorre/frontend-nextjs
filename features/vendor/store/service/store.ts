@@ -100,15 +100,19 @@ export async function updateOperatingHoursService(
   return result;
 }
 
-export async function deleteStoreService(storeId: string): Promise<void> {
-  const res = await authFetch(`${BASE_URL}/vendor/stores/${storeId}`, {
+export async function deleteStoreService(storeIds: string[]): Promise<void> {
+  const res = await authFetch(`${BASE_URL}/vendor/stores/delete`, {
     method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ storeIds }),
   });
 
   if (!res.ok) {
     const result = await res.json().catch(() => null);
     throw new ApiError(
-      result?.message || 'Failed to delete store',
+      result?.message || 'Failed to delete store(s)',
       result?.statusCode ?? res.status,
     );
   }

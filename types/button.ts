@@ -17,7 +17,8 @@ type ButtonVariant =
   | 'green-outline'
   | 'black'
   | 'red'
-  | 'red-outline';
+  | 'red-outline'
+  | 'red-secondary';
 
 type ButtonSize =
   | 'none'

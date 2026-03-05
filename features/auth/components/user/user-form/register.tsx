@@ -151,7 +151,7 @@ export default function UserRegisterForm() {
             type="checkbox"
             checked={acceptedTerms}
             onChange={(e) => setAcceptedTerms(e.target.checked)}
-            className="h-4 w-4 rounded-md border-border accent-primary cursor-pointer "
+            className="h-4 w-4 rounded-md border-border accent-primary cursor-pointer"
           />
           I agree to the Terms & Conditions
         </label>
