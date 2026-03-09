@@ -4,18 +4,20 @@ import Card from '@/components/layout/card';
 import { Button } from '@/components/ui/buttons/button';
 import VendorDashboardHeader from '@/components/ui/headers/vendor-header';
 import ProductRow from '@/features/vendor/products/components/product-row';
-import { Loader2, Package, Plus, Upload } from 'lucide-react';
-import { useCallback, useEffect, useState } from 'react';
+import { ChevronLeft, Loader2, Package, Plus } from 'lucide-react';
+import { useState } from 'react';
 import ProductForm from '@/features/vendor/products/components/add-product';
 import ViewProductModal from '@/features/vendor/products/components/view-product-modal';
 import DeleteConfirmModal from '@/features/vendor/products/components/delete-confirm-modal';
 import MainLayout from '@/components/layout/main-layout';
 import SectionLayout from '@/components/layout/section-layout';
 import VendorToolbar from '@/components/layout/vendor-tool-bar';
+
 import { Product } from '@/features/vendor/products/type';
 import { getProductsAction } from '@/features/vendor/products/action';
-import { getStoreAction } from '@/features/vendor/store/action';
-import { IconButton } from '@/components/ui/buttons/icon-button';
+import { getStoresAction } from '@/features/vendor/store/action';
+
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 const CATEGORIES = [
   'All',
@@ -29,84 +31,92 @@ const CATEGORIES = [
 ];
 
 export default function ProductsPage() {
-  const [sort, setSort] = useState('');
-  const [storeId, setStoreId] = useState<string | null>(null);
-  const [products, setProducts] = useState<Product[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
-  const [storeError, setStoreError] = useState<boolean>(false);
+  const [sort, setSort] = useState('');
+
+  const [selectedStoreId, setSelectedStoreId] = useState<string | null>(null);
 
   // Modal states
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
-  // Fetch store and products
-  const fetchData = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
+  /*
+  ----------------------------------
+  FETCH STORES
+  ----------------------------------
+  */
 
-    try {
-      // Get store first
-      const store = await getStoreAction();
-      if (!store) {
-        setStoreError(true);
-        setIsLoading(false);
-        return;
-      }
+  const storesQuery = useQuery({
+    queryKey: ['stores'],
+    queryFn: getStoresAction,
+  });
 
-      setStoreId(store.id);
+  /*
+  ----------------------------------
+  FETCH PRODUCTS (ONLY WHEN STORE SELECTED)
+  ----------------------------------
+  */
 
-      // Get products
-      const productList = await getProductsAction(store.id);
-      setProducts(productList);
-    } catch {
-      setError('Failed to load products. Please try again.');
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+  const productsQuery = useQuery({
+    queryKey: ['products', selectedStoreId],
+    queryFn: () => getProductsAction(selectedStoreId!),
+    enabled: !!selectedStoreId,
+  });
 
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+  /*
+  ----------------------------------
+  HANDLERS
+  ----------------------------------
+  */
 
-  // Handle add new product
   const handleAddProduct = () => {
     setSelectedProduct(null);
     setIsFormModalOpen(true);
   };
 
-  // Handle view product
   const handleViewProduct = (product: Product) => {
     setSelectedProduct(product);
     setIsViewModalOpen(true);
   };
 
-  // Handle edit product
   const handleEditProduct = (product: Product) => {
     setSelectedProduct(product);
     setIsFormModalOpen(true);
   };
 
-  // Handle delete product
   const handleDeleteProduct = (product: Product) => {
     setSelectedProduct(product);
     setIsDeleteModalOpen(true);
   };
 
-  // Handle form success (refresh list)
   const handleFormSuccess = () => {
-    fetchData();
+    queryClient.invalidateQueries({
+      queryKey: ['products', selectedStoreId],
+    });
   };
 
-  // Filter products by category
+  /*
+  ----------------------------------
+  FILTER PRODUCTS
+  ----------------------------------
+  */
+
+  const products = productsQuery.data ?? [];
+
   const filteredProducts =
     sort && sort !== 'All'
-      ? products.filter((p) => p.productCategory === sort)
+      ? products.filter((p: Product) => p.productCategory === sort)
       : products;
+
+  /*
+  ----------------------------------
+  UI
+  ----------------------------------
+  */
 
   return (
     <>
@@ -114,37 +124,6 @@ export default function ProductsPage() {
         <VendorDashboardHeader />
 
         <SectionLayout>
-          <Card>
-            <div className="flex justify-between items-start gap-8">
-              <div className="space-y-8">
-                <div className="space-y-2 md:space-y-2.5 flex-1">
-                  <p className="font-medium text-neutral-900">
-                    Product Upload Requirements
-                  </p>
-                  <p className="text-xs md:text-sm font-normal leading-6 text-neutral-500">
-                    All products must have real, high-quality images (minimum
-                    800x800px, clear lighting, professional presentation)
-                  </p>
-                </div>
-
-                <Button
-                  onClick={handleAddProduct}
-                  variant="primary"
-                  size="icon"
-                  type="button"
-                  disabled={!storeId}
-                >
-                  <Plus size={18} /> Add Product
-                </Button>
-              </div>
-
-              <IconButton onClick={handleAddProduct} disabled={!storeId}>
-                <Upload size={18} className="text-primary" />
-              </IconButton>
-            </div>
-          </Card>
-
-          {/* Toolbar */}
           <VendorToolbar
             title="Product Catalog"
             searchPlaceholder="Search products..."
@@ -153,86 +132,228 @@ export default function ProductsPage() {
             categories={CATEGORIES}
           />
 
-          {/* Products List */}
-          <Card>
-            {isLoading ? (
-              <div className="flex items-center justify-center py-12">
-                <Loader2 className="w-8 h-8 animate-spin text-primary" />
-              </div>
-            ) : error ? (
-              <div className="text-center py-12">
-                <Package size={60} className="mx-auto mb-4 text-neutral-300" />
+          {/* ============================= */}
+          {/* SHOW STORES FIRST */}
+          {/* ============================= */}
 
-                <p className="text-red-600 mb-4">{error}</p>
-                <Button variant="outline" size="md" onClick={fetchData}>
-                  Try Again
-                </Button>
-              </div>
-            ) : storeError ? (
-              <div className="text-center py-12">
-                <Package size={60} className="mx-auto mb-4 text-neutral-300" />
+          {!selectedStoreId && (
+            <Card>
+              {storesQuery.isLoading ? (
+                <div className="flex justify-center py-12">
+                  <Loader2 className="animate-spin w-8 h-8 text-primary" />
+                </div>
+              ) : storesQuery.error ? (
+                <div className="text-center py-12">
+                  <Package
+                    size={60}
+                    className="mx-auto mb-4 text-neutral-300"
+                  />
 
-                <h2 className="text-lg font-medium mb-2">No Store Found</h2>
-                <p className="text-neutral-600 mb-4 text-sm">
-                  {' '}
-                  Please create a store first before adding products.
-                </p>
-                <Button
-                  variant="primary"
-                  size="md"
-                  href="/vendor/store/new-store"
-                >
-                  Create Store
-                </Button>
-              </div>
-            ) : filteredProducts.length === 0 ? (
-              <div className="text-center py-12 space-y-6">
-                <Package size={60} className="mx-auto text-neutral-300" />
-                <p className="text-neutral-500 text-sm">
-                  {products.length === 0
-                    ? 'No products yet. Add your first product to get started.'
-                    : 'No products match your current filter.'}
-                </p>
-                {products.length === 0 && storeId && (
-                  <Button
-                    variant="primary"
-                    size="icon"
-                    onClick={handleAddProduct}
-                  >
-                    <Plus size={16} /> Add Product
+                  <p className="text-red-600 mb-4">
+                    {storesQuery.error instanceof Error
+                      ? storesQuery.error.message
+                      : 'Failed to load stores'}
+                  </p>
+
+                  <Button onClick={() => storesQuery.refetch()}>
+                    Try Again
                   </Button>
-                )}
+                </div>
+              ) : storesQuery.data?.length === 0 ? (
+                <div className="text-center py-12">
+                  <Package
+                    size={60}
+                    className="mx-auto mb-4 text-neutral-300"
+                  />
+
+                  <p className="text-neutral-600 mb-4">
+                    You don’t have any store yet.
+                  </p>
+
+                  <Button href="/vendor/store/new-store">Create Store</Button>
+                </div>
+              ) : (
+                <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {storesQuery.data?.map((store: any) => (
+                    <li key={store.id}>
+                      <Card>
+                        <div className="space-y-8">
+                          {/* Store Header */}
+                          <div className="flex items-center gap-4">
+                            {/* Logo */}
+                            <div className="w-14 h-14 rounded-lg overflow-hidden bg-neutral-100 flex items-center justify-center">
+                              {store.storeLogo ? (
+                                <img
+                                  src={store.storeLogo}
+                                  alt={store.storeName}
+                                  className="w-full h-full object-cover"
+                                />
+                              ) : (
+                                <span className="text-sm font-semibold text-neutral-500">
+                                  {store.storeName?.charAt(0)}
+                                </span>
+                              )}
+                            </div>
+
+                            {/* Name + Category */}
+                            <div className="space-y-1">
+                              <p className="font-medium text-neutral-900">
+                                {store.storeName}
+                              </p>
+
+                              <div className="flex items-center gap-2">
+                                {store.status === 'PENDING_APPROVAL' && (
+                                  <span className="text-primary bg-primary-text-100 px-2 py-1 rounded-2xl text-[10px]">
+                                    pending
+                                  </span>
+                                )}
+
+                                {store.status === 'ACTIVE' && (
+                                  <span className="text-[#10B981] bg-[#108981]/10 px-2 py-1 rounded-2xl text-[10px]">
+                                    active
+                                  </span>
+                                )}
+
+                                <p className="text-xs text-neutral-500">
+                                  {store.storeCategory}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Store Info */}
+                          <div className="text-sm text-neutral-600 space-y-4">
+                            <p className="space-x-1">
+                              <span className="font-medium text-neutral-800">
+                                Store id:
+                              </span>{' '}
+                              <span>{store.id.slice(0, 24)}...</span>
+                            </p>
+
+                            <p className="space-x-1">
+                              <span className="font-medium text-neutral-800">
+                                Address:
+                              </span>
+                              <span>{store.storeAddress}</span>
+                            </p>
+
+                            <p className="space-x-1">
+                              <span className="font-medium text-neutral-800">
+                                Created on:
+                              </span>
+                              <span>
+                                {new Date(store.createdAt).toDateString()}
+                              </span>
+                            </p>
+                          </div>
+
+                          {/* Action */}
+                          <Button
+                            size="sm"
+                            className="w-full"
+                            onClick={() => setSelectedStoreId(store.id)}
+                          >
+                            View Products
+                          </Button>
+                        </div>
+                      </Card>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </Card>
+          )}
+
+          {/* ============================= */}
+          {/* PRODUCTS VIEW */}
+          {/* ============================= */}
+
+          {selectedStoreId && (
+            <Card>
+              <div className="flex justify-between items-center mb-6">
+                <Button
+                  variant="outline"
+                  size='icon'
+                  onClick={() => setSelectedStoreId(null)}
+                  leftIcon={<ChevronLeft size={16} />}
+                >
+                  Back to Stores
+                </Button>
+
+                <Button
+                  onClick={handleAddProduct}
+                  variant="primary"
+                  size="icon"
+                >
+                  <Plus size={16} /> Add Product
+                </Button>
               </div>
-            ) : (
-              <ul className="space-y-4">
-                {filteredProducts.map((product) => (
-                  <li key={product.id}>
-                    <ProductRow
-                      product={product}
-                      onView={() => handleViewProduct(product)}
-                      onEdit={() => handleEditProduct(product)}
-                      onDelete={() => handleDeleteProduct(product)}
-                    />
-                  </li>
-                ))}
-              </ul>
-            )}
-          </Card>
+
+              {productsQuery.isLoading ? (
+                <div className="flex justify-center py-12">
+                  <Loader2 className="animate-spin w-8 h-8 text-primary" />
+                </div>
+              ) : productsQuery.error ? (
+                <div className="text-center py-12">
+                  <Package
+                    size={60}
+                    className="mx-auto mb-4 text-neutral-300"
+                  />
+
+                  <p className="text-red-600 mb-4">
+                    {productsQuery.error instanceof Error
+                      ? productsQuery.error.message
+                      : 'Failed to load products'}
+                  </p>
+
+                  <Button onClick={() => productsQuery.refetch()}>
+                    Try Again
+                  </Button>
+                </div>
+              ) : filteredProducts.length === 0 ? (
+                <div className="text-center py-12">
+                  <Package
+                    size={60}
+                    className="mx-auto mb-4 text-neutral-300"
+                  />
+
+                  <p className="text-neutral-500">
+                    No products yet. Add your first product.
+                  </p>
+                </div>
+              ) : (
+                <ul className="space-y-4">
+                  {filteredProducts.map((product: Product) => (
+                    <li key={product.id}>
+                      <ProductRow
+                        product={product}
+                        onView={() => handleViewProduct(product)}
+                        onEdit={() => handleEditProduct(product)}
+                        onDelete={() => handleDeleteProduct(product)}
+                      />
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </Card>
+          )}
         </SectionLayout>
       </MainLayout>
 
-      {/* Add/Edit Product Modal */}
-      {storeId && (
+      {/* ============================= */}
+      {/* MODALS */}
+      {/* ============================= */}
+
+      {selectedStoreId && (
         <ProductForm
           isModalOpen={isFormModalOpen}
           setIsModalOpen={setIsFormModalOpen}
-          storeId={storeId}
+          storeId={selectedStoreId}
           editProduct={selectedProduct}
           onSuccess={handleFormSuccess}
         />
       )}
 
-      {/* View Product Modal */}
       <ViewProductModal
         isModalOpen={isViewModalOpen}
         setIsModalOpen={setIsViewModalOpen}
@@ -243,13 +364,12 @@ export default function ProductsPage() {
         }}
       />
 
-      {/* Delete Confirmation Modal */}
-      {storeId && (
+      {selectedStoreId && (
         <DeleteConfirmModal
           isModalOpen={isDeleteModalOpen}
           setIsModalOpen={setIsDeleteModalOpen}
           product={selectedProduct}
-          storeId={storeId}
+          storeId={selectedStoreId}
           onSuccess={handleFormSuccess}
         />
       )}

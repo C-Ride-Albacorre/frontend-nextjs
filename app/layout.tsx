@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from 'sonner';
+import QueryProvider from './providers/query-provider';
 
 export const metadata: Metadata = {
   title: "C-ride — Beyond Delivery, It's Care",
@@ -18,9 +19,10 @@ export default function RootLayout({
         name="viewport"
         content="width=device-width, initial-scale=1, maximum-scale=1"
       />
-      <body>{children}
-      <Toaster richColors position="top-right" /></body>
-
+      <body>
+        <QueryProvider>{children}</QueryProvider>
+        <Toaster richColors position="top-right" />
+      </body>
     </html>
   );
 }

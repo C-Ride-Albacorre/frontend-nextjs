@@ -194,7 +194,7 @@ export default function ViewProductModal({
         </div>
 
         {/* Actions */}
-        <div className="flex justify-center gap-4 pt-4">
+        <div className="flex justify-around gap-4 pt-4">
           <Button
             variant="outline"
             size="lg"

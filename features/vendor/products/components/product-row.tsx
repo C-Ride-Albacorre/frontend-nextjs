@@ -2,6 +2,7 @@ import { Edit, Eye, Trash2 } from 'lucide-react';
 import Image from 'next/image';
 import { ProductRowProps } from '../type';
 import clsx from 'clsx';
+import Card from '@/components/layout/card';
 
 export default function ProductRow({
   product,
@@ -36,10 +37,10 @@ export default function ProductRow({
         : 'Out of Stock';
 
   return (
-    <div className="md:flex items-center justify-between gap-4 rounded-2xl border border-border bg-white p-4 space-y-6 md:space-y-0">
+    <Card className="md:flex items-center justify-between gap-4 bg-white space-y-6 md:space-y-0">
       {/* LEFT */}
-      <div className="md:flex space-y-6 md:space-y-0 items-center gap-4 flex-1">
-        <div className="relative w-full md:w-16 xl:w-24 h-40 md:h-16 xl:h-24">
+      <div className="md:flex space-y-6 md:space-y-0 items-center gap-4 flex-1 mb-0">
+        <div className="relative w-full md:w-16 xl:w-24 h-40 md:h-16 xl:h-24 ">
           {imageUrl ? (
             <Image
               src={imageUrl}
@@ -118,6 +119,6 @@ export default function ProductRow({
           <Trash2 size={16} />
         </button>
       </div>
-    </div>
+    </Card>
   );
 }

@@ -52,7 +52,7 @@ export default function VendorLoginForm() {
   }, [state]);
 
   return (
-    <>
+    <section className='space-y-8'>
       <FormHeader
         title="Login to your account"
         subtitle="Please enter your credentials below."
@@ -120,6 +120,6 @@ export default function VendorLoginForm() {
         onClose={() => setIsModalOpen(false)}
         email={isUnderReview ? state.email : undefined}
       />
-    </>
+    </section>
   );
 }

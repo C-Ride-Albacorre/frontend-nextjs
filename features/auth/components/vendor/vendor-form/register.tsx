@@ -74,7 +74,7 @@ export default function VendorRegisterForm() {
   }, [state]);
 
   return (
-    <>
+    <section className='space-y-8'>
       <FormHeader
         title="Create an Account"
         subtitle="Please enter your credentials below."
@@ -227,6 +227,6 @@ export default function VendorRegisterForm() {
         buttonText="Proceed to Phone Verification"
         buttonHref="/verify/vendor-phone"
       />
-    </>
+    </section>
   );
 }
