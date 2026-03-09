@@ -3,7 +3,7 @@
 import { BASE_URL } from '@/config/api';
 import { ApiError } from '@/features/libs/api-error';
 import { authFetch } from '@/features/libs/auth-fetch';
-import { StoreApiResponse, StoreResponse } from '../types';
+import { StoreApiResponse, StoreResponse } from './types';
 
 export async function createStoreService(
   formData: FormData,
@@ -27,6 +27,30 @@ export async function createStoreService(
 
 export async function getStoreService(): Promise<StoreApiResponse | null> {
   const res = await authFetch(`${BASE_URL}/vendor/stores`, {
+    method: 'GET',
+    cache: 'no-store',
+  });
+
+  const result = await res.json();
+
+  if (res.status === 404 || result?.statusCode === 404) {
+    return null;
+  }
+
+  if (!res.ok) {
+    throw new ApiError(
+      result?.message || 'Failed to fetch store',
+      result?.statusCode ?? res.status,
+    );
+  }
+
+  return result;
+}
+
+export async function getStoreByIdService(
+  storeId: string,
+): Promise<StoreApiResponse | null> {
+  const res = await authFetch(`${BASE_URL}/vendor/stores/${storeId}`, {
     method: 'GET',
     cache: 'no-store',
   });

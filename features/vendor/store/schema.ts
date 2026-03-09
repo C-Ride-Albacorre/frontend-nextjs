@@ -24,9 +24,14 @@ export const StoreSchema = z.object({
     .trim()
     .email({ message: 'Please enter a valid email address.' }),
   storeDescription: z.string().trim().optional(),
-  minimumOrder: z.coerce.number().positive().optional().or(z.literal('')),
-  deliveryFee: z.coerce.number().positive().optional().or(z.literal('')),
-  preparationTime: z.coerce.number().positive().optional().or(z.literal('')),
+  minimumOrder: z.preprocess(
+    (val) => (val === '' || val === undefined || val === null ? undefined : val),
+    z.coerce.number().nonnegative({ message: 'Must be 0 or greater.' }).optional(),
+  ),
+  preparationTime: z.preprocess(
+    (val) => (val === '' || val === undefined || val === null ? undefined : val),
+    z.coerce.number().nonnegative({ message: 'Must be 0 or greater.' }).optional(),
+  ),
 });
 
 export type StoreFormErrors = {
@@ -36,8 +41,7 @@ export type StoreFormErrors = {
   phoneNumber?: string[];
   email?: string[];
   storeDescription?: string[];
-  minimumOrder?: string[];
-  deliveryFee?: string[];
+  minimumOrder?: string[]; 
   preparationTime?: string[];
   operatingHours?: string[];
 };

@@ -5,9 +5,10 @@ import {
   createStoreService,
   deleteStoreService,
   getStoreService,
+  getStoreByIdService,
   updateStoreService,
   updateOperatingHoursService,
-} from './service/store';
+} from './service';
 import { StoreFormState, StoreData } from './types';
 import { StoreSchema } from './schema';
 
@@ -45,6 +46,47 @@ export async function getStoresAction(): Promise<StoreData[]> {
   }
 }
 
+export async function getStoreByIdAction(
+  storeId: string,
+): Promise<StoreData | null> {
+  // Try fetching the single store by ID first
+  try {
+    const response = await getStoreByIdService(storeId);
+    if (response) {
+      const data = response.data;
+
+      // API may return a single object or an array
+      if (Array.isArray(data)) {
+        const match = data.find((s) => s.id === storeId);
+        if (match) return match;
+        if (data.length > 0) return data[0];
+      } else if (data && typeof data === 'object' && 'id' in data) {
+        // Single store object returned directly in data
+        return data as unknown as StoreData;
+      }
+
+      // Some APIs return the store at the root level (no data wrapper)
+      if (
+        'id' in response &&
+        'storeName' in response &&
+        (response as unknown as StoreData).id === storeId
+      ) {
+        return response as unknown as StoreData;
+      }
+    }
+  } catch {
+    // Single-store endpoint failed — fall through to list fallback
+  }
+
+  // Fallback: fetch all stores and find by ID
+  try {
+    const allStores = await getStoresAction();
+    return allStores.find((s) => s.id === storeId) ?? null;
+  } catch {
+    return null;
+  }
+}
+
 export async function deleteStoresAction(
   storeIds: string[],
 ): Promise<{ success: boolean; message: string }> {
@@ -74,7 +116,6 @@ export async function createStoreAction(
     email: formData.get('email') as string,
     storeDescription: formData.get('storeDescription') as string,
     minimumOrder: formData.get('minimumOrder') as string,
-    deliveryFee: formData.get('deliveryFee') as string,
     preparationTime: formData.get('preparationTime') as string,
   };
 
@@ -97,7 +138,8 @@ export async function createStoreAction(
     };
   }
 
-  // Build operating hours array in backend format
+  // Build operating hours array
+
   const operatingHours = DAYS.map((dayOfWeek) => {
     const dayKey = dayOfWeek.toLowerCase();
     const openTime = (formData.get(`${dayKey}Open`) as string) || '';
@@ -144,10 +186,6 @@ export async function createStoreAction(
     apiFormData.append('minimumOrder', String(result.data.minimumOrder));
   }
 
-  if (result.data.deliveryFee && typeof result.data.deliveryFee === 'number') {
-    apiFormData.append('deliveryFee', String(result.data.deliveryFee));
-  }
-
   if (
     result.data.preparationTime &&
     typeof result.data.preparationTime === 'number'
@@ -160,12 +198,38 @@ export async function createStoreAction(
 
   // Handle logo file
   const logo = formData.get('logo') as File;
+
   if (logo && logo.size > 0) {
-    apiFormData.append('logo', logo);
+    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+
+    if (logo.size > MAX_FILE_SIZE) {
+      return {
+        status: 'error',
+        message: 'Store logo must be less than 5MB',
+        errors: { logo: ['Image size must be less than 5MB'] },
+      };
+    }
+
+    // Optional: validate mime type too
+    const ALLOWED_TYPES = [
+      'image/jpeg',
+      'image/png',
+      'image/webp',
+      'image/gif',
+    ];
+    if (!ALLOWED_TYPES.includes(logo.type)) {
+      return {
+        status: 'error',
+        message: 'Only JPEG, PNG, WebP, or GIF images are allowed',
+        errors: { logo: ['Invalid file type'] },
+      };
+    }
+
+    apiFormData.append('logo', logo, logo.name || 'logo');
   }
 
   try {
-    await createStoreService(apiFormData);
+    const response = await createStoreService(apiFormData);
 
     // Revalidate the store page to fetch fresh data
     revalidatePath('/vendor/store');
@@ -173,6 +237,7 @@ export async function createStoreAction(
     return {
       status: 'success',
       message: 'Store created successfully',
+      storeId: response?.id,
     };
   } catch (error) {
     return {
@@ -205,7 +270,7 @@ export async function updateStoreAction(
     email: formData.get('email') as string,
     storeDescription: formData.get('storeDescription') as string,
     minimumOrder: formData.get('minimumOrder') as string,
-    deliveryFee: formData.get('deliveryFee') as string,
+
     preparationTime: formData.get('preparationTime') as string,
   };
 
@@ -283,8 +348,34 @@ export async function updateStoreAction(
 
   // Handle logo file
   const logo = formData.get('logo') as File;
+
   if (logo && logo.size > 0) {
-    apiFormData.append('logo', logo);
+    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+
+    if (logo.size > MAX_FILE_SIZE) {
+      return {
+        status: 'error',
+        message: 'Store logo must be less than 5MB',
+        errors: { logo: ['Image size must be less than 5MB'] },
+      };
+    }
+
+    // Optional: validate mime type too
+    const ALLOWED_TYPES = [
+      'image/jpeg',
+      'image/png',
+      'image/webp',
+      'image/gif',
+    ];
+    if (!ALLOWED_TYPES.includes(logo.type)) {
+      return {
+        status: 'error',
+        message: 'Only JPEG, PNG, WebP, or GIF images are allowed',
+        errors: { logo: ['Invalid file type'] },
+      };
+    }
+
+    apiFormData.append('storeLogo', logo, logo.name || 'store-logo');
   }
 
   try {

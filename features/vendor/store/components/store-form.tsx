@@ -11,9 +11,10 @@ import {
 } from './section';
 import { createStoreAction, updateStoreAction } from '../action';
 import { StoreFormState, StoreData } from '../types';
-import { CheckCircle, Pencil, Lock, ChevronLeft } from 'lucide-react';
+import { CheckCircle, Pencil, Lock, ChevronLeft, Store } from 'lucide-react';
 import { toast } from 'sonner';
 import Card from '@/components/layout/card';
+import Modal from '@/components/layout/modal';
 
 const emptyValues: StoreFormValues = {
   storeName: '',
@@ -23,7 +24,6 @@ const emptyValues: StoreFormValues = {
   email: '',
   storeDescription: '',
   minimumOrder: '',
-  deliveryFee: '',
   preparationTime: '',
   operatingHours: {},
 };
@@ -58,7 +58,6 @@ export default function StoreForm({ initialData }: StoreFormProps) {
       email: initialData.email || '',
       storeDescription: initialData.storeDescription || '',
       minimumOrder: initialData.minimumOrder?.toString() || '',
-      deliveryFee: initialData.deliveryFee?.toString() || '',
       preparationTime: initialData.preparationTime?.toString() || '',
       operatingHours,
     };
@@ -75,16 +74,24 @@ export default function StoreForm({ initialData }: StoreFormProps) {
 
   const isError = state?.status === 'error';
   const errors = isError ? state.errors : undefined;
+  const [imageResetKey, setImageResetKey] = useState(0);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [createdStoreId, setCreatedStoreId] = useState<string | null>(null);
 
   useEffect(() => {
     if (state?.status === 'error' && state.message) {
       toast.error(state.message);
     }
     if (state?.status === 'success') {
-      toast.success(state.message ?? 'Store saved successfully!');
-      // Don't reset form on success if editing
-      if (!isEditMode) {
+      if (isEditMode) {
+        toast.success(state.message ?? 'Store updated successfully!');
+        setIsEditing(false);
+      } else {
+        // Show success modal for new store creation
+        setCreatedStoreId(state.storeId ?? null);
+        setShowSuccessModal(true);
         setValues(emptyValues);
+        setImageResetKey((k) => k + 1);
       }
     }
   }, [state, isEditMode]);
@@ -210,25 +217,69 @@ export default function StoreForm({ initialData }: StoreFormProps) {
           <StoreImageUpload
             initialLogo={initialData?.storeLogo}
             disabled={isEditMode && !isEditing}
+            resetKey={imageResetKey}
           />
         </div>
 
         <div className="flex justify-end items-center md:col-span-2">
           <Button
             variant="primary"
-            size="lg"
+            size="md"
             type="submit"
             disabled={pending || (isEditMode && !isEditing)}
-            leftIcon={<CheckCircle size={18} />}
           >
             {pending
               ? 'Saving...'
               : isEditMode
                 ? 'Update Store'
-                : 'Save Changes'}
+                : 'Create Store'}
           </Button>
         </div>
       </form>
+
+      {/* Success Modal — shown after store creation */}
+      <Modal
+        isModalOpen={showSuccessModal}
+        onClose={() => setShowSuccessModal(false)}
+      >
+        <div className="flex flex-col items-center text-center space-y-6 py-6">
+          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100">
+            <CheckCircle size={32} className="text-emerald-600" />
+          </div>
+
+          <div className="space-y-2">
+            <h3 className="text-lg font-semibold text-neutral-900">
+              Store Created Successfully!
+            </h3>
+            <p className="text-sm text-neutral-500">
+              Your store has been created and is ready to go. You can now view
+              your store or add products.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-4">
+            <Button
+              variant="outline"
+              size="md"
+              onClick={() => setShowSuccessModal(false)}
+            >
+              Create Another
+            </Button>
+            <Button
+              variant="primary"
+              size="md"
+              href={
+                createdStoreId
+                  ? `/vendor/store/${createdStoreId}`
+                  : '/vendor/store'
+              }
+              leftIcon={<Store size={16} />}
+            >
+              View Store
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }

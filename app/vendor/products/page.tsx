@@ -130,7 +130,7 @@ export default function ProductsPage() {
                 <Button
                   onClick={handleAddProduct}
                   variant="primary"
-                  size="lg"
+                  size="icon"
                   type="button"
                   disabled={!storeId}
                 >
@@ -186,8 +186,9 @@ export default function ProductsPage() {
                 </Button>
               </div>
             ) : filteredProducts.length === 0 ? (
-              <div className="text-center py-12">
-                <p className="text-neutral-500 mb-4">
+              <div className="text-center py-12 space-y-6">
+                <Package size={60} className="mx-auto text-neutral-300" />
+                <p className="text-neutral-500 text-sm">
                   {products.length === 0
                     ? 'No products yet. Add your first product to get started.'
                     : 'No products match your current filter.'}
@@ -195,7 +196,7 @@ export default function ProductsPage() {
                 {products.length === 0 && storeId && (
                   <Button
                     variant="primary"
-                    size="md"
+                    size="icon"
                     onClick={handleAddProduct}
                   >
                     <Plus size={16} /> Add Product

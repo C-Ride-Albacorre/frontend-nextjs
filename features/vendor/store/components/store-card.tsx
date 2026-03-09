@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import { Star, Store } from 'lucide-react';
 import { StoreData } from '../types';
@@ -9,6 +10,7 @@ import { getStoreAction } from '../action';
 export default function VendorStoreCard() {
   const [store, setStore] = useState<StoreData | null>(null);
   const [loading, setLoading] = useState(true);
+  const pathname = usePathname();
 
   useEffect(() => {
     async function fetchStore() {
@@ -22,7 +24,7 @@ export default function VendorStoreCard() {
       }
     }
     fetchStore();
-  }, []);
+  }, [pathname]);
 
   if (loading) {
     return (
@@ -60,7 +62,7 @@ export default function VendorStoreCard() {
 
   return (
     <div className="rounded-2xl bg-primary/10 border border-border p-4 space-y-4">
-      <div className="flex items-center gap-3">
+      <div className="flex items-start gap-3">
         {/* Store Logo */}
         {store.storeLogo ? (
           <div className="relative h-12 w-12 rounded-full overflow-hidden shrink-0 bg-white shadow-md">
@@ -78,37 +80,42 @@ export default function VendorStoreCard() {
           </div>
         )}
 
-        <div className="min-w-0">
+        <div className="w-full space-y-1.5">
           <p className="font-medium text-primary-text-100 text-sm truncate">
             {store.storeName}
           </p>
-          <span className="text-xs text-neutral-400 truncate block">
+
+          <span className="text-[10px]  truncate block">
             {store.storeAddress}
           </span>
+
+          <span className="text-[10px]  truncate block text-neutral-500">
+            {store.storeCategory}
+          </span>
+
+          <div className="flex justify-between items-center ">
+            {/* Status Badge */}
+            {store.status === 'ACTIVE' && (
+              <span className="flex w-fit items-center justify-center gap-1.5 rounded-full bg-[#10B981]  px-1.5 py-0.5  text-[10px] text-white shadow ">
+                <Star strokeWidth={0} size={14} fill="white" />
+                Active
+              </span>
+            )}
+
+            {store.status === 'PENDING_APPROVAL' && (
+              <span className="flex w-fit items-center gap-2 rounded-full  bg-primary-text-100 px-1.5 py-0.5 text-[10px] text-primary justify-center">
+                Pending
+              </span>
+            )}
+
+            {store.status === 'REJECTED' && (
+              <span className="flex w-fit items-center gap-2 rounded-full border border-red-500 bg-red-500/10 px-1.5 py-0.5 text-[10px] text-red-600">
+                Requires Attention
+              </span>
+            )}
+          </div>
         </div>
       </div>
-
-      {/* Status Badge */}
-      {store.status === 'ACTIVE' && (
-        <span className="flex w-fit items-center justify-center gap-1.5 rounded-full bg-[#10B981]  px-2.5 py-1 text-[10px] text-white shadow ">
-          <Star strokeWidth={0} size={14} fill="white" />
-          Active Partner
-        </span>
-      )}
-
-      {store.status === 'PENDING_APPROVAL' && (
-        <span className="flex w-fit items-center gap-2 rounded-full  bg-primary-text-100 px-2.5 py-1 text-[10px] text-primary justify-center">
-          Pending Approval
-        </span>
-      )}
-
-     
-
-      {store.status === 'REJECTED' && (
-        <span className="flex w-fit items-center gap-2 rounded-full border border-red-500 bg-red-500/10 px-2 py-1 text-xs text-red-600">
-          Requires Attention
-        </span>
-      )}
     </div>
   );
 }

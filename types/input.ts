@@ -44,6 +44,33 @@ export type OtpInputProps = {
   className?: string;
 };
 
+export interface SelectOption {
+  label: string;
+  value: string;
+}
+
+export interface SelectProps {
+  id: string;
+  name?: string;
+  label?: string;
+  ariaLabel?: string;
+  options?: SelectOption[];
+  value?: string;
+  placeholder?: string;
+  onChange: (value: string) => void;
+
+  variant?: 'default' | 'fill';
+  spacing?: 'none' | 'sm' | 'md' | 'lg';
+
+  errorMessage?: string;
+  inputInfo?: string;
+
+  className?: string;
+  leftIcon?: React.ReactNode;
+  rightIcon?: React.ReactNode | ((open: boolean) => React.ReactNode);
+  disabled?: boolean;
+}
+
 export type FileInputProps = {
   title: string;
   description: string;

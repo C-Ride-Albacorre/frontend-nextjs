@@ -3,7 +3,7 @@
 import { BASE_URL } from '@/config/api';
 import { ApiError } from '@/features/libs/api-error';
 import { authFetch } from '@/features/libs/auth-fetch';
-import { Product, ProductApiResponse } from '../type';
+import { Product, ProductApiResponse } from './type';
 
 /**
  * Create a new product

@@ -3,35 +3,28 @@
 import { revalidatePath } from 'next/cache';
 import {
   createProductService,
-  deleteProductService,
-  getProductService,
-  getProductsService,
   updateProductService,
-} from './service/product';
+  deleteProductService,
+  getProductsService,
+  getProductService,
+} from './service';
 import { Product, ProductFormState } from './type';
-import { ProductSchema, UpdateProductSchema } from './schema';
+import {
+  SingleProductSchema,
+  VariableProductSchema,
+  UpdateProductSchema,
+} from './schema';
 
-/**
- * Get all products for a store
- */
 export async function getProductsAction(storeId: string): Promise<Product[]> {
   try {
     const response = await getProductsService(storeId);
     const data = response?.data;
-
-    if (Array.isArray(data)) {
-      return data;
-    }
-
-    return [];
+    return Array.isArray(data) ? data : [];
   } catch {
     return [];
   }
 }
 
-/**
- * Get a single product
- */
 export async function getProductAction(
   storeId: string,
   productId: string,
@@ -43,21 +36,20 @@ export async function getProductAction(
   }
 }
 
-/**
- * Create a new product
- */
 export async function createProductAction(
   storeId: string,
   _prevState: ProductFormState,
   formData: FormData,
 ): Promise<ProductFormState> {
-  // Extract fields from FormData
+  const productType = formData.get('productType') as string;
+  const isVariable = productType === 'VARIABLE';
+
   const rawData = {
     productName: formData.get('productName') as string,
     productCategory: formData.get('productCategory') as string,
     sku: formData.get('sku') as string,
     description: formData.get('description') as string,
-    productType: formData.get('productType') as string,
+    productType,
     stockStatus: formData.get('stockStatus') as string,
     productStatus: formData.get('productStatus') as string,
     basePrice: formData.get('basePrice') as string,
@@ -65,16 +57,15 @@ export async function createProductAction(
     lowStockThreshold: formData.get('lowStockThreshold') as string,
   };
 
-  // Validate with Zod
-  const result = ProductSchema.safeParse(rawData);
+  // ✅ use correct schema based on product type
+  const schema = isVariable ? VariableProductSchema : SingleProductSchema;
+  const result = schema.safeParse(rawData);
 
   if (!result.success) {
     const errors: Record<string, string[]> = {};
     for (const issue of result.error.issues) {
       const key = issue.path[0] as string;
-      if (!errors[key]) {
-        errors[key] = [];
-      }
+      if (!errors[key]) errors[key] = [];
       errors[key].push(issue.message);
     }
     return {
@@ -84,32 +75,14 @@ export async function createProductAction(
     };
   }
 
-  // Build FormData for API (keep all fields)
   const apiFormData = new FormData();
-  apiFormData.append('productName', result.data.productName);
-  apiFormData.append('productCategory', result.data.productCategory);
-  apiFormData.append('sku', result.data.sku);
-  apiFormData.append('productType', result.data.productType);
-  apiFormData.append('stockStatus', result.data.stockStatus);
-  apiFormData.append('productStatus', result.data.productStatus);
+  Object.entries(result.data).forEach(([key, value]) => {
+    if (value !== undefined && value !== null) {
+      apiFormData.append(key, String(value));
+    }
+  });
 
-  if (result.data.description) {
-    apiFormData.append('description', result.data.description);
-  }
-  if (result.data.basePrice !== undefined) {
-    apiFormData.append('basePrice', String(result.data.basePrice));
-  }
-  if (result.data.stockQuantity !== undefined) {
-    apiFormData.append('stockQuantity', String(result.data.stockQuantity));
-  }
-  if (result.data.lowStockThreshold !== undefined) {
-    apiFormData.append(
-      'lowStockThreshold',
-      String(result.data.lowStockThreshold),
-    );
-  }
-
-  // Handle images - support multiple files
+  // images
   const images = formData.getAll('images');
   for (const image of images) {
     if (image instanceof File && image.size > 0) {
@@ -117,25 +90,20 @@ export async function createProductAction(
     }
   }
 
-  // Handle variants and addons (JSON arrays)
-  const variants = formData.get('variants');
-  if (variants) {
-    apiFormData.append('variants', variants as string);
-  }
-
-  const addons = formData.get('addons');
-  if (addons) {
-    apiFormData.append('addons', addons as string);
+  // variants and addons for variable
+  if (isVariable) {
+    const variants = formData.get('variants');
+    const addons = formData.get('addons');
+    if (variants) apiFormData.append('variants', variants as string);
+    if (addons) apiFormData.append('addons', addons as string);
   }
 
   try {
     const response = await createProductService(storeId, apiFormData);
     revalidatePath('/vendor/products');
-
     const product = Array.isArray(response.data)
       ? response.data[0]
       : response.data;
-
     return {
       status: 'success',
       message: 'Product created successfully',
@@ -150,16 +118,12 @@ export async function createProductAction(
   }
 }
 
-/**
- * Update a product
- */
 export async function updateProductAction(
   storeId: string,
   productId: string,
   _prevState: ProductFormState,
   formData: FormData,
 ): Promise<ProductFormState> {
-  // Extract fields from FormData
   const rawData = {
     productName: formData.get('productName') as string,
     productCategory: formData.get('productCategory') as string,
@@ -171,16 +135,13 @@ export async function updateProductAction(
     lowStockThreshold: formData.get('lowStockThreshold') as string,
   };
 
-  // Validate with Zod (using update schema - all optional)
   const result = UpdateProductSchema.safeParse(rawData);
 
   if (!result.success) {
     const errors: Record<string, string[]> = {};
     for (const issue of result.error.issues) {
       const key = issue.path[0] as string;
-      if (!errors[key]) {
-        errors[key] = [];
-      }
+      if (!errors[key]) errors[key] = [];
       errors[key].push(issue.message);
     }
     return {
@@ -190,44 +151,16 @@ export async function updateProductAction(
     };
   }
 
-  // Build FormData for API
   const apiFormData = new FormData();
-
-  if (result.data.productName) {
-    apiFormData.append('productName', result.data.productName);
-  }
-  if (result.data.productCategory) {
-    apiFormData.append('productCategory', result.data.productCategory);
-  }
-  if (result.data.description) {
-    apiFormData.append('description', result.data.description);
-  }
-  if (result.data.stockStatus) {
-    apiFormData.append('stockStatus', result.data.stockStatus);
-  }
-  if (result.data.productStatus) {
-    apiFormData.append('productStatus', result.data.productStatus);
-  }
-  if (result.data.basePrice !== undefined) {
-    apiFormData.append('basePrice', String(result.data.basePrice));
-  }
-  if (result.data.stockQuantity !== undefined) {
-    apiFormData.append('stockQuantity', String(result.data.stockQuantity));
-  }
-  if (result.data.lowStockThreshold !== undefined) {
-    apiFormData.append(
-      'lowStockThreshold',
-      String(result.data.lowStockThreshold),
-    );
-  }
-
-  // Note: Images are NOT sent during update - the API doesn't support image updates via this endpoint
-  // If image update is needed, a separate endpoint might be required
+  Object.entries(result.data).forEach(([key, value]) => {
+    if (value !== undefined && value !== null) {
+      apiFormData.append(key, String(value));
+    }
+  });
 
   try {
     await updateProductService(storeId, productId, apiFormData);
     revalidatePath('/vendor/products');
-
     return {
       status: 'success',
       message: 'Product updated successfully',
@@ -242,9 +175,6 @@ export async function updateProductAction(
   }
 }
 
-/**
- * Delete a product
- */
 export async function deleteProductAction(
   storeId: string,
   productId: string,
@@ -252,11 +182,7 @@ export async function deleteProductAction(
   try {
     await deleteProductService(storeId, productId);
     revalidatePath('/vendor/products');
-
-    return {
-      success: true,
-      message: 'Product deleted successfully',
-    };
+    return { success: true, message: 'Product deleted successfully' };
   } catch (error) {
     return {
       success: false,

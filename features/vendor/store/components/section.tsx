@@ -1,9 +1,23 @@
 import Card from '@/components/layout/card';
 import Input from '@/components/ui/inputs/input';
+import { Select } from '@/components/ui/inputs/select';
 import Textarea from '@/components/ui/inputs/textarea';
 import TimePicker from '@/components/ui/inputs/time-picker';
 import { Button } from '@/components/ui/buttons/button';
 import { Copy } from 'lucide-react';
+
+const STORE_CATEGORIES = [
+  { label: 'Restaurant', value: 'Restaurant' },
+  { label: 'Fast Food', value: 'Fast Food' },
+  { label: 'Café', value: 'Cafe' },
+  { label: 'Bakery', value: 'Bakery' },
+  { label: 'Grocery', value: 'Grocery' },
+  { label: 'Supermarket', value: 'Supermarket' },
+  { label: 'Pharmacy', value: 'Pharmacy' },
+  { label: 'Electronics', value: 'Electronics' },
+  { label: 'Fashion', value: 'Fashion' },
+  { label: 'Other', value: 'Other' },
+];
 
 export interface StoreFormValues {
   storeName: string;
@@ -13,7 +27,6 @@ export interface StoreFormValues {
   email: string;
   storeDescription: string;
   minimumOrder: string;
-  deliveryFee: string;
   preparationTime: string;
   operatingHours: Record<string, { open: string; close: string }>;
 }
@@ -49,13 +62,15 @@ export function StoreInformation({
             disabled={disabled}
           />
 
-          <Input
+          <Select
+            id="storeCategory"
             name="storeCategory"
             label="Store Category"
-            placeholder="Select type"
+            placeholder="Select category"
             spacing="sm"
+            options={STORE_CATEGORIES}
             value={values.storeCategory}
-            onChange={(e) => onChange('storeCategory', e.target.value)}
+            onChange={(value) => onChange('storeCategory', value)}
             errorMessage={errors?.storeCategory?.[0]}
             disabled={disabled}
           />
@@ -237,7 +252,7 @@ export function StoreDetails({
         <p className="text-neutral-900 font-medium">
           Store Description & Details
         </p>
-        <div className="grid md:grid-cols-3 gap-4">
+        <div className="grid md:grid-cols-2 gap-4">
           <Textarea
             id="storeDescription"
             name="storeDescription"
@@ -257,17 +272,6 @@ export function StoreDetails({
             value={values.minimumOrder}
             onChange={(e) => onChange('minimumOrder', e.target.value)}
             errorMessage={errors?.minimumOrder?.[0]}
-            disabled={disabled}
-          />
-
-          <Input
-            name="deliveryFee"
-            label="Delivery Fee"
-            type="number"
-            placeholder="2000"
-            value={values.deliveryFee}
-            onChange={(e) => onChange('deliveryFee', e.target.value)}
-            errorMessage={errors?.deliveryFee?.[0]}
             disabled={disabled}
           />
 

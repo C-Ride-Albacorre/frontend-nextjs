@@ -12,6 +12,7 @@ import {
   DollarSign,
   Truck,
   Timer,
+  ShoppingBag,
 } from 'lucide-react';
 import Image from 'next/image';
 import { ViewStoreModalProps } from '../types';
@@ -167,12 +168,10 @@ export default function ViewStoreModal({
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Card gap="md" border="none" className=" bg-neutral-50">
             <div className="flex items-center gap-2 mb-1">
-              <DollarSign size={16} className="text-neutral-500" />
+              <ShoppingBag size={16} className="text-neutral-500" />
               <p className="text-xs text-neutral-500">Min. Order</p>
             </div>
-            <p className="font-medium text-primary text-lg">
-              {formatCurrency(minimumOrder)}
-            </p>
+            <p className="font-medium text-primary ">{minimumOrder}</p>
           </Card>
 
           <Card gap="md" border="none" className=" bg-neutral-50">
@@ -180,7 +179,7 @@ export default function ViewStoreModal({
               <Truck size={16} className="text-neutral-500" />
               <p className="text-xs text-neutral-500">Delivery Fee</p>
             </div>
-            <p className="font-medium text-primary text-lg">
+            <p className="font-medium text-primary ">
               {formatCurrency(deliveryFee)}
             </p>
           </Card>
@@ -190,7 +189,7 @@ export default function ViewStoreModal({
               <Timer size={16} className="text-neutral-500" />
               <p className="text-xs text-neutral-500">Prep. Time</p>
             </div>
-            <p className="font-medium text-neutral-900 text-lg">
+            <p className="font-medium text-neutral-900">
               {preparationTime ? `${preparationTime} min` : 'N/A'}
             </p>
           </Card>

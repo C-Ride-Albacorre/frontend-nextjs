@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { Upload, X, AlertCircle } from 'lucide-react';
 import Card from '@/components/layout/card';
@@ -10,15 +10,35 @@ const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 interface StoreImageUploadProps {
   initialLogo?: string | null;
   disabled?: boolean;
+  resetKey?: number;
 }
 
 export default function StoreImageUpload({
   initialLogo,
   disabled,
+  resetKey,
 }: StoreImageUploadProps) {
   const [preview, setPreview] = useState<string | null>(initialLogo || null);
   const [error, setError] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // Sync preview when initialLogo prop changes (e.g. when editing a store)
+  useEffect(() => {
+    if (initialLogo) {
+      setPreview(initialLogo);
+    }
+  }, [initialLogo]);
+
+  // Reset preview and file input when resetKey changes (after successful creation)
+  useEffect(() => {
+    if (resetKey !== undefined && resetKey > 0) {
+      setPreview(null);
+      setError(null);
+      if (inputRef.current) {
+        inputRef.current.value = '';
+      }
+    }
+  }, [resetKey]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

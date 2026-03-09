@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const ProductSchema = z.object({
+const ProductDetailsSchema = z.object({
   productName: z
     .string()
     .trim()
@@ -11,52 +11,63 @@ export const ProductSchema = z.object({
     .min(1, { message: 'Category is required.' }),
   sku: z.string().trim().min(1, { message: 'SKU is required.' }),
   description: z.string().trim().optional(),
-  productType: z.enum(['SINGLE', 'VARIABLE'], {
-    message: 'Product type is required.',
-  }),
+  productType: z.enum(['SINGLE', 'VARIABLE']),
+  basePrice: z.coerce.number().min(0, { message: 'Price must be positive.' }),
+  stockQuantity: z.coerce.number().int().min(0).optional(),
+  lowStockThreshold: z.coerce.number().int().min(0).optional(),
   stockStatus: z.enum(['IN_STOCK', 'LOW_STOCK', 'OUT_OF_STOCK'], {
     message: 'Stock status is required.',
   }),
   productStatus: z.enum(['ACTIVE', 'INACTIVE', 'DRAFT'], {
     message: 'Product status is required.',
   }),
-  basePrice: z.coerce
-    .number()
-    .min(0, { message: 'Price must be positive' })
-    .optional(),
-  stockQuantity: z.coerce.number().int().min(0).optional(),
-  lowStockThreshold: z.coerce.number().int().min(0).optional(),
 });
 
-export const UpdateProductSchema = z.object({
-  productName: z
-    .string()
-    .trim()
-    .min(2, { message: 'Product name is required.' })
-    .optional(),
-  productCategory: z
-    .string()
-    .trim()
-    .min(1, { message: 'Category is required.' })
-    .optional(),
-  description: z.string().trim().optional(),
-  stockStatus: z.enum(['IN_STOCK', 'LOW_STOCK', 'OUT_OF_STOCK']).optional(),
-  productStatus: z.enum(['ACTIVE', 'INACTIVE', 'DRAFT']).optional(),
-  basePrice: z.coerce.number().min(0).optional(),
-  stockQuantity: z.coerce.number().int().min(0).optional(),
-  lowStockThreshold: z.coerce.number().int().min(0).optional(),
+export const SingleProductSchema = ProductDetailsSchema;
+export const VariableProductSchema = ProductDetailsSchema;
+export const VariableDetailsSchema = ProductDetailsSchema;
+
+export const VariantsSchema = z.object({
+  variants: z
+    .array(
+      z.object({
+        name: z.string().min(1),
+        options: z.array(z.string()),
+        priceModifier: z.number(),
+      }),
+    )
+    .min(1, { message: 'Add at least one variant.' }),
 });
 
-export type ProductFormErrors = {
-  productName?: string[];
-  productCategory?: string[];
-  sku?: string[];
-  description?: string[];
-  productType?: string[];
-  stockStatus?: string[];
-  productStatus?: string[];
-  basePrice?: string[];
-  stockQuantity?: string[];
-  lowStockThreshold?: string[];
-  images?: string[];
-};
+export const AddonsSchema = z.object({
+  addons: z.array(
+    z.object({
+      name: z.string().min(1),
+      price: z.number().min(0),
+      available: z.boolean(),
+    }),
+  ),
+});
+
+export const UpdateProductSchema = ProductDetailsSchema.omit({
+  sku: true,
+  productType: true,
+}).partial();
+
+export type ProductFormErrors = Partial<
+  Record<
+    | 'productName'
+    | 'productCategory'
+    | 'sku'
+    | 'description'
+    | 'productType'
+    | 'stockStatus'
+    | 'productStatus'
+    | 'basePrice'
+    | 'stockQuantity'
+    | 'lowStockThreshold'
+    | 'images'
+    | 'variants',
+    string[]
+  >
+>;

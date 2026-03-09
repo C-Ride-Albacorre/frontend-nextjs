@@ -3,35 +3,11 @@
 import clsx from 'clsx';
 import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
-
-export interface SelectOption {
-  label: string;
-  value: string;
-}
-
-export interface SelectProps {
-  id: string;
-  label?: string;
-  ariaLabel?: string;
-
-  options?: SelectOption[];
-  value?: string;
-  placeholder?: string;
-  onChange: (value: string) => void;
-
-  variant?: 'default' | 'fill';
-  spacing?: 'none' | 'sm' | 'md' | 'lg';
-
-  errorMessage?: string;
-  inputInfo?: string;
-
-  className?: string;
-  leftIcon?: React.ReactNode;
-  rightIcon?: React.ReactNode | ((open: boolean) => React.ReactNode);
-}
+import { SelectProps } from '@/types/input';
 
 export function Select({
   id,
+  name,
   label,
   ariaLabel,
   options,
@@ -45,6 +21,7 @@ export function Select({
   className,
   leftIcon,
   rightIcon,
+  disabled,
 }: SelectProps) {
   const [open, setOpen] = useState(false);
 
@@ -55,6 +32,7 @@ export function Select({
       'bg-white': variant === 'default',
       'bg-foreground-100': variant === 'fill',
       'border-red-500 focus-within:ring-red-500': errorMessage,
+      'opacity-60 cursor-not-allowed bg-gray-50': disabled,
 
       // spacing
       'mt-0': spacing === 'none',
@@ -79,12 +57,14 @@ export function Select({
         </label>
       )}
 
+      {name && <input type="hidden" name={name} value={value ?? ''} />}
+
       <div
         id={id}
         role="button"
         aria-label={ariaLabel}
         aria-expanded={open}
-        onClick={() => setOpen((prev) => !prev)}
+        onClick={() => !disabled && setOpen((prev) => !prev)}
         className={wrapperClasses}
       >
         {leftIcon}
