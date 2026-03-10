@@ -12,6 +12,7 @@ type FileDropzoneProps = {
   onChange: (file: File | null) => void;
   className?: string;
   existingImageUrl?: string | null;
+  errorMessage?: string;
 };
 
 export default function FileDropzone({
@@ -22,6 +23,7 @@ export default function FileDropzone({
   onChange,
   className,
   existingImageUrl,
+  errorMessage,
 }: FileDropzoneProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -58,6 +60,7 @@ export default function FileDropzone({
         className={clsx(
           'relative flex h-36 w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-border border transition',
           isDragging ? 'border-primary bg-primary/5' : 'border-border mt-2',
+          errorMessage ? 'border-red-500 focus-within:ring-red-500' : '',
         )}
       >
         {value ? (
@@ -113,6 +116,10 @@ export default function FileDropzone({
           }}
         />
       </div>
+
+      {errorMessage && (
+        <p className="text-xs text-red-500 mt-1">{errorMessage}</p>
+      )}
     </div>
   );
 }

@@ -21,7 +21,7 @@ export type InputProps = {
 export type TextareaProps = {
   id: string;
   name?: string;
-  label: string;
+  label?: string;
   placeholder?: string;
   value?: string;
   rows?: number;

@@ -1,13 +1,17 @@
 import Card from '@/components/layout/card';
 import Input from '@/components/ui/inputs/input';
+import { Select } from '@/components/ui/inputs/select';
 import { Button } from '@/components/ui/buttons/button';
-import { CircleMinus, Plus } from 'lucide-react';
+import { CircleMinus, CirclePlus, Plus } from 'lucide-react';
 import { useState } from 'react';
 
 export interface Variant {
-  name: string;
-  options: string[];
-  priceModifier: number;
+  variantName: string;
+  price: number;
+  sku: string;
+  stockQuantity: number;
+  stockStatus: 'IN_STOCK' | 'LOW_STOCK' | 'OUT_OF_STOCK';
+  attributes?: Record<string, string>;
 }
 
 interface VariantsFormProps {
@@ -20,20 +24,32 @@ export default function VariantsForm({
   setVariants,
 }: VariantsFormProps) {
   const [variantName, setVariantName] = useState('');
-  const [variantPrice, setVariantPrice] = useState('');
+  const [price, setPrice] = useState('');
+  const [sku, setSku] = useState('');
+  const [stockQuantity, setStockQuantity] = useState('');
+  const [stockStatus, setStockStatus] = useState<
+    'IN_STOCK' | 'LOW_STOCK' | 'OUT_OF_STOCK'
+  >('IN_STOCK');
 
   const handleAddVariant = () => {
-    if (!variantName.trim()) return;
+    if (!variantName || !price || !sku) return;
 
     const newVariant: Variant = {
-      name: variantName.trim(),
-      options: [variantName.trim()],
-      priceModifier: variantPrice ? Number(variantPrice) : 0,
+      variantName,
+      price: Number(price),
+      sku,
+      stockQuantity: Number(stockQuantity) || 0,
+      stockStatus,
+      attributes: {},
     };
 
     setVariants([...variants, newVariant]);
+
     setVariantName('');
-    setVariantPrice('');
+    setPrice('');
+    setSku('');
+    setStockQuantity('');
+    setStockStatus('IN_STOCK');
   };
 
   const handleRemoveVariant = (index: number) => {
@@ -42,84 +58,99 @@ export default function VariantsForm({
 
   return (
     <div className="space-y-6">
-      <Card className="bg-primary/10 border border-primary text-sm space-y-1">
+      <Card
+        gap="sm"
+        spacing="sm"
+        className="bg-primary/10  border-primary text-sm"
+      >
         <p className="font-medium">Configure Product Variants</p>
-        <p className="text-neutral-500">
-          Add different sizes or variations of this product (e.g., Small,
-          Medium, Large)
+        <p className="text-neutral-500 text-xs">
+          Add different variations of this product (e.g., Small, Medium, Large)
         </p>
       </Card>
 
-      <div className="space-y-4">
-        <p className="text-sm font-medium">Add Variant</p>
+      <div className="grid md:grid-cols-2 gap-4">
+        <Input
+          placeholder="Variant name"
+          value={variantName}
+          onChange={(e) => setVariantName(e.target.value)}
+        />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Input
-            id="variantName"
-            name="variantName"
-            placeholder="Variant name (e.g., Small)"
-            value={variantName}
-            onChange={(e) => setVariantName(e.target.value)}
-          />
-          <Input
-            id="variantPrice"
-            name="variantPrice"
-            type="number"
-            placeholder="Additional price (e.g., 500)"
-            value={variantPrice}
-            onChange={(e) => setVariantPrice(e.target.value)}
-          />
-        </div>
+        <Input
+          placeholder="Price"
+          type="number"
+          value={price}
+          onChange={(e) => setPrice(e.target.value)}
+        />
 
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          onClick={handleAddVariant}
-          leftIcon={<Plus size={14} />}
-          disabled={!variantName.trim()}
-        >
-          Add Variant
-        </Button>
+        <Input
+          placeholder="SKU"
+          value={sku}
+          onChange={(e) => setSku(e.target.value)}
+        />
+
+        <Input
+          placeholder="Stock Quantity"
+          type="number"
+          value={stockQuantity}
+          onChange={(e) => setStockQuantity(e.target.value)}
+        />
+
+        <Select
+          id="stockStatus"
+          label="Stock Status"
+          value={stockStatus}
+          onChange={(v) => setStockStatus(v as any)}
+          options={[
+            { label: 'In Stock', value: 'IN_STOCK' },
+            { label: 'Low Stock', value: 'LOW_STOCK' },
+            { label: 'Out of Stock', value: 'OUT_OF_STOCK' },
+          ]}
+        />
       </div>
+
+      <Button
+        type="button"
+        variant="green-secondary-outline"
+        size="icon"
+        onClick={handleAddVariant}
+        leftIcon={<CirclePlus size={14} />}
+        className="w-full"
+      >
+        Add Variant
+      </Button>
 
       {variants.length > 0 && (
         <div className="space-y-3">
-          <p className="text-sm font-medium">
-            Added Variants ({variants.length})
-          </p>
-
           {variants.map((variant, index) => (
             <Card
               key={index}
-              border="default"
-              className="bg-primary/5 text-sm flex items-center justify-between"
+              gap="sm"
+              spacing="sm"
+              className="flex items-center justify-between text-sm bg-primary/10  border-primary"
             >
-              <div className="space-y-1">
-                <p className="font-medium">{variant.name}</p>
-                <p className="text-primary">
-                  {variant.priceModifier > 0
-                    ? `+₦${variant.priceModifier.toLocaleString()}`
-                    : 'No additional cost'}
-                </p>
+              <div className="mb-0 space-y-2">
+                <p className="font-medium">{variant.variantName}</p>
+
+                <div className="flex gap-4">
+                  <p className="text-neutral-500">
+                    <span className="text-xs">SKU:</span> {variant.sku}
+                  </p>
+
+                  <p className="text-primary">
+                    {' '}
+                    <span className="text-xs text-neutral-500">Price: </span>₦
+                    {variant.price}
+                  </p>
+                </div>
               </div>
 
-              <button
-                type="button"
-                onClick={() => handleRemoveVariant(index)}
-                className="cursor-pointer"
-              >
+              <button type="button" onClick={() => handleRemoveVariant(index)}>
                 <CircleMinus size={18} className="text-red-500" />
               </button>
             </Card>
           ))}
         </div>
-      )}
-
-      {variants.length === 0 && (
-        <p className="text-sm text-neutral-400 text-center py-4">
-          No variants added yet. Add at least one variant above.
-        </p>
       )}
     </div>
   );

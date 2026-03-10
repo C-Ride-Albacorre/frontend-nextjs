@@ -1,6 +1,6 @@
 'use client';
 
-import { useActionState, useEffect, useState } from 'react';
+import { useEffect, useTransition, useState } from 'react';
 import { createProductAction, updateProductAction } from '../action';
 import { Product, ProductFormState } from '../type';
 import { VariableDetailsSchema, VariantsSchema } from '../schema';
@@ -10,6 +10,7 @@ import AddProductStep from './add-product-step';
 import VariableDetailsFields from './form/variable-product';
 import VariantsForm, { type Variant } from './form/variants';
 import AddOnsForm, { type Addon } from './form/add-ons';
+import { toast } from 'sonner';
 
 interface SelectOption {
   label: string;
@@ -79,24 +80,34 @@ export default function VariableProductForm({
   handleClose,
   onSuccess,
 }: VariableProductFormProps) {
-  // ✅ variable-only state stays here — NOT in the shell
   const [variants, setVariants] = useState<Variant[]>(
     editProduct?.variants?.map((v) => ({
-      name: v.name,
-      options: v.options,
-      priceModifier: v.priceModifier ?? 0,
+      variantName: v.variantName ?? '',
+      price: v.price ?? 0,
+      sku: v.sku ?? '',
+      stockQuantity: v.stockQuantity ?? 0,
+      stockStatus: (v.stockStatus as Variant['stockStatus']) ?? 'IN_STOCK',
+      attributes: v.attributes ?? {},
     })) ?? [],
   );
+
   const [addons, setAddons] = useState<Addon[]>(
     editProduct?.addons?.map((a) => ({
-      name: a.name,
-      price: a.price,
-      available: a.available,
+      addonName: a.addonName ?? '',
+      price: a.price ?? 0,
+      description: a.description ?? undefined,
+      maxQuantity: a.maxQuantity ?? undefined,
+      category: a.category ?? undefined,
     })) ?? [],
   );
 
   const [activeStep, setActiveStep] = useState(0);
   const [stepErrors, setStepErrors] = useState<Record<string, string[]>>({});
+  const [isPending, startTransition] = useTransition();
+  const [state, setState] = useState<ProductFormState>(
+    undefined as ProductFormState,
+  );
+
   const isLastStep = activeStep === 2;
 
   function validateStep(step: number): boolean {
@@ -115,13 +126,14 @@ export default function VariableProductForm({
         productStatus,
         productType: 'VARIABLE',
       });
+
       if (!result.success) {
         const errs: Record<string, string[]> = {};
-        for (const issue of result.error.issues) {
+        result.error.issues.forEach((issue) => {
           const key = issue.path[0] as string;
           if (!errs[key]) errs[key] = [];
           errs[key].push(issue.message);
-        }
+        });
         setStepErrors(errs);
         return false;
       }
@@ -129,55 +141,113 @@ export default function VariableProductForm({
 
     if (step === 1) {
       const result = VariantsSchema.safeParse({ variants });
+
       if (!result.success) {
-        setStepErrors({
-          variants: ['Add at least one variant before continuing.'],
+        const errs: Record<string, string[]> = {};
+        result.error.issues.forEach((issue) => {
+          const key = issue.path[0] as string;
+          if (!errs[key]) errs[key] = [];
+          errs[key].push(issue.message);
         });
+        setStepErrors(errs);
         return false;
       }
     }
 
-    return true; // step 2 addons always valid
+    return true;
   }
 
-  const variableProductAction = async (
-    prevState: ProductFormState,
-    formData: FormData,
-  ): Promise<ProductFormState> => {
-    formData.append('productCategory', productCategory);
-    formData.append('productType', 'VARIABLE');
-    formData.append('stockStatus', stockStatus);
-    formData.append('productStatus', productStatus);
-    if (image) formData.append('images', image);
-    if (variants.length > 0)
-      formData.append('variants', JSON.stringify(variants));
-    if (addons.length > 0) formData.append('addons', JSON.stringify(addons));
-
-    if (isEditing && editProduct) {
-      return updateProductAction(storeId, editProduct.id, prevState, formData);
+  const handleSubmit = async () => {
+    if (addons.length === 0) {
+      toast.error('Please add at least one add-on before submitting');
+      return;
     }
-    return createProductAction(storeId, prevState, formData);
+
+    const fd = new FormData();
+
+    fd.append('productName', productName);
+    fd.append('productCategory', productCategory);
+    fd.append('sku', sku);
+    fd.append('description', description);
+    fd.append('productType', 'VARIABLE');
+    fd.append('basePrice', basePrice);
+    fd.append('stockQuantity', stockQuantity);
+    fd.append('lowStockThreshold', lowStockThreshold);
+    fd.append('stockStatus', stockStatus);
+    fd.append('productStatus', productStatus);
+
+    if (image) fd.append('images', image);
+
+    variants.forEach((variant, index) => {
+      fd.append(`variants[${index}].variantName`, variant.variantName);
+      fd.append(`variants[${index}].price`, String(variant.price));
+      fd.append(`variants[${index}].sku`, variant.sku);
+      fd.append(
+        `variants[${index}].stockQuantity`,
+        String(variant.stockQuantity),
+      );
+      fd.append(`variants[${index}].stockStatus`, variant.stockStatus);
+    });
+
+    addons.forEach((addon, index) => {
+      fd.append(`addons[${index}].addonName`, addon.addonName);
+      fd.append(`addons[${index}].price`, String(addon.price));
+      if (addon.description)
+        fd.append(`addons[${index}].description`, addon.description);
+      if (addon.maxQuantity !== undefined)
+        fd.append(`addons[${index}].maxQuantity`, String(addon.maxQuantity));
+      if (addon.category)
+        fd.append(`addons[${index}].category`, addon.category);
+    });
+
+    // ✅ Log the full form as a plain object
+    const formObject: Record<string, unknown> = {
+      productName,
+      productCategory,
+      sku,
+      description,
+      productType: 'VARIABLE',
+      basePrice,
+      stockQuantity,
+      lowStockThreshold,
+      stockStatus,
+      productStatus,
+      variants,
+      addons,
+    };
+    console.log('📦 FULL FORM SUBMITTED:', JSON.stringify(formObject, null, 2));
+
+    startTransition(async () => {
+      const result =
+        isEditing && editProduct
+          ? await updateProductAction(storeId, editProduct.id, state, fd)
+          : await createProductAction(storeId, state, fd);
+      setState(result);
+    });
   };
 
-  const [state, formAction, isPending] = useActionState(
-    variableProductAction,
-    undefined as ProductFormState,
-  );
-
   useEffect(() => {
-    if (state?.status === 'success') onSuccess();
+    if (!state) return;
+
+    if (state.status === 'success') {
+      toast.success(state.message || 'Product created successfully');
+      onSuccess();
+    }
+
+    if (state.status === 'error') {
+      toast.error(state.message || 'Something went wrong');
+    }
   }, [state]);
 
   const serverErrors = state?.status === 'error' ? (state.errors ?? {}) : {};
   const errorMessage =
     state?.status === 'error' ? (state.message ?? null) : null;
 
-  // step 0 merges server errors + local step errors; later steps show only step errors
   const activeErrors =
     activeStep === 0 ? { ...serverErrors, ...stepErrors } : stepErrors;
 
   return (
-    <form action={formAction} className="space-y-6">
+    <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
       {errorMessage && <ErrorMessage message={errorMessage} />}
 
       <AddProductStep currentStep={activeStep} />
@@ -258,22 +328,18 @@ export default function VariableProductForm({
           <Button
             size="lg"
             variant="primary"
-            type="submit"
+            type="button"
             disabled={isPending}
+            onClick={handleSubmit}
           >
-            {isPending
-              ? isEditing
-                ? 'Updating...'
-                : 'Creating...'
-              : isEditing
-                ? 'Update Product'
-                : 'Add Product'}
+            {isPending ? 'Creating...' : 'Add Product'}
           </Button>
         ) : (
           <Button
             size="lg"
             variant="primary"
             type="button"
+            disabled={activeStep === 1 && variants.length === 0}
             onClick={() => {
               if (validateStep(activeStep)) setActiveStep((p) => p + 1);
             }}

@@ -79,6 +79,9 @@ export function Button({
       'border border-[#10B981] text-[#10B981] hover:bg-[#10B981] hover:text-white':
         variant === 'green-outline',
 
+      'border border-[#10B981] bg-[#10B981]/10 hover:bg-[#10B981]/15':
+        variant === 'green-secondary-outline',
+
       'bg-primary-text-100  text-primary hover:bg-primary hover:text-primary-text-100':
         variant === 'black',
 

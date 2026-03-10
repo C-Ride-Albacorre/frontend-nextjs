@@ -197,8 +197,8 @@ export default function PhoneInput({
           value={value}
           onChange={onChange}
           className={`min-w-0 w-full rounded-r-xl border px-4 py-3 text-base md:text-sm outline-none placeholder:text-sm
-            focus:ring-2 focus:ring-primary
-            ${errorMessage ? 'border-red-500' : 'border-border'}
+            focus:ring 
+            ${errorMessage ? 'border-red-500 focus-within:ring-red-500' : 'border-border focus:ring-primary'}
           `}
         />
       </div>

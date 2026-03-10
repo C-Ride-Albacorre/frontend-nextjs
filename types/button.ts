@@ -15,6 +15,7 @@ type ButtonVariant =
   | 'gray'
   | 'green'
   | 'green-outline'
+  | 'green-secondary-outline'
   | 'black'
   | 'red'
   | 'red-outline'

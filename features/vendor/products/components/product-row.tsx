@@ -17,6 +17,12 @@ export default function ProductRow({
     productStatus,
     stockStatus,
     productImages,
+    sku,
+    productType,
+    stockQuantity,
+    lowStockThreshold,
+    createdAt,
+    updatedAt,
   } = product;
 
   // Get primary image or first image
@@ -39,7 +45,7 @@ export default function ProductRow({
   return (
     <Card className="md:flex items-center justify-between gap-4 bg-white space-y-6 md:space-y-0">
       {/* LEFT */}
-      <div className="md:flex space-y-6 md:space-y-0 items-center gap-4 flex-1 mb-0">
+      <div className="md:flex space-y-6 md:space-y-0 items-center gap-6 flex-1 mb-0">
         <div className="relative w-full md:w-16 xl:w-24 h-40 md:h-16 xl:h-24 ">
           {imageUrl ? (
             <Image
@@ -57,39 +63,69 @@ export default function ProductRow({
           )}
         </div>
 
-        <div className="space-y-2">
-          <div className="flex items-center gap-2">
-            <p className="font-medium text-primary-text-100">{productName}</p>
+        <div className="space-y-3">
+          <div className="flex items-center  gap-4">
+            <p className="font-medium text-primary-text-100 text-sm">
+              {productName}
+            </p>
 
-            <span
-              className={clsx('rounded-full px-2 py-1 text-xs capitalize', {
-                'bg-emerald-500/10 text-emerald-600':
-                  productStatus === 'ACTIVE',
-                'bg-neutral-100 text-neutral-600': productStatus === 'INACTIVE',
-                'bg-amber-500/10 text-amber-600': productStatus === 'DRAFT',
-              })}
-            >
-              {statusDisplay}
-            </span>
+            <div className="space-x-2">
+              <span
+                className={clsx(
+                  'rounded-full px-2 py-0.5 text-[10px] capitalize',
+                  {
+                    'bg-emerald-500/10 text-emerald-600':
+                      productStatus === 'ACTIVE',
+                    'bg-neutral-100 text-neutral-600':
+                      productStatus === 'INACTIVE',
+                    'bg-amber-500/10 text-amber-600': productStatus === 'DRAFT',
+                  },
+                )}
+              >
+                {statusDisplay}
+              </span>
+
+              <span className="text-xs text-primary">{productCategory}</span>
+
+              <span
+                className={clsx(' text-[10px]', {
+                  'text-emerald-600': stockStatus === 'IN_STOCK',
+                  ' text-amber-600': stockStatus === 'LOW_STOCK',
+                  ' text-red-600': stockStatus === 'OUT_OF_STOCK',
+                })}
+              >
+                {stockDisplay}
+              </span>
+            </div>
           </div>
 
-          <p className="text-sm text-neutral-500">
-            Category: {productCategory}
-          </p>
+          <div className="text-sm flex items-center gap-4 text-neutral-600">
+            <div className="flex items-center gap-2 ">
+              <span className="text-xs text-neutral-500">Product type:</span>
+              <span className="font-medium">{productType}</span>
+            </div>
 
-          <div className="flex items-center gap-6 text-sm">
-            <span className="font-medium text-primary">{formattedPrice}</span>
+            <div className="flex items-center gap-2 ">
+              <span className="text-xs text-neutral-500">SKU:</span>
+              <span>{sku}</span>
+            </div>
 
-            <span
-              className={clsx('rounded-full px-2 py-1 text-xs', {
-                'bg-emerald-500/10 text-emerald-600':
-                  stockStatus === 'IN_STOCK',
-                'bg-amber-500/10 text-amber-600': stockStatus === 'LOW_STOCK',
-                'bg-red-500/10 text-red-600': stockStatus === 'OUT_OF_STOCK',
-              })}
-            >
-              {stockDisplay}
-            </span>
+            <div className="flex items-center gap-2 ">
+              <span className="text-xs text-neutral-500">Price:</span>
+              <span className="font-medium text-primary">{formattedPrice}</span>
+            </div>
+          </div>
+
+          <div className="text-sm flex items-center gap-4 text-neutral-600">
+            <div className="flex items-center gap-2 ">
+              <span className="text-xs text-neutral-500">Quantity:</span>
+              <span className="font-medium">{stockQuantity}</span>
+            </div>
+
+            <div className="flex items-center gap-2 ">
+              <span className="text-xs text-neutral-500">Low Stock:</span>
+              <span className="font-medium">{lowStockThreshold}</span>
+            </div>
           </div>
         </div>
       </div>

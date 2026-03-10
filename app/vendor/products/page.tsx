@@ -176,7 +176,13 @@ export default function ProductsPage() {
                 <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {storesQuery.data?.map((store: any) => (
                     <li key={store.id}>
-                      <Card>
+                      <Card
+                        className={
+                          store.status === 'PENDING_APPROVAL'
+                            ? 'opacity-50 pointer-events-none grayscale'
+                            : ''
+                        }
+                      >
                         <div className="space-y-8">
                           {/* Store Header */}
                           <div className="flex items-center gap-4">
@@ -252,8 +258,11 @@ export default function ProductsPage() {
                             size="sm"
                             className="w-full"
                             onClick={() => setSelectedStoreId(store.id)}
+                            disabled={store.status === 'PENDING_APPROVAL'}
                           >
-                            View Products
+                            {store.status === 'PENDING_APPROVAL'
+                              ? 'Awaiting Approval'
+                              : 'View Products'}
                           </Button>
                         </div>
                       </Card>
@@ -273,7 +282,7 @@ export default function ProductsPage() {
               <div className="flex justify-between items-center mb-6">
                 <Button
                   variant="outline"
-                  size='icon'
+                  size="icon"
                   onClick={() => setSelectedStoreId(null)}
                   leftIcon={<ChevronLeft size={16} />}
                 >

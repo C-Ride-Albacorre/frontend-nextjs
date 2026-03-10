@@ -22,7 +22,7 @@ export default function Input({
 }: InputProps) {
   const wrapperClasses = clsx(
     'flex w-full items-center gap-2 rounded-xl px-4 py-3 text-base md:text-sm outline-none',
-    'focus-within:ring-2 focus-within:ring-primary border border-border',
+    'focus-within:ring focus-within:ring-primary border border-border',
     {
       ' bg-white': variant === 'default',
       'bg-foreground-100': variant === 'fill',

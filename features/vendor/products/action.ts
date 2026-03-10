@@ -57,7 +57,6 @@ export async function createProductAction(
     lowStockThreshold: formData.get('lowStockThreshold') as string,
   };
 
-  // ✅ use correct schema based on product type
   const schema = isVariable ? VariableProductSchema : SingleProductSchema;
   const result = schema.safeParse(rawData);
 
@@ -84,18 +83,57 @@ export async function createProductAction(
 
   // images
   const images = formData.getAll('images');
+  console.log(
+    '[createProductAction] images count:',
+    images.length,
+    'types:',
+    images.map((i) =>
+      i instanceof File
+        ? `File(${(i as File).name}, ${(i as File).size})`
+        : typeof i,
+    ),
+  );
   for (const image of images) {
     if (image instanceof File && image.size > 0) {
       apiFormData.append('images', image);
     }
   }
 
-  // variants and addons for variable
+  // ✅ Parse indexed variants and addons for variable products
   if (isVariable) {
-    const variants = formData.get('variants');
-    const addons = formData.get('addons');
-    if (variants) apiFormData.append('variants', variants as string);
-    if (addons) apiFormData.append('addons', addons as string);
+    const variantEntries: Record<number, Record<string, string>> = {};
+    const addonEntries: Record<number, Record<string, string>> = {};
+
+    for (const [key, value] of formData.entries()) {
+      const variantMatch = key.match(/^variants\[(\d+)\]\.(.+)$/);
+      if (variantMatch) {
+        const idx = Number(variantMatch[1]);
+        const field = variantMatch[2];
+        if (!variantEntries[idx]) variantEntries[idx] = {};
+        variantEntries[idx][field] = value as string;
+      }
+
+      const addonMatch = key.match(/^addons\[(\d+)\]\.(.+)$/);
+      if (addonMatch) {
+        const idx = Number(addonMatch[1]);
+        const field = addonMatch[2];
+        if (!addonEntries[idx]) addonEntries[idx] = {};
+        addonEntries[idx][field] = value as string;
+      }
+    }
+
+    const variantsArray = Object.values(variantEntries);
+    const addonsArray = Object.values(addonEntries);
+
+    console.log('[createProductAction] Parsed variants:', variantsArray);
+    console.log('[createProductAction] Parsed addons:', addonsArray);
+
+    if (variantsArray.length > 0) {
+      apiFormData.append('variants', JSON.stringify(variantsArray));
+    }
+    if (addonsArray.length > 0) {
+      apiFormData.append('addons', JSON.stringify(addonsArray));
+    }
   }
 
   try {

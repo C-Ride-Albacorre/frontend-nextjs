@@ -112,7 +112,7 @@ export default function TimePicker({
         className={clsx(
           'w-full flex items-center justify-between gap-2 rounded-xl px-4 py-3',
           'border border-border bg-white text-sm',
-          'focus:ring-2 focus:ring-primary outline-none transition',
+          'focus:ring focus:ring-primary outline-none transition',
           !displayValue && 'text-neutral-400',
           disabled
             ? 'opacity-60 cursor-not-allowed bg-gray-50'

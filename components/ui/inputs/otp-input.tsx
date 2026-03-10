@@ -28,7 +28,7 @@ export function OtpInput({
         text-center
         text-base sm:text-lg
         outline-none
-        focus:ring-2 focus:ring-primary ${className}
+        focus:ring focus:ring-primary ${className}
       `}
       {...props}
     />

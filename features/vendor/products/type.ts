@@ -10,7 +10,13 @@ export type ProductType = 'SIMPLE' | 'VARIABLE';
 // Variant structure
 export interface ProductVariant {
   id?: string;
+  variantName: string;
   name: string;
+  price: number;
+  sku: string;
+  stockQuantity: number;
+  stockStatus: StockStatus;
+  attributes?: Record<string, string>;
   options: string[];
   priceModifier?: number;
 }
@@ -18,9 +24,13 @@ export interface ProductVariant {
 // Addon structure
 export interface ProductAddon {
   id?: string;
+  addonName: string;
   name: string;
   price: number;
   available: boolean;
+  description?: string;
+  maxQuantity?: number;
+  category?: string;
 }
 
 // Product image from API

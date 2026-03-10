@@ -1,6 +1,6 @@
 'use client';
 
-import { useActionState, useEffect } from 'react';
+import { useActionState, useEffect, useState } from 'react';
 import FileDropzone from '@/components/ui/inputs/file-dropzone';
 import Input from '@/components/ui/inputs/input';
 import { Select } from '@/components/ui/inputs/select';
@@ -9,6 +9,8 @@ import { Product, ProductFormState } from '../../type';
 import { Button } from '@/components/ui/buttons/button';
 import ErrorMessage from '@/components/layout/error-message';
 import { createProductAction, updateProductAction } from '../../action';
+import { SingleProductSchema } from '../../schema';
+import { toast } from 'sonner';
 
 interface SelectOption {
   label: string;
@@ -78,20 +80,89 @@ export default function SingleProductForm({
   handleClose,
   onSuccess,
 }: SingleProductProps) {
+  const [clientErrors, setClientErrors] = useState<Record<string, string[]>>(
+    {},
+  );
+
+  function validateForm(): boolean {
+    const errs: Record<string, string[]> = {};
+
+    const result = SingleProductSchema.safeParse({
+      productName,
+      productCategory: productCategory ?? '',
+      sku,
+      description,
+      productType: 'SINGLE',
+      basePrice,
+      stockQuantity,
+      lowStockThreshold,
+      stockStatus: stockStatus ?? '',
+      productStatus: productStatus ?? '',
+    });
+
+    if (!result.success) {
+      for (const issue of result.error.issues) {
+        const key = issue.path[0] as string;
+        if (!errs[key]) errs[key] = [];
+        errs[key].push(issue.message);
+      }
+    }
+
+    // Image is required for new products
+    if (!isEditing && !image && !existingImageUrl) {
+      errs.images = ['Product image is required.'];
+    }
+
+    setClientErrors(errs);
+    return Object.keys(errs).length === 0;
+  }
+
   const singleProductAction = async (
     prevState: ProductFormState,
-    formData: FormData,
+    _formData: FormData,
   ): Promise<ProductFormState> => {
-    formData.append('productCategory', productCategory);
-    formData.append('productType', 'SINGLE');
-    formData.append('stockStatus', stockStatus);
-    formData.append('productStatus', productStatus);
-    if (image) formData.append('images', image);
+    // Client-side validation
+    if (!validateForm()) {
+      return {
+        status: 'error',
+        message: 'Please fill in all required fields',
+      };
+    }
+
+    // Build FormData entirely from React state
+    const fd = new FormData();
+    fd.append('productName', productName);
+    fd.append('productCategory', productCategory ?? '');
+    fd.append('sku', sku);
+    fd.append('description', description);
+    fd.append('productType', 'SINGLE');
+    fd.append('basePrice', String(basePrice));
+    fd.append('stockQuantity', String(stockQuantity));
+    fd.append('lowStockThreshold', String(lowStockThreshold));
+    fd.append('stockStatus', stockStatus ?? '');
+    fd.append('productStatus', productStatus ?? '');
+
+    // Append image from React state
+    if (image) {
+      fd.append('images', image);
+    }
+
+    // Debug: log what we're sending
+    console.log('[SingleProduct] FormData entries:');
+    for (const [key, value] of fd.entries()) {
+      if (value instanceof File) {
+        console.log(
+          `  ${key}: [File] name=${value.name}, size=${value.size}, type=${value.type}`,
+        );
+      } else {
+        console.log(`  ${key}: ${value}`);
+      }
+    }
 
     if (isEditing && editProduct) {
-      return updateProductAction(storeId, editProduct.id, prevState, formData);
+      return updateProductAction(storeId, editProduct.id, prevState, fd);
     }
-    return createProductAction(storeId, prevState, formData);
+    return createProductAction(storeId, prevState, fd);
   };
 
   const [state, formAction, isPending] = useActionState(
@@ -100,10 +171,20 @@ export default function SingleProductForm({
   );
 
   useEffect(() => {
-    if (state?.status === 'success') onSuccess();
+    if (!state) return;
+
+    if (state.status === 'success') {
+      toast.success(state.message || 'Product saved successfully');
+      onSuccess();
+    }
+
+    if (state.status === 'error') {
+      toast.error(state.message || 'Something went wrong');
+    }
   }, [state]);
 
-  const errors = state?.status === 'error' ? (state.errors ?? {}) : {};
+  const serverErrors = state?.status === 'error' ? (state.errors ?? {}) : {};
+  const errors = { ...serverErrors, ...clientErrors };
   const errorMessage =
     state?.status === 'error' ? (state.message ?? null) : null;
 
@@ -226,6 +307,7 @@ export default function SingleProductForm({
           onChange={setImage}
           maxSizeMB={5}
           existingImageUrl={existingImageUrl}
+          errorMessage={errors?.images?.[0]}
         />
       </div>
 
