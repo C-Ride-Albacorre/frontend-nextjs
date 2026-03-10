@@ -355,6 +355,7 @@ export default function ProductsPage() {
 
       {selectedStoreId && (
         <ProductForm
+          key={selectedProduct?.id ?? 'new'}
           isModalOpen={isFormModalOpen}
           setIsModalOpen={setIsFormModalOpen}
           storeId={selectedStoreId}
