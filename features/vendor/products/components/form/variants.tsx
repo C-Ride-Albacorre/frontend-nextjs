@@ -65,8 +65,8 @@ export default function VariantsForm({ variants, setVariants }: Props) {
     <div className="space-y-6">
       <Card
         gap="sm"
-        spacing="sm"
-        className="bg-primary/10 border border-primary text-sm space-y-1"
+        spacing="md"
+        className="bg-[#10B981]/10 border border-[#10B981] text-sm"
       >
         <p className="font-medium">Configure Product Variants</p>
 
@@ -135,6 +135,7 @@ export default function VariantsForm({ variants, setVariants }: Props) {
         variant="green-secondary-outline"
         type="button"
         size="icon"
+        disabled={!variantName.trim() || !price || !sku}
         className="w-full"
       >
         <CirclePlus size={16} /> Add Variant
@@ -165,7 +166,7 @@ export default function VariantsForm({ variants, setVariants }: Props) {
               </p>
             </div>
 
-            <p className="text-primary">
+            <p className="text-[#10B981] font-medium">
               <span className="text-xs text-neutral-500">Price:</span> ₦
               {variant.price.toLocaleString()}
             </p>
@@ -174,8 +175,9 @@ export default function VariantsForm({ variants, setVariants }: Props) {
           <button
             type="button"
             onClick={() => setVariants(variants.filter((_, i) => i !== index))}
+            className="cursor-pointer"
           >
-            <CircleMinus size={18}   className="text-red-500" />
+            <CircleMinus size={18} className="text-red-500" />
           </button>
         </Card>
       ))}

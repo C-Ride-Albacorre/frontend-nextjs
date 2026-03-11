@@ -139,11 +139,15 @@ export async function updateProductAction(
 
   if (!result.success) {
     const errors: Record<string, string[]> = {};
+
     for (const issue of result.error.issues) {
       const key = issue.path[0] as string;
+
       if (!errors[key]) errors[key] = [];
+
       errors[key].push(issue.message);
     }
+
     return {
       status: 'error',
       message: 'Please fix the validation errors',
@@ -151,16 +155,35 @@ export async function updateProductAction(
     };
   }
 
+  /**
+   * Only send fields allowed by update endpoint
+   */
+
   const apiFormData = new FormData();
+
   Object.entries(result.data).forEach(([key, value]) => {
     if (value !== undefined && value !== null) {
       apiFormData.append(key, String(value));
     }
   });
 
+  /**
+   * allow updating images
+   */
+
+  const images = formData.getAll('images');
+
+  for (const image of images) {
+    if (image instanceof File && image.size > 0) {
+      apiFormData.append('images', image);
+    }
+  }
+
   try {
     await updateProductService(storeId, productId, apiFormData);
+
     revalidatePath('/vendor/products');
+
     return {
       status: 'success',
       message: 'Product updated successfully',

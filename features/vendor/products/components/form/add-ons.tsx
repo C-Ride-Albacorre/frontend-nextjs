@@ -54,7 +54,7 @@ export default function AddOnsForm({ addons, setAddons }: AddOnsFormProps) {
       <Card
         gap="sm"
         spacing="sm"
-        className="bg-primary/10 border border-primary text-sm space-y-1"
+        className="bg-[#10B981]/10 border border-[#10B981] text-sm"
       >
         <p className="font-medium">Configure Add-ons</p>
         <p className="text-neutral-500 text-xs">
@@ -153,7 +153,7 @@ export default function AddOnsForm({ addons, setAddons }: AddOnsFormProps) {
                     </p>
                   )}
 
-                  <p className="text-primary">
+                  <p className="text-[#10B981] font-medium">
                     <span className="text-xs text-neutral-500">Price:</span> ₦
                     {addon.price.toLocaleString()}
                   </p>

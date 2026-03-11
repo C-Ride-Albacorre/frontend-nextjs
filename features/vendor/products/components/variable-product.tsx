@@ -3,11 +3,11 @@
 import { useEffect, useTransition, useState } from 'react';
 import { createProductAction, updateProductAction } from '../action';
 import { Product, ProductFormState } from '../type';
-import { VariableDetailsSchema, VariantsSchema } from '../schema';
+import { VariableDetailsSchema } from '../schema';
 import { Button } from '@/components/ui/buttons/button';
 import ErrorMessage from '@/components/layout/error-message';
 import AddProductStep from './add-product-step';
-import VariableDetailsFields from './form/variable-product';
+import VariableDetailsFields from './form/variable-product-details';
 import VariantsForm, { type Variant } from './form/variants';
 import AddOnsForm, { type Addon } from './form/add-ons';
 import { toast } from 'sonner';
@@ -90,6 +90,43 @@ export default function VariableProductForm({
   );
 
   const isLastStep = activeStep === 2;
+
+  useEffect(() => {
+    if (!isEditing || !editProduct) return;
+
+    /**
+     * Populate Variants
+     */
+    if (editProduct.variants && editProduct.variants.length > 0) {
+      const formattedVariants: Variant[] = editProduct.variants.map(
+        (variant) => ({
+          variantName: variant.variantName ?? '',
+          price: Number(variant.price ?? 0),
+          sku: variant.sku ?? '',
+          stockQuantity: Number(variant.stockQuantity ?? 0),
+          stockStatus: variant.stockStatus ?? 'IN_STOCK',
+          attributes: variant.attributes ?? {},
+        }),
+      );
+
+      setVariants(formattedVariants);
+    }
+
+    /**
+     * Populate Addons
+     */
+    if (editProduct.addons && editProduct.addons.length > 0) {
+      const formattedAddons: Addon[] = editProduct.addons.map((addon) => ({
+        addonName: addon.addonName ?? '',
+        price: Number(addon.price ?? 0),
+        description: addon.description ?? '',
+        maxQuantity: addon.maxQuantity ?? undefined,
+        category: addon.category ?? '',
+      }));
+
+      setAddons(formattedAddons);
+    }
+  }, [editProduct, isEditing]);
 
   function validateStep(step: number) {
     setStepErrors({});
