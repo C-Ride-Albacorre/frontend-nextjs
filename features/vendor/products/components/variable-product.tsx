@@ -145,43 +145,47 @@ export default function VariableProductForm({
      * VARIANTS (OPTIONAL)
      */
 
-    variants.forEach((variant, index) => {
-      fd.append(`variants[${index}][variantName]`, variant.variantName);
-      fd.append(`variants[${index}][price]`, String(variant.price));
-      fd.append(`variants[${index}][sku]`, variant.sku);
-      fd.append(
-        `variants[${index}][stockQuantity]`,
-        String(variant.stockQuantity),
-      );
-      fd.append(`variants[${index}][stockStatus]`, variant.stockStatus);
+    if (variants.length > 0) {
+      variants.forEach((variant, index) => {
+        fd.append(`variants[${index}][variantName]`, variant.variantName);
+        fd.append(`variants[${index}][price]`, String(variant.price));
+        fd.append(`variants[${index}][sku]`, variant.sku);
+        fd.append(
+          `variants[${index}][stockQuantity]`,
+          String(variant.stockQuantity),
+        );
+        fd.append(`variants[${index}][stockStatus]`, variant.stockStatus);
 
-      if (variant.attributes) {
-        Object.entries(variant.attributes).forEach(([key, value]) => {
-          fd.append(`variants[${index}][attributes][${key}]`, value);
-        });
-      }
-    });
+        if (variant.attributes) {
+          Object.entries(variant.attributes).forEach(([key, value]) => {
+            fd.append(`variants[${index}][attributes][${key}]`, value);
+          });
+        }
+      });
+    }
 
     /**
      * ADDONS (OPTIONAL)
      */
 
-    addons.forEach((addon, index) => {
-      fd.append(`addons[${index}][addonName]`, addon.addonName);
-      fd.append(`addons[${index}][price]`, String(addon.price));
+    if (addons.length > 0) {
+      addons.forEach((addon, index) => {
+        fd.append(`addons[${index}][addonName]`, addon.addonName);
+        fd.append(`addons[${index}][price]`, String(addon.price));
 
-      if (addon.description) {
-        fd.append(`addons[${index}][description]`, addon.description);
-      }
+        if (addon.description) {
+          fd.append(`addons[${index}][description]`, addon.description);
+        }
 
-      if (addon.maxQuantity !== undefined) {
-        fd.append(`addons[${index}][maxQuantity]`, String(addon.maxQuantity));
-      }
+        if (addon.maxQuantity !== undefined) {
+          fd.append(`addons[${index}][maxQuantity]`, String(addon.maxQuantity));
+        }
 
-      if (addon.category) {
-        fd.append(`addons[${index}][category]`, addon.category);
-      }
-    });
+        if (addon.category) {
+          fd.append(`addons[${index}][category]`, addon.category);
+        }
+      });
+    }
 
     startTransition(async () => {
       const result =

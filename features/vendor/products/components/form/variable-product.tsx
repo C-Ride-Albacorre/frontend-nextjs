@@ -177,6 +177,7 @@ export default function VariableDetailsFields({
         onChange={setImage}
         maxSizeMB={5}
         existingImageUrl={existingImageUrl}
+        errorMessage={errors?.images?.[0]}
       />
     </div>
   );

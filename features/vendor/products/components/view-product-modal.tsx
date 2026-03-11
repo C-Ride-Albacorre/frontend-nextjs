@@ -27,6 +27,8 @@ export default function ViewProductModal({
     stockQuantity,
     lowStockThreshold,
     productImages,
+    variants,
+    addons,
     createdAt,
     updatedAt,
   } = product;
@@ -186,6 +188,61 @@ export default function ViewProductModal({
             </p>
           </div>
         )}
+
+        {productType === 'VARIABLE' && variants?.length ? (
+          <div className="space-y-3">
+            <p className="text-sm font-semibold">Variants</p>
+
+            <div className="space-y-2">
+              {variants.map((variant) => (
+                <div
+                  key={variant.id}
+                  className="p-3 rounded-lg bg-neutral-50 flex justify-between"
+                >
+                  <div>
+                    <p className="font-medium">{variant.variantName}</p>
+                    <p className="text-xs text-neutral-500">
+                      SKU: {variant.sku}
+                    </p>
+                  </div>
+
+                  <p className="font-medium text-primary">
+                    ₦{variant.price?.toLocaleString()}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : null}
+
+        {addons?.length ? (
+          <div className="space-y-3">
+            <p className="text-sm font-semibold">Add-ons</p>
+
+            <div className="space-y-2">
+              {addons.map((addon) => (
+                <div
+                  key={addon.id}
+                  className="p-3 rounded-lg bg-neutral-50 flex justify-between"
+                >
+                  <div>
+                    <p className="font-medium">{addon.addonName}</p>
+
+                    {addon.category && (
+                      <p className="text-xs text-neutral-500">
+                        Category: {addon.category}
+                      </p>
+                    )}
+                  </div>
+
+                  <p className="text-primary font-medium">
+                    ₦{addon.price?.toLocaleString()}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : null}
 
         {/* Timestamps */}
         <div className="flex justify-between text-xs text-neutral-400 pt-2 border-t border-neutral-100">

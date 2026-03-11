@@ -62,11 +62,15 @@ export async function createProductAction(
 
   if (!result.success) {
     const errors: Record<string, string[]> = {};
+
     for (const issue of result.error.issues) {
       const key = issue.path[0] as string;
+
       if (!errors[key]) errors[key] = [];
+
       errors[key].push(issue.message);
     }
+
     return {
       status: 'error',
       message: 'Please fix the validation errors',
@@ -74,74 +78,32 @@ export async function createProductAction(
     };
   }
 
+  /**
+   * IMPORTANT
+   * send the original FormData directly
+   */
+
   const apiFormData = new FormData();
-  Object.entries(result.data).forEach(([key, value]) => {
-    if (value !== undefined && value !== null) {
-      apiFormData.append(key, String(value));
-    }
-  });
 
-  // images
-  const images = formData.getAll('images');
-  console.log(
-    '[createProductAction] images count:',
-    images.length,
-    'types:',
-    images.map((i) =>
-      i instanceof File
-        ? `File(${(i as File).name}, ${(i as File).size})`
-        : typeof i,
-    ),
-  );
-  for (const image of images) {
-    if (image instanceof File && image.size > 0) {
-      apiFormData.append('images', image);
-    }
-  }
-
-  // ✅ Parse indexed variants and addons for variable products
-  if (isVariable) {
-    const variantEntries: Record<number, Record<string, string>> = {};
-    const addonEntries: Record<number, Record<string, string>> = {};
-
-    for (const [key, value] of formData.entries()) {
-      const variantMatch = key.match(/^variants\[(\d+)\]\.(.+)$/);
-      if (variantMatch) {
-        const idx = Number(variantMatch[1]);
-        const field = variantMatch[2];
-        if (!variantEntries[idx]) variantEntries[idx] = {};
-        variantEntries[idx][field] = value as string;
+  for (const [key, value] of formData.entries()) {
+    if (value instanceof File) {
+      if (value.size > 0) {
+        apiFormData.append(key, value);
       }
-
-      const addonMatch = key.match(/^addons\[(\d+)\]\.(.+)$/);
-      if (addonMatch) {
-        const idx = Number(addonMatch[1]);
-        const field = addonMatch[2];
-        if (!addonEntries[idx]) addonEntries[idx] = {};
-        addonEntries[idx][field] = value as string;
-      }
-    }
-
-    const variantsArray = Object.values(variantEntries);
-    const addonsArray = Object.values(addonEntries);
-
-    console.log('[createProductAction] Parsed variants:', variantsArray);
-    console.log('[createProductAction] Parsed addons:', addonsArray);
-
-    if (variantsArray.length > 0) {
-      apiFormData.append('variants', JSON.stringify(variantsArray));
-    }
-    if (addonsArray.length > 0) {
-      apiFormData.append('addons', JSON.stringify(addonsArray));
+    } else {
+      apiFormData.append(key, value);
     }
   }
 
   try {
     const response = await createProductService(storeId, apiFormData);
+
     revalidatePath('/vendor/products');
+
     const product = Array.isArray(response.data)
       ? response.data[0]
       : response.data;
+
     return {
       status: 'success',
       message: 'Product created successfully',
