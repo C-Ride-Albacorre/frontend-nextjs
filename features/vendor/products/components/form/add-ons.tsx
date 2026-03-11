@@ -2,7 +2,7 @@ import Card from '@/components/layout/card';
 import Input from '@/components/ui/inputs/input';
 import { Select } from '@/components/ui/inputs/select';
 import { Button } from '@/components/ui/buttons/button';
-import { CircleMinus, Plus } from 'lucide-react';
+import { CircleMinus, CirclePlus, Plus } from 'lucide-react';
 import { useState } from 'react';
 import Textarea from '@/components/ui/inputs/textarea';
 
@@ -64,8 +64,6 @@ export default function AddOnsForm({ addons, setAddons }: AddOnsFormProps) {
       </Card>
 
       <div className="space-y-4">
-        <p className="text-sm font-medium">Add an Add-on</p>
-
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Input
             id="addonName"
@@ -77,7 +75,7 @@ export default function AddOnsForm({ addons, setAddons }: AddOnsFormProps) {
           />
           <Input
             id="addonPrice"
-            label='Price'
+            label="Price"
             name="addonPrice"
             type="number"
             placeholder="Price (e.g., 500)"
@@ -125,7 +123,7 @@ export default function AddOnsForm({ addons, setAddons }: AddOnsFormProps) {
           size="icon"
           className="w-full"
           onClick={handleAddAddon}
-          leftIcon={<Plus size={14} />}
+          leftIcon={<CirclePlus size={14} />}
           disabled={!addonName.trim() || !addonPrice}
         >
           Add Add-on
@@ -147,7 +145,7 @@ export default function AddOnsForm({ addons, setAddons }: AddOnsFormProps) {
 
                 <div className="flex items-center gap-12">
                   {addon.category && (
-                    <p className="text-neutral-500 text-sm">
+                    <p className="text-neutral-800 text-sm">
                       <span className="text-xs text-neutral-500">
                         Category:
                       </span>{' '}

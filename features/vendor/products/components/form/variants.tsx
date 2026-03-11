@@ -1,8 +1,10 @@
+'use client';
+
 import Card from '@/components/layout/card';
 import Input from '@/components/ui/inputs/input';
 import { Select } from '@/components/ui/inputs/select';
 import { Button } from '@/components/ui/buttons/button';
-import { CircleMinus, CirclePlus, Plus } from 'lucide-react';
+import { CircleMinus, CirclePlus } from 'lucide-react';
 import { useState } from 'react';
 
 export interface Variant {
@@ -14,15 +16,12 @@ export interface Variant {
   attributes?: Record<string, string>;
 }
 
-interface VariantsFormProps {
+interface Props {
   variants: Variant[];
   setVariants: (variants: Variant[]) => void;
 }
 
-export default function VariantsForm({
-  variants,
-  setVariants,
-}: VariantsFormProps) {
+export default function VariantsForm({ variants, setVariants }: Props) {
   const [variantName, setVariantName] = useState('');
   const [price, setPrice] = useState('');
   const [sku, setSku] = useState('');
@@ -31,8 +30,17 @@ export default function VariantsForm({
     'IN_STOCK' | 'LOW_STOCK' | 'OUT_OF_STOCK'
   >('IN_STOCK');
 
+  const [attributeName, setAttributeName] = useState('');
+  const [attributeValue, setAttributeValue] = useState('');
+
   const handleAddVariant = () => {
     if (!variantName || !price || !sku) return;
+
+    const attributes: Record<string, string> = {};
+
+    if (attributeName && attributeValue) {
+      attributes[attributeName] = attributeValue;
+    }
 
     const newVariant: Variant = {
       variantName,
@@ -40,7 +48,7 @@ export default function VariantsForm({
       sku,
       stockQuantity: Number(stockQuantity) || 0,
       stockStatus,
-      attributes: {},
+      attributes,
     };
 
     setVariants([...variants, newVariant]);
@@ -49,11 +57,8 @@ export default function VariantsForm({
     setPrice('');
     setSku('');
     setStockQuantity('');
-    setStockStatus('IN_STOCK');
-  };
-
-  const handleRemoveVariant = (index: number) => {
-    setVariants(variants.filter((_, i) => i !== index));
+    setAttributeName('');
+    setAttributeValue('');
   };
 
   return (
@@ -61,15 +66,17 @@ export default function VariantsForm({
       <Card
         gap="sm"
         spacing="sm"
-        className="bg-primary/10  border-primary text-sm"
+        className="bg-primary/10 border border-primary text-sm space-y-1"
       >
         <p className="font-medium">Configure Product Variants</p>
+
         <p className="text-neutral-500 text-xs">
-          Add different variations of this product (e.g., Small, Medium, Large)
+          Add different sizes or variations of this product (e.g., Small,
+          Medium, Large)
         </p>
       </Card>
 
-      <div className="grid md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Input
           placeholder="Variant name"
           value={variantName}
@@ -96,62 +103,82 @@ export default function VariantsForm({
           onChange={(e) => setStockQuantity(e.target.value)}
         />
 
-        <Select
-          id="stockStatus"
-          label="Stock Status"
-          value={stockStatus}
-          onChange={(v) => setStockStatus(v as any)}
-          options={[
-            { label: 'In Stock', value: 'IN_STOCK' },
-            { label: 'Low Stock', value: 'LOW_STOCK' },
-            { label: 'Out of Stock', value: 'OUT_OF_STOCK' },
-          ]}
+        <Input
+          placeholder="Attribute Name (e.g size)"
+          value={attributeName}
+          onChange={(e) => setAttributeName(e.target.value)}
         />
+
+        <Input
+          placeholder="Attribute Value (e.g Large)"
+          value={attributeValue}
+          onChange={(e) => setAttributeValue(e.target.value)}
+        />
+
+        <div className="md:col-span-2 w-full">
+          <Select
+            id="stockStatus"
+            label="Stock Status"
+            value={stockStatus}
+            onChange={(v) => setStockStatus(v as any)}
+            options={[
+              { label: 'In Stock', value: 'IN_STOCK' },
+              { label: 'Low Stock', value: 'LOW_STOCK' },
+              { label: 'Out of Stock', value: 'OUT_OF_STOCK' },
+            ]}
+          />
+        </div>
       </div>
 
       <Button
-        type="button"
-        variant="green-secondary-outline"
-        size="icon"
         onClick={handleAddVariant}
-        leftIcon={<CirclePlus size={14} />}
+        variant="green-secondary-outline"
+        type="button"
+        size="icon"
         className="w-full"
       >
-        Add Variant
+        <CirclePlus size={16} /> Add Variant
       </Button>
 
-      {variants.length > 0 && (
-        <div className="space-y-3">
-          {variants.map((variant, index) => (
-            <Card
-              key={index}
-              gap="sm"
-              spacing="sm"
-              className="flex items-center justify-between text-sm bg-primary/10  border-primary"
-            >
-              <div className="mb-0 space-y-2">
-                <p className="font-medium">{variant.variantName}</p>
+      {variants.map((variant, index) => (
+        <Card
+          key={index}
+          className="bg-primary/5 text-sm flex items-center justify-between"
+        >
+          <div className="space-y-2 mb-0">
+            <p className="font-medium capitalize">{variant.variantName}</p>
 
-                <div className="flex gap-4">
-                  <p className="text-neutral-500">
-                    <span className="text-xs">SKU:</span> {variant.sku}
-                  </p>
+            <div className="flex items-center gap-12">
+              <p className="text-neutral-800 text-sm">
+                <span className="text-xs text-neutral-500">SKU:</span>{' '}
+                {variant.sku}
+              </p>
 
-                  <p className="text-primary">
-                    {' '}
-                    <span className="text-xs text-neutral-500">Price: </span>₦
-                    {variant.price}
-                  </p>
-                </div>
-              </div>
+              <p className="text-neutral-800 text-sm">
+                <span className="text-xs text-neutral-500 space-x-2">
+                  Qty:{' '}
+                </span>{' '}
+                <span>{variant.stockQuantity}</span>
+                <span className="text-xs text-neutral-500 capitalize ml-2">
+                  ({variant.stockStatus.replaceAll('_', ' ').toLowerCase()})
+                </span>
+              </p>
+            </div>
 
-              <button type="button" onClick={() => handleRemoveVariant(index)}>
-                <CircleMinus size={18} className="text-red-500" />
-              </button>
-            </Card>
-          ))}
-        </div>
-      )}
+            <p className="text-primary">
+              <span className="text-xs text-neutral-500">Price:</span> ₦
+              {variant.price.toLocaleString()}
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setVariants(variants.filter((_, i) => i !== index))}
+          >
+            <CircleMinus size={18}   className="text-red-500" />
+          </button>
+        </Card>
+      ))}
     </div>
   );
 }

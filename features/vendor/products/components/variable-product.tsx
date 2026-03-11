@@ -80,27 +80,8 @@ export default function VariableProductForm({
   handleClose,
   onSuccess,
 }: VariableProductFormProps) {
-  const [variants, setVariants] = useState<Variant[]>(
-    editProduct?.variants?.map((v) => ({
-      variantName: v.variantName ?? '',
-      price: v.price ?? 0,
-      sku: v.sku ?? '',
-      stockQuantity: v.stockQuantity ?? 0,
-      stockStatus: (v.stockStatus as Variant['stockStatus']) ?? 'IN_STOCK',
-      attributes: v.attributes ?? {},
-    })) ?? [],
-  );
-
-  const [addons, setAddons] = useState<Addon[]>(
-    editProduct?.addons?.map((a) => ({
-      addonName: a.addonName ?? '',
-      price: a.price ?? 0,
-      description: a.description ?? undefined,
-      maxQuantity: a.maxQuantity ?? undefined,
-      category: a.category ?? undefined,
-    })) ?? [],
-  );
-
+  const [variants, setVariants] = useState<Variant[]>([]);
+  const [addons, setAddons] = useState<Addon[]>([]);
   const [activeStep, setActiveStep] = useState(0);
   const [stepErrors, setStepErrors] = useState<Record<string, string[]>>({});
   const [isPending, startTransition] = useTransition();
@@ -110,7 +91,7 @@ export default function VariableProductForm({
 
   const isLastStep = activeStep === 2;
 
-  function validateStep(step: number): boolean {
+  function validateStep(step: number) {
     setStepErrors({});
 
     if (step === 0) {
@@ -139,30 +120,10 @@ export default function VariableProductForm({
       }
     }
 
-    if (step === 1) {
-      const result = VariantsSchema.safeParse({ variants });
-
-      if (!result.success) {
-        const errs: Record<string, string[]> = {};
-        result.error.issues.forEach((issue) => {
-          const key = issue.path[0] as string;
-          if (!errs[key]) errs[key] = [];
-          errs[key].push(issue.message);
-        });
-        setStepErrors(errs);
-        return false;
-      }
-    }
-
     return true;
   }
 
   const handleSubmit = async () => {
-    if (addons.length === 0) {
-      toast.error('Please add at least one add-on before submitting');
-      return;
-    }
-
     const fd = new FormData();
 
     fd.append('productName', productName);
@@ -176,52 +137,58 @@ export default function VariableProductForm({
     fd.append('stockStatus', stockStatus);
     fd.append('productStatus', productStatus);
 
-    if (image) fd.append('images', image);
+    if (image) {
+      fd.append('images', image);
+    }
+
+    /**
+     * VARIANTS (OPTIONAL)
+     */
 
     variants.forEach((variant, index) => {
-      fd.append(`variants[${index}].variantName`, variant.variantName);
-      fd.append(`variants[${index}].price`, String(variant.price));
-      fd.append(`variants[${index}].sku`, variant.sku);
+      fd.append(`variants[${index}][variantName]`, variant.variantName);
+      fd.append(`variants[${index}][price]`, String(variant.price));
+      fd.append(`variants[${index}][sku]`, variant.sku);
       fd.append(
-        `variants[${index}].stockQuantity`,
+        `variants[${index}][stockQuantity]`,
         String(variant.stockQuantity),
       );
-      fd.append(`variants[${index}].stockStatus`, variant.stockStatus);
+      fd.append(`variants[${index}][stockStatus]`, variant.stockStatus);
+
+      if (variant.attributes) {
+        Object.entries(variant.attributes).forEach(([key, value]) => {
+          fd.append(`variants[${index}][attributes][${key}]`, value);
+        });
+      }
     });
+
+    /**
+     * ADDONS (OPTIONAL)
+     */
 
     addons.forEach((addon, index) => {
-      fd.append(`addons[${index}].addonName`, addon.addonName);
-      fd.append(`addons[${index}].price`, String(addon.price));
-      if (addon.description)
-        fd.append(`addons[${index}].description`, addon.description);
-      if (addon.maxQuantity !== undefined)
-        fd.append(`addons[${index}].maxQuantity`, String(addon.maxQuantity));
-      if (addon.category)
-        fd.append(`addons[${index}].category`, addon.category);
-    });
+      fd.append(`addons[${index}][addonName]`, addon.addonName);
+      fd.append(`addons[${index}][price]`, String(addon.price));
 
-    // ✅ Log the full form as a plain object
-    const formObject: Record<string, unknown> = {
-      productName,
-      productCategory,
-      sku,
-      description,
-      productType: 'VARIABLE',
-      basePrice,
-      stockQuantity,
-      lowStockThreshold,
-      stockStatus,
-      productStatus,
-      variants,
-      addons,
-    };
-    console.log('📦 FULL FORM SUBMITTED:', JSON.stringify(formObject, null, 2));
+      if (addon.description) {
+        fd.append(`addons[${index}][description]`, addon.description);
+      }
+
+      if (addon.maxQuantity !== undefined) {
+        fd.append(`addons[${index}][maxQuantity]`, String(addon.maxQuantity));
+      }
+
+      if (addon.category) {
+        fd.append(`addons[${index}][category]`, addon.category);
+      }
+    });
 
     startTransition(async () => {
       const result =
         isEditing && editProduct
           ? await updateProductAction(storeId, editProduct.id, state, fd)
           : await createProductAction(storeId, state, fd);
+
       setState(result);
     });
   };
@@ -252,96 +219,69 @@ export default function VariableProductForm({
 
       <AddProductStep currentStep={activeStep} />
 
-      <div className="mt-2">
-        {activeStep === 0 && (
-          <VariableDetailsFields
-            productName={productName}
-            setProductName={setProductName}
-            productCategory={productCategory}
-            setProductCategory={setProductCategory}
-            sku={sku}
-            setSku={setSku}
-            description={description}
-            setDescription={setDescription}
-            basePrice={basePrice}
-            setBasePrice={setBasePrice}
-            stockQuantity={stockQuantity}
-            setStockQuantity={setStockQuantity}
-            lowStockThreshold={lowStockThreshold}
-            setLowStockThreshold={setLowStockThreshold}
-            stockStatus={stockStatus}
-            setStockStatus={setStockStatus}
-            productStatus={productStatus}
-            setProductStatus={setProductStatus}
-            image={image}
-            setImage={setImage}
-            existingImageUrl={existingImageUrl}
-            CATEGORIES={CATEGORIES}
-            STOCK_STATUSES={STOCK_STATUSES}
-            PRODUCT_STATUSES={PRODUCT_STATUSES}
-            isEditing={isEditing}
-            errors={activeErrors}
-          />
-        )}
+      {activeStep === 0 && (
+        <VariableDetailsFields
+          productName={productName}
+          setProductName={setProductName}
+          productCategory={productCategory}
+          setProductCategory={setProductCategory}
+          sku={sku}
+          setSku={setSku}
+          description={description}
+          setDescription={setDescription}
+          basePrice={basePrice}
+          setBasePrice={setBasePrice}
+          stockQuantity={stockQuantity}
+          setStockQuantity={setStockQuantity}
+          lowStockThreshold={lowStockThreshold}
+          setLowStockThreshold={setLowStockThreshold}
+          stockStatus={stockStatus}
+          setStockStatus={setStockStatus}
+          productStatus={productStatus}
+          setProductStatus={setProductStatus}
+          image={image}
+          setImage={setImage}
+          existingImageUrl={existingImageUrl}
+          CATEGORIES={CATEGORIES}
+          STOCK_STATUSES={STOCK_STATUSES}
+          PRODUCT_STATUSES={PRODUCT_STATUSES}
+          isEditing={isEditing}
+          errors={activeErrors}
+        />
+      )}
 
-        {activeStep === 1 && (
-          <>
-            {stepErrors.variants && (
-              <p className="mb-4 text-sm text-red-500">
-                {stepErrors.variants[0]}
-              </p>
-            )}
-            <VariantsForm variants={variants} setVariants={setVariants} />
-          </>
-        )}
+      {activeStep === 1 && (
+        <VariantsForm variants={variants} setVariants={setVariants} />
+      )}
 
-        {activeStep === 2 && (
-          <AddOnsForm addons={addons} setAddons={setAddons} />
-        )}
-      </div>
+      {activeStep === 2 && <AddOnsForm addons={addons} setAddons={setAddons} />}
 
-      <div className="flex items-center justify-between md:justify-around gap-8 pt-4">
+      <div className="flex justify-between pt-6">
         {activeStep === 0 ? (
-          <Button
-            variant="outline"
-            size="lg"
-            type="button"
-            onClick={handleClose}
-          >
+          <Button variant="outline" type="button" onClick={handleClose}>
             Cancel
           </Button>
         ) : (
           <Button
             variant="outline"
-            size="lg"
             type="button"
-            onClick={() => {
-              setStepErrors({});
-              setActiveStep((p) => p - 1);
-            }}
+            onClick={() => setActiveStep((p) => p - 1)}
           >
             Back
           </Button>
         )}
 
         {isLastStep ? (
-          <Button
-            size="lg"
-            variant="primary"
-            type="button"
-            disabled={isPending}
-            onClick={handleSubmit}
-          >
+          <Button type="button" disabled={isPending} onClick={handleSubmit}>
             {isPending ? 'Creating...' : 'Add Product'}
           </Button>
         ) : (
           <Button
-            size="lg"
-            variant="primary"
             type="button"
-            disabled={activeStep === 1 && variants.length === 0}
             onClick={() => {
-              if (validateStep(activeStep)) setActiveStep((p) => p + 1);
+              if (validateStep(activeStep)) {
+                setActiveStep((p) => p + 1);
+              }
             }}
           >
             Next
