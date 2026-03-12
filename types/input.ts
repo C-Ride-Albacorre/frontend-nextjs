@@ -2,6 +2,7 @@ export type InputProps = {
   id?: string;
   label?: string;
   name?: string;
+  defaultValue?: string;
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   variant?: 'default' | 'fill';

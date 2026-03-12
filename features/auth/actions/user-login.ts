@@ -50,9 +50,7 @@ export async function userLoginAction(
 
     redirectTo = safeCallback;
   } catch (error) {
-
-
-      // console.log('User login failed:', error);
+    
     if (
       error instanceof ApiError &&
       error.statusCode === 403 &&

@@ -23,33 +23,85 @@ const USER_AUTH_ROUTES = ['/user/register', '/user/login'];
 const VENDOR_AUTH_ROUTES = ['/vendor/register', '/vendor/login'];
 const SHARED_AUTH_ROUTES = ['/verify', '/reset', '/reset/reset-password'];
 
-function decodeJwtPayload(token: string): { role?: string } | null {
+function decodeJwtPayload(token: string) {
   try {
     const payload = token.split('.')[1];
-    const decoded = JSON.parse(atob(payload));
-    return decoded;
+    return JSON.parse(atob(payload));
   } catch {
     return null;
   }
 }
 
-export function proxy(request: NextRequest){
+function isTokenExpired(token: string) {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return payload.exp < Math.floor(Date.now() / 1000);
+  } catch {
+    return true;
+  }
+}
+
+async function refreshAccessToken(refreshToken: string) {
+  const res = await fetch(`${process.env.API_URL}/auth/refresh`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ refreshToken }),
+  });
+
+  if (!res.ok) return null;
+
+  return res.json();
+}
+
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  const accessToken = request.cookies.get('accessToken')?.value;
+  let accessToken = request.cookies.get('accessToken')?.value;
+  const refreshToken = request.cookies.get('refreshToken')?.value;
+
+  /**
+   * -------------------------
+   * AUTO REFRESH ACCESS TOKEN
+   * -------------------------
+   */
+  if (accessToken && isTokenExpired(accessToken) && refreshToken) {
+    const refreshed = await refreshAccessToken(refreshToken);
+
+    if (refreshed?.accessToken) {
+      const response = NextResponse.next();
+
+      response.cookies.set('accessToken', refreshed.accessToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'lax',
+        path: '/',
+      });
+
+      accessToken = refreshed.accessToken;
+
+      return response;
+    }
+  }
+
   const userRole = accessToken ? decodeJwtPayload(accessToken)?.role : null;
 
   const isUserProtected = USER_PROTECTED_ROUTES.some((r) =>
     pathname.startsWith(r),
   );
+
   const isVendorProtected = VENDOR_PROTECTED_ROUTES.some((r) =>
     pathname.startsWith(r),
   );
+
   const isUserAuth = USER_AUTH_ROUTES.some((r) => pathname.startsWith(r));
   const isVendorAuth = VENDOR_AUTH_ROUTES.some((r) => pathname.startsWith(r));
   const isSharedAuth = SHARED_AUTH_ROUTES.some((r) => pathname.startsWith(r));
 
-  // --- Unauthenticated: redirect to login ---
+  /**
+   * UNAUTHENTICATED ACCESS
+   */
   if (isUserProtected && !accessToken) {
     const url = new URL('/user/login', request.url);
     url.searchParams.set('callbackUrl', pathname);
@@ -62,7 +114,9 @@ export function proxy(request: NextRequest){
     return NextResponse.redirect(url);
   }
 
-  // --- Wrong role: redirect to correct dashboard ---
+  /**
+   * WRONG ROLE ACCESS
+   */
   if (isUserProtected && userRole === 'VENDOR') {
     return NextResponse.redirect(new URL('/vendor/store', request.url));
   }
@@ -71,7 +125,9 @@ export function proxy(request: NextRequest){
     return NextResponse.redirect(new URL('/user/dashboard', request.url));
   }
 
-  // --- Authenticated: redirect away from auth pages ---
+  /**
+   * AUTHENTICATED USERS SHOULD NOT ACCESS AUTH PAGES
+   */
   if ((isUserAuth || isVendorAuth || isSharedAuth) && accessToken) {
     const dest = userRole === 'VENDOR' ? '/vendor/store' : '/user/dashboard';
     return NextResponse.redirect(new URL(dest, request.url));
@@ -79,16 +135,3 @@ export function proxy(request: NextRequest){
 
   return NextResponse.next();
 }
-
-export const config = {
-  matcher: [
-    /*
-     * Match all paths EXCEPT:
-     * - _next/static, _next/image (Next.js internals)
-     * - favicon.ico
-     * - /google/callback (OAuth callback — handled by the page itself)
-     * - Static file extensions
-     */
-    '/((?!_next/static|_next/image|favicon.ico|google/callback|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
-  ],
-};

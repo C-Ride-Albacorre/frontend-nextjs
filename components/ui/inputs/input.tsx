@@ -10,6 +10,7 @@ export default function Input({
   variant = 'default',
   spacing = 'sm',
   placeholder,
+  defaultValue,
   value,
   onChange,
   errorMessage,
@@ -52,6 +53,7 @@ export default function Input({
           name={name}
           type={type}
           aria-label={ariaLabel}
+          defaultValue={defaultValue}
           value={value}
           onChange={onChange}
           aria-invalid={!!errorMessage}

@@ -16,7 +16,7 @@ type CookieKey = (typeof COOKIE_KEYS)[keyof typeof COOKIE_KEYS];
 const defaultOptions = {
   httpOnly: true,
   secure: isProd,
-  sameSite: 'strict' as const,
+  sameSite: 'lax' as const,
   path: '/',
 };
 
