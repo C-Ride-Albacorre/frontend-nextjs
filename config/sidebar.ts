@@ -26,7 +26,6 @@ import {
   MessageSquare,
   HelpCircle,
 } from 'lucide-react';
-import { Activity } from 'react';
 
 export type NavItemProps = {
   label: string;
@@ -41,6 +40,7 @@ export type SidebarItem = {
   label: string;
   icon: LucideIcon;
   href: string;
+  role?: 'SUPER_ADMIN' | 'ADMIN' | 'VENDOR' | 'DRIVER' | 'CUSTOMER' | 'ALL';
   count?: number;
 };
 
@@ -242,7 +242,12 @@ const ADMIN_SIDEBAR_SECTIONS: SidebarSection[] = [
   },
   {
     title: 'Security & System',
-    items: [
+    items: [{
+      label: 'Create Admin',
+      icon: ShieldCheck,
+      href: '/admin/create-admin',
+      role: 'SUPER_ADMIN',
+    },
       {
         label: 'Fraud Detection',
         icon: TriangleAlert,

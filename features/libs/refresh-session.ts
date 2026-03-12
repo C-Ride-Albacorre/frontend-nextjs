@@ -1,4 +1,4 @@
-import { clearAuthCookies, getAuthTokens, setCookie } from '@/utils/cookies';
+import { clearAuthCookies, COOKIE_KEYS, getAuthTokens, setCookie } from '@/utils/cookies';
 import { refreshTokenService } from './refresh';
 import { getTokenExpiry } from '@/utils/jwt';
 
@@ -16,7 +16,7 @@ export async function refreshSession() {
     });
 
     await setCookie({
-      name: 'accessToken',
+      name: COOKIE_KEYS.ACCESS_TOKEN,
       value: result.accessToken,
       maxAge: getTokenExpiry(result.accessToken),
     });

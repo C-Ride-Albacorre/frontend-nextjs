@@ -49,9 +49,6 @@ export default function AdminLoginForm() {
           type={showPassword ? 'text' : 'password'}
           label="Password"
           errorMessage={isError ? state.errors?.password?.[0] : undefined}
-          defaultValue={
-            state?.status === 'error' ? state.fields?.password : undefined
-          }
           rightIcon={
             <IconButton
               type="button"

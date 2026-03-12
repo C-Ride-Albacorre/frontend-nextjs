@@ -3,9 +3,9 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Bell, Shield, X } from 'lucide-react';
+import { usePathname } from 'next/navigation';
 
 import { IconButton } from '@/components/ui/buttons/icon-button';
-import { usePathname } from 'next/navigation';
 import { SidebarConfig, VENDOR_SIDEBAR_CONFIG } from '@/config/sidebar';
 import NavItem from './nav-item';
 
@@ -13,22 +13,24 @@ type SidebarProps = {
   onClose: () => void;
   config?: SidebarConfig;
   storeCard?: React.ReactNode;
+  userRole?: 'SUPER_ADMIN' | 'ADMIN' | 'VENDOR' | 'DRIVER' | 'CUSTOMER';
 };
 
 export default function Sidebar({
   onClose,
   config = VENDOR_SIDEBAR_CONFIG,
   storeCard,
+  userRole,
 }: SidebarProps) {
-  const pathName = usePathname();
+  const pathname = usePathname();
 
   const isActive = (path: string) => {
-    return pathName.startsWith(path) || pathName === path;
+    return pathname.startsWith(path) || pathname === path;
   };
 
   return (
-    <aside className="h-screen w-full bg-white border-r border-border flex flex-col pb-12 md:pb-16 ">
-      {/* ================= HEADER ================= */}
+    <aside className="h-screen w-full bg-white border-r border-border flex flex-col pb-12 md:pb-16">
+      {/* HEADER */}
       <div className="shrink-0 border-b border-border px-6 py-6 bg-white z-10">
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between">
@@ -62,9 +64,8 @@ export default function Sidebar({
         </div>
       </div>
 
-      {/* ================= SCROLLABLE CONTENT ================= */}
+      {/* BODY */}
       <div className="flex-1 overflow-y-auto overscroll-contain px-4 lg:px-6 py-6 space-y-12">
-        {/* STORE CARD - only shown for vendor */}
         {config.showStoreCard && storeCard}
 
         {config.showAdminCard && (
@@ -78,40 +79,47 @@ export default function Sidebar({
 
             <span className="flex w-fit items-center gap-2 rounded-full border border-emerald-500 bg-emerald-500/10 px-2 py-1 text-xs text-emerald-600">
               <Shield strokeWidth={0} size={14} fill="#10B981" />
-              Super Admin
+              {userRole}
             </span>
-
-            <div className="flex justify-between text-xs">
-              <span className="text-neutral-500">MFA Enabled</span>
-              <span className="font-medium text-[#10B981] flex items-center gap-1">
-                <Shield size={14} /> Active
-              </span>
-            </div>
           </div>
         )}
 
         {/* NAV */}
         <nav className="space-y-6 text-sm">
-          {config.sections.map((section, sectionIndex) => (
-            <div key={sectionIndex} className="space-y-2">
-              {section.title && (
-                <p className="text-xs capitalize text-neutral-400">
-                  {section.title}
-                </p>
-              )}
-              {section.items.map((item) => (
-                <NavItem
-                  key={item.href}
-                  label={item.label}
-                  icon={item.icon}
-                  active={isActive(item.href)}
-                  href={item.href}
-                  count={item.count}
-                  onClose={onClose}
-                />
-              ))}
-            </div>
-          ))}
+          {config.sections.map((section, sectionIndex) => {
+            const filteredItems = section.items.filter((item) => {
+              if (!item.role || item.role === 'ALL') return true;
+
+              // SUPER_ADMIN can see everything
+              if (userRole === 'SUPER_ADMIN') return true;
+
+              return item.role === userRole;
+            });
+
+            if (!filteredItems.length) return null;
+
+            return (
+              <div key={sectionIndex} className="space-y-2">
+                {section.title && (
+                  <p className="text-xs capitalize text-neutral-400">
+                    {section.title}
+                  </p>
+                )}
+
+                {filteredItems.map((item) => (
+                  <NavItem
+                    key={item.href}
+                    label={item.label}
+                    icon={item.icon}
+                    active={isActive(item.href)}
+                    href={item.href}
+                    count={item.count}
+                    onClose={onClose}
+                  />
+                ))}
+              </div>
+            );
+          })}
         </nav>
       </div>
     </aside>

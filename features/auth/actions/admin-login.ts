@@ -1,7 +1,6 @@
 'use server';
 
 import { redirect } from 'next/navigation';
-
 import {
   AdminLoginFormSchema,
   AdminLoginFormState,
@@ -24,22 +23,19 @@ export async function adminLoginAction(
       errors: validatedFields.error.flatten().fieldErrors,
       fields: {
         email: formData.get('email') as string,
-        password: formData.get('password') as string,
       },
     };
   }
 
-  const payload = validatedFields.data;
-
   let redirectTo: string | null = null;
 
   try {
-    const result = await adminLoginService(payload);
+    const result = await adminLoginService(validatedFields.data);
 
     const accessToken = result.data.accessToken;
     const refreshToken = result.data.refreshToken;
 
-    await setAuthCookies(accessToken, refreshToken);
+    await setAuthCookies(accessToken, refreshToken ?? accessToken);
 
     redirectTo = '/admin/dashboard';
   } catch (error) {
@@ -51,7 +47,6 @@ export async function adminLoginAction(
           : 'Something went wrong. Please try again.',
       fields: {
         email: formData.get('email') as string,
-        password: formData.get('password') as string,
       },
     };
   }
@@ -59,8 +54,4 @@ export async function adminLoginAction(
   if (redirectTo) {
     redirect(redirectTo);
   }
-
-  return {
-    status: 'success',
-  };
 }
