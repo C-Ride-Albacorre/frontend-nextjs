@@ -77,9 +77,9 @@ export default function Sidebar({
               <span className="text-xs text-neutral-400">Admin@c-ride.ng</span>
             </div>
 
-            <span className="flex w-fit items-center gap-2 rounded-full border border-emerald-500 bg-emerald-500/10 px-2 py-1 text-xs text-emerald-600">
-              <Shield strokeWidth={0} size={14} fill="#10B981" />
-              {userRole}
+            <span className="flex items-center w-fit justify-center gap-1 rounded-full border border-emerald-500 bg-emerald-500/10 px-2 py-1 text-xs text-emerald-600 text-[10px]">
+              <Shield strokeWidth={0} size={12} fill="#10B981" />
+               {userRole === 'SUPER_ADMIN' ? 'Super Admin' : 'Admin'}
             </span>
           </div>
         )}
