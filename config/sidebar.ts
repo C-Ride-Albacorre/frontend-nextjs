@@ -169,6 +169,11 @@ const ADMIN_SIDEBAR_SECTIONS: SidebarSection[] = [
         href: '/admin/vendor-onboarding',
       },
       {
+        label: 'Stores',
+        icon: ShoppingBag,
+        href: '/admin/stores',
+      },
+      {
         label: 'Customer Accounts',
         icon: Users,
         href: '/admin/customer-accounts',
@@ -242,12 +247,13 @@ const ADMIN_SIDEBAR_SECTIONS: SidebarSection[] = [
   },
   {
     title: 'Security & System',
-    items: [{
-      label: 'Create Admin',
-      icon: ShieldCheck,
-      href: '/admin/create-admin',
-      role: 'SUPER_ADMIN',
-    },
+    items: [
+      {
+        label: 'Create Admin',
+        icon: ShieldCheck,
+        href: '/admin/create-admin',
+        role: 'SUPER_ADMIN',
+      },
       {
         label: 'Fraud Detection',
         icon: TriangleAlert,

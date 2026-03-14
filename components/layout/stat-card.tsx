@@ -1,6 +1,11 @@
 import Card from '@/components/layout/card';
 import clsx from 'clsx';
-import { ArrowUpRight, ArrowDownRight, TrendingUp, TrendingDown } from 'lucide-react';
+import {
+  ArrowUpRight,
+  ArrowDownRight,
+  TrendingUp,
+  TrendingDown,
+} from 'lucide-react';
 
 export default function StatCard({
   title,
@@ -47,7 +52,13 @@ export default function StatCard({
 
       {valueInfo && <p className="text-sm text-neutral-500">{valueInfo}</p>}
 
-      <p className={`text-3xl font-medium ${valueClassName}`}>{value}</p>
+      <p className={`text-3xl font-medium ${valueClassName}`}>
+        {value !== undefined && value !== null ? (
+          value
+        ) : (
+          <span className="inline-block h-8 w-16 animate-pulse rounded-md bg-linear-to-r from-neutral-200 via-neutral-100 to-neutral-200" />
+        )}
+      </p>
 
       {trend && (
         <div

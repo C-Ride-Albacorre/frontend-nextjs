@@ -3,18 +3,22 @@
 import clsx from 'clsx';
 import { usePathname } from 'next/navigation';
 import { Button } from '../buttons/button';
-import { BadgeCheck, Download } from 'lucide-react';
-import { div } from 'framer-motion/client';
+import { Download } from 'lucide-react';
 
 export default function AdminDashboardHeader() {
   const pathName = usePathname();
 
   const pageTitle = clsx({
     'Admin Dashboard': pathName === '/admin/dashboard',
+    'Vendor Management': pathName === '/admin/vendor-onboarding',
+    'Store Management': pathName === '/admin/stores',
   });
 
   const pageDescription = clsx({
     'Platform overview and key metrics': pathName === '/admin/dashboard',
+    'Review applications and manage vendor accounts':
+      pathName === '/admin/vendor-onboarding',
+    'Manage store details and performance': pathName === '/admin/stores',
   });
 
   return (
@@ -26,31 +30,42 @@ export default function AdminDashboardHeader() {
         <p className="text-sm text-neutral-500">{pageDescription}</p>
       </div>
 
-      {pathName === '/admin/dashboard' && (
-        <div className="flex items-center gap-3">
-          <Button variant="white" size="icon" spacing="sm" className="text-xs">
-            Today
-          </Button>
+      <div className="flex items-center gap-3">
+        {pathName === '/admin/dashboard' && (
+          <div className="flex items-center gap-3">
+            <Button
+              variant="white"
+              size="icon"
+              spacing="sm"
+              className="text-xs"
+            >
+              Today
+            </Button>
 
-          <Button variant="white" size="icon" spacing="sm" className="text-xs">
-            This Week
-          </Button>
+            <Button
+              variant="white"
+              size="icon"
+              spacing="sm"
+              className="text-xs"
+            >
+              This Week
+            </Button>
 
-          <Button variant="white" size="icon" spacing="sm" className="text-xs">
-            This Month
-          </Button>
-
-          <Button
-            variant="primary"
-            size="icon"
-            spacing="sm"
-            className="text-xs"
-          >
-            <Download size={16} />
-            Export Data
-          </Button>
-        </div>
-      )}
+            <Button
+              variant="white"
+              size="icon"
+              spacing="sm"
+              className="text-xs"
+            >
+              This Month
+            </Button>
+          </div>
+        )}
+        <Button variant="primary" size="icon" spacing="sm" className="text-xs">
+          <Download size={16} />
+          Export Data
+        </Button>
+      </div>
     </header>
   );
 }
