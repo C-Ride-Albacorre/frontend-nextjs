@@ -14,6 +14,7 @@ type ButtonVariant =
   | 'ghost'
   | 'gray'
   | 'green'
+  | 'green-secondary'
   | 'green-outline'
   | 'green-secondary-outline'
   | 'black'

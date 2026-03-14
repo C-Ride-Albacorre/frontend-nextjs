@@ -6,9 +6,11 @@ type Props = {
 };
 
 const tabs = [
-  { key: 'active', label: 'Active Stores', count: 5 },
-  { key: 'suspended', label: 'Suspended', count: 1 },
-  { key: 'closed', label: 'Closed', count: 2 },
+  { key: 'all', label: 'All Stores' },
+  { key: 'PENDING_APPROVAL', label: 'Pending Approval' },
+  { key: 'ACTIVE', label: 'Active' },
+  { key: 'SUSPENDED', label: 'Suspended' },
+  { key: 'REJECTED', label: 'Rejected' },
 ];
 
 export default function StoreTabs({ activeTab, setActiveTab }: Props) {
@@ -30,10 +32,6 @@ export default function StoreTabs({ activeTab, setActiveTab }: Props) {
           `}
         >
           {tab.label}
-
-          <span className="bg-white/08 px-2 py-0.5 rounded-full text-xs">
-            {tab.count}
-          </span>
         </Button>
       ))}
     </div>

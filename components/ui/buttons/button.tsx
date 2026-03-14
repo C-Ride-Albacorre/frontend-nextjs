@@ -79,6 +79,9 @@ export function Button({
       'border border-[#10B981] text-[#10B981] hover:bg-[#10B981] hover:text-white':
         variant === 'green-outline',
 
+      'border border-[#10B981]/20 text-[#10B981] bg-green-50/30 hover:bg-[#10B981]/10':
+        variant === 'green-secondary',
+
       'border border-[#10B981] bg-[#10B981]/10 hover:bg-[#10B981]/15':
         variant === 'green-secondary-outline',
 
@@ -90,7 +93,7 @@ export function Button({
       'border border-[#E7000B] text-[#E7000B] hover:bg-[#B0000A] hover:text-white':
         variant === 'red-outline',
 
-      'border border-red-200 hover:bg-red-50 text-red-500 bg-white':
+      'border border-red-200 bg-red-50/30 hover:bg-red-50 text-red-500':
         variant === 'red-secondary',
 
       // sizes

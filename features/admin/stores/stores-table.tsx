@@ -1,67 +1,56 @@
 import Card from '@/components/layout/card';
 import StoreRow from './stores-row';
+import { AdminStore } from './types';
 
 type Props = {
-  status: string;
+  stores: AdminStore[];
+  onView: (store: AdminStore) => void;
+  onAction: (
+    storeId: string,
+    action: 'ACTIVE' | 'REJECTED',
+    rejectionReason?: string,
+  ) => Promise<{ success: boolean; message: string }>;
 };
 
-const stores = [
-  {
-    name: 'Lagos Gourmet Kitchen',
-    code: 'STR–001',
-    owner: 'Adebayo Williams',
-    location: 'Ikoyi, Lagos',
-    email: 'info@lagosgourmet.ng',
-    category: 'Restaurant',
-    rc: 'RC–1234567',
-    status: 'Active',
-    logo: '/assets/image/placeholder.png',
-  },
-  {
-    name: 'Healthy Bites Cake',
-    code: 'STR–002',
-    owner: 'Chinwe Okafor',
-    location: 'Lekki, Lagos',
-    email: 'contact@healthybites.com',
-    category: 'Cafe & Bakery',
-    rc: 'RC–7654321',
-    status: 'Active',
-    logo: '/assets/image/placeholder.png',
-  },
-  {
-    name: 'QuickMart Express',
-    code: 'STR–003',
-    owner: 'Emeka Nwankwo',
-    location: 'Victoria Island, Lagos',
-    email: 'hello@quickmart.ng',
-    category: 'Retail',
-    rc: 'RC–9876543',
-    status: 'Suspended',
-    logo: '/assets/image/placeholder.png',
-  },
-];
-
-export default function StoresTable({ status }: Props) {
+export default function StoresTable({ stores, onView, onAction }: Props) {
   return (
     <Card spacing="none" className="bg-white overflow-hidden">
-      <table className="w-full text-sm">
-        <thead className="border-b border-border bg-neutral-50 font-medium">
-          <tr className="text-left text-neutral-600 font-medium">
-            <th className="px-6 py-4">Store</th>
-            <th className="px-6 py-4">Owner</th>
-            <th className="px-6 py-4">Contact</th>
-            <th className="px-6 py-4">Category</th>
-            <th className="px-6 py-4">Status</th>
-            <th className="px-6 py-4 text-right">Actions</th>
-          </tr>
-        </thead>
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm min-w-200">
+          <thead className="border-b border-border bg-neutral-50 font-medium">
+            <tr className="text-left text-neutral-600 font-medium">
+              <th className="px-6 py-4">Store</th>
+              <th className="px-6 py-4">Owner</th>
+              <th className="px-6 py-4">Contact</th>
+              <th className="px-6 py-4">Products</th>
+              <th className="px-6 py-4">Status</th>
+              <th className="px-6 py-4 text-right">Actions</th>
+            </tr>
+          </thead>
 
-        <tbody>
-          {stores.map((store, index) => (
-            <StoreRow key={index} store={store} />
-          ))}
-        </tbody>
-      </table>
+          <tbody>
+            {stores.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={6}
+                  className="px-6 py-16 text-center text-neutral-400"
+                >
+                  No stores found
+                </td>
+              </tr>
+            ) : (
+              stores.map((store) => (
+                <StoreRow
+                  key={store.id}
+                  store={store}
+                  onView={onView}
+                  onAction={onAction}
+                />
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
     </Card>
   );
 }

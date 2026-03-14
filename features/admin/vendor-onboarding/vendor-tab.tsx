@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/buttons/button";
+import { Button } from '@/components/ui/buttons/button';
 
 type Props = {
   activeTab: string;
@@ -6,20 +6,23 @@ type Props = {
 };
 
 const tabs = [
-  { key: 'pending', label: 'Pending Application', count: 3 },
-  { key: 'active', label: 'Active Vendors', count: 2 },
-  { key: 'suspended', label: 'Suspended', count: 1 },
-  { key: 'rejected', label: 'Rejected', count: 1 },
+  { key: 'all', label: 'All Vendors' },
+  { key: 'PENDING_EMAIL_VERIFICATION', label: 'Pending Email' },
+  { key: 'PENDING_PHONE_VERIFICATION', label: 'Pending Phone' },
+  { key: 'PENDING_ONBOARDING', label: 'Pending Onboarding' },
+  { key: 'UNDER_REVIEW', label: 'Under Review' },
+  { key: 'APPROVED', label: 'Approved' },
+  { key: 'ACTIVE', label: 'Active' },
+  { key: 'REJECTED', label: 'Rejected' },
+  { key: 'SUSPENDED', label: 'Suspended' },
 ];
 
 export default function VendorTabs({ activeTab, setActiveTab }: Props) {
   return (
     <div className="flex gap-3 flex-wrap">
-
       {tabs.map((tab) => (
         <Button
-
-        size="icon"
+          size="icon"
           key={tab.key}
           onClick={() => setActiveTab(tab.key)}
           className={`flex items-center gap-2 px-4 py-2 rounded-xl border text-sm
@@ -33,10 +36,6 @@ export default function VendorTabs({ activeTab, setActiveTab }: Props) {
           `}
         >
           {tab.label}
-
-          <span className="bg-white/08 px-2 py-0.5 rounded-full text-xs">
-            {tab.count}
-          </span>
         </Button>
       ))}
     </div>
