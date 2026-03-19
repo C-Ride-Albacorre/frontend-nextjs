@@ -8,6 +8,7 @@ import { usePathname } from 'next/navigation';
 import { IconButton } from '@/components/ui/buttons/icon-button';
 import { SidebarConfig, VENDOR_SIDEBAR_CONFIG } from '@/config/sidebar';
 import NavItem from './nav-item';
+import Logout from '@/features/auth/components/logout/logout';
 
 type SidebarProps = {
   onClose: () => void;
@@ -69,7 +70,7 @@ export default function Sidebar({
         {config.showStoreCard && storeCard}
 
         {config.showAdminCard && (
-          <div className="rounded-2xl bg-primary/10 border border-border p-4 space-y-4">
+          <div className="rounded-2xl bg-primary/10 border border-border p-4 space-y-2">
             <div>
               <p className="font-medium text-primary-text-100 text-sm">
                 Admin User
@@ -77,10 +78,12 @@ export default function Sidebar({
               <span className="text-xs text-neutral-400">Admin@c-ride.ng</span>
             </div>
 
-            <span className="flex items-center w-fit justify-center gap-1 rounded-full border border-emerald-500 bg-emerald-500/10 px-2 py-1 text-xs text-emerald-600 text-[10px]">
-              <Shield strokeWidth={0} size={12} fill="#10B981" />
-               {userRole === 'SUPER_ADMIN' ? 'Super Admin' : 'Admin'}
-            </span>
+            <div>
+              <span className="flex w-fit items-center justify-center gap-0.5 rounded-full bg-[#10B981]/20  px-1 py-1  text-[8px] text-[#10B981] border border-[#10B981] ">
+                <Shield strokeWidth={0} size={12} fill="#10B981" />
+                {userRole === 'SUPER_ADMIN' ? 'Super Admin' : 'Admin'}
+              </span>
+            </div>
           </div>
         )}
 
@@ -106,17 +109,23 @@ export default function Sidebar({
                   </p>
                 )}
 
-                {filteredItems.map((item) => (
-                  <NavItem
-                    key={item.href}
-                    label={item.label}
-                    icon={item.icon}
-                    active={isActive(item.href)}
-                    href={item.href}
-                    count={item.count}
-                    onClose={onClose}
-                  />
-                ))}
+                {filteredItems.map((item) =>
+                  item.label === 'Logout' ? (
+                    <div key={item.href || item.label}>
+                      <Logout onClose={onClose} />
+                    </div>
+                  ) : (
+                    <NavItem
+                      key={item.href || item.label}
+                      label={item.label}
+                      icon={item.icon}
+                      active={isActive(item.href)}
+                      href={item.href}
+                      count={item.count}
+                      onClose={onClose}
+                    />
+                  ),
+                )}
               </div>
             );
           })}

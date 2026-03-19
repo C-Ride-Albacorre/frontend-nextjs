@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation';
 import { logoutService } from '../services/logout';
 import { clearAuthCookies, getCookie } from '@/utils/cookies';
 
-export async function logoutAction() {
+export async function logoutAction(redirectTo: string = '/user/login') {
   const accessToken = await getCookie('accessToken');
 
   try {
@@ -20,5 +20,5 @@ export async function logoutAction() {
     await clearAuthCookies();
   }
 
-  redirect('/user/login');
+  redirect(redirectTo);
 }

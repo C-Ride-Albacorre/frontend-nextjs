@@ -61,7 +61,7 @@ export default function VendorStoreCard() {
   }
 
   return (
-    <div className="rounded-2xl bg-primary/10 border border-border p-4 space-y-4">
+    <div className="rounded-2xl bg-primary/10 border border-border p-4">
       <div className="flex items-start gap-3">
         {/* Store Logo */}
         {store.storeLogo ? (
@@ -92,29 +92,29 @@ export default function VendorStoreCard() {
           <span className="text-[10px]  truncate block text-neutral-500">
             {store.storeCategory}
           </span>
-
-          <div className="flex justify-between items-center ">
-            {/* Status Badge */}
-            {store.status === 'ACTIVE' && (
-              <span className="flex w-fit items-center justify-center gap-1.5 rounded-full bg-[#10B981]  px-1.5 py-0.5  text-[10px] text-white shadow ">
-                <Star strokeWidth={0} size={14} fill="white" />
-                Active
-              </span>
-            )}
-
-            {store.status === 'PENDING_APPROVAL' && (
-              <span className="flex w-fit items-center gap-2 rounded-full  bg-primary-text-100 px-1.5 py-0.5 text-[10px] text-primary justify-center">
-                Pending
-              </span>
-            )}
-
-            {store.status === 'REJECTED' && (
-              <span className="flex w-fit items-center gap-2 rounded-full border border-red-500 bg-red-500/10 px-1.5 py-0.5 text-[10px] text-red-600">
-                Requires Attention
-              </span>
-            )}
-          </div>
         </div>
+      </div>
+
+      <div className="flex justify-end items-center ">
+        {/* Status Badge */}
+        {store.status === 'ACTIVE' && (
+          <span className="flex w-fit items-center justify-center gap-0.5 rounded-full bg-[#10B981]/20  px-2 py-0.5  text-[8px] text-[#10B981] border border-[#10B981] ">
+            <Star strokeWidth={0} size={12} fill="#10B981" />
+            Active
+          </span>
+        )}
+
+        {store.status === 'PENDING_APPROVAL' && (
+          <span className="flex w-fit items-center gap-2 rounded-full  bg-primary-text-100 px-1.5 py-0.5 text-[10px] text-primary justify-center">
+            Pending
+          </span>
+        )}
+
+        {store.status === 'REJECTED' && (
+          <span className="flex w-fit items-center gap-2 rounded-full border border-red-500 bg-red-500/10 px-1.5 py-0.5 text-[10px] text-red-600">
+            Requires Attention
+          </span>
+        )}
       </div>
     </div>
   );

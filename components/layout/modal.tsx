@@ -1,13 +1,19 @@
+'use client';
 
-
+import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 import { ModalProps } from '@/types/modal';
 import { IconButton } from '../ui/buttons/icon-button';
 
-export default function Modal({ isModalOpen, onClose, children, wrapperClassName }: ModalProps) {
+export default function Modal({
+  isModalOpen,
+  onClose,
+  children,
+  wrapperClassName,
+}: ModalProps) {
   if (!isModalOpen) return null;
 
-  return (
+  return createPortal(
     <div
       onClick={onClose}
       className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center px-4 py-8 h-full w-full"
@@ -45,6 +51,7 @@ export default function Modal({ isModalOpen, onClose, children, wrapperClassName
         {/* SCROLLABLE CONTENT */}
         <div className="overflow-y-auto p-6 md:p-8">{children}</div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }

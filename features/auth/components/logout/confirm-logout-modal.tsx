@@ -13,7 +13,6 @@ export default function ConfirmLogoutModal({
   isPending: boolean;
 }) {
   return (
-    <>
       <Modal
         isModalOpen={confirmLogout}
         onClose={() => setConfirmLogout(false)}
@@ -49,6 +48,5 @@ export default function ConfirmLogoutModal({
           </div>
         </div>
       </Modal>
-    </>
   );
 }
