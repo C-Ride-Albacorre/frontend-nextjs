@@ -8,7 +8,7 @@ import TopDrivers from '@/features/admin/dashboard/components/top-drivers';
 import TopVendors from '@/features/admin/dashboard/components/top-vendors';
 import { getDashboardStatsAction } from '@/features/admin/dashboard/action';
 
-export const revalidate = 60;
+
 
 export default async function AdminDashboard() {
   let data = null;

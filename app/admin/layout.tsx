@@ -1,4 +1,4 @@
-// app/admin/layout.tsx
+
 
 import AdminLayoutClient from '@/features/admin/layout-client'
 import { getCurrentUser } from '@/utils/auth'

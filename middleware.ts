@@ -24,7 +24,10 @@ const ADMIN_PROTECTED_ROUTES = [
   '/admin/dashboard',
   '/admin/analytics',
   '/admin/vendor-onboarding',
-  '/admin/customer-accounts',
+  '/admin/create-admin',
+  '/admin/stores',
+  '/admin/category',
+
 ];
 
 const USER_AUTH_ROUTES = ['/user/register', '/user/login'];

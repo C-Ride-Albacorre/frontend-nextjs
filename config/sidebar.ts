@@ -27,6 +27,7 @@ import {
   HelpCircle,
   User2,
   Users2,
+  ScanBarcode,
 } from 'lucide-react';
 
 export type NavItemProps = {
@@ -155,6 +156,13 @@ const ADMIN_SIDEBAR_SECTIONS: SidebarSection[] = [
         icon: BarChart3,
         href: '/admin/analytics',
       },
+      {
+        label: 'Product Category',
+        icon: ScanBarcode,
+        href: '/admin/category',
+      },
+
+    
     ],
   },
   {

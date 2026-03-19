@@ -12,6 +12,7 @@ export default function AdminDashboardHeader() {
     'Admin Dashboard': pathName === '/admin/dashboard',
     'Vendor Management': pathName === '/admin/vendor-onboarding',
     'Store Management': pathName === '/admin/stores',
+    'Category Management': pathName === '/admin/category',
   });
 
   const pageDescription = clsx({
@@ -19,6 +20,7 @@ export default function AdminDashboardHeader() {
     'Review applications and manage vendor accounts':
       pathName === '/admin/vendor-onboarding',
     'Manage store details and performance': pathName === '/admin/stores',
+    'Manage product categories': pathName === '/admin/category',
   });
 
   return (
