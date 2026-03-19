@@ -1,39 +1,19 @@
+
 'use client';
 
 import { useState } from 'react';
-import { Store, Loader2 } from 'lucide-react';
-import { AdminStore } from './types';
-import { Button } from '@/components/ui/buttons/button';
+import { Store as StoreIcon, Loader2 } from 'lucide-react';
 import clsx from 'clsx';
+import {  StoreRowProps } from '../types';
+import { Button } from '@/components/ui/buttons/button';
+import { statusStyles } from '../data';
+import { formatStatus } from '../helpers';
 
-type Props = {
-  store: AdminStore;
-  onView: (store: AdminStore) => void;
-  onAction: (
-    storeId: string,
-    action: 'ACTIVE' | 'REJECTED',
-    rejectionReason?: string,
-  ) => Promise<{ success: boolean; message: string }>;
-};
-
-const statusStyles: Record<string, string> = {
-  ACTIVE: 'bg-emerald-100 text-emerald-600',
-  PENDING_APPROVAL: 'bg-orange-100 text-orange-600',
-  SUSPENDED: 'bg-red-100 text-red-600',
-  REJECTED: 'bg-red-100 text-red-600',
-  CLOSED: 'bg-neutral-100 text-neutral-600',
-};
-
-function formatStatus(status: string) {
-  return status
-    .replace(/_/g, ' ')
-    .toLowerCase()
-    .replace(/\b\w/g, (c) => c.toUpperCase());
-}
-
-export default function StoreRow({ store, onView, onAction }: Props) {
+export default function StoreRow({ store, onView, onAction }: StoreRowProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const isReviewable = store.status === 'PENDING_APPROVAL';
+  const isPending = store.status === 'PENDING_APPROVAL';
+
+  console.log('store', store);
 
   const handleAction = async (action: 'ACTIVE' | 'REJECTED') => {
     setIsSubmitting(true);
@@ -42,12 +22,12 @@ export default function StoreRow({ store, onView, onAction }: Props) {
   };
 
   return (
-    <tr className="border-b border-border hover:bg-neutral-50">
+    <tr className="border-b border-border hover:bg-neutral-50 text-sm">
       {/* Store */}
       <td className="px-6 py-5">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
-            <Store size={18} className="text-white" />
+          <div className="w-10 h-10 rounded-xl bg-linear-to-b from-primary to-primary-hover flex items-center justify-center">
+            <StoreIcon size={18} className="text-white" />
           </div>
           <div>
             <p className="font-medium">{store.name}</p>
@@ -58,7 +38,7 @@ export default function StoreRow({ store, onView, onAction }: Props) {
         </div>
       </td>
 
-      {/* Owner */}
+      {/* Vendor */}
       <td className="px-6 py-5">
         <p className="font-medium">{store.user.name}</p>
         <p className="text-neutral-400 text-xs">{store.user.businessName}</p>
@@ -79,7 +59,7 @@ export default function StoreRow({ store, onView, onAction }: Props) {
       <td className="px-6 py-5">
         <span
           className={clsx(
-            'px-1 py-1 text-[10px] rounded-full',
+            'px-2 py-1 text-[10px] rounded-full',
             statusStyles[store.status] ?? 'bg-neutral-100 text-neutral-600',
           )}
         >
@@ -90,13 +70,12 @@ export default function StoreRow({ store, onView, onAction }: Props) {
       {/* Actions */}
       <td className="px-6 py-5">
         <div className="flex justify-end gap-1.5">
-          {isReviewable &&
+          {isPending &&
             (isSubmitting ? (
               <Loader2 size={18} className="animate-spin text-neutral-400" />
             ) : (
               <>
                 <Button
-                  title="Approve"
                   onClick={() => handleAction('ACTIVE')}
                   disabled={isSubmitting}
                   variant="green-secondary"
@@ -105,7 +84,6 @@ export default function StoreRow({ store, onView, onAction }: Props) {
                   Approve
                 </Button>
                 <Button
-                  title="Decline"
                   onClick={() => onView(store)}
                   disabled={isSubmitting}
                   variant="red-secondary"

@@ -134,7 +134,12 @@ export default function StoreCatalogueWrapper({
             <p className="text-neutral-500 mb-4">
               No stores yet. Add your first store to get started.
             </p>
-            <Button variant="primary" size="md" href="/vendor/store/new-store">
+            <Button
+              variant="primary"
+              size="md"
+              href="/vendor/store/new-store"
+              leftIcon={<Store size={16} />}
+            >
               Add Store
             </Button>
           </div>

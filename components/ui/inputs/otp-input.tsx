@@ -6,6 +6,7 @@ export function OtpInput({
   name,
   onChange,
   onKeyDown,
+  onPaste,
   maxLength,
   inputMode,
   className,
@@ -19,6 +20,7 @@ export function OtpInput({
       name={name}
       onChange={onChange}
       onKeyDown={onKeyDown}
+      onPaste={onPaste}
       maxLength={maxLength}
       className={`
         aspect-square

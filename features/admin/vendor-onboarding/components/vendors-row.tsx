@@ -1,12 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { Eye, CheckCircle, XCircle, Store, Loader2 } from 'lucide-react';
-import { Vendor } from './types';
+import { Store, Loader2, UserRound } from 'lucide-react';
 import clsx from 'clsx';
 import { Button } from '@/components/ui/buttons/button';
-
-const REVIEWABLE_STATUSES = ['UNDER_REVIEW', 'READY_FOR_REVIEW'];
+import { Vendor } from '../types';
+import { statusStyles } from '../data';
+import { formatStatus, REVIEWABLE_STATUSES } from '../helpers';
 
 type Props = {
   vendor: Vendor;
@@ -17,27 +17,6 @@ type Props = {
     rejectionReason?: string,
   ) => Promise<{ success: boolean; message: string }>;
 };
-
-const statusStyles: Record<string, string> = {
-  APPROVED: 'bg-emerald-100 text-emerald-600',
-  ACTIVE: 'bg-emerald-100 text-emerald-600',
-  UNDER_REVIEW: 'bg-blue-100 text-blue-600',
-  READY_FOR_REVIEW: 'bg-blue-100 text-blue-600',
-  PENDING_VERIFICATION: 'bg-orange-100 text-orange-600',
-  PENDING_ONBOARDING: 'bg-orange-100 text-orange-600',
-  PENDING_DOCUMENTS: 'bg-orange-100 text-orange-600',
-  PENDING_EMAIL_VERIFICATION: 'bg-orange-100 text-orange-600',
-  PENDING_PHONE_VERIFICATION: 'bg-orange-100 text-orange-600',
-  REJECTED: 'bg-red-100 text-red-600',
-  SUSPENDED: 'bg-red-100 text-red-600',
-};
-
-function formatStatus(status: string) {
-  return status
-    .replace(/_/g, ' ')
-    .toLowerCase()
-    .replace(/\b\w/g, (c) => c.toUpperCase());
-}
 
 export default function VendorRow({ vendor, onView, onAction }: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -57,14 +36,13 @@ export default function VendorRow({ vendor, onView, onAction }: Props) {
   };
 
   return (
-    <tr className="border-b border-border hover:bg-neutral-50">
+    <tr className="border-b border-border hover:bg-neutral-50 text-sm">
       {/* Vendor */}
       <td className="px-6 py-5">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
-            <Store size={18} className="text-white" />
+            <UserRound size={18} className="text-white" />
           </div>
-
           <div>
             <p className="font-medium">{businessName}</p>
             <p className="text-neutral-400 text-xs">
@@ -98,7 +76,7 @@ export default function VendorRow({ vendor, onView, onAction }: Props) {
       <td className="px-6 py-5">
         <span
           className={clsx(
-            'px-1 py-1 text-[10px] rounded-full',
+            'px-2 py-1 text-[10px] rounded-full',
             statusStyles[vendor.status] ?? 'bg-neutral-100 text-neutral-600',
           )}
         >
@@ -115,7 +93,6 @@ export default function VendorRow({ vendor, onView, onAction }: Props) {
             ) : (
               <>
                 <Button
-                  title="Approve"
                   onClick={() => handleAction('APPROVED')}
                   disabled={isSubmitting}
                   variant="green-secondary"
@@ -124,7 +101,6 @@ export default function VendorRow({ vendor, onView, onAction }: Props) {
                   Approve
                 </Button>
                 <Button
-                  title="Decline"
                   onClick={() => onView(vendor)}
                   disabled={isSubmitting}
                   variant="red-secondary"

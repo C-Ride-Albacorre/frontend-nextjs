@@ -40,7 +40,7 @@ export default function CreateAdminForm() {
 
   return (
     <>
-      <div className="h-full w-full flex justify-center items-center">
+      <div className="h-full w-full flex justify-center md:items-center py-12 px-4 md:px-0 md:py-0">
         <Card spacing="lg" gap="lg" className="w-full max-w-2xl bg-white">
           <div className="space-y-2 text-center">
             <h1 className="text-2xl font-semibold">Create Admin</h1>

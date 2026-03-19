@@ -25,6 +25,8 @@ import {
   CreditCard,
   MessageSquare,
   HelpCircle,
+  User2,
+  Users2,
 } from 'lucide-react';
 
 export type NavItemProps = {
@@ -165,12 +167,12 @@ const ADMIN_SIDEBAR_SECTIONS: SidebarSection[] = [
       },
       {
         label: 'Vendor Onboarding',
-        icon: Store,
+        icon: Users2,
         href: '/admin/vendor-onboarding',
       },
       {
         label: 'Stores',
-        icon: ShoppingBag,
+        icon: Store,
         href: '/admin/stores',
       },
       {

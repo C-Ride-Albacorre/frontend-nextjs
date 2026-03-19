@@ -11,6 +11,7 @@ import Textarea from '@/components/ui/inputs/textarea';
 import OnboardingFormHeader from '../form-header';
 import { Button } from '@/components/ui/buttons/button';
 import { businessInfoAction } from '../../action';
+import { Select } from '@/components/ui/inputs/select';
 
 export default function BusinessInfoForm() {
   const [fields, setFields] = useState({
@@ -67,14 +68,22 @@ export default function BusinessInfoForm() {
           errorMessage={isError ? state.errors?.businessName?.[0] : undefined}
         />
 
-        <Input
+        <Select
           id="businessType"
           name="businessType"
           label="Business Type"
-          type="text"
-          placeholder="Enter your business type"
           value={fields.businessType}
-          onChange={handleChange('businessType')}
+          options={[
+            { value: 'food', label: 'Food' },
+            { value: 'grocery', label: 'Grocery' },
+            { value: 'pharmacy', label: 'Pharmacy' },
+            { value: 'parcel', label: 'Parcel' },
+            { value: 'laundry', label: 'Laundry' },
+            { value: 'services', label: 'Services' },
+          ]}
+          onChange={(value) =>
+            setFields((prev) => ({ ...prev, businessType: value }))
+          }
           errorMessage={isError ? state.errors?.businessType?.[0] : undefined}
         />
 
@@ -94,9 +103,9 @@ export default function BusinessInfoForm() {
         <Input
           id="taxId"
           name="taxId"
-          label="TIN No."
+          label="Tax ID"
           type="text"
-          placeholder="Enter your TIN number"
+          placeholder="Enter your Tax ID number"
           value={fields.taxId}
           onChange={handleChange('taxId')}
           errorMessage={isError ? state.errors?.taxId?.[0] : undefined}
@@ -132,7 +141,7 @@ export default function BusinessInfoForm() {
               !fields.businessName.trim() ||
               !fields.businessType.trim() ||
               !fields.registrationNumber.trim() ||
-              !fields.taxId.trim()
+              !fields.taxId.trim() || !fields.description.trim()
             }
             rightIcon={<ChevronRight size={16} />}
           >

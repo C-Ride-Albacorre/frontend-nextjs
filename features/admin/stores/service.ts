@@ -1,21 +1,32 @@
+
 import { BASE_URL } from '@/config/api';
 import { ApiError } from '@/features/libs/api-error';
 import { authFetch } from '@/features/libs/auth-fetch';
 import { redirect } from 'next/navigation';
 import { ApproveStorePayload } from './types';
 
-export async function getStoresService(page = 1, limit = 10) {
-  const res = await authFetch(
-    `${BASE_URL}/admin/stores?page=${page}&limit=${limit}`,
-    { method: 'GET' },
-  );
+export async function getStoresService(
+  page = 1,
+  limit = 10,
+  status?: string,
+  search?: string,
+  vendorId?: string,
+) {
+  const params = new URLSearchParams({
+    page: String(page),
+    limit: String(limit),
+    ...(status && { status }),
+    ...(search && { search }),
+    ...(vendorId && { vendorId }),
+  });
 
-  if (res.status === 401) {
-    redirect('/admin/login');
-  }
+  const res = await authFetch(`${BASE_URL}/admin/stores?${params}`, {
+    method: 'GET',
+  });
+
+  if (res.status === 401) redirect('/admin/login');
 
   const data = await res.json();
-  console.log('getStoresService response:', data);
 
   if (!res.ok) {
     throw new ApiError(
@@ -32,12 +43,9 @@ export async function getStoreByIdService(storeId: string) {
     method: 'GET',
   });
 
-  if (res.status === 401) {
-    redirect('/admin/login');
-  }
+  if (res.status === 401) redirect('/admin/login');
 
   const data = await res.json();
-  console.log('getStoreByIdService response:', data);
 
   if (!res.ok) {
     throw new ApiError(
@@ -59,12 +67,9 @@ export async function approveStoreService(
     body: JSON.stringify(payload),
   });
 
-  if (res.status === 401) {
-    redirect('/admin/login');
-  }
+  if (res.status === 401) redirect('/admin/login');
 
   const data = await res.json();
-  console.log('approveStoreService response:', data);
 
   if (!res.ok) {
     throw new ApiError(

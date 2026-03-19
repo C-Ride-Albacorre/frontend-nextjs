@@ -1,23 +1,30 @@
+// features/admin/vendor-onboarding/service.ts
 import { BASE_URL } from '@/config/api';
 import { ApiError } from '@/features/libs/api-error';
 import { authFetch } from '@/features/libs/auth-fetch';
 import { redirect } from 'next/navigation';
 import { ApproveVendorPayload } from './types';
 
-export async function getVendorsService(page = 1, limit = 10) {
-  const res = await authFetch(
-    `${BASE_URL}/admin/vendors?page=${page}&limit=${limit}`,
-    {
-      method: 'GET',
-    },
-  );
+export async function getVendorsService(
+  page = 1,
+  limit = 10,
+  status?: string,
+  search?: string,
+) {
+  const params = new URLSearchParams({
+    page: String(page),
+    limit: String(limit),
+    ...(status && { status }),
+    ...(search && { search }),
+  });
 
-  if (res.status === 401) {
-    redirect('/admin/login');
-  }
+  const res = await authFetch(`${BASE_URL}/admin/vendors?${params}`, {
+    method: 'GET',
+  });
+
+  if (res.status === 401) redirect('/admin/login');
 
   const data = await res.json();
-  console.log('getVendorsService response:', data);
 
   if (!res.ok) {
     throw new ApiError(
@@ -34,12 +41,9 @@ export async function getVendorByIdService(vendorId: string) {
     method: 'GET',
   });
 
-  if (res.status === 401) {
-    redirect('/admin/login');
-  }
+  if (res.status === 401) redirect('/admin/login');
 
   const data = await res.json();
-  console.log('getVendorByIdService response:', data);
 
   if (!res.ok) {
     throw new ApiError(
@@ -61,12 +65,9 @@ export async function approveVendorService(
     body: JSON.stringify(payload),
   });
 
-  if (res.status === 401) {
-    redirect('/admin/login');
-  }
+  if (res.status === 401) redirect('/admin/login');
 
   const data = await res.json();
-  console.log('approveVendorService response:', data);
 
   if (!res.ok) {
     throw new ApiError(

@@ -41,6 +41,24 @@ export default function VerifyClient({
     }
   };
 
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    const pasted = e.clipboardData
+      .getData('text')
+      .replace(/\D/g, '')
+      .slice(0, 6);
+    if (!pasted) return;
+
+    const newCode = [...code];
+    for (let i = 0; i < pasted.length; i++) {
+      newCode[i] = pasted[i];
+    }
+    setCode(newCode);
+
+    const focusIndex = Math.min(pasted.length, 5);
+    inputsRef.current[focusIndex]?.focus();
+  };
+
   const otp = code.join('');
 
   return (
@@ -77,6 +95,7 @@ export default function VerifyClient({
               }}
               value={digit}
               onChange={(e) => handleChange(e.target.value, index)}
+              onPaste={handlePaste}
               maxLength={1}
               inputMode="numeric"
               onKeyDown={(e) => {

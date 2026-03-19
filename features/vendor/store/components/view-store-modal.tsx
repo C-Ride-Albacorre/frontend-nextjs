@@ -108,7 +108,7 @@ export default function ViewStoreModal({
               src={storeLogo}
               alt={storeName}
               fill
-              className="object-cover"
+              className="object-contain"
               unoptimized
             />
           </div>

@@ -62,7 +62,7 @@ export default function Input({
           className=" w-full bg-transparent 
     text-base md:text-sm 
     outline-none  placeholder:font-normal
-    placeholder:text-sm placeholder:text-neutral-400 disabled:cursor-not-allowed"
+    placeholder:text-xs placeholder:text-neutral-400 disabled:cursor-not-allowed"
           {...props}
         />
 

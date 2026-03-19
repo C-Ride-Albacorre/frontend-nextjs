@@ -26,8 +26,8 @@ export function Select({
   const [open, setOpen] = useState(false);
 
   const wrapperClasses = clsx(
-    'relative flex w-full items-center gap-2 rounded-xl px-4 py-3 text-base md:text-sm outline-none cursor-pointer',
-    'border border-border focus-within:ring focus-within:ring-primary',
+    'relative flex w-full items-center gap-2 rounded-xl px-4 py-3.5 text-base md:text-sm outline-none cursor-pointer',
+    'border border-border focus-within:ring focus-within:ring-primary text-xs',
     {
       'bg-white': variant === 'default',
       'bg-foreground-100': variant === 'fill',

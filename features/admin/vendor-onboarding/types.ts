@@ -1,3 +1,5 @@
+// features/admin/vendor-onboarding/types.ts
+
 export type VendorStatus =
   | 'PENDING_VERIFICATION'
   | 'PENDING_EMAIL_VERIFICATION'
@@ -71,6 +73,27 @@ export interface VendorDetail extends Vendor {
   updatedAt: string;
 }
 
+export type ViewVendorModalProps = {
+  isModalOpen: boolean;
+  setIsModalOpen: (open: boolean) => void;
+  vendor: VendorDetail | null;
+  isLoading: boolean;
+  onAction: (
+    vendorId: string,
+    action: 'APPROVED' | 'REJECTED',
+    rejectionReason?: string,
+  ) => Promise<{ success: boolean; message: string }>;
+};
+
+export type VendorPageSectionProps = {
+  vendors: Vendor[];
+  meta: VendorsMeta;
+  currentPage: number;
+  currentStatus: string;
+  currentSearch: string;
+  error: string | null;
+};
+
 export interface VendorsMeta {
   total: number;
   page: number;
@@ -92,6 +115,6 @@ export interface GetVendorsResponse {
 }
 
 export interface ApproveVendorPayload {
-  action: VendorApproveAction;
+  action: 'APPROVED' | 'REJECTED';
   rejectionReason?: string;
 }

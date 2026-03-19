@@ -40,6 +40,7 @@ export type OtpInputProps = {
   name?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+  onPaste?: (e: React.ClipboardEvent<HTMLInputElement>) => void;
   maxLength?: number;
   inputMode?: string;
   className?: string;
