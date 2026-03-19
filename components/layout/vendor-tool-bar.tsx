@@ -15,8 +15,8 @@ type Props = {
   searchPlaceholder?: string;
   filterPlaceholder?: string;
   // search
-  search: string;
-  onSearchChange: (value: string) => void;
+  search?: string;
+  onSearchChange?: (value: string) => void;
   // filter/status
   filter: string;
   onFilterChange: (value: string) => void;
@@ -59,7 +59,7 @@ export default function VendorToolbar({
               spacing="none"
               variant="fill"
               value={search}
-              onChange={(e) => onSearchChange(e.target.value)}
+              onChange={(e) => onSearchChange?.(e.target.value)}
             />
           </div>
 

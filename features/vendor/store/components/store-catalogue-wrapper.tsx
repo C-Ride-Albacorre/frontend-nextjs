@@ -12,8 +12,6 @@ import DeleteStoreModal from './delete-store-modal';
 import { StoreData } from '../types';
 import { getStoresAction } from '../action';
 
-const CATEGORIES = ['All'];
-
 export default function StoreCatalogueWrapper({
   storeData: initialStoreData,
 }: {
@@ -100,9 +98,9 @@ export default function StoreCatalogueWrapper({
       <VendorToolbar
         title="Store Catalog"
         searchPlaceholder="Search stores..."
-        sort={sort}
-        onSortChange={setSort}
-        categories={CATEGORIES}
+        filter={sort}
+        onFilterChange={setSort}
+        filterOptions={[{ label: 'All', value: 'All' }]}
       />
       {selectedStoreIds.size > 0 && (
         <div className="flex justify-end">

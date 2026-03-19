@@ -11,7 +11,13 @@ import VendorToolbar from '@/components/layout/vendor-tool-bar';
 import ActiveDeliveriesCard from '@/features/vendor/active-deliveries/components/active-cards';
 import { activeOrders } from '@/features/vendor/active-deliveries/data';
 
-const STATUS = ['All status', 'Active', 'Preparing', 'In Transit', 'Nearby'];
+const STATUS = [
+  { label: 'All status', value: 'All' },
+  { label: 'Active', value: 'Active' },
+  { label: 'Preparing', value: 'Preparing' },
+  { label: 'In Transit', value: 'In Transit' },
+  { label: 'Nearby', value: 'Nearby' },
+];
 
 export default function VendorActiveDeliveriesPage() {
   const [sort, setSort] = useState('');
@@ -59,9 +65,9 @@ export default function VendorActiveDeliveriesPage() {
           </div>
 
           <VendorToolbar
-            sort={sort}
-            onSortChange={setSort}
-            categories={STATUS}
+            filter={sort}
+            onFilterChange={setSort}
+            filterOptions={STATUS}
             filterPlaceholder="All status"
             searchPlaceholder="Search order ID, customer, or driver"
             updatedAt="9:56:49 PM"

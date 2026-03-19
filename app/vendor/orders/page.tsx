@@ -10,12 +10,12 @@ import { Clock, ShoppingBag, Star, TrendingUp } from 'lucide-react';
 import { useState } from 'react';
 
 const CATEGORIES = [
-  'All',
-  'Nigerian',
-  'Chinese',
-  'Indian',
-  'Italian',
-  'Snacks',
+ { label: 'All', value: 'All' },
+  { label: 'Nigerian', value: 'Nigerian' },
+  { label: 'Chinese', value: 'Chinese' },
+  { label: 'Indian', value: 'Indian' },
+  { label: 'Italian', value: 'Italian' },
+  { label: 'Snacks', value: 'Snacks' },
 ];
 
 export default function OrderManagementPage() {
@@ -66,9 +66,9 @@ export default function OrderManagementPage() {
           <VendorToolbar
             title="Incoming Orders"
             searchPlaceholder="Search orders..."
-            sort={sort}
-            onSortChange={setSort}
-            categories={CATEGORIES}
+            filter={sort}
+           onFilterChange={setSort}
+            filterOptions={CATEGORIES}
           />
 
           <div className="space-y-4">
