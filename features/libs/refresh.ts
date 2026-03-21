@@ -30,6 +30,7 @@ export async function refreshTokenService(payload: {
 
   return data as {
     accessToken: string;
+    refreshToken?: string;
     user: { id: string; name: string; email: string };
   };
 }

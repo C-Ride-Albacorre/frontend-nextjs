@@ -12,6 +12,7 @@ import Input from '@/components/ui/inputs/input';
 import Textarea from '@/components/ui/inputs/textarea';
 import FileDropzone from '@/components/ui/inputs/file-dropzone';
 import { Button } from '@/components/ui/buttons/button';
+import ToggleSwitch from '@/components/ui/buttons/toggle-switch';
 
 interface EditCategoryModalProps {
   isOpen: boolean;
@@ -108,7 +109,7 @@ export default function EditCategoryModal({
           <p className="text-sm text-neutral-500">Update category details</p>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-6">
           <Input
             id="edit-name"
             name="name"
@@ -163,11 +164,20 @@ export default function EditCategoryModal({
             disabled={isPending}
           />
 
-          <div className="flex items-center justify-between">
+          <div className="flex items-center gap-8">
             <label htmlFor="edit-isActive" className="text-sm font-medium">
               Active
             </label>
-            <button
+
+            <ToggleSwitch
+              checked={form.isActive}
+              onChange={() =>
+                !isPending &&
+                setForm((prev) => ({ ...prev, isActive: !prev.isActive }))
+              }
+              disabled={isPending}
+            />
+            {/* <button
               id="edit-isActive"
               type="button"
               role="switch"
@@ -186,14 +196,14 @@ export default function EditCategoryModal({
                   form.isActive ? 'translate-x-6' : 'translate-x-1'
                 }`}
               />
-            </button>
+            </button> */}
           </div>
         </div>
 
-        <div className="flex justify-end gap-3 pt-4">
+        <div className="flex justify-between md:justify-around gap-3 pt-4">
           <Button
             variant="outline"
-            size="sm"
+            size="icon"
             onClick={onClose}
             disabled={isPending}
           >
@@ -201,7 +211,7 @@ export default function EditCategoryModal({
           </Button>
           <Button
             variant="primary"
-            size="sm"
+            size="icon"
             onClick={handleSubmit}
             loading={isPending}
             disabled={isPending}

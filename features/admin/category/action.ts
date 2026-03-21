@@ -23,6 +23,7 @@ import {
   Category,
   Subcategory,
 } from './types';
+import { i } from 'framer-motion/client';
 
 // ─── Category Actions ────────────────────────────────────────────────────────
 
@@ -33,7 +34,16 @@ export async function createCategoryAction(
     const res = await createCategoryService(payload);
     console.log('[createCategory] Response:', JSON.stringify(res, null, 2));
 
-    revalidatePath('/admin/category');
+    if (!res.success) {
+      return {
+        success: false,
+        message: res.message || 'Failed to create category',
+      };
+    }
+
+    if (res.success) {
+      revalidatePath('/admin/category');
+    }
 
     return { success: true, message: 'Category created successfully' };
   } catch (error) {
@@ -50,6 +60,7 @@ export async function getCategoriesAction(): Promise<Category[]> {
   try {
     const res = await getCategoriesService();
     console.log('[getCategories] Response:', JSON.stringify(res, null, 2));
+
     return res.data ?? res;
   } catch (error) {
     console.error('[getCategories] Error:', error);
@@ -63,6 +74,7 @@ export async function getCategoryByIdAction(
   try {
     const res = await getCategoryByIdService(id);
     console.log('[getCategoryById] Response:', JSON.stringify(res, null, 2));
+
     return res.data ?? res;
   } catch (error) {
     console.error('[getCategoryById] Error:', error);
@@ -97,10 +109,19 @@ export async function deleteCategoryAction(
   try {
     const res = await deleteCategoryService(id);
     console.log('[deleteCategory] Response:', JSON.stringify(res, null, 2));
+    if (!res.success) {
+      return {
+        success: false,
+        message: res.message || 'Failed to delete category',
+      };
+    }
 
     revalidatePath('/admin/category');
 
-    return { success: true, message: 'Category deactivated successfully' };
+    return {
+      success: true,
+      message: res.message || 'Category deactivated successfully',
+    };
   } catch (error) {
     console.error('[deleteCategory] Error:', error);
     return {
@@ -213,9 +234,19 @@ export async function deleteSubcategoryAction(
     const res = await deleteSubcategoryService(id);
     console.log('[deleteSubcategory] Response:', JSON.stringify(res, null, 2));
 
+    if (!res.success) {
+      return {
+        success: false,
+        message: res.message || 'Failed to delete subcategory',
+      };
+    }
+
     revalidatePath('/admin/category');
 
-    return { success: true, message: 'Subcategory deactivated successfully' };
+    return {
+      success: true,
+      message: res.message || 'Subcategory deactivated successfully',
+    };
   } catch (error) {
     console.error('[deleteSubcategory] Error:', error);
     return {

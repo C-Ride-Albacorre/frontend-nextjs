@@ -12,6 +12,7 @@ import Input from '@/components/ui/inputs/input';
 import Textarea from '@/components/ui/inputs/textarea';
 import { Select } from '@/components/ui/inputs/select';
 import { Button } from '@/components/ui/buttons/button';
+import ToggleSwitch from '@/components/ui/buttons/toggle-switch';
 
 interface CreateSubcategoryModalProps {
   isOpen: boolean;
@@ -103,7 +104,7 @@ export default function CreateSubcategoryModal({
           </p>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-6">
           <Select
             id="categoryId"
             name="categoryId"
@@ -153,13 +154,19 @@ export default function CreateSubcategoryModal({
             disabled={isPending}
           />
 
-          <div className="flex items-center justify-between">
+          <div className="flex items-center gap-8">
             <label htmlFor="sub-isActive" className="text-sm font-medium">
               Active
             </label>
-            <button
-              id="sub-isActive"
-              type="button"
+            <ToggleSwitch
+              checked={form.isActive}
+              onChange={() =>
+                !isPending &&
+                setForm((prev) => ({ ...prev, isActive: !prev.isActive }))
+              }
+              disabled={isPending}
+            />
+            {/* type="button"
               role="switch"
               aria-checked={form.isActive}
               onClick={() =>
@@ -176,14 +183,14 @@ export default function CreateSubcategoryModal({
                   form.isActive ? 'translate-x-6' : 'translate-x-1'
                 }`}
               />
-            </button>
+            </button> */}
           </div>
         </div>
 
-        <div className="flex justify-end gap-3 pt-4">
+        <div className="flex justify-between md:justify-around gap-3 pt-4">
           <Button
             variant="outline"
-            size="sm"
+            size="icon"
             onClick={onClose}
             disabled={isPending}
           >
@@ -191,7 +198,7 @@ export default function CreateSubcategoryModal({
           </Button>
           <Button
             variant="primary"
-            size="sm"
+            size="icon"
             onClick={handleSubmit}
             loading={isPending}
             disabled={isPending}

@@ -9,6 +9,7 @@ import Input from '@/components/ui/inputs/input';
 import Textarea from '@/components/ui/inputs/textarea';
 import FileDropzone from '@/components/ui/inputs/file-dropzone';
 import { Button } from '@/components/ui/buttons/button';
+import ToggleSwitch from '@/components/ui/buttons/toggle-switch';
 
 interface CreateCategoryModalProps {
   isOpen: boolean;
@@ -70,8 +71,8 @@ export default function CreateCategoryModal({
         });
         setIconFile(null);
         setImageFile(null);
-        onSuccess();
         onClose();
+        onSuccess();
       } else {
         toast.error(result.message);
       }
@@ -143,11 +144,20 @@ export default function CreateCategoryModal({
             disabled={isPending}
           />
 
-          <div className="flex items-center justify-between">
+          <div className="flex items-center gap-8">
             <label htmlFor="isActive" className="text-sm font-medium">
               Active
             </label>
-            <button
+
+            <ToggleSwitch
+              checked={form.isActive}
+              onChange={() =>
+                !isPending &&
+                setForm((prev) => ({ ...prev, isActive: !prev.isActive }))
+              }
+              disabled={isPending}
+            />
+            {/* <button
               id="isActive"
               type="button"
               role="switch"
@@ -166,14 +176,14 @@ export default function CreateCategoryModal({
                   form.isActive ? 'translate-x-6' : 'translate-x-1'
                 }`}
               />
-            </button>
+            </button> */}
           </div>
         </div>
 
-        <div className="flex justify-end gap-3 pt-4">
+        <div className="flex justify-between md:justify-around  pt-4">
           <Button
             variant="outline"
-            size="sm"
+            size="icon"
             onClick={onClose}
             disabled={isPending}
           >
@@ -181,7 +191,7 @@ export default function CreateCategoryModal({
           </Button>
           <Button
             variant="primary"
-            size="sm"
+            size="icon"
             onClick={handleSubmit}
             loading={isPending}
             disabled={isPending}

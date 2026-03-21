@@ -18,7 +18,7 @@ export async function createCategoryService(payload: CreateCategoryPayload) {
     body: JSON.stringify(payload),
   });
 
-//   if (res.status === 401) redirect('/admin/login');
+  //   if (res.status === 401) redirect('/admin/login');
 
   const data = await res.json();
 
@@ -36,8 +36,6 @@ export async function getCategoriesService() {
   const res = await authFetch(`${BASE_URL}/admin`, {
     method: 'GET',
   });
-
-
 
   const data = await res.json();
 

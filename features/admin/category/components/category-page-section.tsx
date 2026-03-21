@@ -21,11 +21,17 @@ import {
   ChevronDown,
   ChevronUp,
   Layers,
+  EditIcon,
+  Edit2Icon,
+  LayersPlus,
 } from 'lucide-react';
 import CreateCategoryModal from './create-category-modal';
 import EditCategoryModal from './edit-category-modal';
 import CreateSubcategoryModal from './create-subcategory-modal';
 import EditSubcategoryModal from './edit-subcategory-modal';
+import { IconButton } from '@/components/ui/buttons/icon-button';
+import ToggleSwitch from '@/components/ui/buttons/toggle-switch';
+import { set } from 'zod';
 
 export default function CategoryPageSection() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -46,87 +52,148 @@ export default function CategoryPageSection() {
     string | undefined
   >();
 
-  const fetchCategories = () => {
-    startTransition(async () => {
-      console.log('[CategoryPage] Fetching categories...');
-      const data = await getCategoriesAction();
+  const fetchCategories = async () => {
+    console.log('[CategoryPage] Fetching categories...');
+    const data = await getCategoriesAction();
+
+    startTransition(() => {
       console.log('[CategoryPage] Categories received:', data);
+
       setCategories(data);
     });
   };
 
   useEffect(() => {
     fetchCategories();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleDeleteCategory = (categoryId: string, categoryName: string) => {
-    startTransition(async () => {
-      console.log('[CategoryPage] Deleting category:', categoryId);
-      const result = await deleteCategoryAction(categoryId);
-      console.log('[CategoryPage] Delete result:', result);
-
-      if (result.success) {
-        toast.success(`"${categoryName}" deactivated successfully`);
-        fetchCategories();
-      } else {
-        toast.error(result.message);
-      }
-    });
-  };
-
-  const handleToggleCategoryStatus = (
+  const handleDeleteCategory = async (
     categoryId: string,
     categoryName: string,
   ) => {
-    startTransition(async () => {
-      console.log('[CategoryPage] Toggling category status:', categoryId);
-      const result = await toggleCategoryStatusAction(categoryId);
-      console.log('[CategoryPage] Toggle result:', result);
+    console.log('[CategoryPage] Deleting category:', categoryId);
 
-      if (result.success) {
-        toast.success(`"${categoryName}" status toggled`);
-        fetchCategories();
-      } else {
-        toast.error(result.message);
-      }
-    });
+    const prev = categories;
+
+    // remove instantly
+    setCategories((prevState) => prevState.filter((c) => c.id !== categoryId));
+
+    const result = await deleteCategoryAction(categoryId);
+    console.log('[CategoryPage] Delete result:', result);
+
+    if (result.success) {
+      toast.success(`"${categoryName}" deactivated successfully`);
+    } else {
+      setCategories(prev);
+      toast.error(result.message);
+    }
   };
 
-  const handleDeleteSubcategory = (
+  const handleToggleCategoryStatus = async (
+    categoryId: string,
+    categoryName: string,
+  ) => {
+    const prev = categories;
+
+    setCategories((prevState) =>
+      prevState.map((c) =>
+        c.id === categoryId ? { ...c, isActive: !c.isActive } : c,
+      ),
+    );
+
+    const result = await toggleCategoryStatusAction(categoryId);
+
+    if (result.success) {
+      toast.success(`"${categoryName}" updated`);
+    } else {
+      setCategories(prev); // rollback
+      toast.error(result.message);
+    }
+  };
+  //   const handleDeleteSubcategory = async (
+  //     subcategoryId: string,
+  //     subcategoryName: string,
+  //   ) => {
+  //     console.log('[CategoryPage] Deleting subcategory:', subcategoryId);
+  //     const result = await deleteSubcategoryAction(subcategoryId);
+  //     console.log('[CategoryPage] Delete subcategory result:', result);
+
+  //     if (result.success) {
+  //       startTransition(() => {
+  //         toast.success(`"${subcategoryName}" deactivated successfully`);
+  //         fetchCategories();
+  //       });
+  //     } else {
+  //       toast.error(result.message);
+  //     }
+  //   };
+
+  const handleDeleteSubcategory = async (
     subcategoryId: string,
     subcategoryName: string,
   ) => {
-    startTransition(async () => {
-      console.log('[CategoryPage] Deleting subcategory:', subcategoryId);
-      const result = await deleteSubcategoryAction(subcategoryId);
-      console.log('[CategoryPage] Delete subcategory result:', result);
+    const prev = categories;
 
-      if (result.success) {
-        toast.success(`"${subcategoryName}" deactivated successfully`);
-        fetchCategories();
-      } else {
-        toast.error(result.message);
-      }
-    });
+    setCategories((prevState) =>
+      prevState.map((cat) => ({
+        ...cat,
+        subcategories: cat.subcategories?.filter(
+          (sub) => sub.id !== subcategoryId,
+        ),
+      })),
+    );
+
+    const result = await deleteSubcategoryAction(subcategoryId);
+
+    if (result.success) {
+      toast.success(`"${subcategoryName}" deleted`);
+    } else {
+      setCategories(prev); // rollback
+      toast.error(result.message);
+    }
   };
 
-  const handleToggleSubcategoryStatus = (
+  //   const handleToggleSubcategoryStatus = async (
+  //     subcategoryId: string,
+  //     subcategoryName: string,
+  //   ) => {
+  //     console.log('[CategoryPage] Toggling subcategory status:', subcategoryId);
+  //     const result = await toggleSubcategoryStatusAction(subcategoryId);
+  //     console.log('[CategoryPage] Toggle subcategory result:', result);
+
+  //     if (result.success) {
+  //       startTransition(() => {
+  //         toast.success(`"${subcategoryName}" status toggled`);
+  //         fetchCategories();
+  //       });
+  //     } else {
+  //       toast.error(result.message);
+  //     }
+  //   };
+
+  const handleToggleSubcategoryStatus = async (
     subcategoryId: string,
     subcategoryName: string,
   ) => {
-    startTransition(async () => {
-      console.log('[CategoryPage] Toggling subcategory status:', subcategoryId);
-      const result = await toggleSubcategoryStatusAction(subcategoryId);
-      console.log('[CategoryPage] Toggle subcategory result:', result);
+    const prev = categories;
 
-      if (result.success) {
-        toast.success(`"${subcategoryName}" status toggled`);
-        fetchCategories();
-      } else {
-        toast.error(result.message);
-      }
-    });
+    setCategories((prevState) =>
+      prevState.map((cat) => ({
+        ...cat,
+        subcategories: cat.subcategories?.map((sub) =>
+          sub.id === subcategoryId ? { ...sub, isActive: !sub.isActive } : sub,
+        ),
+      })),
+    );
+
+    const result = await toggleSubcategoryStatusAction(subcategoryId);
+
+    if (result.success) {
+      toast.success(`"${subcategoryName}" updated`);
+    } else {
+      setCategories(prev); // rollback
+      toast.error(result.message);
+    }
   };
 
   const handleEditCategory = (category: Category) => {
@@ -146,7 +213,7 @@ export default function CategoryPageSection() {
 
   return (
     <>
-      <Card>
+      <Card className="bg-white">
         {/* Header actions */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
@@ -191,7 +258,7 @@ export default function CategoryPageSection() {
           </div>
         ) : categories.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 space-y-3">
-            <Layers size={48} className="text-neutral-300" />
+            <LayersPlus size={48} className="text-neutral-300" />
             <p className="text-sm text-neutral-500">No categories found</p>
             <Button
               variant="primary"
@@ -209,16 +276,10 @@ export default function CategoryPageSection() {
                 className="border border-border rounded-xl overflow-hidden"
               >
                 {/* Category row */}
-                <div className="flex items-center justify-between p-4 bg-white hover:bg-neutral-50 transition-colors">
-                  <div
-                    className="flex items-center gap-4 flex-1 cursor-pointer"
-                    onClick={() =>
-                      setExpandedCategory(
-                        expandedCategory === category.id ? null : category.id,
-                      )
-                    }
-                  >
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 md:gap-0  p-4 bg-white">
+                  <div className="flex flex-col md:flex-row md:items-start md:col-span-2  gap-4">
                     {/* Category icon/image */}
+
                     {category.icon || category.image ? (
                       <div className="w-10 h-10 rounded-lg overflow-hidden bg-neutral-100 flex items-center justify-center shrink-0">
                         <img
@@ -233,27 +294,27 @@ export default function CategoryPageSection() {
                       </div>
                     )}
 
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <p className="font-medium text-neutral-900 truncate">
+                    <div className="flex-1 min-w-0 space-y-1.5">
+                      <div className="flex items-center gap-4">
+                        <p className="font-medium text-neutral-900 truncate text-sm">
                           {category.name}
                         </p>
                         <span
-                          className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                          className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium ${
                             category.isActive
-                              ? 'bg-green-100 text-green-700'
-                              : 'bg-neutral-100 text-neutral-500'
+                              ? 'bg-[#10B981]/10 text-[#10B981] border border-[#10B981]/20'
+                              : 'bg-neutral-100 border border-border text-neutral-500'
                           }`}
                         >
                           {category.isActive ? 'Active' : 'Inactive'}
                         </span>
                       </div>
                       {category.description && (
-                        <p className="text-xs text-neutral-500 truncate mt-0.5">
+                        <p className="text-xs text-neutral-500 truncate">
                           {category.description}
                         </p>
                       )}
-                      <p className="text-xs text-neutral-400 mt-0.5">
+                      <p className="text-xs text-neutral-400">
                         Order: {category.displayOrder}
                         {category.subcategories &&
                           ` · ${category.subcategories.length} subcategories`}
@@ -261,54 +322,75 @@ export default function CategoryPageSection() {
                           ` · ${category.storeCount} stores`}
                       </p>
                     </div>
-
-                    {expandedCategory === category.id ? (
-                      <ChevronUp size={18} className="text-neutral-400" />
-                    ) : (
-                      <ChevronDown size={18} className="text-neutral-400" />
-                    )}
                   </div>
 
                   {/* Category actions */}
-                  <div className="flex items-center gap-2 ml-4">
-                    <button
-                      onClick={() => handleAddSubcategory(category.id)}
-                      className="p-2 rounded-lg hover:bg-neutral-100 text-neutral-500 hover:text-primary transition-colors"
-                      title="Add subcategory"
-                    >
-                      <Plus size={16} />
-                    </button>
-                    <button
-                      onClick={() => handleEditCategory(category)}
-                      className="p-2 rounded-lg hover:bg-neutral-100 text-neutral-500 hover:text-primary transition-colors"
-                      title="Edit category"
-                    >
-                      <Edit size={16} />
-                    </button>
-                    <button
-                      onClick={() =>
-                        handleToggleCategoryStatus(category.id, category.name)
-                      }
-                      className="p-2 rounded-lg hover:bg-neutral-100 text-neutral-500 hover:text-primary transition-colors"
-                      title="Toggle status"
-                      disabled={isPending}
-                    >
-                      {category.isActive ? (
-                        <ToggleRight size={16} className="text-green-600" />
-                      ) : (
-                        <ToggleLeft size={16} />
-                      )}
-                    </button>
-                    <button
-                      onClick={() =>
-                        handleDeleteCategory(category.id, category.name)
-                      }
-                      className="p-2 rounded-lg hover:bg-red-50 text-neutral-500 hover:text-red-500 transition-colors"
-                      title="Delete category"
-                      disabled={isPending}
-                    >
-                      <Trash2 size={16} />
-                    </button>
+                  <div className="flex items-center justify-between md:justify-end    md:col-span-2 gap-4">
+                    <div className="flex items-center gap-3 md:gap-6">
+                      <IconButton
+                        onClick={() => handleAddSubcategory(category.id)}
+                        rounded="lg"
+                      >
+                        <Plus size={14} />
+                      </IconButton>
+                      <IconButton
+                        rounded="lg"
+                        onClick={() => handleEditCategory(category)}
+                      >
+                        <Edit2Icon size={14} />
+                      </IconButton>
+
+                      <IconButton
+                        variant="red"
+                        rounded="lg"
+                        onClick={() =>
+                          handleDeleteCategory(category.id, category.name)
+                        }
+                        disabled={isPending}
+                      >
+                        <Trash2 size={14} />
+                      </IconButton>
+
+                      <ToggleSwitch
+                        checked={category.isActive}
+                        onChange={() =>
+                          handleToggleCategoryStatus(category.id, category.name)
+                        }
+                        disabled={isPending}
+                      />
+                    </div>
+
+                    {expandedCategory === category.id ? (
+                      <IconButton
+                        onClick={() =>
+                          setExpandedCategory(
+                            expandedCategory === category.id
+                              ? null
+                              : category.id,
+                          )
+                        }
+                        className="text-xs flex items-center gap-1"
+                      >
+                        {' '}
+                        Show Less
+                        <ChevronUp size={18} className="text-neutral-400" />
+                      </IconButton>
+                    ) : (
+                      <IconButton
+                        className="text-xs flex items-center gap-1"
+                        onClick={() =>
+                          setExpandedCategory(
+                            expandedCategory === category.id
+                              ? null
+                              : category.id,
+                          )
+                        }
+                      >
+                        {' '}
+                        Show More
+                        <ChevronDown size={18} className="text-neutral-400" />
+                      </IconButton>
+                    )}
                   </div>
                 </div>
 
@@ -320,18 +402,18 @@ export default function CategoryPageSection() {
                       {category.subcategories.map((sub) => (
                         <div
                           key={sub.id}
-                          className="flex items-center justify-between px-4 py-3 pl-14 border-b border-border last:border-b-0 hover:bg-neutral-100 transition-colors"
+                          className="flex flex-col md:flex-row  md:items-center gap-4 md:gap-0 justify-between px-4 py-3 border-b border-border last:border-b-0 hover:bg-neutral-100 transition-colors"
                         >
                           <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2">
-                              <p className="text-sm font-medium text-neutral-800 truncate">
+                            <div className="flex items-center gap-4">
+                              <p className="text-sm font-medium text-neutral-800 truncate ">
                                 {sub.name}
                               </p>
                               <span
-                                className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                                className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium ${
                                   sub.isActive
-                                    ? 'bg-green-100 text-green-700'
-                                    : 'bg-neutral-100 text-neutral-500'
+                                    ? 'bg-[#10B981]/10 text-[#10B981] border border-[#10B981]/20'
+                                    : 'bg-neutral-100 border border-border text-neutral-500'
                                 }`}
                               >
                                 {sub.isActive ? 'Active' : 'Inactive'}
@@ -349,41 +431,32 @@ export default function CategoryPageSection() {
                             </p>
                           </div>
 
-                          <div className="flex items-center gap-2 ml-4">
-                            <button
+                          <div className="flex items-center gap-4">
+                            <IconButton
+                              rounded="lg"
+                              variant="white"
                               onClick={() => handleEditSubcategory(sub)}
-                              className="p-1.5 rounded-lg hover:bg-neutral-200 text-neutral-500 hover:text-primary transition-colors"
-                              title="Edit subcategory"
                             >
                               <Edit size={14} />
-                            </button>
-                            <button
-                              onClick={() =>
-                                handleToggleSubcategoryStatus(sub.id, sub.name)
-                              }
-                              className="p-1.5 rounded-lg hover:bg-neutral-200 text-neutral-500 hover:text-primary transition-colors"
-                              title="Toggle status"
-                              disabled={isPending}
-                            >
-                              {sub.isActive ? (
-                                <ToggleRight
-                                  size={14}
-                                  className="text-green-600"
-                                />
-                              ) : (
-                                <ToggleLeft size={14} />
-                              )}
-                            </button>
-                            <button
+                            </IconButton>
+                            <IconButton
+                              variant="red"
+                              rounded="lg"
                               onClick={() =>
                                 handleDeleteSubcategory(sub.id, sub.name)
                               }
-                              className="p-1.5 rounded-lg hover:bg-red-50 text-neutral-500 hover:text-red-500 transition-colors"
-                              title="Delete subcategory"
                               disabled={isPending}
                             >
                               <Trash2 size={14} />
-                            </button>
+                            </IconButton>
+
+                            <ToggleSwitch
+                              checked={sub.isActive}
+                              onChange={() =>
+                                handleToggleSubcategoryStatus(sub.id, sub.name)
+                              }
+                              disabled={isPending}
+                            />
                           </div>
                         </div>
                       ))}
@@ -394,16 +467,20 @@ export default function CategoryPageSection() {
                 {expandedCategory === category.id &&
                   (!category.subcategories ||
                     category.subcategories.length === 0) && (
-                    <div className="border-t border-border bg-neutral-50 px-4 py-6 text-center">
-                      <p className="text-sm text-neutral-500">
-                        No subcategories yet
-                      </p>
-                      <button
-                        onClick={() => handleAddSubcategory(category.id)}
-                        className="text-sm text-primary hover:underline mt-1"
-                      >
-                        Add a subcategory
-                      </button>
+                    <div className="border-t border-border bg-neutral-50 px-4 py-8 flex flex-col items-center space-y-4">
+                      <LayersPlus size={20} className="text-neutral-300" />
+                      <div className="space-y-2 text-center">
+                        <p className="text-sm text-neutral-500">
+                          No subcategories yet
+                        </p>
+                        <Button
+                          size="icon"
+                          onClick={() => handleAddSubcategory(category.id)}
+                          leftIcon={<Plus size={14} />}
+                        >
+                          Add a subcategory
+                        </Button>
+                      </div>
                     </div>
                   )}
               </div>
@@ -415,38 +492,38 @@ export default function CategoryPageSection() {
       {/* Modals */}
       <CreateCategoryModal
         isOpen={showCreateCategory}
-        onClose={() => setShowCreateCategory(false)}
         onSuccess={fetchCategories}
+        onClose={() => setShowCreateCategory(false)}
       />
 
       <EditCategoryModal
         isOpen={showEditCategory}
+        onSuccess={fetchCategories}
         onClose={() => {
           setShowEditCategory(false);
           setSelectedCategory(null);
         }}
-        onSuccess={fetchCategories}
         category={selectedCategory}
       />
 
       <CreateSubcategoryModal
         isOpen={showCreateSubcategory}
+        onSuccess={fetchCategories}
         onClose={() => {
           setShowCreateSubcategory(false);
           setPreselectedCategoryId(undefined);
         }}
-        onSuccess={fetchCategories}
         categories={categories}
         preselectedCategoryId={preselectedCategoryId}
       />
 
       <EditSubcategoryModal
         isOpen={showEditSubcategory}
+        onSuccess={fetchCategories}
         onClose={() => {
           setShowEditSubcategory(false);
           setSelectedSubcategory(null);
         }}
-        onSuccess={fetchCategories}
         subcategory={selectedSubcategory}
         categories={categories}
       />

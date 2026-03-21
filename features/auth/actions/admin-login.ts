@@ -37,7 +37,11 @@ export async function adminLoginAction(
 
     await setAuthCookies(accessToken, refreshToken ?? accessToken);
 
-    redirectTo = '/admin/dashboard';
+    const customRedirect = formData.get('redirect') as string;
+    redirectTo =
+      customRedirect && customRedirect.startsWith('/')
+        ? customRedirect
+        : '/admin/dashboard';
   } catch (error) {
     return {
       status: 'error',

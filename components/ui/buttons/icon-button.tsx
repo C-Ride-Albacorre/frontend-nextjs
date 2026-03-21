@@ -58,6 +58,8 @@ export function IconButton({
           'border-border bg-foreground-200 hover:bg-neutral-100':
             variant === 'fill',
 
+          'border-border bg-white hover:bg-neutral-50': variant === 'white',
+
           'border-transparent hover:bg-neutral-100': variant === 'ghost',
 
           'border-red-200 hover:bg-red-50 text-red-500 bg-white':

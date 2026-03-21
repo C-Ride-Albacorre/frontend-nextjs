@@ -27,7 +27,6 @@ const ADMIN_PROTECTED_ROUTES = [
   '/admin/create-admin',
   '/admin/stores',
   '/admin/category',
-
 ];
 
 const USER_AUTH_ROUTES = ['/user/register', '/user/login'];
@@ -50,15 +49,33 @@ function isTokenExpired(token: string) {
 
 type Role = 'SUPER_ADMIN' | 'ADMIN' | 'VENDOR' | 'CUSTOMER';
 
-async function refreshAccessToken(refreshToken: string) {
-  const res = await fetch(`${process.env.API_URL}/auth/refresh`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
+const isProd = process.env.NODE_ENV === 'production';
+
+function getTokenExpiryFromJwt(token: string): number {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const secondsFromNow = payload.exp - Math.floor(Date.now() / 1000);
+    return Math.max(secondsFromNow, 0);
+  } catch {
+    return 0;
+  }
+}
+
+async function refreshAccessToken(
+  refreshToken: string,
+  previousAccessToken: string,
+) {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/refresh`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ refreshToken, previousAccessToken }),
+      cache: 'no-store',
     },
-    body: JSON.stringify({ refreshToken }),
-    cache: 'no-store',
-  });
+  );
   if (!res.ok) return null;
 
   return res.json();
@@ -84,24 +101,26 @@ export async function middleware(request: NextRequest) {
    * -------------------------
    */
   if (accessToken && isTokenExpired(accessToken) && refreshToken) {
-    const refreshed = await refreshAccessToken(refreshToken);
+    const refreshed = await refreshAccessToken(refreshToken, accessToken);
 
     if (refreshed?.accessToken) {
       const response = NextResponse.next();
 
       response.cookies.set('accessToken', refreshed.accessToken, {
         httpOnly: true,
-        secure: true,
+        secure: isProd,
         sameSite: 'lax',
         path: '/',
+        maxAge: getTokenExpiryFromJwt(refreshed.accessToken),
       });
 
       if (refreshed.refreshToken) {
         response.cookies.set('refreshToken', refreshed.refreshToken, {
           httpOnly: true,
-          secure: true,
+          secure: isProd,
           sameSite: 'lax',
           path: '/',
+          maxAge: getTokenExpiryFromJwt(refreshed.refreshToken),
         });
       }
 
