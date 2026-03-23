@@ -61,24 +61,30 @@ export default function VerifyClient({
 
   const otp = code.join('');
 
+  const errorMessage =
+    (state?.status === 'error' && state?.message) ||
+    state?.errors?.otp?.[0] ||
+    '';
+
   return (
     <div>
+      
       <h1 className="text-2xl font-semibold mb-2">Verify your Identity</h1>
 
-      <p className="text-sm text-neutral-500 mb-10">
+      <p className="text-sm text-neutral-500">
         We've sent a verification code to your{' '}
         <span className="font-medium">{label}</span>
         <br />
         <span className="font-medium">{identifier}</span>
       </p>
 
-      {state?.errors?.otp?.[0] && (
-        <p className="text-red-500 text-sm mb-4">{state.errors.otp[0]}</p>
-      )}
-
-      {state?.message && state?.status === 'error' && (
-        <p className="text-red-500 text-sm mb-4">{state.message}</p>
-      )}
+      <p
+        className={`my-6 text-sm text-red-500${
+          errorMessage ? ' animate-shake' : ' invisible'
+        }`}
+      >
+        {errorMessage || '\u00A0'}
+      </p>
 
       <form action={action} className="flex flex-col items-center">
         {/* send OTP only */}
@@ -89,7 +95,6 @@ export default function VerifyClient({
           {code.map((digit, index) => (
             <OtpInput
               key={index}
-              name="otp"
               ref={(el) => {
                 inputsRef.current[index] = el;
               }}

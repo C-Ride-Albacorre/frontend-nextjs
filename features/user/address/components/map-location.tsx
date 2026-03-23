@@ -1,4 +1,9 @@
-import { LocateIcon, MapIcon, MapPin, Navigation } from 'lucide-react';
+'use client';
+
+import Card from '@/components/layout/card';
+import { Button } from '@/components/ui/buttons/button';
+import { MapPin, Navigation } from 'lucide-react';
+import {  useState } from 'react';
 
 const locations = [
   'Victoria Island',
@@ -12,18 +17,89 @@ const locations = [
 ];
 
 export default function MapLocations() {
+  const [location, setLocation] = useState<{
+    latitude: number | null;
+    longitude: number | null;
+  }>({ latitude: null, longitude: null });
+  const [error, setError] = useState<string>('');
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleUseCurrentLocation = () => {
+
+    setIsLoading(true);
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          // Success callback
+          setLocation({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          });
+          setIsLoading(false);
+        },
+        () => {
+          // Error callback (e.g., user denied permission)
+          setError('Unable to retrieve your location');
+          setIsLoading(false);
+        },
+      );
+    } else {
+      // Geolocation not supported
+      setError('Geolocation is not supported by this browser.');
+      setIsLoading(false);
+    }
+  };
+
+
+  const locationPayload = {
+    latitude: location.latitude,
+    longitude: location.longitude,
+  }
+
   return (
     <div className=" space-y-6">
-      <div className="bg-foreground-100 px-4 py-6 w-full rounded-2xl flex flex-col space-y-4">
+      <Card gap="sm" className="bg-foreground-200 flex flex-col">
+        {error && <p className="text-red-500">{error}</p>}
+
+
         <span className="text-neutral-500 text-xs ">
           Select a popular location or use your current GPS location
         </span>
-        <button className="px-4 py-3 bg-white rounded-xl flex items-center justify-center gap-3 w-fit text-xs">
-          <Navigation size={20} /> Use My Current Location
-        </button>
+        <Button
+          variant="white"
+          size="icon"
+          className="w-fit hover:bg-white/80 hover:shadow transition"
+          disabled={isLoading}
+          leftIcon={<Navigation size={18} className="text-neutral-700" />}
+          onClick={handleUseCurrentLocation}
+        >
+          {isLoading ? 'Locating...' : 'Use My Current Location'}
+        </Button>
+      </Card>
+
+      <Card className=" bg-foreground-200 flex items-start gap-4 ">
+        <MapPin size={20} className="text-primary mb-0" />
+
+        <div className="flex-1 space-y-4">
+          <p className="font-medium flex items-center gap-2 text-sm">
+            Selected Location <span className='text-primary text-xs'>GPS</span>
+          </p>
+
+          <p className="text-xs text-neutral-500 flex items-center gap-4">
+            <span>Lat: {location.latitude} </span>
+            <span>Lng: {location.longitude}</span>
+          </p>
+        </div>
+      </Card>
+
+      <div className="text-center">
+        <Button size="lg" className="w-full md:w-auto" disabled={!location.latitude || !location.longitude}>
+          Continue with Selected Location
+        </Button>
       </div>
 
-      <div className="border border-border rounded-2xl p-4">
+      {/* <div className="border border-border rounded-2xl p-4">
         <h5 className="font-semibold flex items-center gap-2 mb-6 text-primary-text-100">
           <MapIcon size={20} className="text-primary" /> Popular Lagos Locations
         </h5>
@@ -39,25 +115,7 @@ export default function MapLocations() {
             </div>
           ))}
         </div>
-      </div>
-
-      <div className="border border-border bg-foreground-100 rounded-xl p-4 flex items-start gap-4 ">
-        <MapPin size={20} className="text-primary" />
-
-        <div className="flex-1">
-          <p className="font-medium flex items-center gap-2 mb-2 text-sm">
-            Selected Location
-          </p>
-
-          <p className="text-xs text-neutral-500">Lat: 6.5244, Lng: 3.3792</p>
-        </div>
-      </div>
-
-      <div className="text-center">
-        <button className=" px-16 py-4 bg-primary hover:bg-primary-hover rounded-xl font-medium text-sm  cursor-pointer">
-          Continue with Selected Location
-        </button>
-      </div>
+      </div> */}
     </div>
   );
 }

@@ -31,7 +31,6 @@ import CreateSubcategoryModal from './create-subcategory-modal';
 import EditSubcategoryModal from './edit-subcategory-modal';
 import { IconButton } from '@/components/ui/buttons/icon-button';
 import ToggleSwitch from '@/components/ui/buttons/toggle-switch';
-import { set } from 'zod';
 
 export default function CategoryPageSection() {
   const [categories, setCategories] = useState<Category[]>([]);

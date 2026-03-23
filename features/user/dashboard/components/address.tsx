@@ -37,6 +37,7 @@ export default function Address() {
       <AddressModal
         isModalOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
+        onSuccess={() => setIsModalOpen(false)}
       />
     </>
   );

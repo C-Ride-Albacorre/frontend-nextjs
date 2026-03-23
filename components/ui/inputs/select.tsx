@@ -87,7 +87,7 @@ export function Select({
         )}
 
         {open && (
-          <div className="absolute left-0 top-full z-30 mt-2 w-full overflow-hidden rounded-xl border border-border bg-white shadow-lg">
+          <div className="absolute left-0 top-full z-30 mt-2 w-full max-h-60 overflow-y-scroll rounded-xl border border-border bg-white shadow-lg">
             {options?.map((item) => (
               <button
                 key={item.value}

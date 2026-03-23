@@ -11,14 +11,16 @@ export async function verifyOtpService(data: {
     body: JSON.stringify(data),
   });
 
-  if (!res.ok) {
-    const result = await res.json();
 
+  const result = await res.json();
+  
+
+  if (!res.ok) {
     throw new ApiError(
       result?.message || 'Verification failed',
       result?.statusCode ?? res.status,
     );
   }
 
-  return res.json();
+  return result;
 }

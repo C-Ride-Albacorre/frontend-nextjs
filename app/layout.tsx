@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from 'sonner';
+import ReactQueryProvider from '@/components/providers/react-query-provider';
 
 export const metadata: Metadata = {
   title: "C-ride — Beyond Delivery, It's Care",

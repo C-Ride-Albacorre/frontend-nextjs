@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import Modal from '@/components/layout/modal';
 import AddressTabs from './address-tabs';
@@ -9,11 +9,23 @@ import ManualAddressForm from './manual-address';
 export default function AddressModal({
   isModalOpen,
   onClose,
+  shouldShowModal,
+  onSuccess,
 }: {
   isModalOpen: boolean;
   onClose: () => void;
+  shouldShowModal?: boolean;
+  onSuccess?: () => void;
 }) {
   const [active, setActive] = useState<'saved' | 'map' | 'manual'>('saved');
+
+  useEffect(() => {
+    if (shouldShowModal) {
+      setActive('manual');
+    } else {
+      setActive('saved');
+    }
+  }, [shouldShowModal]);
 
   return (
     <Modal isModalOpen={isModalOpen} onClose={onClose}>
@@ -27,7 +39,12 @@ export default function AddressModal({
 
         {active === 'saved' && <SavedAddresses />}
         {active === 'map' && <MapLocations />}
-        {active === 'manual' && <ManualAddressForm />}
+        {active === 'manual' && (
+          <ManualAddressForm
+            isDefault={shouldShowModal}
+            onSuccess={onSuccess}
+          />
+        )}
       </div>
     </Modal>
   );

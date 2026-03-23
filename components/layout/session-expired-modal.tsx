@@ -45,7 +45,7 @@ export default function SessionExpiredModal({
               window.location.href = loginUrl;
             }}
           >
-            Log In Again
+            Proceed to Login
           </Button>
         </div>
       </div>

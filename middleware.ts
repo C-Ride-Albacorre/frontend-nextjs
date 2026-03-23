@@ -5,6 +5,7 @@ const USER_PROTECTED_ROUTES = [
   '/user/dashboard',
   '/user/profile',
   '/user/settings',
+  '/user/delivery',
 ];
 
 const VENDOR_PROTECTED_ROUTES = [

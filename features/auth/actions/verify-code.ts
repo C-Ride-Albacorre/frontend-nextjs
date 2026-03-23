@@ -15,15 +15,26 @@ export async function VerifyCodeAction(
   });
 
   if (!validated.success) {
-    return { errors: validated.error.flatten().fieldErrors };
+    return {
+      status: 'error',
+      errors: validated.error.flatten().fieldErrors,
+    };
   }
 
   const identifier = await getCookie('verify_identifier');
   const registrationMethod = await getCookie('registration_method');
 
   if (!identifier || !registrationMethod) {
-    return { message: 'Verification session expired. Please register again.' };
+    return {
+      status: 'error',
+      message: 'Verification session expired. Please register again.',
+    };
   }
+
+  console.log('Verifying OTP for identifier:', identifier);
+  console.log('OTP entered:', validated.data.otp);
+
+  let redirectTo: string | null = null;
 
   try {
     const result = await verifyOtpService({
@@ -31,8 +42,13 @@ export async function VerifyCodeAction(
       otp: validated.data.otp,
     });
 
+    console.log('Verify OTP response:', result);
+
     if (!result?.data?.accessToken) {
-      return { message: 'Invalid or expired OTP.' };
+      return {
+        status: 'error',
+        message: 'Invalid or expired OTP.',
+      };
     }
 
     await setCookie({
@@ -49,12 +65,23 @@ export async function VerifyCodeAction(
 
     await deleteCookie('verify_identifier');
     await deleteCookie('registration_method');
+
+    let userNewData = true;
+
+    if (userNewData) {
+      redirectTo = '/user/delivery?newUser=true';
+    }
   } catch (error) {
     return {
+      status: 'error',
       message:
         error instanceof Error ? error.message : 'Invalid or expired OTP.',
     };
   }
 
-  redirect('/user/delivery/food');
+  if (redirectTo) {
+    redirect(redirectTo);
+  } else {
+    redirect('/user/delivery');
+  }
 }

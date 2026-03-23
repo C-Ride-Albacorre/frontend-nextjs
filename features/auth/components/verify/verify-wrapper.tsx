@@ -1,6 +1,7 @@
 'use client';
 
-import { useActionState } from 'react';
+import { useActionState, useEffect } from 'react';
+import { toast } from 'sonner';
 import VerifyClient from './verify-client';
 import { VerifyOtpState } from '@/features/auth/libs/verify-code.schema';
 import { VerifyCodeAction } from '@/features/auth/actions/verify-code';
@@ -18,6 +19,12 @@ export default function VerifyWrapper({
     VerifyOtpState | null,
     FormData
   >(VerifyCodeAction, null);
+
+  useEffect(() => {
+    if (state?.status === 'error' && state.message) {
+      toast.error(state.message);
+    }
+  }, [state]);
 
   return (
     <VerifyClient

@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 import { ModalProps } from '@/types/modal';
@@ -11,7 +12,13 @@ export default function Modal({
   children,
   wrapperClassName,
 }: ModalProps) {
-  if (!isModalOpen) return null;
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!isModalOpen || !mounted) return null;
 
   return createPortal(
     <div
