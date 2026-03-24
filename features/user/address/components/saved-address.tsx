@@ -3,27 +3,7 @@ import { Loader2, MapPinHouse, MapPinned, Search } from 'lucide-react';
 import { useAddresses } from '../fetch';
 import Card from '@/components/layout/card';
 
-// type Address = {
-//   id: string;
-//   userId: string;
-//   address: string;
-//   city: string;
-//   state: string;
-//   country: string;
-//   postalCode: string;
-//   latitude: number;
-//   longitude: number;
-//   isDefault: boolean;
-//   label: string;
-//   createdAt: string;
-//   updatedAt: string;
-// };
 
-// interface UseAddressesResult {
-//   status: string;
-//   data?: Address[];
-//   message?: string;
-// }
 
 export default function SavedAddresses() {
   const { data = [], isLoading } = useAddresses();
