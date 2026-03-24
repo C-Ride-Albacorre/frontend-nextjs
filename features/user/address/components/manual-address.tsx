@@ -9,6 +9,7 @@ import { LocationState } from '../schema';
 import { Select } from '@/components/ui/inputs/select';
 import { Country, State } from 'country-state-city';
 import { toast } from 'sonner';
+import { useQueryClient } from '@tanstack/react-query';
 
 type Option = {
   label: string;
@@ -49,6 +50,8 @@ export default function ManualAddressForm({
     saveLocationAction,
     undefined as LocationState,
   );
+
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (state?.status === 'success') {
@@ -160,6 +163,14 @@ export default function ManualAddressForm({
       },
     );
   }, []);
+
+  useEffect(() => {
+    if (state?.status === 'success') {
+      queryClient.invalidateQueries({ queryKey: ['addresses'] });
+
+      if (onSuccess) onSuccess();
+    }
+  }, [state]);
 
   return (
     <>

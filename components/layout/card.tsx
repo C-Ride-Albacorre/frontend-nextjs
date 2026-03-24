@@ -8,7 +8,7 @@ export default function Card({
   className,
 }: {
   gap?: 'none' | 'xs' | 'sm' | 'md' | 'lg';
-  spacing?: 'none' | 'sm' | 'md' | 'lg';
+  spacing?: 'none' | 'xs' | 'sm' | 'md' | 'lg';
   border?: 'default' | 'none';
   children: React.ReactNode;
   className?: string;
@@ -25,6 +25,7 @@ export default function Card({
           'space-y-8 lg:space-y-12': gap === 'lg',
 
           'p-0': spacing === 'none',
+          'p-2': spacing === 'xs',
           'p-4': spacing === 'sm',
           'p-4 md:p-6': spacing === 'md',
           'p-8 lg:p-12': spacing === 'lg',

@@ -1,5 +1,6 @@
 'use server';
 
+
 import { LocationSchema, LocationState } from './schema';
 import { fetchSavedAddressesService, saveAddressService } from './service';
 
@@ -9,19 +10,19 @@ export async function saveLocationAction(
 ): Promise<LocationState> {
   const rawData = {
     label: formData.get('locationName'),
-    address: formData.get('streetAddress'),
-    postalCode: formData.get('postalCode'),
-    city: formData.get('city'),
-    state: formData.get('state'),
-    country: formData.get('country'),
+    address: formData.get('streetAddress') ,
+    postalCode: formData.get('postalCode') || undefined,
+    city: formData.get('city') || undefined,
+    state: formData.get('state') || undefined,
+    country: formData.get('country') || undefined,
     latitude: formData.get('latitude'),
     longitude: formData.get('longitude'),
     isDefault: formData.get('isDefault') === 'true',
   };
 
-  console.log('Raw form data:', rawData);
-
   const validated = LocationSchema.safeParse(rawData);
+
+ 
 
   if (!validated.success) {
     return {
@@ -30,10 +31,18 @@ export async function saveLocationAction(
     };
   }
 
-  console.log('Saving location with data:', validated.data);
+  const data = validated.data;
+
+  // ✅ Ensure at least coordinates exist
+  if (!data.latitude || !data.longitude) {
+    return {
+      status: 'error',
+      message: 'Location coordinates are required.',
+    };
+  }
 
   try {
-    const result = await saveAddressService(validated.data);
+    const result = await saveAddressService(data);
 
     if (!result?.data?.success) {
       return {
@@ -41,8 +50,6 @@ export async function saveLocationAction(
         message: result?.data?.message || 'Failed to save location.',
       };
     }
-
-    console.log('Location saved successfully:', result);
 
     return {
       status: 'success',
@@ -60,10 +67,8 @@ export async function saveLocationAction(
 export async function fetchSavedAddressesAction() {
   try {
     const result = await fetchSavedAddressesService();
-    return {
-      status: 'success',
-      data: result.data,
-    };
+
+    return result.data;
   } catch (error) {
     return {
       status: 'error',
