@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-import { MapPin, MapPinHouse, MapPinned, Plus } from 'lucide-react';
+import { Loader2, MapPin, MapPinHouse, MapPinned, Plus } from 'lucide-react';
 import AddressModal from '@/features/user/address/components/address-modal';
 import { Button } from '@/components/ui/buttons/button';
 import { useQueryClient } from '@tanstack/react-query';
@@ -11,8 +11,6 @@ import Card from '@/components/layout/card';
 
 export default function Address() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const queryClient = useQueryClient();
 
   const { data = [], isLoading } = useAddresses();
 
@@ -33,56 +31,67 @@ export default function Address() {
           </div>
         </div>
 
-        <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-72 overflow-y-scroll">
-          {data.map((item: any) => (
-            <li key={item.id}>
-              <Card spacing="sm" className="flex items-start h-full">
-                <div className="flex-1 flex flex-col md:flex-row gap-2 mb-0">
-                  <div className="w-4 h-4 sm:w-6 sm:h-6 md:w-8 md:h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                    {item.isDefault ? (
-                      <MapPinHouse size={14} />
-                    ) : (
-                      <MapPinned size={14} />
-                    )}
-                  </div>
+        {isLoading ? (
+          <div className="flex justify-center py-20">
+            <Loader2 className="animate-spin text-primary" size={32} />
+          </div>
+        ) : (
+          <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-72 overflow-y-scroll">
+            {data.map((item: any) => (
+              <li key={item.id}>
+                <Card spacing="sm" className="flex items-start h-full">
+                  <div className="flex-1 flex flex-col md:flex-row gap-2 mb-0">
+                    <div className="w-4 h-4 sm:w-6 sm:h-6 md:w-8 md:h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                      {item.isDefault ? (
+                        <MapPinHouse size={14} />
+                      ) : (
+                        <MapPinned size={14} />
+                      )}
+                    </div>
 
-                  <div className="space-y-1.5">
-                    <p className="font-medium text-xs capitalize">
-                      {item.label.toLocaleLowerCase()}
-                    </p>
-                    <p className="text-xs text-neutral-500 capitalize">
-                      {item.address ? item.address.toLocaleLowerCase() : 'No address provided'}
-                    </p>
+                    <div className="space-y-1.5">
+                      <p className="font-medium text-xs capitalize">
+                        {item.label.toLocaleLowerCase()}
+                      </p>
+                      <p className="text-xs text-neutral-500 capitalize">
+                        {item.address
+                          ? item.address.toLocaleLowerCase()
+                          : 'No address provided'}
+                      </p>
 
-                    <div className="flex gap-2 text-neutral-500  text-xs">
-                      {item.state && <p>{item.state}</p>}
-                      <p>{item.country ? item.country : 'No country provided'}</p>
+                      <div className="flex gap-2 text-neutral-500  text-xs">
+                        {item.state && <p>{item.state}</p>}
+                        <p>
+                          {item.country ? item.country : 'No country provided'}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                {item.isDefault && (
-                  <span className="text-[10px] bg-[#10B981]/10 border border-[#10B981] text-[#10B981] px-2 py-0.5 rounded-full flex items-center justify-center shrink-0">
-                    Default
-                  </span>
-                )}
-              </Card>
+                  {item.isDefault && (
+                    <span className="text-[10px] bg-[#10B981]/10 border border-[#10B981] text-[#10B981] px-2 py-0.5 rounded-full flex items-center justify-center shrink-0">
+                      Default
+                    </span>
+                  )}
+                </Card>
+              </li>
+            ))}
+
+            <li className="flex  h-full">
+              <Button
+                onClick={() => setIsModalOpen(true)}
+                variant="outline"
+                className='w-full'
+                size="icon"
+              >
+                <span className="bg-white rounded-full p-1">
+                  <Plus size={16} />
+                </span>
+                Add a new location
+              </Button>
             </li>
-          ))}
-
-          <li className=" flex w-full h-full">
-            <Button
-              onClick={() => setIsModalOpen(true)}
-              variant="outline"
-              size="icon"
-            >
-              <span className="bg-white rounded-full p-1">
-                <Plus size={16} />
-              </span>
-              Add a new location
-            </Button>
-          </li>
-        </ul>
+          </ul>
+        )}
       </Card>
 
       <AddressModal

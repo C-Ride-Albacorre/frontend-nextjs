@@ -58,12 +58,12 @@ export default function SavedAddresses() {
                   {item.label.toLocaleLowerCase()}
                 </p>
                 <p className="text-xs text-neutral-500 capitalize">
-                  {item.address.toLocaleLowerCase()}
+                  {item.address ? item.address.toLocaleLowerCase() : 'No address provided'}
                 </p>
 
                 <div className="flex gap-2 text-neutral-500  text-xs">
                   {item.state && <p>{item.state}</p>}
-                  <p>{item.country}</p>
+                  <p>{item.country ? item.country : 'No country provided'}</p>
                 </div>
               </div>
             </div>
