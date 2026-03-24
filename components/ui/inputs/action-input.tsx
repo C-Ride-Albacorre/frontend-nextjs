@@ -66,7 +66,7 @@ export default function ActionInput({
         type="button"
         onClick={onButtonClick}
         className={clsx(
-          'px-4 py-3 rounded-xl font-medium text-sm transition',
+          'p-4 rounded-xl font-medium text-xs transition cursor-pointer',
           buttonVariant === 'primary' &&
             'bg-primary hover:bg-primary-hover text-primary-text-100',
           buttonVariant === 'white' &&

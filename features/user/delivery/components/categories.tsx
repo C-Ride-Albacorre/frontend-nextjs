@@ -1,10 +1,13 @@
 'use client';
 
-import { ChevronRight, Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import { useCategories } from '../fetch';
 import Link from 'next/link';
 import CategoriesSkeleton from './categories-skeleton';
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
+import Card from '@/components/layout/card';
+import { Store } from 'lucide-react';
 
 type Category = {
   id: string;
@@ -16,6 +19,39 @@ type Category = {
 
 export default function Categories() {
   const { data: categories, isPending, isError } = useCategories();
+
+  const [location, setLocation] = useState<{
+    latitude?: number;
+    longitude?: number;
+  }>({});
+
+  useEffect(() => {
+    if (!('geolocation' in navigator)) {
+      toast.error('Geolocation is not supported on this device.');
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setLocation({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        });
+      },
+      (error) => {
+        const message =
+          error.code === error.PERMISSION_DENIED
+            ? 'Location access was denied.'
+            : error.code === error.POSITION_UNAVAILABLE
+              ? 'Your location is currently unavailable.'
+              : error.code === error.TIMEOUT
+                ? 'Location request timed out.'
+                : 'Unable to get your location.';
+
+        toast.error(message);
+      },
+    );
+  }, []);
 
   console.log('data', categories);
 
@@ -33,9 +69,11 @@ export default function Categories() {
 
   if (!Array.isArray(categories) || !categories.length) {
     return (
-      <div className="mt-6 rounded-xl border border-border bg-white p-4 text-sm text-neutral-500">
-        No categories found.
-      </div>
+      <Card className="mt-6  bg-white text-sm text-neutral-500 flex flex-col items-center gap-2 h-48 justify-center">
+        <Store size={24} className="text-neutral-400" />
+
+        <p>No categories found.</p>
+      </Card>
     );
   }
 
@@ -44,7 +82,7 @@ export default function Categories() {
       <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2">
         {categories?.map((item: any) => (
           <Link
-            href={`/user/delivery/${item.id}`}
+           href={`/user/delivery/${item.id}?name=${encodeURIComponent(item.name)}&latitude=${location.latitude ?? ''}&longitude=${location.longitude ?? ''}`}
             key={item.id}
             className="relative flex  items-center justify-between rounded-2xl bg-primary px-6 py-4  text-left transition hover:opacity-95 cursor-pointer"
           >

@@ -21,3 +21,42 @@ export async function fetchCategoriesService() {
 
   return data;
 }
+
+export async function fetchCategoryStoresService(
+  categoryId: string,
+  latitude?: number,
+  longitude?: number,
+) {
+  const params = new URLSearchParams();
+
+  if (latitude !== undefined) {
+    params.set('latitude', String(latitude));
+  }
+
+  if (longitude !== undefined) {
+    params.set('longitude', String(longitude));
+  }
+
+  const queryString = params.toString();
+  const url = `${BASE_URL}/customer/stores/category/${categoryId}${
+    queryString ? `?${queryString}` : ''
+  }`;
+
+  const res = await authFetch(url, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new ApiError(
+      data?.message || 'Failed to fetch stores for category',
+      data?.statusCode ?? res.status,
+    );
+  }
+
+  return data;
+}
