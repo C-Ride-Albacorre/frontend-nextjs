@@ -1,6 +1,10 @@
 'use server';
 
-import { fetchCategoriesService, fetchCategoryStoresService } from './service';
+import {
+  fetchCategoriesService,
+  fetchCategoryStoresService,
+  fetchSubcategoriesService,
+} from './service';
 
 export async function fetchCategoriesAction() {
   const result = await fetchCategoriesService();
@@ -18,5 +22,13 @@ export async function fetchCategoryDetailsAction(
     longitude,
   );
 
-  return result.data;
+  return result?.data ?? [];
+}
+
+export async function fetchSubcategoriesAction(categoryId: string) {
+  const result = await fetchSubcategoriesService(categoryId);
+
+
+  console.log('id', categoryId);
+  return result?.data;
 }

@@ -28,7 +28,7 @@ export default async function CategoryDeliveryPage({
       <div className="px-4 py-8 xl:px-0 md:py-12 mx-auto max-w-6xl space-y-12">
         <div className="space-y-4">
           <h2 className="text-2xl font-semibold">
-            {`${name} / Stores`  || 'Category / Stores'} 
+            {`${name} / Stores` || 'Category / Stores'}
           </h2>
           <p className="text-sm text-neutral-500">
             Select from our premium vendors
@@ -44,7 +44,7 @@ export default async function CategoryDeliveryPage({
           />
         </form> */}
 
-        <CategoryIcons />
+        <CategoryIcons id={id} />
 
         {/* <Filters /> */}
 

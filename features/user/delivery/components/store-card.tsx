@@ -47,7 +47,7 @@ export default function StoreCard({
         </div>
 
         <div className="mt-2 flex gap-1 items-center">
-          <p className="text-sm text-neutral-500">{cuisine}</p>
+          {/* <p className="text-sm text-neutral-500">{cuisine}</p> */}
           <Dot className="w-4 h-4 text-neutral-500" />
           <p className="text-sm text-neutral-500">{cuisine}</p>
         </div>

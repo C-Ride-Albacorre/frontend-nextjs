@@ -60,3 +60,25 @@ export async function fetchCategoryStoresService(
 
   return data;
 }
+
+
+export async function fetchSubcategoriesService(categoryId: string) {
+
+  const res = await authFetch(`${BASE_URL}/customer/subcategories/category/${categoryId}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new ApiError(
+      data?.message || 'Failed to fetch subcategories',
+      data?.statusCode ?? res.status,
+    );
+  }
+
+  return data;
+}

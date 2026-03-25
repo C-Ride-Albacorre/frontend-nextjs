@@ -30,7 +30,6 @@ export default function StoreGrid({
   const lat = latitude ? parseFloat(latitude) : undefined;
   const lng = longitude ? parseFloat(longitude) : undefined;
 
-
   console.log('StoreGrid Props:', { id, latitude, longitude, lat, lng });
   const {
     data: stores,
@@ -39,7 +38,7 @@ export default function StoreGrid({
     error,
   } = useCategoryStores(id, lat, lng);
 
-  console.log('Stores Details:', stores);
+  console.log('Stores:', JSON.stringify(stores, null, 2));
   console.log('Stores Error:', error);
 
   if (isPending) {
@@ -54,11 +53,10 @@ export default function StoreGrid({
     );
   }
 
-  if (!Array.isArray(stores) || !stores.length) {
+  if (!stores?.length) {
     return (
-      <Card className="mt-6  bg-white text-sm text-neutral-500 flex flex-col items-center gap-2 h-60">
+      <Card className="mt-6  bg-white text-sm text-neutral-500 flex flex-col items-center justify-center gap-2 h-60">
         <Store size={32} className="text-neutral-400" />
-
         No stores found.
       </Card>
     );
