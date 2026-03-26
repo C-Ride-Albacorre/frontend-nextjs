@@ -14,9 +14,15 @@ export default function StoreCard({
   delivery,
   time,
 }: StoreCardProps) {
+  const store = name
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/\s+/g, '-');
+
   return (
     <Link
-      href={`/user/delivery/food/${id}`}
+      href={`/user/delivery/${store}/${slug}`}
       className="bg-white rounded-2xl overflow-hidden border border-border"
     >
       <div className="relative h-52">
@@ -54,7 +60,6 @@ export default function StoreCard({
         </div>
 
         <div className="mt-2 flex gap-1 items-center">
-       
           <p className="text-sm text-neutral-500">{cuisine}</p>
         </div>
 
