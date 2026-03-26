@@ -39,7 +39,7 @@ export default function BusinessAddressForm() {
     if (state?.status === 'success') {
       toast.success(state.message ?? 'Saved successfully!');
 
-      setTimeout(() => router.push('/onboarding/business-bank'), 1500);
+      router.push('/onboarding/business-bank');
     }
   }, [state, router]);
 
@@ -60,9 +60,7 @@ export default function BusinessAddressForm() {
           placeholder="123 Business Street"
           value={fields.address}
           onChange={handleChange('address')}
-          errorMessage={
-            isError ? state?.errors?.address?.[0] : undefined
-          }
+          errorMessage={isError ? state?.errors?.address?.[0] : undefined}
         />
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -74,9 +72,7 @@ export default function BusinessAddressForm() {
             placeholder="Lekki"
             value={fields.city}
             onChange={handleChange('city')}
-            errorMessage={
-              isError ? state?.errors?.city?.[0] : undefined
-            }
+            errorMessage={isError ? state?.errors?.city?.[0] : undefined}
           />
 
           <Input
@@ -87,9 +83,7 @@ export default function BusinessAddressForm() {
             placeholder="Lagos"
             value={fields.state}
             onChange={handleChange('state')}
-            errorMessage={
-              isError ? state?.errors?.state?.[0] : undefined
-            }
+            errorMessage={isError ? state?.errors?.state?.[0] : undefined}
           />
         </div>
 

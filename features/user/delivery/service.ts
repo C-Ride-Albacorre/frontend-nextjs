@@ -58,7 +58,7 @@ export async function fetchCategoryStoresService(
     );
   }
 
-  return data;
+  return data.data;
 }
 
 

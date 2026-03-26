@@ -1,7 +1,9 @@
 import { Metadata } from 'next';
 import { Toaster } from 'sonner';
 import './globals.css';
+
 import ReactQueryProvider from '@/components/providers/react-query-provider';
+import SessionProvider from './providers/session-provider';
 
 export const metadata: Metadata = {
   title: "C-ride — Beyond Delivery, It's Care",
@@ -21,7 +23,7 @@ export default function RootLayout({
       />
       <body>
         <ReactQueryProvider>
-          {children}
+          <SessionProvider>{children}</SessionProvider>
           <Toaster richColors position="top-right" />
         </ReactQueryProvider>
       </body>

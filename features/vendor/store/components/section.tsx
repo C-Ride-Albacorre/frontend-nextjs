@@ -5,19 +5,7 @@ import Textarea from '@/components/ui/inputs/textarea';
 import TimePicker from '@/components/ui/inputs/time-picker';
 import { Button } from '@/components/ui/buttons/button';
 import { Copy } from 'lucide-react';
-
-const STORE_CATEGORIES = [
-  { label: 'Restaurant', value: 'Restaurant' },
-  { label: 'Fast Food', value: 'Fast Food' },
-  { label: 'Café', value: 'Cafe' },
-  { label: 'Bakery', value: 'Bakery' },
-  { label: 'Grocery', value: 'Grocery' },
-  { label: 'Supermarket', value: 'Supermarket' },
-  { label: 'Pharmacy', value: 'Pharmacy' },
-  { label: 'Electronics', value: 'Electronics' },
-  { label: 'Fashion', value: 'Fashion' },
-  { label: 'Other', value: 'Other' },
-];
+import { useBusinessTypes } from '../../onboarding/fetch';
 
 export interface StoreFormValues {
   storeName: string;
@@ -44,11 +32,20 @@ export function StoreInformation({
   errors,
   disabled,
 }: StoreInformationProps) {
+  const { data: StoreCategory, isPending, error } = useBusinessTypes();
+
+  const options =
+    StoreCategory?.map((type: any) => ({
+      value: type.name,
+      label: type.name,
+    })) ?? [];
+
   return (
     <Card
+    spacing='md'
       className={`bg-white ${disabled ? 'opacity-50 pointer-events-none' : ''}`}
     >
-      <div className="px-4 md:px-8 space-y-6 md:space-y-10">
+      <div className=" space-y-6 md:space-y-10">
         <p className="text-neutral-900 font-medium">Store Information</p>
         <div className="space-y-6">
           <Input
@@ -68,7 +65,11 @@ export function StoreInformation({
             label="Store Category"
             placeholder="Select category"
             spacing="sm"
-            options={STORE_CATEGORIES}
+            options={
+              isPending
+                ? [{ value: '', label: 'Loading Business Types...' }]
+                : options
+            }
             value={values.storeCategory}
             onChange={(value) => onChange('storeCategory', value)}
             errorMessage={errors?.storeCategory?.[0]}
@@ -146,7 +147,7 @@ export function OperatingHours({
     <Card
       className={`bg-white ${disabled ? 'opacity-50 pointer-events-none' : ''}`}
     >
-      <div className="px-4 md:px-8 space-y-6 md:space-y-10">
+      <div className="space-y-6 md:space-y-10">
         <p className="text-neutral-900 font-medium">Operating Hours</p>
         {errors?.operatingHours && (
           <p className="text-xs text-red-600">{errors.operatingHours[0]}</p>
@@ -178,9 +179,9 @@ export function OperatingHours({
 
               return (
                 <div key={day} className="space-y-2">
-                  <div className="grid grid-cols-10 gap-4 items-center">
-                    <span className="w-20 text-sm col-span-3">{day}</span>
-                    <div className="col-span-3">
+                  <div className="grid grid-cols-12 gap-4 items-center">
+                    <span className="text-sm col-span-3">{day}</span>
+                    <div className="col-span-4">
                       <TimePicker
                         name={`${dayKey}Open`}
                         value={values.operatingHours[dayKey]?.open || ''}
@@ -193,7 +194,7 @@ export function OperatingHours({
                     <span className="text-sm flex justify-center items-center">
                       to
                     </span>
-                    <div className="col-span-3">
+                    <div className="col-span-4">
                       <TimePicker
                         name={`${dayKey}Close`}
                         value={values.operatingHours[dayKey]?.close || ''}
@@ -248,7 +249,7 @@ export function StoreDetails({
     <Card
       className={`bg-white ${disabled ? 'opacity-50 pointer-events-none' : ''}`}
     >
-      <div className="px-4 md:px-8 space-y-6 md:space-y-10">
+      <div className="space-y-6 md:space-y-10">
         <p className="text-neutral-900 font-medium">
           Store Description & Details
         </p>

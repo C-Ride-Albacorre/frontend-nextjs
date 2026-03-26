@@ -15,7 +15,14 @@ export default function SessionExpiredModal({
 }: SessionExpiredModalProps) {
   if (!isOpen) return null;
 
-  const loginUrl = `/admin/login?redirect=${encodeURIComponent(redirectPath)}`;
+  // Determine persona from redirectPath
+  let persona = 'admin';
+  if (redirectPath.startsWith('/user')) {
+    persona = 'user';
+  } else if (redirectPath.startsWith('/vendor')) {
+    persona = 'vendor';
+  }
+  const loginUrl = `/${persona}/login?redirect=${encodeURIComponent(redirectPath)}`;
 
   return createPortal(
     <div className="fixed inset-0 z-100 bg-black/60 flex items-center justify-center px-4 py-8 h-full w-full">

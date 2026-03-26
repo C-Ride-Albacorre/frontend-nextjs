@@ -12,6 +12,7 @@ export default function ToggleSwitch({
   return (
     <button
       role="switch"
+      type="button"
       aria-checked={checked}
       onClick={onChange}
       disabled={disabled}

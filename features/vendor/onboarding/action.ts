@@ -7,7 +7,24 @@ import {
   StepState,
 } from './schema';
 import { BusinessInfoSchema } from './schema';
-import { onboardingService } from './service/onboarding';
+import {
+  getBusinessTypeService,
+  onboardingService,
+} from './service/onboarding';
+
+export async function getBusinessTypesAction(): Promise<string[]> {
+  try {
+    const res = await getBusinessTypeService();
+
+    return res.data;
+  } catch (error) {
+    throw new Error(
+      error instanceof Error
+        ? error.message
+        : 'Failed to fetch business types.',
+    );
+  }
+}
 
 export async function businessInfoAction(
   _state: StepState,
@@ -27,6 +44,8 @@ export async function businessInfoAction(
       errors: validatedFields.error.flatten().fieldErrors,
     };
   }
+
+  console.log('Validated Fields:', validatedFields.data);
 
   try {
     await onboardingService(1, validatedFields.data);

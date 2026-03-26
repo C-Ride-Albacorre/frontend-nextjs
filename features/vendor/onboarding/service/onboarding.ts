@@ -44,3 +44,23 @@ export async function onboardingService(
 
   return result;
 }
+
+export async function getBusinessTypeService() {
+  const res = await authFetch(`${BASE_URL}/admin`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  const result = await res.json();
+
+  if (!res.ok) {
+    throw new ApiError(
+      result?.message || 'Failed to fetch business types',
+      result?.statusCode ?? res.status,
+    );
+  }
+
+  return result;
+}

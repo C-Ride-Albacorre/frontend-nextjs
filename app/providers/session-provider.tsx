@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import SessionExpiredModal from '@/components/layout/session-expired-modal';
 
-const CHECK_INTERVAL = 60_000; // 60 seconds
+const CHECK_INTERVAL = 60_000;
 
 export default function SessionProvider({
   children,

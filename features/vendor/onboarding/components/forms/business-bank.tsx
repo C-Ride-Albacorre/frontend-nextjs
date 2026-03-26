@@ -41,7 +41,7 @@ export default function BusinessBankForm() {
     if (state?.status === 'success') {
       toast.success(state.message ?? 'Saved successfully!');
 
-      setTimeout(() => router.push('/onboarding/business-document'), 1500);
+      router.push('/onboarding/business-document');
     }
   }, [state, router]);
 

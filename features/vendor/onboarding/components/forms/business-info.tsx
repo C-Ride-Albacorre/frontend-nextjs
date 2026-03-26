@@ -12,6 +12,7 @@ import OnboardingFormHeader from '../form-header';
 import { Button } from '@/components/ui/buttons/button';
 import { businessInfoAction } from '../../action';
 import { Select } from '@/components/ui/inputs/select';
+import { useBusinessTypes } from '../../fetch';
 
 export default function BusinessInfoForm() {
   const [fields, setFields] = useState({
@@ -36,6 +37,16 @@ export default function BusinessInfoForm() {
       setFields((prev) => ({ ...prev, [field]: e.target.value }));
     };
 
+  const { data: businessTypes, isPending, error } = useBusinessTypes();
+
+ 
+
+  const options =
+    businessTypes?.map((type: any) => ({
+      value: type.name,
+      label: type.name,
+    })) ?? [];
+
   useEffect(() => {
     if (state?.status === 'error' && state.message) {
       toast.error(state.message);
@@ -44,7 +55,7 @@ export default function BusinessInfoForm() {
     if (state?.status === 'success') {
       toast.success(state.message ?? 'Saved successfully!');
 
-      setTimeout(() => router.push('/onboarding/business-contact'), 1500);
+      router.push('/onboarding/business-contact');
     }
   }, [state, router]);
 
@@ -73,17 +84,11 @@ export default function BusinessInfoForm() {
           name="businessType"
           label="Business Type"
           value={fields.businessType}
-          options={[
-            { value: 'food', label: 'Food' },
-            { value: 'grocery', label: 'Grocery' },
-            { value: 'pharmacy', label: 'Pharmacy' },
-            { value: 'parcel', label: 'Parcel' },
-            { value: 'laundry', label: 'Laundry' },
-            { value: 'services', label: 'Services' },
-          ]}
+          options={ isPending? [{ value: '', label: 'Loading Business Types...' }] : options}
           onChange={(value) =>
             setFields((prev) => ({ ...prev, businessType: value }))
           }
+          
           errorMessage={isError ? state.errors?.businessType?.[0] : undefined}
         />
 
@@ -141,7 +146,8 @@ export default function BusinessInfoForm() {
               !fields.businessName.trim() ||
               !fields.businessType.trim() ||
               !fields.registrationNumber.trim() ||
-              !fields.taxId.trim() || !fields.description.trim()
+              !fields.taxId.trim() ||
+              !fields.description.trim()
             }
             rightIcon={<ChevronRight size={16} />}
           >

@@ -2,7 +2,6 @@
 
 import { useState, useTransition } from 'react';
 import { toast } from 'sonner';
-import { createCategoryAction } from '@/features/admin/category/action';
 import { CreateCategoryPayload } from '@/features/admin/category/types';
 import Modal from '@/components/layout/modal';
 import Input from '@/components/ui/inputs/input';
@@ -10,6 +9,7 @@ import Textarea from '@/components/ui/inputs/textarea';
 import FileDropzone from '@/components/ui/inputs/file-dropzone';
 import { Button } from '@/components/ui/buttons/button';
 import ToggleSwitch from '@/components/ui/buttons/toggle-switch';
+import { createCategoryAction } from '../action';
 
 interface CreateCategoryModalProps {
   isOpen: boolean;

@@ -34,14 +34,14 @@ export async function createCategoryAction(
     const res = await createCategoryService(payload);
     console.log('[createCategory] Response:', JSON.stringify(res, null, 2));
 
-    if (!res.success) {
+    if (res.status !== 'success') {
       return {
         success: false,
         message: res.message || 'Failed to create category',
       };
     }
 
-    if (res.success) {
+    if (res.status === 'success') {
       revalidatePath('/admin/category');
     }
 

@@ -1,10 +1,24 @@
 import { BASE_URL } from '@/config/api';
 import { ApiError } from './api-error';
 
+export type RefreshApiResponse = {
+  status: string;
+  statusCode: number;
+  data: {
+    accessToken: string;
+    refreshToken: string;
+    user: {
+      id: string;
+      email: string;
+      role: string;
+    };
+  };
+};
+
 export async function refreshTokenService(payload: {
   refreshToken: string;
   previousAccessToken: string;
-}) {
+}): Promise<RefreshApiResponse> {
   const res = await fetch(`${BASE_URL}/auth/refresh`, {
     method: 'POST',
     headers: {
@@ -14,7 +28,6 @@ export async function refreshTokenService(payload: {
     body: JSON.stringify({
       refreshToken: payload.refreshToken,
       previousAccessToken: payload.previousAccessToken,
-
       userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : '',
     }),
   });
@@ -28,9 +41,5 @@ export async function refreshTokenService(payload: {
     );
   }
 
-  return data as {
-    accessToken: string;
-    refreshToken?: string;
-    user: { id: string; name: string; email: string };
-  };
+  return data as RefreshApiResponse;
 }

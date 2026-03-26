@@ -38,7 +38,7 @@ export default function BusinessContactInfoForm() {
     if (state?.status === 'success') {
       toast.success(state.message ?? 'Saved successfully!');
 
-      setTimeout(() => router.push('/onboarding/business-address'), 1500);
+      router.push('/onboarding/business-address');
     }
   }, [state, router]);
 

@@ -82,7 +82,7 @@ export default function Categories() {
       <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2">
         {categories?.map((item: any) => (
           <Link
-           href={`/user/delivery/${item.id}?name=${encodeURIComponent(item.name)}&latitude=${location.latitude ?? ''}&longitude=${location.longitude ?? ''}`}
+            href={`/user/delivery/${item.id}?name=${encodeURIComponent(item.name)}&latitude=${location.latitude ?? ''}&longitude=${location.longitude ?? ''}`}
             key={item.id}
             className="relative flex  items-center justify-between rounded-2xl bg-primary px-6 py-4  text-left transition hover:opacity-95 cursor-pointer"
           >
@@ -97,7 +97,9 @@ export default function Categories() {
             {/* Image */}
             <div className="relative h-32 w-36 overflow-hidden rounded-xl">
               <Image
-                src={item.image}
+                src={
+                  item.image ? item.image : '/assets/image/nigerian.jpg'
+                }
                 alt={item.name}
                 fill
                 className="object-cover"

@@ -33,15 +33,12 @@ const ADMIN_PROTECTED_ROUTES = [
 const USER_AUTH_ROUTES = ['/user/register', '/user/login'];
 const VENDOR_AUTH_ROUTES = ['/vendor/register', '/vendor/login'];
 const ADMIN_AUTH_ROUTES = ['/admin/login'];
-
 const SHARED_AUTH_ROUTES = ['/verify', '/reset', '/reset/reset-password'];
-
 const SUPER_ADMIN_ONLY_ROUTES = ['/admin/create-admin'];
 
 function isTokenExpired(token: string) {
   try {
     const payload = jwtDecode<{ exp: number }>(token);
-
     return payload.exp < Math.floor(Date.now() / 1000);
   } catch {
     return true;
@@ -62,31 +59,50 @@ function getTokenExpiryFromJwt(token: string): number {
   }
 }
 
+type RefreshApiResponse = {
+  status: string;
+  statusCode: number;
+  data: {
+    accessToken: string;
+    refreshToken: string;
+    user: { id: string; email: string; role: string };
+  };
+};
+
 async function refreshAccessToken(
   refreshToken: string,
   previousAccessToken: string,
-) {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/refresh`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+  userAgent: string,
+): Promise<RefreshApiResponse | null> {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/refresh`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          refreshToken,
+          previousAccessToken,
+          userAgent,
+        }),
+        cache: 'no-store',
       },
-      body: JSON.stringify({ refreshToken, previousAccessToken }),
-      cache: 'no-store',
-    },
-  );
-  if (!res.ok) return null;
+    );
 
-  return res.json();
+    if (!res.ok) return null;
+    return res.json();
+  } catch {
+    return null;
+  }
 }
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-
-  let accessToken = request.cookies.get('accessToken')?.value;
+  const accessToken = request.cookies.get('accessToken')?.value;
   const refreshToken = request.cookies.get('refreshToken')?.value;
+  const userAgent = request.headers.get('user-agent') ?? '';
 
   if (
     pathname.startsWith('/_next') ||
@@ -102,31 +118,38 @@ export async function middleware(request: NextRequest) {
    * -------------------------
    */
   if (accessToken && isTokenExpired(accessToken) && refreshToken) {
-    const refreshed = await refreshAccessToken(refreshToken, accessToken);
+    const refreshed = await refreshAccessToken(
+      refreshToken,
+      accessToken,
+      userAgent,
+    );
 
-    if (refreshed?.accessToken) {
+    // Unwrap from refreshed.data — API returns { data: { accessToken, refreshToken } }
+    if (refreshed?.data?.accessToken) {
       const response = NextResponse.next();
 
-      response.cookies.set('accessToken', refreshed.accessToken, {
+      response.cookies.set('accessToken', refreshed.data.accessToken, {
         httpOnly: true,
         secure: isProd,
         sameSite: 'lax',
         path: '/',
-        maxAge: getTokenExpiryFromJwt(refreshed.accessToken),
+        maxAge: getTokenExpiryFromJwt(refreshed.data.accessToken),
       });
 
-      if (refreshed.refreshToken) {
-        response.cookies.set('refreshToken', refreshed.refreshToken, {
+      if (refreshed.data.refreshToken) {
+        response.cookies.set('refreshToken', refreshed.data.refreshToken, {
           httpOnly: true,
           secure: isProd,
           sameSite: 'lax',
           path: '/',
-          maxAge: getTokenExpiryFromJwt(refreshed.refreshToken),
+          maxAge: getTokenExpiryFromJwt(refreshed.data.refreshToken),
         });
       }
 
       return response;
     }
+
+    // Refresh failed — only block if accessing a protected area
     if (
       !pathname.startsWith('/admin') &&
       !pathname.startsWith('/vendor') &&
@@ -137,8 +160,7 @@ export async function middleware(request: NextRequest) {
   }
 
   let userRole: Role | null = null;
-
-  if (accessToken) {
+  if (accessToken && !isTokenExpired(accessToken)) {
     try {
       const payload = jwtDecode<{ role: Role }>(accessToken);
       userRole = payload.role;
@@ -150,20 +172,16 @@ export async function middleware(request: NextRequest) {
   const isUserProtected = USER_PROTECTED_ROUTES.some((r) =>
     pathname.startsWith(r),
   );
-
   const isVendorProtected = VENDOR_PROTECTED_ROUTES.some((r) =>
     pathname.startsWith(r),
   );
-
   const isAdminProtected = ADMIN_PROTECTED_ROUTES.some((r) =>
     pathname.startsWith(r),
   );
-
   const isUserAuth = USER_AUTH_ROUTES.some((r) => pathname.startsWith(r));
   const isVendorAuth = VENDOR_AUTH_ROUTES.some((r) => pathname.startsWith(r));
   const isAdminAuth = ADMIN_AUTH_ROUTES.some((r) => pathname.startsWith(r));
   const isSharedAuth = SHARED_AUTH_ROUTES.some((r) => pathname.startsWith(r));
-
   const isSuperAdminOnly = SUPER_ADMIN_ONLY_ROUTES.some((r) =>
     pathname.startsWith(r),
   );
@@ -216,7 +234,6 @@ export async function middleware(request: NextRequest) {
     accessToken
   ) {
     let dest = '/';
-
     if (userRole === 'VENDOR') dest = '/vendor/store';
     if (userRole === 'CUSTOMER') dest = '/user/dashboard';
     if (userRole === 'ADMIN' || userRole === 'SUPER_ADMIN')
@@ -232,13 +249,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    /*
-     * Match all paths EXCEPT:
-     * - _next/static, _next/image (Next.js internals)
-     * - favicon.ico
-     * - /google/callback (OAuth callback — handled by the page itself)
-     * - Static file extensions
-     */
     '/((?!_next/static|_next/image|favicon.ico|google/callback|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 };

@@ -28,7 +28,9 @@ export default function CategoryIcons({ id }: { id: string }) {
 
   return (
     <section>
-      <div className="flex flex-wrap gap-12 justify-center md:justify-between items-center">
+      <div
+        className={`flex flex-wrap   ${subcategories.length < 3 ? ' gap-8 md:gap-14' : 'justify-center md:justify-between items-center gap-8 md:gap-12'}  `}
+      >
         {subcategories.map((cat: Subcategory) => (
           <div
             key={cat.id}

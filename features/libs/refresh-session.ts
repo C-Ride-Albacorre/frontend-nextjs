@@ -20,21 +20,25 @@ export async function refreshSession() {
       previousAccessToken: accessToken ?? '',
     });
 
+    // Unwrap from result.data — API returns { data: { accessToken, refreshToken } }
+    const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
+      result.data;
+
     await setCookie({
       name: COOKIE_KEYS.ACCESS_TOKEN,
-      value: result.accessToken,
-      maxAge: getTokenExpiry(result.accessToken),
+      value: newAccessToken,
+      maxAge: getTokenExpiry(newAccessToken),
     });
 
-    if (result.refreshToken) {
+    if (newRefreshToken) {
       await setCookie({
         name: COOKIE_KEYS.REFRESH_TOKEN,
-        value: result.refreshToken,
-        maxAge: getTokenExpiry(result.refreshToken),
+        value: newRefreshToken,
+        maxAge: getTokenExpiry(newRefreshToken),
       });
     }
 
-    return result.accessToken;
+    return newAccessToken;
   } catch {
     await clearAuthCookies();
     return null;

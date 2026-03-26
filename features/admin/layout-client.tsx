@@ -65,7 +65,7 @@ export default function AdminLayoutClient({ children, user }: Props) {
         </div>
 
         <main className="flex-1 overflow-y-auto overscroll-contain">
-          <SessionProvider>{children}</SessionProvider>
+          {children}
         </main>
       </div>
 
