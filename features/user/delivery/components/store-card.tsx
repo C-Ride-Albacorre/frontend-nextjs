@@ -22,7 +22,7 @@ export default function StoreCard({
 
   return (
     <Link
-      href={`/user/delivery/${store}/${slug}`}
+      href={`/user/delivery/${store}/${id}`}
       className="bg-white rounded-2xl overflow-hidden border border-border"
     >
       <div className="relative h-52">

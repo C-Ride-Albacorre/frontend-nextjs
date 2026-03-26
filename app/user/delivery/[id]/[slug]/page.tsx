@@ -63,12 +63,13 @@ const PRODUCTS = [
   },
 ];
 
-export default function FoodVendorsPage() {
+export default function StoreVendorsPage({
+  params,
+}: {
+  params: { slug: string };
+}) {
   const [sort, setSort] = useState('');
 
-  const params = useParams();
-
-  const id = params.name;
   return (
     <main>
       <div>
@@ -260,7 +261,6 @@ export default function FoodVendorsPage() {
 
         <div className="mt-12  flex items-center justify-center">
           <Button
-            href={`/user/delivery/food/${id}/delivery-type`}
             variant="primary"
             size="lg"
             rightIcon={<ChevronRight size={16} />}
