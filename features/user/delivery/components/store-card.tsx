@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { StoreCardProps } from '../types';
 import { Bike, Dot, MapPin, Star } from 'lucide-react';
+import Image from 'next/image';
 
 export default function StoreCard({
   id,
@@ -19,10 +20,16 @@ export default function StoreCard({
       className="bg-white rounded-2xl overflow-hidden border border-border"
     >
       <div className="relative h-52">
-        <img alt={name} src={image} className="w-full h-full object-cover" />
+        <Image
+          alt={name}
+          src={image ? image : '/assets/image/nigerian.jpg'}
+          className="w-full h-full object-cover"
+          priority
+          fill
+        />
 
         {tag && (
-          <span className="absolute top-3 left-3 bg-primary px-3 py-1  rounded-full text-xs">
+          <span className="absolute top-3 left-3 bg-primary px-3 py-1  rounded-full text-xs shadow text-primary-text-100 font-medium">
             {tag}
           </span>
         )}
@@ -47,8 +54,7 @@ export default function StoreCard({
         </div>
 
         <div className="mt-2 flex gap-1 items-center">
-          {/* <p className="text-sm text-neutral-500">{cuisine}</p> */}
-          <Dot className="w-4 h-4 text-neutral-500" />
+       
           <p className="text-sm text-neutral-500">{cuisine}</p>
         </div>
 

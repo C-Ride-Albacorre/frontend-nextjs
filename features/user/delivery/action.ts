@@ -22,6 +22,8 @@ export async function fetchCategoryDetailsAction(
     longitude,
   );
 
+  console.log('Category Details:', result?.data);
+
   return result?.data ?? [];
 }
 

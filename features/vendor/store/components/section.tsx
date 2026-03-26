@@ -34,15 +34,17 @@ export function StoreInformation({
 }: StoreInformationProps) {
   const { data: StoreCategory, isPending, error } = useBusinessTypes();
 
+  console.log('Store Category :', StoreCategory);
+
   const options =
     StoreCategory?.map((type: any) => ({
-      value: type.name,
+      value: type.id,
       label: type.name,
     })) ?? [];
 
   return (
     <Card
-    spacing='md'
+      spacing="md"
       className={`bg-white ${disabled ? 'opacity-50 pointer-events-none' : ''}`}
     >
       <div className=" space-y-6 md:space-y-10">

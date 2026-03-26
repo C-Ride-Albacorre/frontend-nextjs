@@ -1,47 +1,31 @@
 'use client';
 
-import { useCategoryStores } from '../fetch';
 import StoreCard from './store-card';
 import CategoriesSkeleton from './categories-skeleton';
-import { Store } from 'lucide-react';
+import { Store as StoreIcon } from 'lucide-react';
 import Card from '@/components/layout/card';
 
-type Store = {
+type ApiStore = {
   id: string;
-  image: string;
-  tag: string;
-  name: string;
-  cuisine: string;
-  rating: number;
-  location: string;
-  delivery: string;
-  time: string;
+  storeName: string;
+  storeLogo: string | null;
+  storeCategory: string;
+  storeAddress: string;
+  storeDescription: string;
+  preparationTime: number;
+  distance: number;
 };
 
 export default function StoreGrid({
-  id,
-  latitude,
-  longitude,
+  stores,
+  isLoading,
+  isError,
 }: {
-  id: string;
-  latitude?: string;
-  longitude?: string;
+  stores: ApiStore[];
+  isLoading?: boolean;
+  isError?: boolean;
 }) {
-  const lat = latitude ? parseFloat(latitude) : undefined;
-  const lng = longitude ? parseFloat(longitude) : undefined;
-
-  console.log('StoreGrid Props:', { id, latitude, longitude, lat, lng });
-  const {
-    data: stores,
-    isPending,
-    isError,
-    error,
-  } = useCategoryStores(id, lat, lng);
-
-  console.log('Stores:', JSON.stringify(stores, null, 2));
-  console.log('Stores Error:', error);
-
-  if (isPending) {
+  if (isLoading) {
     return <CategoriesSkeleton />;
   }
 
@@ -55,8 +39,8 @@ export default function StoreGrid({
 
   if (!stores?.length) {
     return (
-      <Card className="mt-6  bg-white text-sm text-neutral-500 flex flex-col items-center justify-center gap-2 h-60">
-        <Store size={32} className="text-neutral-400" />
+      <Card className="mt-6 bg-white text-sm text-neutral-500 flex flex-col items-center justify-center gap-2 h-60">
+        <StoreIcon size={32} className="text-neutral-400" />
         No stores found.
       </Card>
     );
@@ -64,18 +48,18 @@ export default function StoreGrid({
 
   return (
     <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-      {stores.map((store: Store) => (
+      {stores.map((store) => (
         <StoreCard
           key={store.id}
           id={store.id}
-          image={store.image}
-          tag={store.tag}
-          name={store.name}
-          cuisine={store.cuisine}
-          rating={store.rating}
-          location={store.location}
-          delivery={store.delivery}
-          time={store.time}
+          image={store.storeLogo ?? ''}
+          name={store.storeName}
+          tag={store.storeCategory}
+          cuisine={store.storeDescription}
+          rating={0}
+          location={store.storeAddress}
+          delivery={`${Math.round(store.distance)} km`}
+          time={`${store.preparationTime} mins`}
         />
       ))}
     </div>

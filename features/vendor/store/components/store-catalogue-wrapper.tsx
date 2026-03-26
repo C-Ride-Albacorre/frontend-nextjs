@@ -24,6 +24,8 @@ export default function StoreCatalogueWrapper({
   const [sort, setSort] = useState('All');
   const [isLoading, setIsLoading] = useState(false);
 
+  console.log('Store:', stores);
+
   // Modal states
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);

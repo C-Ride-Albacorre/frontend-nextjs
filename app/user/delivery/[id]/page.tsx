@@ -3,6 +3,9 @@ import CategoryIcons from '@/features/user/delivery/components/category-icons';
 import LocationChips from '@/features/user/delivery/components/location-chips';
 import StoreGrid from '@/features/user/delivery/components/store-grid';
 import Location from '@/features/public/homepage/components/location';
+import { fetchCategoryDetailsAction } from '@/features/user/delivery/action';
+import { Suspense } from 'react';
+import CategoriesSkeleton from '@/features/user/delivery/components/categories-skeleton';
 
 export default async function CategoryDeliveryPage({
   params,
@@ -18,8 +21,22 @@ export default async function CategoryDeliveryPage({
   const { id } = await params;
   const { name, latitude, longitude } = await searchParams;
 
-  console.log('Params Details:', params);
-  console.log('Search Params Details:', searchParams);
+  let stores: any[] = [];
+  let isError = false;
+
+  try {
+    stores = await fetchCategoryDetailsAction(
+      id,
+      latitude ? parseFloat(latitude) : undefined,
+      longitude ? parseFloat(longitude) : undefined,
+    );
+  } catch (e) {
+    isError = true;
+  }
+
+  const title = stores?.length
+    ? `${stores[0].storeName} / Stores`
+    : `${name ?? 'Category'} / Stores`;
 
   return (
     <section>
@@ -27,9 +44,7 @@ export default async function CategoryDeliveryPage({
 
       <div className="px-4 py-8 xl:px-0 md:py-12 mx-auto max-w-6xl space-y-12">
         <div className="space-y-4">
-          <h2 className="text-2xl font-semibold">
-            {`${name} / Stores` || 'Category / Stores'}
-          </h2>
+          <h2 className="text-2xl font-semibold">{title}</h2>
           <p className="text-sm text-neutral-500">
             Select from our premium vendors
           </p>
@@ -49,7 +64,9 @@ export default async function CategoryDeliveryPage({
         {/* <Filters /> */}
 
         <LocationChips />
-        <StoreGrid id={id} latitude={latitude} longitude={longitude} />
+        <Suspense fallback={<CategoriesSkeleton />}>
+          <StoreGrid stores={stores} />
+        </Suspense>
       </div>
 
       <div>

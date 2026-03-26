@@ -12,6 +12,8 @@ export default function VendorStoreCard() {
   const [loading, setLoading] = useState(true);
   const pathname = usePathname();
 
+  console.log('Store:', store);
+
   useEffect(() => {
     async function fetchStore() {
       try {

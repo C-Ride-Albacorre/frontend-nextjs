@@ -97,9 +97,7 @@ export default function Categories() {
             {/* Image */}
             <div className="relative h-32 w-36 overflow-hidden rounded-xl">
               <Image
-                src={
-                  item.image ? item.image : '/assets/image/nigerian.jpg'
-                }
+                src={item.image ? item.image : '/assets/image/nigerian.jpg'}
                 alt={item.name}
                 fill
                 className="object-cover"
