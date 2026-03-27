@@ -65,7 +65,7 @@ export type ButtonProps = {
 
 export type IconButtonProps = {
   children: React.ReactNode;
-  size?: 'none' | 'sm' | 'md';
+  size?: 'none' | 'sm' | 'md' | 'icon';
   rounded?: 'none' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full';
   variant?: ButtonVariant;
   className?: string;

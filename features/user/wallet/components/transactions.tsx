@@ -6,14 +6,14 @@ import { Button } from '@/components/ui/buttons/button';
 import { ArrowDownLeft } from 'lucide-react';
 import { MOCK_DATA } from '@/features/vendor/analytics/data';
 import { Period } from '@/features/vendor/analytics/type';
-import { Select, SelectOption } from '@/components/ui/inputs/select';
+import { Select } from '@/components/ui/inputs/select';
 
 export default function WalletTransactions() {
   const [period, setPeriod] = useState<Period>('week');
 
   const transactions = MOCK_DATA[period].transactions;
 
-  const periodOptions: SelectOption[] = [
+  const periodOptions = [
     { label: 'This Week', value: 'week' },
     { label: 'This Month', value: 'month' },
     { label: 'This Year', value: 'year' },

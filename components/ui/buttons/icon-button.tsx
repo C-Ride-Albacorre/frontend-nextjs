@@ -43,6 +43,7 @@ export function IconButton({
         'inline-flex items-center justify-center border transition-all duration-200 cursor-pointer z-10 focus:outline-none',
         {
           'p-0': size === 'none',
+          'p-1': size === 'icon',
           'p-1.5': size === 'sm',
           'p-2': size === 'md',
 
@@ -59,6 +60,11 @@ export function IconButton({
             variant === 'fill',
 
           'border-border bg-white hover:bg-neutral-50': variant === 'white',
+
+          'bg-primary border-primary hover:bg-primary-hover':
+            variant === 'primary',
+
+          'border-primary hover:bg-primary-hover/10': variant === 'primary-outline',
 
           'border-transparent hover:bg-neutral-100': variant === 'ghost',
 

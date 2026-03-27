@@ -7,8 +7,8 @@ export default function AuthLayout({
 }) {
   return (
     <div className="min-h-screen">
-      <div className="mx-auto max-w-6xl px-6 py-10">
-        <DeliveryHeader id="" />
+      <div className="mx-auto max-w-6xl px-6 py-10 space-y-12">
+        <DeliveryHeader />
 
         {children}
       </div>

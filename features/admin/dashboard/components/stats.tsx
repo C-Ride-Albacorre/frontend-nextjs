@@ -54,7 +54,7 @@ export default function DashboardStats({ data, error }: Props) {
           icon={<ShieldUser size={20} className="text-[#E88D09]" />}
           iconBackground="bg-[#E88D09]/10"
           title="Active Vendors"
-          value={data?.totalVendors}
+          value={data?.totalVendors ?? ''}
           trend="3.4%"
           positive
           trendDuration="since last month"

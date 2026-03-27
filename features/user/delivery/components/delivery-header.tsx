@@ -1,26 +1,37 @@
 'use client';
 
 import Link from 'next/link';
-import { ShoppingCart } from 'lucide-react';
-import { useParams, usePathname } from 'next/navigation';
+import { Loader2, ShoppingCart } from 'lucide-react';
+import { usePathname } from 'next/navigation';
 import Stepper from '@/components/navigation/stepper';
 import { STEPS } from '@/features/user/delivery/data';
+import { useCartStore } from '../store';
 
 export default function DeliveryHeader() {
   const path = usePathname();
+  const { cart, isLoading } = useCartStore();
 
-  const params = useParams;
-
-  // Returns 0-based index: first step = 0, second step = 1, etc.
   const currentStep = (() => {
+    if (!path || typeof path !== 'string') return 0;
+
+    const segments = path.toLowerCase().split('/').filter(Boolean);
+
     if (path.includes('/delivery-confirmation')) return 5;
     if (path.includes('/delivery-location')) return 4;
     if (path.endsWith('/delivery-type')) return 3;
-    if (path.endsWith('/delivery/food/1')) return 2;
-    if (path.endsWith('/food')) return 1;
-    if (path.endsWith('/delivery')) return 0;
+
+    if (segments.includes('delivery') && segments.length >= 3) {
+      const lastSegment = segments[segments.length - 1];
+      if (/^[0-9a-f-]{36}$/.test(lastSegment)) {
+        return 2;
+      }
+    }
+
     return 0;
   })();
+
+  const itemCount = cart?.itemCount ?? 0;
+  const subTotal = cart?.subTotal ?? 0;
 
   return (
     <>
@@ -41,12 +52,21 @@ export default function DeliveryHeader() {
       <>
         {/* Cart */}
         <div className="flex justify-end">
-          <button className="mt-4 flex items-center gap-4 rounded-xl border border-border px-4 py-2 hover:bg-foreground-200">
+          <button className="mt-4 flex items-center gap-4 rounded-xl border border-border px-4 py-2 hover:bg-foreground-200 transition-colors">
             <span className="flex items-center gap-2 text-xs">
-              <ShoppingCart size={16} />2 items
+              <ShoppingCart size={16} />
+              {isLoading ? (
+                <Loader2 size={16} className="animate-spin text-primary" />
+              ) : (
+                `${itemCount} ${itemCount === 1 ? 'item' : 'items'}`
+              )}
             </span>
-            <div className="rounded-md border border-border bg-foreground-100 px-2 py-1 text-xs">
-              ₦ 1,500
+            <div className="rounded-md border border-border bg-foreground-100 px-2 py-1 text-xs font-medium">
+              {isLoading ? (
+                <Loader2 size={16} className="animate-spin text-primary" />
+              ) : (
+                `₦ ${subTotal.toLocaleString()}`
+              )}
             </div>
           </button>
         </div>

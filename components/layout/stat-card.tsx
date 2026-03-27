@@ -21,7 +21,7 @@ export default function StatCard({
   footNote,
 }: {
   title: string;
-  value: string;
+  value: string |number| undefined;
   icon?: React.ReactNode;
   iconBackground?: string;
   trend?: string;
