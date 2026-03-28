@@ -29,6 +29,8 @@ export default function StoreGrid({
     return <CategoriesSkeleton />;
   }
 
+  console.log('Stores in StoreGrid:', stores);
+
   if (isError) {
     return (
       <div className="mt-6 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-600">

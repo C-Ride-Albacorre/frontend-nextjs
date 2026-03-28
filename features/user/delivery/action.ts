@@ -13,6 +13,7 @@ import {
   fetchStoreDetailsService,
   fetchSubcategoriesService,
   getCartService,
+  getDeliveryOptionsService,
   removeFromCartService,
   updateCartQuantityService,
 } from './service';
@@ -23,20 +24,16 @@ export async function fetchCategoriesAction() {
   return result.data; // Fixed: service already returns the data object
 }
 
-export async function fetchCategoryDetailsAction(
+export async function fetchCategoryStoresAction(
   categoryId: string,
-  latitude?: number,
-  longitude?: number,
+  lat?: number,
+  lng?: number,
 ) {
-  const result = await fetchCategoryStoresService(
-    categoryId,
-    latitude,
-    longitude,
-  );
+  const result = await fetchCategoryStoresService(categoryId);
 
   console.log('Category Details:', result);
 
-  return result.data ?? []; // Fixed: service already returns the data object
+  return result.data.data ?? []; // Fixed: service already returns the data object
 }
 
 export async function fetchSubcategoriesAction(categoryId: string) {
@@ -64,10 +61,10 @@ export async function fetchStoreDetailsAction(storeId: string) {
 
 export async function getCartAction() {
   try {
-    const  response = await getCartService();
+    const response = await getCartService();
 
     console.log('Get Cart Response:', response);
-    return { success: true,  data: response.data };
+    return { success: true, data: response.data };
   } catch (error: any) {
     return { success: false, error: error.message || 'Failed to fetch cart' };
   }
@@ -135,7 +132,7 @@ export async function removeFromCartAction(itemId: string) {
   }
 
   try {
-    const  response = await removeFromCartService(parsed.data.itemId);
+    const response = await removeFromCartService(parsed.data.itemId);
 
     console.log('Remove from Cart Response:', response);
     return { success: true, data: response.data };
@@ -154,5 +151,51 @@ export async function clearCartAction() {
     return { success: true, data: response.data };
   } catch (error: any) {
     return { success: false, error: error.message || 'Failed to clear cart' };
+  }
+}
+
+import {
+  createOrderService,
+  initializePaymentService,
+  verifyPaymentService,
+} from './service';
+
+export async function createOrderAction(payload: any) {
+  try {
+    const res = await createOrderService(payload);
+    return { success: true, data: res.data };
+  } catch (e: any) {
+    return { success: false, error: e.message };
+  }
+}
+
+export async function initializePaymentAction(payload: {
+  orderId: string;
+  paymentMethod: 'CARD';
+  callbackUrl: string;
+}) {
+  try {
+    const res = await initializePaymentService(payload);
+    return { success: true, data: res.data };
+  } catch (e: any) {
+    return { success: false, error: e.message };
+  }
+}
+
+export async function verifyPaymentAction(reference: string) {
+  try {
+    const res = await verifyPaymentService(reference);
+    return { success: true, data: res.data };
+  } catch (e: any) {
+    return { success: false, error: e.message };
+  }
+}
+
+export async function getDeliveryOptionsAction() {
+  try {
+    const res = await getDeliveryOptionsService();
+    return { success: true, data: res.data ?? [] };
+  } catch (e: any) {
+    return { success: false, error: e.message, data: [] };
   }
 }

@@ -8,7 +8,7 @@ import ResendOtpButton from './resend-otp-button';
 
 type VerifyClientProps = {
   identifier: string;
-  method: 'email' | 'phone';
+  method: 'email' | 'phone number';
   verifyType: 'user' | 'vendor-email' | 'vendor-phone';
 };
 

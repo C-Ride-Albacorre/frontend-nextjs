@@ -35,7 +35,7 @@ export default async function StoreVendorsPage({
     <main>
       <div className="space-y-12">
         {/* Vendor */}
-        <Card className="bg-foreground-200 flex items-start sm:items-center justify-between gap-4">
+        <Card className="bg-foreground-200 flex items-start sm:items-center justify-between">
           <div className="lg:flex items-center flex-1 gap-6 space-y-6 lg:space-y-0 mb-0">
             <div>
               <Image
@@ -49,8 +49,8 @@ export default async function StoreVendorsPage({
             </div>
 
             <div className="flex flex-col gap-4">
-              <div className="flex items-center gap-4">
-                <p className="font-medium">
+              <div className="flex flex-col md:flex-row md:items-center items-start gap-4">
+                <p className="font-medium flex-wrap">
                   {store?.storeName || 'Store Name'}
                 </p>
                 <span className="rounded-full bg-primary font-medium px-2 py-0.5 text-[0.65rem] capitalize">

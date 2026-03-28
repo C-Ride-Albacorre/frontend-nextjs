@@ -12,7 +12,7 @@ export default async function VendorVerifyPhonePage() {
     redirect('/vendor/register');
   }
 
-  const method = 'phone';
+  const method = 'phone number';
 
   const maskedIdentifier = maskIdentifier(identifier, method);
 

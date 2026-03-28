@@ -3,9 +3,9 @@ import CategoryIcons from '@/features/user/delivery/components/category-icons';
 import LocationChips from '@/features/user/delivery/components/location-chips';
 import StoreGrid from '@/features/user/delivery/components/store-grid';
 import Location from '@/features/public/homepage/components/location';
-import { fetchCategoryDetailsAction } from '@/features/user/delivery/action';
 import { Suspense } from 'react';
 import CategoriesSkeleton from '@/features/user/delivery/components/categories-skeleton';
+import { fetchCategoryStoresAction } from '@/features/user/delivery/action';
 
 export default async function CategoryDeliveryPage({
   params,
@@ -25,7 +25,7 @@ export default async function CategoryDeliveryPage({
   let isError = false;
 
   try {
-    stores = await fetchCategoryDetailsAction(
+    stores = await fetchCategoryStoresAction(
       id,
       latitude ? parseFloat(latitude) : undefined,
       longitude ? parseFloat(longitude) : undefined,

@@ -53,3 +53,10 @@ export interface CartState {
   isLoading: boolean;
   error: string | null;
 }
+
+export type Order = {
+  id: string;
+  status?: string;
+  amount?: number;
+  reference?: string;
+};

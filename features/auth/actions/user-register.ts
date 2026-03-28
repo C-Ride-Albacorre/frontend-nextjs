@@ -37,9 +37,12 @@ export async function userRegisterAction(
       };
     }
 
-    const registrationMethod = result.data.registrationMethod.toLowerCase();
+    const rawMethod = result.data.registrationMethod;
+
+    const registrationMethod = rawMethod === 'PHONE_NUMBER' ? 'phone' : 'email';
 
     if (
+      result.status === 'success' &&
       result.data.requiresVerification &&
       result.data.verificationIdentifier
     ) {
@@ -56,8 +59,11 @@ export async function userRegisterAction(
       });
 
       redirectTo = `/verify`;
-    } else if (!result.data.requiresVerification) {
-      redirectTo = '/user/delivery/food';
+    } else if (
+      !result.data.requiresVerification &&
+      result.data.status !== 'NEW'
+    ) {
+      redirectTo = '/user/delivery';
     } else {
       return {
         status: 'error',

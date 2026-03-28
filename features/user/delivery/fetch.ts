@@ -3,7 +3,6 @@
 import { useQuery } from '@tanstack/react-query';
 import {
   fetchCategoriesAction,
-  fetchCategoryDetailsAction,
   fetchSubcategoriesAction,
 } from './action';
 

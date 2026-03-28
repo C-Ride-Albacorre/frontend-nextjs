@@ -14,7 +14,7 @@ export default function VendorPhoneWrapper({
   method,
 }: {
   identifier: string;
-  method: 'phone';
+  method: 'phone number';
 }) {
   const router = useRouter();
 

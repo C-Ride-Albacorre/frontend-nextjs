@@ -6,6 +6,7 @@ import { maskIdentifier } from '@/utils/mask-identifier';
 import VerifyWrapper from '@/features/auth/components/verify/verify-wrapper';
 
 export default async function VerifyPage() {
+  
   const registrationMethod = await getCookie('registration_method');
   const identifier = await getCookie('verify_identifier');
 
@@ -13,8 +14,10 @@ export default async function VerifyPage() {
     redirect('/user/register');
   }
 
-  const method: 'email' | 'phone' =
-    registrationMethod === 'phone' ? 'phone' : 'email';
+  const method: 'email' | 'phone number' =
+    registrationMethod === 'phone' ? 'phone number' : 'email';
+
+    console.log('Registration Method:', registrationMethod);
 
   const maskedIdentifier = maskIdentifier(identifier, method);
 

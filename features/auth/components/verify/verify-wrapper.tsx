@@ -8,7 +8,7 @@ import { VerifyCodeAction } from '@/features/auth/actions/verify-code';
 
 type VerifyWrapperProps = {
   identifier: string;
-  method: 'email' | 'phone';
+  method: 'email' | 'phone number';
 };
 
 export default function VerifyWrapper({
