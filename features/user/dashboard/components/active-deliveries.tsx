@@ -1,25 +1,58 @@
 import Card from '@/components/layout/card';
 import { Button } from '@/components/ui/buttons/button';
-import { MessageCircle, Phone, Star, Truck } from 'lucide-react';
+import {
+  Bike,
+  Box,
+  MessageCircle,
+  Phone,
+  Plus,
+  Star,
+  Truck,
+} from 'lucide-react';
 import { RouteItem } from '../../track-order/components/section';
 import Avatar from '@/components/ui/avatar';
 
 export default function ActiveDeliveries() {
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between">
-        <div className="flex items-center gap-2">
-          <Truck className="text-primary" size={24} />
+    <>
+      <div className="space-y-6">
+        <div className="flex justify-between">
+          <div className="flex items-center gap-2">
+            <Bike className="text-primary" size={24} />
 
-          <h3 className="font-semibold">Active Deliveries</h3>
+            <h3 className="font-semibold">Active Deliveries</h3>
+          </div>
+
+          <Button variant="default" size="none">
+            View All
+          </Button>
         </div>
 
-        <Button variant="default" size="none">
-          View All
-        </Button>
-      </div>
+        <Card
+          spacing="lg"
+          gap="md"
+          className=" flex flex-col items-center justify-center"
+        >
+          <Bike size={48} className="text-neutral-400" />
+          <div className="space-y-2 text-center">
+            <h2 className="text-xl">
+              You have no active deliveries at the moment.
+            </h2>
+            <p className="text-sm text-neutral-500">
+              Your current deliveries will appear here for easy tracking and
+              management.
+            </p>
+          </div>
 
-      <Card gap="lg" className="bg-foreground-200">
+          <Button variant="outline" size="icon" href='/user/delivery'>
+            <div className='bg-white w-6 h-6 shrink-0 aspect-square flex items-center justify-center rounded-full'>
+              <Plus size={16} />
+            </div>
+            Start a New Delivery
+          </Button>
+        </Card>
+
+        {/* <Card gap="lg" className="bg-foreground-200">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-4 ">
             <span className="p-2 text-xs bg-[#10B981] text-white rounded-full">
@@ -93,7 +126,8 @@ export default function ActiveDeliveries() {
 
       <div>
         <p className="text-sm text-[#10B981]">Your order is now in care.</p>
+      </div> */}
       </div>
-    </div>
+    </>
   );
 }
