@@ -15,7 +15,7 @@ export default function GoogleAuthButton() {
 
     if (pathname.includes('driver')) return 'DRIVER';
 
-    return 'CUSTOMER'; // default to customer if role cannot be determined
+    return 'CUSTOMER'; 
   }
 
   function googleAuthHandler() {
