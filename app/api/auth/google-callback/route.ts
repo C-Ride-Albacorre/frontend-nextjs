@@ -31,7 +31,7 @@ function buildCookieResponse(
   return response;
 }
 
-// POST: Frontend sends tokens from query params (cross-domain flow)
+// POST: Frontend sends tokens explicitly (cross-domain fallback)
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -75,101 +75,28 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// GET: Cookies set by backend on its domain — try all sources to find tokens
+// GET: Backend already set cookies on the redirect — read them and return role
 export async function GET(request: NextRequest) {
   try {
-    // 1. Check our own domain cookies first (accessToken / refreshToken)
-    let accessToken = request.cookies.get('accessToken')?.value;
-    let refreshToken = request.cookies.get('refreshToken')?.value;
+    const accessToken = request.cookies.get('accessToken')?.value;
+    const refreshToken = request.cookies.get('refreshToken')?.value;
 
-    console.log(
-      '[Google GET] Own cookies — accessToken:',
-      accessToken ? 'present' : 'missing',
-    );
-    console.log(
-      '[Google GET] Own cookies — refreshToken:',
-      refreshToken ? 'present' : 'missing',
-    );
-
-    // 2. If no tokens on our domain, forward ALL cookies to backend /auth/profile
-    //    (backend may have set cookies on its own domain that the browser is sending)
     if (!accessToken) {
-      const cookieHeader = request.headers.get('cookie') ?? '';
-      console.log(
-        '[Google GET] Forwarding cookie header to backend profile:',
-        cookieHeader ? 'has cookies' : 'empty',
-      );
-
-      const profileRes = await fetch(`${BASE_URL}/auth/profile`, {
-        method: 'GET',
-        headers: {
-          cookie: cookieHeader,
-          'Content-Type': 'application/json',
-        },
-        cache: 'no-store',
-        redirect: 'manual',
-      });
-
-      console.log('[Google GET] Backend profile status:', profileRes.status);
-
-      if (profileRes.ok) {
-        const profileData = await profileRes.json();
-        const profile = profileData.data ?? profileData;
-
-        // Try extracting tokens from set-cookie response
-        const setCookieHeader = profileRes.headers.get('set-cookie') ?? '';
-        const extractedAccess = extractTokenFromSetCookie(
-          setCookieHeader,
-          'accessToken',
-        );
-        const extractedRefresh = extractTokenFromSetCookie(
-          setCookieHeader,
-          'refreshToken',
-        );
-
-        if (extractedAccess) accessToken = extractedAccess;
-        if (extractedRefresh) refreshToken = extractedRefresh;
-
-        // If we got tokens, set them on our domain
-        if (accessToken && refreshToken) {
-          return buildCookieResponse(accessToken, refreshToken, profile.role);
-        }
-
-        // Profile succeeded but no tokens — return role anyway
-        return NextResponse.json({ success: true, role: profile.role });
-      }
-
       return NextResponse.json(
-        { success: false, error: 'No access token found' },
+        { success: false, error: 'No access token cookie found' },
         { status: 401 },
       );
     }
 
-    // 3. We have accessToken — decode role from JWT
-    let role: string;
-    try {
-      const payload = jwtDecode<{ role: string }>(accessToken);
-      role = payload.role;
-    } catch {
-      return NextResponse.json(
-        { success: false, error: 'Invalid access token' },
-        { status: 401 },
-      );
-    }
+    const payload = jwtDecode<{ role: string }>(accessToken);
+    const role = payload.role;
 
+    // Re-set cookies as httpOnly on our domain (in case backend set them differently)
     if (refreshToken) {
       return buildCookieResponse(accessToken, refreshToken, role);
     }
 
-    const response = NextResponse.json({ success: true, role });
-    response.cookies.set('accessToken', accessToken, {
-      httpOnly: true,
-      secure: isProd,
-      sameSite: 'lax',
-      path: '/',
-      maxAge: getTokenExpiry(accessToken),
-    });
-    return response;
+    return NextResponse.json({ success: true, role });
   } catch (err) {
     console.error('Google callback GET error:', err);
     return NextResponse.json(
@@ -177,14 +104,4 @@ export async function GET(request: NextRequest) {
       { status: 500 },
     );
   }
-}
-
-function extractTokenFromSetCookie(
-  header: string,
-  name: string,
-): string | null {
-  const parts = header.split(/,(?=\s*\w+=)/);
-  const match = parts.find((p) => p.trim().startsWith(`${name}=`));
-  if (!match) return null;
-  return match.trim().split(';')[0].split('=').slice(1).join('=') || null;
 }
