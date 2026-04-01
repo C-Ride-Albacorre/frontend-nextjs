@@ -42,8 +42,8 @@ function GoogleCallbackHandler() {
     }
 
     if (accessToken && refreshToken) {
-      // Backend included tokens in redirect URL — send to API to set httpOnly cookies
-      fetch('/api/auth/google-callback', {
+      // Backend included tokens in redirect URL — send to our API to set httpOnly cookies
+      fetch('https://backend-service-1rc7.onrender.com/api/v1/auth/google-callback', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ accessToken, refreshToken }),
@@ -52,38 +52,13 @@ function GoogleCallbackHandler() {
         .then(handleResult)
         .catch(handleError);
     } else if (success === 'true') {
-      // Backend set httpOnly cookies on its domain — try to get profile via backend directly
-      fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/profile`, {
+      // Backend set cookies on its domain — use our server-side API route (no CORS)
+      fetch('https://backend-service-1rc7.onrender.com/api/v1/auth/google-callback', {
+        method: 'GET',
         credentials: 'include',
       })
-        .then((res) => {
-          if (!res.ok) throw new Error('Profile fetch failed');
-          return res.json();
-        })
-        .then((profileData) => {
-          const profile = profileData.data ?? profileData;
-          const at = profileData.data?.accessToken ?? profileData.accessToken;
-          const rt = profileData.data?.refreshToken ?? profileData.refreshToken;
-
-          if (at && rt) {
-            // Got tokens from profile — set as httpOnly cookies on our domain
-            return fetch('/api/auth/google-callback', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ accessToken: at, refreshToken: rt }),
-            })
-              .then((r) => r.json())
-              .then(handleResult);
-          }
-
-          // Profile returned role but no tokens — try the cookie-forwarding GET
-          return fetch('/api/auth/google-callback', {
-            method: 'GET',
-            credentials: 'include',
-          })
-            .then((r) => r.json())
-            .then(handleResult);
-        })
+        .then((res) => res.json())
+        .then(handleResult)
         .catch(handleError);
     } else {
       console.error(
