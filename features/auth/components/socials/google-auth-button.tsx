@@ -1,7 +1,6 @@
 'use client';
 
 import { Button } from '@/components/ui/buttons/button';
-import { BASE_URL } from '@/config/api';
 import { Icon } from '@iconify/react';
 import { usePathname } from 'next/navigation';
 
@@ -17,9 +16,10 @@ export default function GoogleAuthButton() {
 
   function googleAuthHandler() {
     const role = getRole();
+    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL; // Should be https://backend-service-1rc7.onrender.com/api/v1
 
-    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-    window.location.href = `${baseUrl}/api/v1/auth/google/${role}`;
+    // Correct URL → Use query parameter ?role=...
+    window.location.href = `${baseUrl}/auth/google?role=${role}`;
   }
 
   return (

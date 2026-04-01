@@ -2,18 +2,19 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: NextRequest) {
+  console.log('🔄 Google Callback Received:', {
+    fullUrl: request.url,
+    cookiesPresent: request.cookies
+      .getAll()
+      .map((c) => ({ name: c.name, value: c.value ? '***' : null })),
+  });
+
   const { searchParams } = new URL(request.url);
   const error = searchParams.get('error');
   const message = searchParams.get('message');
 
-  console.log('📍 Google Callback Hit:', {
-    url: request.url,
-    cookies: request.cookies.getAll().map((c) => c.name),
-    hasAccessToken: !!request.cookies.get('accessToken'),
-  });
-
   if (error) {
-    console.error('Backend sent error:', error);
+    console.error('Backend returned error:', error);
     const redirectUrl = new URL('/user/login', request.url);
     redirectUrl.searchParams.set(
       'error',
@@ -23,19 +24,19 @@ export async function GET(request: NextRequest) {
   }
 
   const accessToken = request.cookies.get('accessToken')?.value;
+  const refreshToken = request.cookies.get('refreshToken')?.value;
 
   if (!accessToken) {
-    console.error('❌ No accessToken cookie received from backend');
-
+    console.error('❌ No accessToken cookie found in callback');
     const redirectUrl = new URL('/user/login', request.url);
     redirectUrl.searchParams.set(
       'error',
-      'Google login succeeded, but cookies were not set. Check backend CORS & cookie settings.',
+      'Google login completed but cookies were not received. Please check backend CORS and cookie settings.',
     );
     return NextResponse.redirect(redirectUrl);
   }
 
-  // Decode role safely
+  // Decode role from token
   let userRole = 'CUSTOMER';
   try {
     const payload = JSON.parse(
@@ -43,7 +44,7 @@ export async function GET(request: NextRequest) {
     );
     userRole = payload.role || 'CUSTOMER';
   } catch (e) {
-    console.warn('⚠️ Could not decode role from token');
+    console.warn('⚠️ Failed to decode role from accessToken');
   }
 
   // Role-based redirect
@@ -53,7 +54,9 @@ export async function GET(request: NextRequest) {
     redirectPath = '/admin/dashboard';
   else if (userRole === 'DRIVER') redirectPath = '/driver/dashboard';
 
-  console.log(`✅ Success! Role: ${userRole} → Redirecting to ${redirectPath}`);
+  console.log(
+    `✅ Google Login Success → Role: ${userRole} | Redirecting to: ${redirectPath}`,
+  );
 
   return NextResponse.redirect(new URL(redirectPath, request.url));
 }
