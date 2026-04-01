@@ -15,11 +15,16 @@ export default function GoogleAuthButton() {
   }
 
   function googleAuthHandler() {
-    const role = getRole();
-    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL; // Should be https://backend-service-1rc7.onrender.com/api/v1
+    // const role = getRole();
+    // const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL; 
+    
+    // Should be https://backend-service-1rc7.onrender.com/api/v1
 
     // Correct URL → Use query parameter ?role=...
-    window.location.href = `${baseUrl}/auth/google?role=${role}`;
+    // window.location.href = `${baseUrl}/auth/google?role=${role}`;
+
+    window.location.href =
+      'https://backend-service-1rc7.onrender.com/api/v1/auth/google?role=VENDOR';
   }
 
   return (
