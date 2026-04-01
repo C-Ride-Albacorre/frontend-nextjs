@@ -19,7 +19,7 @@ export default function GoogleAuthButton() {
   }
 
   function googleAuthHandler() {
-    window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/google?role=${getRole()}`;
+    window.location.href = `https://backend-service-1rc7.onrender.com/api/v1/auth/google?role=${getRole()}`;
   }
   return (
     <>
