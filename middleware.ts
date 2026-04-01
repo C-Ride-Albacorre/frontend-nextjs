@@ -129,7 +129,11 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const accessToken = request.cookies.get('accessToken')?.value;
   const refreshToken = request.cookies.get('refreshToken')?.value;
-  const userAgent = request.headers.get('user-agent') ?? '';
+
+  // ✅ Add this at the very top — bail out immediately
+  if (pathname.startsWith('/google/callback')) {
+    return NextResponse.next();
+  }
 
   console.log(`\n[🛡️ Middleware] ${request.method} ${pathname}`, {
     hasAccessToken: !!accessToken,

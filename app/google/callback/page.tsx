@@ -10,62 +10,40 @@ function GoogleCallbackHandler() {
   useEffect(() => {
     const error = searchParams.get('error');
     if (error) {
-      console.error('[Google OAuth] Error param:', error);
       router.replace('/user/login?error=oauth_failed');
       return;
     }
 
-    // Log all query params for debugging
-    const allParams = Object.fromEntries(searchParams.entries());
-    console.log('[Google OAuth] Callback params:', allParams);
-
-    const accessToken = searchParams.get('accessToken');
-    const refreshToken = searchParams.get('refreshToken');
     const success = searchParams.get('success');
 
-    function handleResult(data: { success: boolean; role?: string }) {
-      if (!data.success) {
+    if (success !== 'true') {
+      router.replace('/user/login?error=oauth_failed');
+      return;
+    }
+
+    // Backend set HttpOnly cookies — now fetch the user to determine role
+    fetch('https://backend-service-1rc7.onrender.com/api/v1/user/me', {
+      credentials: 'include', // sends the cookies the backend just set
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error('Failed to fetch user');
+        return res.json();
+      })
+      .then((user) => {
+        const role = user.role;
+        if (role === 'VENDOR') {
+          router.replace('/vendor/store');
+        } else if (role === 'ADMIN' || role === 'SUPER_ADMIN') {
+          router.replace('/admin/dashboard');
+        } else if (role === 'DRIVER') {
+          router.replace('/driver/dashboard');
+        } else {
+          router.replace('/user/dashboard');
+        }
+      })
+      .catch(() => {
         router.replace('/user/login?error=oauth_failed');
-        return;
-      }
-      const dest =
-        data.role === 'VENDOR'
-          ? '/vendor/store'
-          : data.role === 'ADMIN' || data.role === 'SUPER_ADMIN'
-            ? '/admin/dashboard'
-            : '/user/dashboard';
-      router.replace(dest);
-    }
-
-    function handleError() {
-      router.replace('/user/login?error=oauth_failed');
-    }
-
-    if (accessToken && refreshToken) {
-      // Backend included tokens in redirect URL — send to our API to set httpOnly cookies
-      fetch('/api/auth/google-callback', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ accessToken, refreshToken }),
-      })
-        .then((res) => res.json())
-        .then(handleResult)
-        .catch(handleError);
-    } else if (success === 'true') {
-      // Backend set cookies on its domain — use our server-side API route (no CORS)
-      fetch('/api/auth/google-callback', {
-        method: 'GET',
-        credentials: 'include',
-      })
-        .then((res) => res.json())
-        .then(handleResult)
-        .catch(handleError);
-    } else {
-      console.error(
-        '[Google OAuth] No tokens or success param — redirecting to login',
-      );
-      router.replace('/user/login?error=oauth_failed');
-    }
+      });
   }, [router, searchParams]);
 
   return (
@@ -75,7 +53,6 @@ function GoogleCallbackHandler() {
   );
 }
 
-// ✅ Page wraps the handler in Suspense
 export default function GoogleCallbackPage() {
   return (
     <Suspense
