@@ -10,41 +10,87 @@ function GoogleCallbackHandler() {
   useEffect(() => {
     const error = searchParams.get('error');
     if (error) {
-      router.replace('/user/login?error=google_failed');
+      console.error('[Google OAuth] Error param:', error);
+      router.replace('/user/login?error=oauth_failed');
       return;
     }
+
+    // Log all query params for debugging
+    const allParams = Object.fromEntries(searchParams.entries());
+    console.log('[Google OAuth] Callback params:', allParams);
 
     const accessToken = searchParams.get('accessToken');
     const refreshToken = searchParams.get('refreshToken');
+    const success = searchParams.get('success');
 
-    if (!accessToken || !refreshToken) {
-      router.replace('/user/login?error=google_failed');
-      return;
+    function handleResult(data: { success: boolean; role?: string }) {
+      if (!data.success) {
+        router.replace('/user/login?error=oauth_failed');
+        return;
+      }
+      const dest =
+        data.role === 'VENDOR'
+          ? '/vendor/store'
+          : data.role === 'ADMIN' || data.role === 'SUPER_ADMIN'
+            ? '/admin/dashboard'
+            : '/user/dashboard';
+      router.replace(dest);
     }
 
-    // Send tokens to API route to set httpOnly cookies
-    fetch('/api/auth/google-callback', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ accessToken, refreshToken }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (!data.success) {
-          router.replace('/user/login?error=google_failed');
-          return;
-        }
-        const dest =
-          data.role === 'VENDOR'
-            ? '/vendor/store'
-            : data.role === 'ADMIN' || data.role === 'SUPER_ADMIN'
-              ? '/admin/dashboard'
-              : '/user/dashboard';
-        router.replace(dest);
+    function handleError() {
+      router.replace('/user/login?error=oauth_failed');
+    }
+
+    if (accessToken && refreshToken) {
+      // Backend included tokens in redirect URL — send to API to set httpOnly cookies
+      fetch('/api/auth/google-callback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ accessToken, refreshToken }),
       })
-      .catch(() => {
-        router.replace('/user/login?error=google_failed');
-      });
+        .then((res) => res.json())
+        .then(handleResult)
+        .catch(handleError);
+    } else if (success === 'true') {
+      // Backend set httpOnly cookies on its domain — try to get profile via backend directly
+      fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/profile`, {
+        credentials: 'include',
+      })
+        .then((res) => {
+          if (!res.ok) throw new Error('Profile fetch failed');
+          return res.json();
+        })
+        .then((profileData) => {
+          const profile = profileData.data ?? profileData;
+          const at = profileData.data?.accessToken ?? profileData.accessToken;
+          const rt = profileData.data?.refreshToken ?? profileData.refreshToken;
+
+          if (at && rt) {
+            // Got tokens from profile — set as httpOnly cookies on our domain
+            return fetch('/api/auth/google-callback', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ accessToken: at, refreshToken: rt }),
+            })
+              .then((r) => r.json())
+              .then(handleResult);
+          }
+
+          // Profile returned role but no tokens — try the cookie-forwarding GET
+          return fetch('/api/auth/google-callback', {
+            method: 'GET',
+            credentials: 'include',
+          })
+            .then((r) => r.json())
+            .then(handleResult);
+        })
+        .catch(handleError);
+    } else {
+      console.error(
+        '[Google OAuth] No tokens or success param — redirecting to login',
+      );
+      router.replace('/user/login?error=oauth_failed');
+    }
   }, [router, searchParams]);
 
   return (
