@@ -6,59 +6,54 @@ export async function GET(request: NextRequest) {
   const error = searchParams.get('error');
   const message = searchParams.get('message');
 
-  // If backend returned an error in query params
+  console.log('📍 Google Callback Hit:', {
+    url: request.url,
+    cookies: request.cookies.getAll().map((c) => c.name),
+    hasAccessToken: !!request.cookies.get('accessToken'),
+  });
+
   if (error) {
-    console.error('Google OAuth callback error from backend:', error);
+    console.error('Backend sent error:', error);
     const redirectUrl = new URL('/user/login', request.url);
-    redirectUrl.searchParams.set('error', error || message || 'Google login failed');
+    redirectUrl.searchParams.set(
+      'error',
+      error || message || 'Google login failed',
+    );
     return NextResponse.redirect(redirectUrl);
   }
 
-  // Backend has already set the httpOnly cookies (accessToken + refreshToken)
-  // We just need to decode the role (from the accessToken in cookies) and redirect
+  const accessToken = request.cookies.get('accessToken')?.value;
 
-  try {
-    const cookieStore = request.cookies;
-    const accessToken = cookieStore.get('accessToken')?.value;
+  if (!accessToken) {
+    console.error('❌ No accessToken cookie received from backend');
 
-    if (!accessToken) {
-      console.warn('No accessToken cookie found after Google callback');
-      const redirectUrl = new URL('/user/login', request.url);
-      redirectUrl.searchParams.set('error', 'Login successful but session not created. Please try again.');
-      return NextResponse.redirect(redirectUrl);
-    }
-
-    // Safely decode role from JWT payload (no external library needed)
-    let userRole = 'CUSTOMER';
-    try {
-      const payload = JSON.parse(
-        Buffer.from(accessToken.split('.')[1], 'base64').toString()
-      );
-      userRole = payload.role || 'CUSTOMER';
-    } catch (decodeErr) {
-      console.warn('Failed to decode role from accessToken:', decodeErr);
-    }
-
-    // Role-based redirect
-    let redirectPath = '/user/dashboard';
-
-    if (userRole === 'VENDOR') {
-      redirectPath = '/vendor/store';
-    } else if (userRole === 'ADMIN' || userRole === 'SUPER_ADMIN') {
-      redirectPath = '/admin/dashboard';
-    } else if (userRole === 'DRIVER') {
-      redirectPath = '/driver/dashboard';   // ← Change if your driver route is different
-    }
-
-    console.log(`✅ Google login successful → ${userRole} redirected to ${redirectPath}`);
-
-    return NextResponse.redirect(new URL(redirectPath, request.url));
-
-  } catch (err) {
-    console.error('Error in Google callback route:', err);
-
-    const errorUrl = new URL('/user/login', request.url);
-    errorUrl.searchParams.set('error', 'Something went wrong after Google login. Please try again.');
-    return NextResponse.redirect(errorUrl);
+    const redirectUrl = new URL('/user/login', request.url);
+    redirectUrl.searchParams.set(
+      'error',
+      'Google login succeeded, but cookies were not set. Check backend CORS & cookie settings.',
+    );
+    return NextResponse.redirect(redirectUrl);
   }
+
+  // Decode role safely
+  let userRole = 'CUSTOMER';
+  try {
+    const payload = JSON.parse(
+      Buffer.from(accessToken.split('.')[1], 'base64').toString(),
+    );
+    userRole = payload.role || 'CUSTOMER';
+  } catch (e) {
+    console.warn('⚠️ Could not decode role from token');
+  }
+
+  // Role-based redirect
+  let redirectPath = '/user/dashboard';
+  if (userRole === 'VENDOR') redirectPath = '/vendor/store';
+  else if (userRole === 'ADMIN' || userRole === 'SUPER_ADMIN')
+    redirectPath = '/admin/dashboard';
+  else if (userRole === 'DRIVER') redirectPath = '/driver/dashboard';
+
+  console.log(`✅ Success! Role: ${userRole} → Redirecting to ${redirectPath}`);
+
+  return NextResponse.redirect(new URL(redirectPath, request.url));
 }
