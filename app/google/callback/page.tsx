@@ -21,20 +21,57 @@ function GoogleCallbackHandler() {
       return;
     }
 
-    const success = searchParams.get('success');
     log(`URL: ${window.location.href}`);
-    log(`success param: ${success}`);
     log(`All search params: ${searchParams.toString()}`);
 
-    if (success !== 'true') {
-      log('No success=true, redirecting to login');
+    // Check for tokens in URL params first (backend should send these)
+    const urlAccessToken = searchParams.get('accessToken');
+    const urlRefreshToken = searchParams.get('refreshToken');
+    const success = searchParams.get('success');
+
+    log(
+      `accessToken in URL: ${urlAccessToken ? 'FOUND (' + urlAccessToken.substring(0, 20) + '...)' : 'NOT FOUND'}`,
+    );
+    log(
+      `refreshToken in URL: ${urlRefreshToken ? 'FOUND (' + urlRefreshToken.substring(0, 20) + '...)' : 'NOT FOUND'}`,
+    );
+    log(`success param: ${success}`);
+
+    // Must have either tokens in URL or success=true
+    if (!urlAccessToken && success !== 'true') {
+      log('No tokens and no success=true — redirecting to login');
       router.replace('/user/login?error=oauth_failed');
       return;
     }
 
     const handleAuth = async () => {
       try {
-        // === DEBUG: Log all visible cookies ===
+        // === STEP 1: Tokens in URL params (preferred — cross-domain safe) ===
+        if (urlAccessToken && urlRefreshToken) {
+          log('Tokens found in URL — POSTing to API route...');
+          // Clean tokens from URL for security
+          window.history.replaceState({}, '', '/google/callback?success=true');
+
+          const postRes = await fetch('/api/auth/google-callback', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              accessToken: urlAccessToken,
+              refreshToken: urlRefreshToken,
+            }),
+          });
+          log(`POST response status: ${postRes.status}`);
+          if (postRes.ok) {
+            const data = await postRes.json();
+            log(`POST response data: ${JSON.stringify(data)}`);
+            if (data.success) return redirectByRole(data.role);
+          } else {
+            const errText = await postRes.text();
+            log(`POST error body: ${errText}`);
+          }
+        }
+
+        // === STEP 2: Check document.cookie (non-httpOnly cookies on our domain) ===
         const rawCookies = document.cookie;
         log(`document.cookie (raw): "${rawCookies}"`);
 
@@ -54,13 +91,12 @@ function GoogleCallbackHandler() {
         const refreshToken = cookies['refreshToken'];
 
         log(
-          `accessToken from document.cookie: ${accessToken ? 'FOUND (' + accessToken.substring(0, 20) + '...)' : 'NOT FOUND'}`,
+          `accessToken from document.cookie: ${accessToken ? 'FOUND' : 'NOT FOUND'}`,
         );
         log(
-          `refreshToken from document.cookie: ${refreshToken ? 'FOUND (' + refreshToken.substring(0, 20) + '...)' : 'NOT FOUND'}`,
+          `refreshToken from document.cookie: ${refreshToken ? 'FOUND' : 'NOT FOUND'}`,
         );
 
-        // 1. If tokens visible in document.cookie, POST them
         if (accessToken && refreshToken) {
           log('Tokens found in document.cookie — POSTing to API route...');
           const postRes = await fetch('/api/auth/google-callback', {
@@ -79,7 +115,7 @@ function GoogleCallbackHandler() {
           }
         }
 
-        // 2. Fall back to GET (httpOnly cookies on our domain)
+        // === STEP 3: GET (httpOnly cookies on our domain) ===
         log('Trying GET /api/auth/google-callback with credentials...');
         const getRes = await fetch('/api/auth/google-callback', {
           method: 'GET',
@@ -95,8 +131,12 @@ function GoogleCallbackHandler() {
           log(`GET error body: ${errText}`);
         }
 
-        log('All methods failed — staying on page for debug visibility');
-        // Don't redirect, show debug info instead
+        log(
+          '❌ All methods failed. Backend must include tokens in the redirect URL.',
+        );
+        log(
+          'Tell backend to redirect to: https://c-ride.co/google/callback?accessToken=JWT&refreshToken=JWT',
+        );
       } catch (err) {
         log(`Exception: ${String(err)}`);
       }
