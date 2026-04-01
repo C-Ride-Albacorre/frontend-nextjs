@@ -35,7 +35,7 @@ export default function GoogleOAuthCallback() {
       router.replace(getDestinationByRole(role));
     } else {
       // Fallback: if no role param, go fetch it
-      fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/me`, {
+      fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/google/callback`, {
         credentials: 'include',
       })
         .then((res) => res.json())
