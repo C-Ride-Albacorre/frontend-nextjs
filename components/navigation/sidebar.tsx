@@ -14,6 +14,7 @@ type SidebarProps = {
   onClose: () => void;
   config?: SidebarConfig;
   storeCard?: React.ReactNode;
+  adminCard?: React.ReactNode;
   userRole?: 'SUPER_ADMIN' | 'ADMIN' | 'VENDOR' | 'DRIVER' | 'CUSTOMER';
 };
 
@@ -21,6 +22,7 @@ export default function Sidebar({
   onClose,
   config = VENDOR_SIDEBAR_CONFIG,
   storeCard,
+  adminCard,
   userRole,
 }: SidebarProps) {
   const pathname = usePathname();
@@ -69,23 +71,7 @@ export default function Sidebar({
       <div className="flex-1 overflow-y-auto overscroll-contain px-4 lg:px-6 py-6 space-y-12">
         {config.showStoreCard && storeCard}
 
-        {config.showAdminCard && (
-          <div className="rounded-2xl bg-primary/10 border border-border p-4 space-y-2">
-            <div>
-              <p className="font-medium text-primary-text-100 text-sm">
-                Admin User
-              </p>
-              <span className="text-xs text-neutral-400">Admin@c-ride.ng</span>
-            </div>
-
-            <div>
-              <span className="flex w-fit items-center justify-center gap-0.5 rounded-full bg-[#10B981]/20  px-1 py-1  text-[8px] text-[#10B981] border border-[#10B981] ">
-                <Shield strokeWidth={0} size={12} fill="#10B981" />
-                {userRole === 'SUPER_ADMIN' ? 'Super Admin' : 'Admin'}
-              </span>
-            </div>
-          </div>
-        )}
+        {config.showAdminCard && adminCard}
 
         {/* NAV */}
         <nav className="space-y-6 text-sm">

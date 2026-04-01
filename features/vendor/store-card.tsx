@@ -1,53 +1,17 @@
-'use client';
-
-import { useEffect, useState } from 'react';
-import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import { Star, Store } from 'lucide-react';
-import { StoreData } from '../types';
-import { getStoreAction } from '../action';
+import { StoreData } from './store/types';
 import Card from '@/components/layout/card';
 
-export default function VendorStoreCard() {
-  const [store, setStore] = useState<StoreData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const pathname = usePathname();
 
+export default function VendorStoreCard({ store }: { store: StoreData | null }) {
   console.log('Store:', store);
-
-  useEffect(() => {
-    async function fetchStore() {
-      try {
-        const data = await getStoreAction();
-        setStore(data);
-      } catch {
-        // Silently fail - store might not exist yet
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchStore();
-  }, [pathname]);
-
-  if (loading) {
-    return (
-      <div className="rounded-2xl bg-primary/10 border border-border p-4 animate-pulse">
-        <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-full bg-neutral-200" />
-          <div className="space-y-2 flex-1">
-            <div className="h-4 bg-neutral-200 rounded w-3/4" />
-            <div className="h-3 bg-neutral-200 rounded w-1/2" />
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   if (!store) {
     return (
       <div className="rounded-2xl bg-primary/10 border border-border p-4 space-y-3">
         <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-full bg-white flex items-center justify-center">
+          <div className="h-10 w-10 rounded-full bg-neutral-50 flex items-center justify-center">
             <Store size={20} className="text-neutral-400" />
           </div>
           <div>
@@ -64,7 +28,7 @@ export default function VendorStoreCard() {
   }
 
   return (
-    <Card spacing='sm' gap='sm' className="bg-primary/10">
+    <Card spacing="sm" gap="sm" className="bg-primary/10">
       <div className="flex items-start gap-3">
         {/* Store Logo */}
         {store.storeLogo ? (

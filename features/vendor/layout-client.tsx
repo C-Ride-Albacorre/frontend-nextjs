@@ -1,25 +1,20 @@
 'use client';
 
-import { useState } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { MenuIcon, Shield } from 'lucide-react';
-
 import Sidebar from '@/components/navigation/sidebar';
-import { ADMIN_SIDEBAR_CONFIG } from '@/config/sidebar';
+import { VENDOR_SIDEBAR_CONFIG } from '@/config/sidebar';
+import { useState } from 'react';
+import VendorStoreCard from './store-card';
 import { IconButton } from '@/components/ui/buttons/icon-button';
-import AdminCard from './admin-card';
+import { Link, MenuIcon } from 'lucide-react';
+import Image from 'next/image';
+import { StoreData } from './store/types';
 
 type Props = {
   children: React.ReactNode;
-  user: {
-    id: string;
-    email: string;
-    role: 'SUPER_ADMIN' | 'ADMIN' | 'VENDOR' | 'CUSTOMER';
-  } | null;
+  store: StoreData | null;
 };
 
-export default function AdminLayoutClient({ children, user }: Props) {
+export default function VendorLayoutClient({ store, children }: Props) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
@@ -37,9 +32,8 @@ export default function AdminLayoutClient({ children, user }: Props) {
       >
         <Sidebar
           onClose={() => setSidebarOpen(false)}
-          config={ADMIN_SIDEBAR_CONFIG}
-          userRole={user?.role}
-          adminCard={<AdminCard user={user} />}
+          config={VENDOR_SIDEBAR_CONFIG}
+          storeCard={<VendorStoreCard store={store} />}
         />
       </div>
 
@@ -54,18 +48,19 @@ export default function AdminLayoutClient({ children, user }: Props) {
             <MenuIcon size={20} />
           </IconButton>
 
-          <Link href="/admin">
+          <Link href="/vendor/onboarding">
             <Image
               src="/assets/svg/logo-main.svg"
               alt="C-ride Logo"
+              priority
               width={100}
               height={32}
-              priority
             />
           </Link>
         </div>
 
-        <main className="flex-1 overflow-y-auto overscroll-contain">
+        {/* PAGE CONTENT (natural scroll) */}
+        <main className="flex-1  overflow-y-auto overscroll-contain">
           {children}
         </main>
       </div>

@@ -252,31 +252,8 @@ export async function middleware(request: NextRequest) {
       }
     } else {
       console.warn(
-        '[⚠️ Middleware] Refresh failed — checking if route is protected',
+        '[⚠️ Middleware] Refresh failed — allowing request to continue (refresh token still exists)',
       );
-
-      if (isUserProtected) {
-        console.log(
-          '[🚫 Middleware] Redirecting to /user/login (refresh failed, user protected)',
-        );
-        const url = new URL('/user/login', request.url);
-        url.searchParams.set('callbackUrl', pathname);
-        return NextResponse.redirect(url);
-      }
-      if (isVendorProtected) {
-        console.log(
-          '[🚫 Middleware] Redirecting to /vendor/login (refresh failed, vendor protected)',
-        );
-        const url = new URL('/vendor/login', request.url);
-        url.searchParams.set('callbackUrl', pathname);
-        return NextResponse.redirect(url);
-      }
-      if (isAdminProtected) {
-        console.log(
-          '[🚫 Middleware] Redirecting to /admin/login (refresh failed, admin protected)',
-        );
-        return NextResponse.redirect(new URL('/admin/login', request.url));
-      }
     }
   }
 
@@ -314,23 +291,25 @@ export async function middleware(request: NextRequest) {
   // -------------------------
   // UNAUTHENTICATED ACCESS
   // -------------------------
-  if (isUserProtected && !isAuthenticated) {
-    console.log('[🚫 Middleware] Unauthenticated → redirecting to /user/login');
+  if (isUserProtected && !isAuthenticated && !refreshToken) {
+    console.log(
+      '[🚫 Middleware] Unauthenticated (no refresh token) → redirecting to /user/login',
+    );
     const url = new URL('/user/login', request.url);
     url.searchParams.set('callbackUrl', pathname);
     return NextResponse.redirect(url);
   }
-  if (isVendorProtected && !isAuthenticated) {
+  if (isVendorProtected && !isAuthenticated && !refreshToken) {
     console.log(
-      '[🚫 Middleware] Unauthenticated → redirecting to /vendor/login',
+      '[🚫 Middleware] Unauthenticated (no refresh token) → redirecting to /vendor/login',
     );
     const url = new URL('/vendor/login', request.url);
     url.searchParams.set('callbackUrl', pathname);
     return NextResponse.redirect(url);
   }
-  if (isAdminProtected && !isAuthenticated) {
+  if (isAdminProtected && !isAuthenticated && !refreshToken) {
     console.log(
-      '[🚫 Middleware] Unauthenticated → redirecting to /admin/login',
+      '[🚫 Middleware] Unauthenticated (no refresh token) → redirecting to /admin/login',
     );
     return NextResponse.redirect(new URL('/admin/login', request.url));
   }
@@ -362,12 +341,26 @@ export async function middleware(request: NextRequest) {
   // -------------------------
   if (
     (isUserAuth || isVendorAuth || isAdminAuth || isSharedAuth) &&
-    isAuthenticated
+    (isAuthenticated || refreshToken)
   ) {
+    // Try to decode role from refresh token if we don't have it yet
+    let redirectRole = userRole;
+    if (!redirectRole && refreshToken) {
+      try {
+        const payload = jwtDecode<{ role: Role }>(refreshToken);
+        redirectRole = payload.role;
+      } catch {
+        // Fallback: infer from the login page they're on
+        if (isVendorAuth) redirectRole = 'VENDOR';
+        else if (isAdminAuth) redirectRole = 'ADMIN';
+        else redirectRole = 'CUSTOMER';
+      }
+    }
+
     let dest = '/';
-    if (userRole === 'VENDOR') dest = '/vendor/store';
-    if (userRole === 'CUSTOMER') dest = '/user/dashboard';
-    if (userRole === 'ADMIN' || userRole === 'SUPER_ADMIN')
+    if (redirectRole === 'VENDOR') dest = '/vendor/store';
+    if (redirectRole === 'CUSTOMER') dest = '/user/dashboard';
+    if (redirectRole === 'ADMIN' || redirectRole === 'SUPER_ADMIN')
       dest = '/admin/dashboard';
 
     if (pathname !== dest) {
