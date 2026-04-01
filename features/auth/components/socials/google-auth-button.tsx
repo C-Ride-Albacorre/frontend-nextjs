@@ -19,7 +19,7 @@ export default function GoogleAuthButton() {
     const role = getRole();
 
     const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-    window.location.href = `${baseUrl}/api/v1/auth/google?role=${role}`;
+    window.location.href = `${baseUrl}/api/v1/auth/google/${role}`;
   }
 
   return (
