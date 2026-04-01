@@ -3,34 +3,46 @@
 import { Suspense, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-// ✅ useSearchParams() lives in a CHILD component
 function GoogleCallbackHandler() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
   useEffect(() => {
     const error = searchParams.get('error');
-    const success = searchParams.get('success');
-
-    if (error || success !== 'true') {
+    if (error) {
       router.replace('/user/login?error=google_failed');
       return;
     }
 
-    fetch('/api/auth/google-callback', { method: 'GET' })
+    const accessToken = searchParams.get('accessToken');
+    const refreshToken = searchParams.get('refreshToken');
+
+    if (!accessToken || !refreshToken) {
+      router.replace('/user/login?error=google_failed');
+      return;
+    }
+
+    // Send tokens to API route to set httpOnly cookies
+    fetch('/api/auth/google-callback', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ accessToken, refreshToken }),
+    })
       .then((res) => res.json())
       .then((data) => {
-        console.log('Callback response:', data);
         if (!data.success) {
           router.replace('/user/login?error=google_failed');
           return;
         }
         const dest =
-          data.role === 'VENDOR' ? '/vendor/store' : '/user/dashboard';
+          data.role === 'VENDOR'
+            ? '/vendor/store'
+            : data.role === 'ADMIN' || data.role === 'SUPER_ADMIN'
+              ? '/admin/dashboard'
+              : '/user/dashboard';
         router.replace(dest);
       })
-      .catch((err) => {
-        console.error('Callback fetch failed:', err);
+      .catch(() => {
         router.replace('/user/login?error=google_failed');
       });
   }, [router, searchParams]);
