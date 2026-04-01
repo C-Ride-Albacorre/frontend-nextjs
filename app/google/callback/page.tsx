@@ -15,31 +15,28 @@ function GoogleCallbackHandler() {
     }
 
     const success = searchParams.get('success');
-
     if (success !== 'true') {
       router.replace('/user/login?error=oauth_failed');
       return;
     }
 
-    // Backend set HttpOnly cookies — now fetch the user to determine role
-    fetch('https://backend-service-1rc7.onrender.com/api/v1/user/me', {
-      credentials: 'include', // sends the cookies the backend just set
+    // Use your existing Next.js route — it handles cookie setting + profile fetch
+    fetch('/api/auth/google-callback', {
+      method: 'GET',
+      credentials: 'include',
     })
       .then((res) => {
-        if (!res.ok) throw new Error('Failed to fetch user');
+        if (!res.ok) throw new Error('Auth failed');
         return res.json();
       })
-      .then((user) => {
-        const role = user.role;
-        if (role === 'VENDOR') {
-          router.replace('/vendor/store');
-        } else if (role === 'ADMIN' || role === 'SUPER_ADMIN') {
-          router.replace('/admin/dashboard');
-        } else if (role === 'DRIVER') {
-          router.replace('/driver/dashboard');
-        } else {
-          router.replace('/user/dashboard');
-        }
+      .then((data) => {
+        if (!data.success) throw new Error('Auth failed');
+
+        const role = data.role;
+        if (role === 'VENDOR') router.replace('/vendor/store');
+        else if (role === 'ADMIN' || role === 'SUPER_ADMIN') router.replace('/admin/dashboard');
+        else if (role === 'DRIVER') router.replace('/driver/dashboard');
+        else router.replace('/user/dashboard');
       })
       .catch(() => {
         router.replace('/user/login?error=oauth_failed');
