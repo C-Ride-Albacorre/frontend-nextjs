@@ -17,7 +17,7 @@ export default function ViewProductModal({
 
   const {
     productName,
-    productCategory,
+    subcategoryId,
     sku,
     description,
     productType,
@@ -131,7 +131,7 @@ export default function ViewProductModal({
         <div className="grid grid-cols-2 gap-4">
           <div className="p-4 bg-neutral-50 rounded-xl">
             <p className="text-xs text-neutral-500 mb-1">Category</p>
-            <p className="font-medium text-neutral-900">{productCategory}</p>
+            <p className="font-medium text-neutral-900">{subcategoryId}</p>
           </div>
 
           <div className="p-4 bg-neutral-50 rounded-xl">

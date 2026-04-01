@@ -9,7 +9,7 @@ type ApiStore = {
   id: string;
   storeName: string;
   storeLogo: string | null;
-  storeCategory: string;
+  categoryId: string;
   storeAddress: string;
   storeDescription: string;
   preparationTime: number;
@@ -56,7 +56,7 @@ export default function StoreGrid({
           id={store.id}
           image={store.storeLogo ?? ''}
           name={store.storeName}
-          tag={store.storeCategory}
+          tag={store.categoryId}
           cuisine={store.storeDescription}
           rating={0}
           location={store.storeAddress}

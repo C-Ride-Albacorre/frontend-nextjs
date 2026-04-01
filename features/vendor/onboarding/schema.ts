@@ -66,5 +66,5 @@ export const BusinessBankSchema = z.object({
 
 export type StepState =
   | undefined
-  | { status: 'error'; errors?: any; message?: string }
+  | { status: 'error'; errors?: any; message?: string; fields?: any }
   | { status: 'success'; message: string };

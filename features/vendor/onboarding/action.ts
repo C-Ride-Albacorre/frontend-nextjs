@@ -16,6 +16,8 @@ export async function getBusinessTypesAction(): Promise<string[]> {
   try {
     const res = await getBusinessTypeService();
 
+    console.log('Business Types:', res.data);
+
     return res.data;
   } catch (error) {
     throw new Error(

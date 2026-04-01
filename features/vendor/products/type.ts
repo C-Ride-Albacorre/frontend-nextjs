@@ -48,7 +48,7 @@ export interface ProductImage {
 export interface Product {
   id: string;
   productName: string;
-  productCategory: string;
+  subcategoryId: string;
   sku: string;
   description?: string;
   productType: ProductType;
@@ -83,7 +83,7 @@ export type ProductFormState =
 // Create product input
 export interface CreateProductData {
   productName: string;
-  productCategory: string;
+  subcategoryId: string;
   sku: string;
   description?: string;
   productType: ProductType;
@@ -100,7 +100,7 @@ export interface CreateProductData {
 // Update product input (partial)
 export interface UpdateProductData {
   productName?: string;
-  productCategory?: string;
+  subcategoryId?: string;
   description?: string;
   stockStatus?: StockStatus;
   productStatus?: ProductStatus;

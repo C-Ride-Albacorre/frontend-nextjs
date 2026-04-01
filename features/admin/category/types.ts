@@ -1,7 +1,3 @@
-// features/admin/category/types.ts
-
-// ─── Category ────────────────────────────────────────────────────────────────
-
 export interface Category {
   id: string;
   name: string;
@@ -15,24 +11,41 @@ export interface Category {
   subcategories?: Subcategory[];
   storeCount?: number;
 }
-
-export interface CreateCategoryPayload {
+export type CreateCategoryPayload = {
   name: string;
   description?: string;
-  icon?: string;
-  image?: string;
-  isActive?: boolean;
-  displayOrder?: number;
-}
+  isActive: boolean;
+  displayOrder: number;
+  icon?: File;
+  image?: File;
+};
 
+// ─── Update Category Payload ───────────────────────────────────────────────
 export interface UpdateCategoryPayload {
   name?: string;
   description?: string;
-  icon?: string;
-  image?: string;
-  isActive?: boolean;
   displayOrder?: number;
+  isActive?: boolean;
+  icon?: File;
+  image?: File;
 }
+
+// ─── Update Category State ────────────────────────────────────────────────
+export type UpdateCategoryState = {
+  status: 'idle' | 'success' | 'error';
+  message?: string;
+  errors?: {
+    name?: string[];
+    description?: string[];
+    displayOrder?: string[];
+  };
+  data?: {
+    name?: string;
+    description?: string;
+    displayOrder?: number;
+    isActive?: boolean;
+  };
+};
 
 // ─── Subcategory ─────────────────────────────────────────────────────────────
 
@@ -64,3 +77,37 @@ export interface UpdateSubcategoryPayload {
   isActive?: boolean;
   displayOrder?: number;
 }
+
+export type CreateCategoryState = {
+  status: 'idle' | 'success' | 'error';
+  message?: string;
+  errors?: {
+    name?: string[];
+    description?: string[];
+    displayOrder?: string[];
+  };
+  data?: {
+    name?: string;
+    description?: string;
+    displayOrder?: number;
+    isActive?: boolean;
+  };
+};
+
+export type CreateSubcategoryState = {
+  status: 'idle' | 'success' | 'error';
+  message?: string;
+  errors?: {
+    name?: string[];
+    categoryId?: string[];
+    description?: string[];
+    displayOrder?: string[];
+  };
+  data?: {
+    name?: string;
+    categoryId?: string;
+    description?: string;
+    displayOrder?: number;
+    isActive?: boolean;
+  };
+};

@@ -23,8 +23,8 @@ export interface SingleProductProps {
   isEditing: boolean;
   productName: string;
   setProductName: (value: string) => void;
-  productCategory: string;
-  setProductCategory: (value: string) => void;
+  subcategoryId: string;
+  setSubcategoryId: (value: string) => void;
   sku: string;
   setSku: (value: string) => void;
   description: string;
@@ -55,8 +55,8 @@ export default function SingleProductForm({
   isEditing,
   productName,
   setProductName,
-  productCategory,
-  setProductCategory,
+  subcategoryId,
+  setSubcategoryId,
   sku,
   setSku,
   description,
@@ -89,7 +89,7 @@ export default function SingleProductForm({
 
     const result = SingleProductSchema.safeParse({
       productName,
-      productCategory: productCategory ?? '',
+      subcategoryId: subcategoryId ?? '',
       sku,
       description,
       productType: 'SINGLE',
@@ -132,7 +132,7 @@ export default function SingleProductForm({
     // Build FormData entirely from React state
     const fd = new FormData();
     fd.append('productName', productName);
-    fd.append('productCategory', productCategory ?? '');
+    fd.append('subcategoryId', subcategoryId ?? '');
     fd.append('sku', sku);
     fd.append('description', description);
     fd.append('productType', 'SINGLE');
@@ -205,13 +205,13 @@ export default function SingleProductForm({
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Select
-            id="productCategory"
+            id="subcategoryId"
             label="Category"
             placeholder="Select category"
             options={CATEGORIES}
-            value={productCategory}
-            onChange={setProductCategory}
-            errorMessage={errors?.productCategory?.[0]}
+            value={subcategoryId}
+            onChange={setSubcategoryId}
+            errorMessage={errors?.subcategoryId?.[0]}
           />
 
           <Input

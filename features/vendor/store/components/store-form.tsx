@@ -15,11 +15,10 @@ import { CheckCircle, Pencil, Lock, ChevronLeft, Store } from 'lucide-react';
 import { toast } from 'sonner';
 import Card from '@/components/layout/card';
 import Modal from '@/components/layout/modal';
-import { useBusinessTypes } from '../../onboarding/fetch';
 
 const emptyValues: StoreFormValues = {
   storeName: '',
-  storeCategory: '',
+  categoryId: '',
   storeAddress: '',
   phoneNumber: '',
   email: '',
@@ -53,7 +52,7 @@ export default function StoreForm({ initialData }: StoreFormProps) {
 
     return {
       storeName: initialData.storeName || '',
-      storeCategory: initialData.storeCategory || '',
+      categoryId: initialData.categoryId || '',
       storeAddress: initialData.storeAddress || '',
       phoneNumber: initialData.phoneNumber || '',
       email: initialData.email || '',

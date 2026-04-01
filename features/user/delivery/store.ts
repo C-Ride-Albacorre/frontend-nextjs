@@ -15,7 +15,6 @@ interface CartStore {
   isLoading: boolean;
   error: string | null;
 
-
   setCart: (cart: Cart | null) => void;
   loadCart: () => Promise<void>;
 
@@ -48,13 +47,18 @@ export const useCartStore = create<CartStore>()(
         const result = await getCartAction();
         set({ isLoading: false });
 
-        if (result.success && result?.data) {
-          const normalized = normalizeCart(result.data);
-          set({ cart: normalized });
+        if (result.success) {
+          if (result.data) {
+            const normalized = normalizeCart(result.data);
+            set({ cart: normalized });
+          } else {
+            // No cart exists yet — that's fine
+            set({ cart: null });
+          }
         } else {
-          const err = result.error || 'Failed to load cart';
-          set({ error: err });
-          toast.error(err);
+          // Silently handle initial cart load failures
+          console.warn('[Cart] Failed to load cart:', result.error);
+          set({ error: result.error || null });
         }
       },
 

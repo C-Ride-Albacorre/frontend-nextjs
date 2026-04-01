@@ -9,6 +9,11 @@ const USER_PROTECTED_ROUTES = [
 ];
 
 const VENDOR_PROTECTED_ROUTES = [
+  '/onboarding/business-info',
+  '/onboarding/contact-info',
+  '/onboarding/address-info',
+  '/onboarding/bank-info',
+  '/onboarding/business-document',
   '/vendor/active-deliveries',
   '/vendor/analytics',
   '/vendor/delivery',
@@ -72,28 +77,50 @@ type RefreshApiResponse = {
 async function refreshAccessToken(
   refreshToken: string,
   previousAccessToken: string,
-  userAgent: string,
 ): Promise<RefreshApiResponse | null> {
-  try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/refresh`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          refreshToken,
-          previousAccessToken,
-          userAgent,
-        }),
-        cache: 'no-store',
-      },
-    );
+  const refreshUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/refresh`;
 
-    if (!res.ok) return null;
-    return res.json();
-  } catch {
+  console.log('[🔄 Refresh] Attempting token refresh', {
+    url: refreshUrl,
+    hasRefreshToken: !!refreshToken,
+    refreshTokenPrefix: refreshToken.slice(0, 20) + '...',
+    hasPreviousAccessToken: !!previousAccessToken,
+  });
+
+  try {
+    const res = await fetch(refreshUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        refreshToken,
+        ...(previousAccessToken && { previousAccessToken }),
+      }),
+      cache: 'no-store',
+    });
+
+    const body = await res.json();
+
+    if (!res.ok) {
+      console.error('[❌ Refresh] Refresh failed', {
+        status: res.status,
+        statusText: res.statusText,
+        responseBody: body,
+      });
+      return null;
+    }
+
+    console.log('[✅ Refresh] Token refresh successful', {
+      status: res.status,
+      hasNewAccessToken: !!body?.data?.accessToken,
+      hasNewRefreshToken: !!body?.data?.refreshToken,
+      user: body?.data?.user,
+    });
+
+    return body;
+  } catch (err) {
+    console.error('[💥 Refresh] Network or parsing error during refresh', {
+      error: err instanceof Error ? err.message : String(err),
+    });
     return null;
   }
 }
@@ -104,69 +131,18 @@ export async function middleware(request: NextRequest) {
   const refreshToken = request.cookies.get('refreshToken')?.value;
   const userAgent = request.headers.get('user-agent') ?? '';
 
+  console.log(`\n[🛡️ Middleware] ${request.method} ${pathname}`, {
+    hasAccessToken: !!accessToken,
+    accessTokenExpired: accessToken ? isTokenExpired(accessToken) : 'N/A',
+    hasRefreshToken: !!refreshToken,
+  });
+
   if (
     pathname.startsWith('/_next') ||
     pathname.startsWith('/api') ||
     pathname.includes('.')
   ) {
     return NextResponse.next();
-  }
-
-  /**
-   * -------------------------
-   * AUTO REFRESH ACCESS TOKEN
-   * -------------------------
-   */
-  if (accessToken && isTokenExpired(accessToken) && refreshToken) {
-    const refreshed = await refreshAccessToken(
-      refreshToken,
-      accessToken,
-      userAgent,
-    );
-
-    // Unwrap from refreshed.data — API returns { data: { accessToken, refreshToken } }
-    if (refreshed?.data?.accessToken) {
-      const response = NextResponse.next();
-
-      response.cookies.set('accessToken', refreshed.data.accessToken, {
-        httpOnly: true,
-        secure: isProd,
-        sameSite: 'lax',
-        path: '/',
-        maxAge: getTokenExpiryFromJwt(refreshed.data.accessToken),
-      });
-
-      if (refreshed.data.refreshToken) {
-        response.cookies.set('refreshToken', refreshed.data.refreshToken, {
-          httpOnly: true,
-          secure: isProd,
-          sameSite: 'lax',
-          path: '/',
-          maxAge: getTokenExpiryFromJwt(refreshed.data.refreshToken),
-        });
-      }
-
-      return response;
-    }
-
-    // Refresh failed — only block if accessing a protected area
-    if (
-      !pathname.startsWith('/admin') &&
-      !pathname.startsWith('/vendor') &&
-      !pathname.startsWith('/user')
-    ) {
-      return NextResponse.next();
-    }
-  }
-
-  let userRole: Role | null = null;
-  if (accessToken && !isTokenExpired(accessToken)) {
-    try {
-      const payload = jwtDecode<{ role: Role }>(accessToken);
-      userRole = payload.role;
-    } catch {
-      userRole = null;
-    }
   }
 
   const isUserProtected = USER_PROTECTED_ROUTES.some((r) =>
@@ -186,52 +162,207 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith(r),
   );
 
-  /**
-   * -------------------------
-   * UNAUTHENTICATED ACCESS
-   * -------------------------
-   */
-  if (isUserProtected && !accessToken) {
+  let userRole: Role | null = null;
+  let refreshedResponse: NextResponse | null = null;
+
+  // -------------------------
+  // AUTO REFRESH ACCESS TOKEN
+  // -------------------------
+  if ((!accessToken || isTokenExpired(accessToken)) && refreshToken) {
+    console.log(
+      accessToken
+        ? '[⏰ Middleware] Access token expired — attempting refresh'
+        : '[⏰ Middleware] No access token found — attempting refresh with refresh token',
+    );
+
+    const refreshed = await refreshAccessToken(refreshToken, accessToken ?? '');
+
+    if (refreshed?.data?.accessToken) {
+      // Explicitly rebuild the Cookie header so downstream server components
+      // read the refreshed tokens via cookies() during the same request.
+      // request.cookies.set() alone is unreliable across Next.js versions.
+      const requestHeaders = new Headers(request.headers);
+      const existingCookies = requestHeaders.get('cookie') || '';
+      const cookieMap = new Map<string, string>();
+      existingCookies.split(';').forEach((c) => {
+        const idx = c.indexOf('=');
+        if (idx > 0) {
+          cookieMap.set(c.slice(0, idx).trim(), c.slice(idx + 1).trim());
+        }
+      });
+      cookieMap.set('accessToken', refreshed.data.accessToken);
+      if (refreshed.data.refreshToken) {
+        cookieMap.set('refreshToken', refreshed.data.refreshToken);
+      }
+      requestHeaders.set(
+        'cookie',
+        [...cookieMap.entries()].map(([k, v]) => `${k}=${v}`).join('; '),
+      );
+
+      refreshedResponse = NextResponse.next({
+        request: { headers: requestHeaders },
+      });
+
+      const newAccessMaxAge = getTokenExpiryFromJwt(refreshed.data.accessToken);
+      const newRefreshMaxAge = refreshed.data.refreshToken
+        ? getTokenExpiryFromJwt(refreshed.data.refreshToken)
+        : null;
+
+      console.log('[🍪 Middleware] Setting new cookies', {
+        accessTokenMaxAge: newAccessMaxAge,
+        refreshTokenMaxAge: newRefreshMaxAge,
+      });
+
+      // Also set cookies on the RESPONSE so the browser persists them
+      refreshedResponse.cookies.set('accessToken', refreshed.data.accessToken, {
+        httpOnly: true,
+        secure: isProd,
+        sameSite: 'lax',
+        path: '/',
+        maxAge: newAccessMaxAge,
+      });
+
+      if (refreshed.data.refreshToken) {
+        refreshedResponse.cookies.set(
+          'refreshToken',
+          refreshed.data.refreshToken,
+          {
+            httpOnly: true,
+            secure: isProd,
+            sameSite: 'lax',
+            path: '/',
+            maxAge: newRefreshMaxAge!,
+          },
+        );
+      }
+
+      try {
+        const payload = jwtDecode<{ role: Role }>(refreshed.data.accessToken);
+        userRole = payload.role;
+        console.log(
+          '[👤 Middleware] Role decoded from refreshed token:',
+          userRole,
+        );
+      } catch (err) {
+        console.error(
+          '[❌ Middleware] Failed to decode refreshed access token',
+          err,
+        );
+        userRole = null;
+      }
+    } else {
+      console.warn(
+        '[⚠️ Middleware] Refresh failed — checking if route is protected',
+      );
+
+      if (isUserProtected) {
+        console.log(
+          '[🚫 Middleware] Redirecting to /user/login (refresh failed, user protected)',
+        );
+        const url = new URL('/user/login', request.url);
+        url.searchParams.set('callbackUrl', pathname);
+        return NextResponse.redirect(url);
+      }
+      if (isVendorProtected) {
+        console.log(
+          '[🚫 Middleware] Redirecting to /vendor/login (refresh failed, vendor protected)',
+        );
+        const url = new URL('/vendor/login', request.url);
+        url.searchParams.set('callbackUrl', pathname);
+        return NextResponse.redirect(url);
+      }
+      if (isAdminProtected) {
+        console.log(
+          '[🚫 Middleware] Redirecting to /admin/login (refresh failed, admin protected)',
+        );
+        return NextResponse.redirect(new URL('/admin/login', request.url));
+      }
+    }
+  }
+
+  // Read role from valid (non-expired) access token if no refresh happened
+  if (!userRole && accessToken && !isTokenExpired(accessToken)) {
+    try {
+      const payload = jwtDecode<{ role: Role }>(accessToken);
+      userRole = payload.role;
+      console.log(
+        '[👤 Middleware] Role decoded from existing token:',
+        userRole,
+      );
+    } catch (err) {
+      console.error(
+        '[❌ Middleware] Failed to decode existing access token',
+        err,
+      );
+      userRole = null;
+    }
+  }
+
+  const isAuthenticated = !!userRole;
+
+  console.log('[🔐 Middleware] Auth state', {
+    isAuthenticated,
+    userRole,
+    isUserProtected,
+    isVendorProtected,
+    isAdminProtected,
+    isUserAuth,
+    isVendorAuth,
+    isAdminAuth,
+  });
+
+  // -------------------------
+  // UNAUTHENTICATED ACCESS
+  // -------------------------
+  if (isUserProtected && !isAuthenticated) {
+    console.log('[🚫 Middleware] Unauthenticated → redirecting to /user/login');
     const url = new URL('/user/login', request.url);
     url.searchParams.set('callbackUrl', pathname);
     return NextResponse.redirect(url);
   }
-
-  if (isVendorProtected && !accessToken) {
+  if (isVendorProtected && !isAuthenticated) {
+    console.log(
+      '[🚫 Middleware] Unauthenticated → redirecting to /vendor/login',
+    );
     const url = new URL('/vendor/login', request.url);
     url.searchParams.set('callbackUrl', pathname);
     return NextResponse.redirect(url);
   }
-
-  if (isAdminProtected && !accessToken) {
+  if (isAdminProtected && !isAuthenticated) {
+    console.log(
+      '[🚫 Middleware] Unauthenticated → redirecting to /admin/login',
+    );
     return NextResponse.redirect(new URL('/admin/login', request.url));
   }
 
-  /**
-   * -------------------------
-   * ROLE RESTRICTIONS
-   * -------------------------
-   */
+  // -------------------------
+  // ROLE RESTRICTIONS
+  // -------------------------
   if (isUserProtected && userRole === 'VENDOR') {
+    console.log(
+      '[🚫 Middleware] VENDOR tried to access user route → /vendor/store',
+    );
     return NextResponse.redirect(new URL('/vendor/store', request.url));
   }
-
   if (isVendorProtected && userRole === 'CUSTOMER') {
+    console.log(
+      '[🚫 Middleware] CUSTOMER tried to access vendor route → /user/dashboard',
+    );
     return NextResponse.redirect(new URL('/user/dashboard', request.url));
   }
-
   if (isSuperAdminOnly && userRole !== 'SUPER_ADMIN') {
+    console.log(
+      `[🚫 Middleware] Role ${userRole} tried to access SUPER_ADMIN route → /admin/dashboard`,
+    );
     return NextResponse.redirect(new URL('/admin/dashboard', request.url));
   }
 
-  /**
-   * -------------------------
-   * AUTH PAGES REDIRECT
-   * -------------------------
-   */
+  // -------------------------
+  // AUTH PAGES REDIRECT
+  // -------------------------
   if (
     (isUserAuth || isVendorAuth || isAdminAuth || isSharedAuth) &&
-    accessToken
+    isAuthenticated
   ) {
     let dest = '/';
     if (userRole === 'VENDOR') dest = '/vendor/store';
@@ -240,11 +371,17 @@ export async function middleware(request: NextRequest) {
       dest = '/admin/dashboard';
 
     if (pathname !== dest) {
+      console.log(
+        `[↩️ Middleware] Already authenticated (${userRole}) → redirecting to ${dest}`,
+      );
       return NextResponse.redirect(new URL(dest, request.url));
     }
   }
 
-  return NextResponse.next();
+  console.log(
+    `[✅ Middleware] Allowing request to proceed — refreshed: ${!!refreshedResponse}\n`,
+  );
+  return refreshedResponse ?? NextResponse.next();
 }
 
 export const config = {

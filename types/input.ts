@@ -24,6 +24,7 @@ export type TextareaProps = {
   name?: string;
   label?: string;
   placeholder?: string;
+  defaultValue?: string;
   value?: string;
   rows?: number;
   onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;

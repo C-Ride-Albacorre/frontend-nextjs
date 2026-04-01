@@ -13,15 +13,10 @@ import { Button } from '@/components/ui/buttons/button';
 import { businessInfoAction } from '../../action';
 import { Select } from '@/components/ui/inputs/select';
 import { useBusinessTypes } from '../../fetch';
+import { useOnboardingStore, useOnboardingHydrated } from '../../store';
 
 export default function BusinessInfoForm() {
-  const [fields, setFields] = useState({
-    businessName: '',
-    businessType: '',
-    registrationNumber: '',
-    taxId: '',
-    description: '',
-  });
+  const hydrated = useOnboardingHydrated();
 
   const router = useRouter();
 
@@ -31,15 +26,9 @@ export default function BusinessInfoForm() {
   );
   const isError = state?.status === 'error';
 
-  const handleChange =
-    (field: string) =>
-    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      setFields((prev) => ({ ...prev, [field]: e.target.value }));
-    };
+  const { businessInfo, setBusinessInfo } = useOnboardingStore();
 
   const { data: businessTypes, isPending, error } = useBusinessTypes();
-
- 
 
   const options =
     businessTypes?.map((type: any) => ({
@@ -59,6 +48,21 @@ export default function BusinessInfoForm() {
     }
   }, [state, router]);
 
+  if (!hydrated) {
+    return (
+      <section className="space-y-12">
+        <OnboardingFormHeader
+          title="Business Information"
+          subtitle="Tell us about your business"
+          headerIcon={<Store size={24} className="text-primary" />}
+        />
+        <div className="flex items-center justify-center py-12">
+          <p className="text-sm text-neutral-500">Loading...</p>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="space-y-12">
       <OnboardingFormHeader
@@ -74,8 +78,8 @@ export default function BusinessInfoForm() {
           label="Business Name"
           type="text"
           placeholder="Enter your business name"
-          value={fields.businessName}
-          onChange={handleChange('businessName')}
+          value={businessInfo.businessName}
+          onChange={(e) => setBusinessInfo({ businessName: e.target.value })}
           errorMessage={isError ? state.errors?.businessName?.[0] : undefined}
         />
 
@@ -83,12 +87,13 @@ export default function BusinessInfoForm() {
           id="businessType"
           name="businessType"
           label="Business Type"
-          value={fields.businessType}
-          options={ isPending? [{ value: '', label: 'Loading Business Types...' }] : options}
-          onChange={(value) =>
-            setFields((prev) => ({ ...prev, businessType: value }))
+          value={businessInfo.businessType}
+          onChange={(value) => setBusinessInfo({ businessType: value })}
+          options={
+            isPending
+              ? [{ value: '', label: 'Loading Business Types...' }]
+              : options
           }
-          
           errorMessage={isError ? state.errors?.businessType?.[0] : undefined}
         />
 
@@ -98,8 +103,10 @@ export default function BusinessInfoForm() {
           label="Business Registration No."
           type="text"
           placeholder="Enter your business registration number"
-          value={fields.registrationNumber}
-          onChange={handleChange('registrationNumber')}
+          value={businessInfo.registrationNumber}
+          onChange={(e) =>
+            setBusinessInfo({ registrationNumber: e.target.value })
+          }
           errorMessage={
             isError ? state.errors?.registrationNumber?.[0] : undefined
           }
@@ -111,8 +118,8 @@ export default function BusinessInfoForm() {
           label="Tax ID"
           type="text"
           placeholder="Enter your Tax ID number"
-          value={fields.taxId}
-          onChange={handleChange('taxId')}
+          value={businessInfo.taxId}
+          onChange={(e) => setBusinessInfo({ taxId: e.target.value })}
           errorMessage={isError ? state.errors?.taxId?.[0] : undefined}
         />
 
@@ -121,8 +128,9 @@ export default function BusinessInfoForm() {
           name="description"
           label="Business Description"
           placeholder="Briefly describe what your business offers"
-          value={fields.description}
-          onChange={handleChange('description')}
+          value={businessInfo.description}
+          onChange={(e) => setBusinessInfo({ description: e.target.value })}
+          errorMessage={isError ? state.errors?.description?.[0] : undefined}
         />
 
         <div className="mt-12 flex items-center justify-between lg:justify-around">
@@ -133,7 +141,7 @@ export default function BusinessInfoForm() {
             size="lg"
             leftIcon={<ChevronLeft size={16} />}
           >
-            Previous
+            Go to Registration
           </Button>
 
           <Button
@@ -141,14 +149,7 @@ export default function BusinessInfoForm() {
             variant="primary"
             size="lg"
             loading={pending}
-            disabled={
-              pending ||
-              !fields.businessName.trim() ||
-              !fields.businessType.trim() ||
-              !fields.registrationNumber.trim() ||
-              !fields.taxId.trim() ||
-              !fields.description.trim()
-            }
+            disabled={pending}
             rightIcon={<ChevronRight size={16} />}
           >
             {`${pending ? 'Saving...' : 'Save & Proceed'}`}

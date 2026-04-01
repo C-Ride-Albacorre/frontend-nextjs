@@ -13,8 +13,8 @@ interface SelectOption {
 interface VariableProductFormProps {
   productName: string;
   setProductName: (value: string) => void;
-  productCategory: string;
-  setProductCategory: (value: string) => void;
+  subcategoryId: string;
+  setSubcategoryId: (value: string) => void;
   sku: string;
   setSku: (value: string) => void;
   errors: Record<string, string[]>;
@@ -42,8 +42,8 @@ interface VariableProductFormProps {
 export default function VariableDetailsFields({
   productName,
   setProductName,
-  productCategory,
-  setProductCategory,
+  subcategoryId,
+  setSubcategoryId,
   sku,
   setSku,
   errors,
@@ -81,13 +81,13 @@ export default function VariableDetailsFields({
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Select
-          id="productCategory"
+          id="subcategoryId"
           label="Category"
           placeholder="Select category"
           options={CATEGORIES}
-          value={productCategory}
-          onChange={setProductCategory}
-          errorMessage={errors?.productCategory?.[0]}
+          value={subcategoryId}
+          onChange={setSubcategoryId}
+          errorMessage={errors?.subcategoryId?.[0]}
         />
 
         <Input

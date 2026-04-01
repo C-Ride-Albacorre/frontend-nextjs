@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import Stepper from '@/components/navigation/stepper';
 import { STEPS } from '@/features/user/delivery/data';
 import { useCartStore } from '../store';
+import { Button } from '@/components/ui/buttons/button';
 
 export default function DeliveryHeader() {
   const path = usePathname();
@@ -36,23 +37,24 @@ export default function DeliveryHeader() {
   return (
     <>
       {/* Header */}
-      <header className="flex items-center justify-between">
+      <header className="flex items-center justify-between mb-0">
         <h1 className="text-2xl font-semibold text-primary-text-100">
           Create New Delivery
         </h1>
 
-        <Link
+        <Button
+        size='icon'
           href="/user/dashboard"
-          className="rounded-xl border border-border px-5 py-2 text-sm font-medium hover:bg-neutral-50"
+          variant="white"
         >
           Close
-        </Link>
+        </Button>
       </header>
 
       <>
         {/* Cart */}
         <div className="flex justify-end">
-          <button className="mt-4 flex items-center gap-4 rounded-xl border border-border px-4 py-2 hover:bg-foreground-200 transition-colors">
+          <button className="mt-4 flex items-center gap-4 rounded-xl border border-border px-4 py-2 hover:bg-foreground-200 transition-colors cursor-pointer">
             <span className="flex items-center gap-2 text-xs">
               <ShoppingCart size={16} />
               {isLoading ? (

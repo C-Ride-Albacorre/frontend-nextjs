@@ -89,7 +89,7 @@ export interface StoreDetailUser {
 export interface StoreProduct {
   id: string;
   productName: string;
-  productCategory: string;
+  subcategoryId: string;
   sku: string;
   description: string;
   productType: string;
@@ -106,7 +106,7 @@ export interface StoreProduct {
 export interface StoreDetail {
   id: string;
   storeName: string;
-  storeCategory: string;
+  categoryId: string;
   storeDescription: string | null;
   storeAddress: string;
   phoneNumber: string;

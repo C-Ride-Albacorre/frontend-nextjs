@@ -5,7 +5,7 @@ export const StoreSchema = z.object({
     .string()
     .trim()
     .min(2, { message: 'Store name is required.' }),
-  storeCategory: z
+  categoryId: z
     .string()
     .trim()
     .min(2, { message: 'Store category is required.' }),
@@ -36,7 +36,7 @@ export const StoreSchema = z.object({
 
 export type StoreFormErrors = {
   storeName?: string[];
-  storeCategory?: string[];
+  categoryId?: string[];
   storeAddress?: string[];
   phoneNumber?: string[];
   email?: string[];

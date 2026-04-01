@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useEffect, useTransition } from 'react';
+import { useActionState, useEffect, useState } from 'react';
 import { toast } from 'sonner';
-import { updateCategoryAction } from '@/features/admin/category/action';
 import {
-  Category,
   UpdateCategoryPayload,
+  CreateCategoryState,
+  Category,
 } from '@/features/admin/category/types';
 import Modal from '@/components/layout/modal';
 import Input from '@/components/ui/inputs/input';
@@ -13,6 +13,7 @@ import Textarea from '@/components/ui/inputs/textarea';
 import FileDropzone from '@/components/ui/inputs/file-dropzone';
 import { Button } from '@/components/ui/buttons/button';
 import ToggleSwitch from '@/components/ui/buttons/toggle-switch';
+import { updateCategoryAction } from '../action';
 
 interface EditCategoryModalProps {
   isOpen: boolean;
@@ -21,87 +22,78 @@ interface EditCategoryModalProps {
   category: Category | null;
 }
 
+const initialState: CreateCategoryState = {
+  status: 'idle',
+  message: '',
+  errors: {},
+  data: {},
+};
+
 export default function EditCategoryModal({
   isOpen,
   onClose,
   onSuccess,
   category,
 }: EditCategoryModalProps) {
-  const [isPending, startTransition] = useTransition();
   const [iconFile, setIconFile] = useState<File | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [form, setForm] = useState({
+  const [isActive, setIsActive] = useState(category?.isActive ?? true);
+
+  const [state, action, isPending] = useActionState<
+    CreateCategoryState,
+    FormData
+  >((state, formData) => {
+    if (!category) return Promise.reject(new Error('No category selected'));
+    return updateCategoryAction(category.id, formData);
+  }, initialState);
+
+  const isError = state.status === 'error';
+
+  // Populate form data if edit fails
+  const [formDefaults, setFormDefaults] = useState({
     name: '',
     description: '',
-    existingIcon: '' as string | null,
-    existingImage: '' as string | null,
-    isActive: true,
-    displayOrder: 1,
+    displayOrder: '1',
+    existingIcon: '',
+    existingImage: '',
   });
 
   useEffect(() => {
     if (category) {
-      setForm({
-        name: category.name ?? '',
+      setFormDefaults({
+        name: category.name,
         description: category.description ?? '',
+        displayOrder: String(category.displayOrder ?? 1),
         existingIcon: category.icon ?? '',
         existingImage: category.image ?? '',
-        isActive: category.isActive ?? true,
-        displayOrder: category.displayOrder ?? 1,
       });
+      setIsActive(category.isActive);
       setIconFile(null);
       setImageFile(null);
     }
   }, [category]);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = () => {
-    if (!category) return;
-
-    if (!form.name.trim()) {
-      toast.error('Category name is required');
-      return;
+  useEffect(() => {
+    if (state.status === 'success') {
+      toast.success(state.message);
+      onClose();
+      onSuccess();
     }
+    if (isError && state.message) {
+      toast.error(state.message);
+    }
+  }, [state]);
 
-    startTransition(async () => {
-      const payload: UpdateCategoryPayload = {
-        name: form.name.trim(),
-        description: form.description?.trim() || undefined,
-        icon: iconFile
-          ? URL.createObjectURL(iconFile)
-          : form.existingIcon || undefined,
-        image: imageFile
-          ? URL.createObjectURL(imageFile)
-          : form.existingImage || undefined,
-        isActive: form.isActive,
-        displayOrder: Number(form.displayOrder) || 1,
-      };
-
-      console.log('[EditCategory] Submitting payload:', payload);
-
-      const result = await updateCategoryAction(category.id, payload);
-
-      console.log('[EditCategory] Result:', result);
-
-      if (result.success) {
-        toast.success(result.message);
-        onSuccess();
-        onClose();
-      } else {
-        toast.error(result.message);
-      }
-    });
-  };
+  // Restore isActive from error data
+  useEffect(() => {
+    if (state.data?.isActive !== undefined) {
+      setIsActive(state.data.isActive);
+    }
+  }, [state.data]);
 
   return (
     <Modal isModalOpen={isOpen} onClose={onClose}>
-      <div className="space-y-6">
+      <form action={action} className="space-y-6">
         <div className="space-y-1">
           <h2 className="text-xl font-semibold text-neutral-900">
             Edit Category
@@ -109,98 +101,78 @@ export default function EditCategoryModal({
           <p className="text-sm text-neutral-500">Update category details</p>
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-4">
           <Input
-            id="edit-name"
+            id="name"
             name="name"
             label="Category Name"
             placeholder="e.g. Restaurants"
-            value={form.name}
-            onChange={handleChange}
+            defaultValue={isError ? state.data?.name : formDefaults.name}
+            errorMessage={isError ? state.errors?.name?.[0] : undefined}
             disabled={isPending}
           />
 
           <Textarea
-            id="edit-description"
+            id="description"
             name="description"
             label="Description"
             placeholder="Describe this category"
-            value={form.description}
-            onChange={handleChange}
+            defaultValue={
+              isError ? state.data?.description : formDefaults.description
+            }
+            errorMessage={isError ? state.errors?.description?.[0] : undefined}
             disabled={isPending}
           />
 
           <FileDropzone
             label="Icon Image"
             accept="image/png, image/jpeg, image/svg+xml"
+            name="icon"
             maxSizeMB={5}
             value={iconFile}
             onChange={setIconFile}
-            existingImageUrl={form.existingIcon}
+            existingImageUrl={formDefaults.existingIcon}
           />
 
           <FileDropzone
             label="Category Image"
             accept="image/png, image/jpeg"
             maxSizeMB={10}
+            name="image"
             value={imageFile}
             onChange={setImageFile}
-            existingImageUrl={form.existingImage}
+            existingImageUrl={formDefaults.existingImage}
           />
 
           <Input
-            id="edit-displayOrder"
             name="displayOrder"
-            label="Display Order"
             type="number"
-            placeholder="1"
-            value={String(form.displayOrder)}
-            onChange={(e) =>
-              setForm((prev) => ({
-                ...prev,
-                displayOrder: Number(e.target.value),
-              }))
+            defaultValue={
+              isError
+                ? String(state.data?.displayOrder ?? 1)
+                : formDefaults.displayOrder
             }
+            label="Display Order"
+            errorMessage={isError ? state.errors?.displayOrder?.[0] : undefined}
             disabled={isPending}
           />
 
           <div className="flex items-center gap-8">
-            <label htmlFor="edit-isActive" className="text-sm font-medium">
+            <label htmlFor="isActive" className="text-sm font-medium">
               Active
             </label>
 
+            <input type="hidden" name="isActive" value={String(isActive)} />
+
             <ToggleSwitch
-              checked={form.isActive}
-              onChange={() =>
-                !isPending &&
-                setForm((prev) => ({ ...prev, isActive: !prev.isActive }))
-              }
+              checked={isActive}
+              onChange={() => setIsActive((prev) => !prev)}
               disabled={isPending}
             />
-            {/* <button
-              id="edit-isActive"
-              type="button"
-              role="switch"
-              aria-checked={form.isActive}
-              onClick={() =>
-                !isPending &&
-                setForm((prev) => ({ ...prev, isActive: !prev.isActive }))
-              }
-              disabled={isPending}
-              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                form.isActive ? 'bg-primary' : 'bg-neutral-300'
-              } ${isPending ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
-            >
-              <span
-                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                  form.isActive ? 'translate-x-6' : 'translate-x-1'
-                }`}
-              />
-            </button> */}
           </div>
         </div>
 
-        <div className="flex justify-between md:justify-around gap-3 pt-4">
+        <div className="flex justify-between md:justify-around  pt-4">
           <Button
             variant="outline"
             size="icon"
@@ -212,14 +184,13 @@ export default function EditCategoryModal({
           <Button
             variant="primary"
             size="icon"
-            onClick={handleSubmit}
             loading={isPending}
             disabled={isPending}
           >
-            Update Category
+            {isPending ? 'Updating...' : 'Update Category'}
           </Button>
         </div>
-      </div>
+      </form>
     </Modal>
   );
 }

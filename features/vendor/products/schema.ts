@@ -5,7 +5,7 @@ const ProductDetailsSchema = z.object({
     .string()
     .trim()
     .min(2, { message: 'Product name is required.' }),
-  productCategory: z
+  subcategoryId: z
     .string({ message: 'Category is required.' })
     .trim()
     .min(1, { message: 'Category is required.' }),
@@ -84,7 +84,7 @@ export const UpdateProductSchema = ProductDetailsSchema.omit({
 export type ProductFormErrors = Partial<
   Record<
     | 'productName'
-    | 'productCategory'
+    | 'subcategoryId'
     | 'sku'
     | 'description'
     | 'productType'

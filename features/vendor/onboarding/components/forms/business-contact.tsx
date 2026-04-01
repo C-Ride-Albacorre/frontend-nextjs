@@ -8,23 +8,16 @@ import { useActionState, useEffect, useState } from 'react';
 import { businessContactAction } from '../../action';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
+import { useOnboardingStore, useOnboardingHydrated } from '../../store';
 
 export default function BusinessContactInfoForm() {
-  const [fields, setFields] = useState({
-    businessEmail: '',
-    businessPhone: '',
-  });
-
-  const handleChange =
-    (field: string) =>
-    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      setFields((prev) => ({ ...prev, [field]: e.target.value }));
-    };
-
+  const hydrated = useOnboardingHydrated();
   const [state, action, pending] = useActionState(
     businessContactAction,
     undefined,
   );
+
+  const { contactInfo, setContactInfo } = useOnboardingStore();
 
   const isError = state?.status === 'error';
 
@@ -42,6 +35,21 @@ export default function BusinessContactInfoForm() {
     }
   }, [state, router]);
 
+  if (!hydrated) {
+    return (
+      <section className="space-y-12">
+        <OnboardingFormHeader
+          title="Contact Details"
+          subtitle="How can we reach you ?"
+          headerIcon={<Mail size={24} className="text-primary" />}
+        />
+        <div className="flex items-center justify-center py-12">
+          <p className="text-sm text-neutral-500">Loading...</p>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="space-y-12">
       <OnboardingFormHeader
@@ -57,8 +65,8 @@ export default function BusinessContactInfoForm() {
           label="Business Email Address"
           type="email"
           placeholder="Enter your business email"
-          value={fields.businessEmail}
-          onChange={handleChange('businessEmail')}
+          value={contactInfo.businessEmail}
+          onChange={(e) => setContactInfo({ businessEmail: e.target.value })}
           errorMessage={isError ? state?.errors?.businessEmail?.[0] : undefined}
         />
 
@@ -69,12 +77,9 @@ export default function BusinessContactInfoForm() {
           type="tel"
           placeholder="Enter your business phone number"
           inputInfo="For urgent order update"
-          value={fields.businessPhone}
+          value={contactInfo.businessPhone}
           onChange={(e) =>
-            setFields((prev) => ({
-              ...prev,
-              businessPhone: e.target.value.replace(/\s/g, ''),
-            }))
+            setContactInfo({ businessPhone: e.target.value.replace(/\s/g, '') })
           }
           errorMessage={isError ? state?.errors?.businessPhone?.[0] : undefined}
         />
@@ -94,11 +99,7 @@ export default function BusinessContactInfoForm() {
             variant="primary"
             type="submit"
             loading={pending}
-            disabled={
-              pending ||
-              !fields.businessEmail.trim() ||
-              !fields.businessPhone.trim()
-            }
+            disabled={pending}
             size="lg"
             rightIcon={<ChevronRight size={16} />}
           >

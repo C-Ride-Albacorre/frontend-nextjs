@@ -6,6 +6,7 @@ import clsx from 'clsx';
 
 type FileDropzoneProps = {
   label?: string;
+  name?: string;
   accept?: string;
   maxSizeMB?: number;
   value?: File | null;
@@ -16,6 +17,7 @@ type FileDropzoneProps = {
 };
 
 export default function FileDropzone({
+  name,
   label = 'Product Image',
   accept = 'image/png, image/jpeg',
   maxSizeMB = 10,
@@ -108,6 +110,7 @@ export default function FileDropzone({
         <input
           ref={inputRef}
           type="file"
+          name={name}
           accept={accept}
           hidden
           onChange={(e) => {

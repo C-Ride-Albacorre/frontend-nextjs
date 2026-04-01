@@ -9,10 +9,7 @@ import { getTokenExpiry } from '@/utils/jwt';
 
 export async function refreshSession() {
   const { refreshToken, accessToken } = await getAuthTokens();
-
-  if (!refreshToken) {
-    return null;
-  }
+  if (!refreshToken) return null;
 
   try {
     const result = await refreshTokenService({
@@ -20,7 +17,6 @@ export async function refreshSession() {
       previousAccessToken: accessToken ?? '',
     });
 
-    // Unwrap from result.data — API returns { data: { accessToken, refreshToken } }
     const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
       result.data;
 

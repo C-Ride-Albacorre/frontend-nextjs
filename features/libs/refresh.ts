@@ -21,14 +21,12 @@ export async function refreshTokenService(payload: {
 }): Promise<RefreshApiResponse> {
   const res = await fetch(`${BASE_URL}/auth/refresh`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       refreshToken: payload.refreshToken,
-      previousAccessToken: payload.previousAccessToken,
-      userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : '',
+      ...(payload.previousAccessToken && {
+        previousAccessToken: payload.previousAccessToken,
+      }),
     }),
   });
 

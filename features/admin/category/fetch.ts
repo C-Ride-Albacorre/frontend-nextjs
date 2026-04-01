@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
-import { getBusinessTypesAction } from './action';
+import { getSubcategoriesAction } from './action';
 
-export function useBusinessTypes() {
+export function useSubcategories() {
   return useQuery({
-    queryKey: ['businessTypes'],
-    queryFn: getBusinessTypesAction,
+    queryKey: ['subCategoriesTypes'],
+    queryFn: getSubcategoriesAction,
     staleTime: 1000 * 60 * 5,
     gcTime: 1000 * 60 * 10,
     refetchOnWindowFocus: false,

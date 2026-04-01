@@ -13,7 +13,7 @@ export default function ProductRow({
   const {
     productName,
     basePrice,
-    productCategory,
+    subcategoryId,
     productStatus,
     stockStatus,
     productImages,
@@ -85,7 +85,7 @@ export default function ProductRow({
                 {statusDisplay}
               </span>
 
-              <span className="text-xs text-primary">{productCategory}</span>
+              <span className="text-xs text-primary">{subcategoryId}</span>
 
               <span
                 className={clsx(' text-[10px]', {

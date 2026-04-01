@@ -28,7 +28,7 @@ export default function ViewStoreModal({
 
   const {
     storeName,
-    storeCategory,
+    categoryId,
     storeAddress,
     phoneNumber,
     email,
@@ -82,7 +82,7 @@ export default function ViewStoreModal({
             <h2 className="text-2xl font-semibold text-neutral-900">
               {storeName}
             </h2>
-            <p className="text-sm text-neutral-500 mt-1">{storeCategory}</p>
+            <p className="text-sm text-neutral-500 mt-1">{categoryId}</p>
           </div>
 
           <span

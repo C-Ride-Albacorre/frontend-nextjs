@@ -1,7 +1,6 @@
 import { BASE_URL } from '@/config/api';
 import { ApiError } from '@/features/libs/api-error';
 import { authFetch } from '@/features/libs/auth-fetch';
-import { redirect } from 'next/navigation';
 import {
   CreateCategoryPayload,
   UpdateCategoryPayload,
@@ -12,28 +11,41 @@ import {
 // ─── Category Services ───────────────────────────────────────────────────────
 
 export async function createCategoryService(payload: CreateCategoryPayload) {
-  const res = await authFetch(`${BASE_URL}/admin`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
-  });
+  const formData = new FormData();
 
-  //   if (res.status === 401) redirect('/admin/login');
+  formData.append('name', payload.name);
+
+  if (payload.description) {
+    formData.append('description', payload.description);
+  }
+
+  formData.append('isActive', String(payload.isActive ?? true));
+  formData.append('displayOrder', String(payload.displayOrder ?? 1));
+
+  if (payload.icon) {
+    formData.append('icon', payload.icon);
+  }
+
+  if (payload.image) {
+    formData.append('image', payload.image);
+  }
+
+  const res = await authFetch(`${BASE_URL}/admin/category`, {
+    method: 'POST',
+    body: formData,
+  });
 
   const data = await res.json();
 
   if (!res.ok) {
-    throw new ApiError(
-      data?.message || 'Failed to create category',
-      data?.statusCode ?? res.status,
-    );
+    throw new Error(data?.message || 'Failed to create category');
   }
 
   return data;
 }
 
 export async function getCategoriesService() {
-  const res = await authFetch(`${BASE_URL}/admin`, {
+  const res = await authFetch(`${BASE_URL}/admin/categories`, {
     method: 'GET',
   });
 
@@ -50,11 +62,9 @@ export async function getCategoriesService() {
 }
 
 export async function getCategoryByIdService(id: string) {
-  const res = await authFetch(`${BASE_URL}/admin/${id}`, {
+  const res = await authFetch(`${BASE_URL}/admin/category/${id}`, {
     method: 'GET',
   });
-
-  if (res.status === 401) redirect('/admin/login');
 
   const data = await res.json();
 
@@ -72,34 +82,41 @@ export async function updateCategoryService(
   id: string,
   payload: UpdateCategoryPayload,
 ) {
-  const res = await authFetch(`${BASE_URL}/admin/${id}`, {
+  const body: Record<string, unknown> = {};
+
+  if (payload.name) body.name = payload.name;
+  if (payload.description !== undefined) body.description = payload.description;
+  if (payload.isActive !== undefined) body.isActive = payload.isActive;
+  if (payload.displayOrder !== undefined)
+    body.displayOrder = payload.displayOrder;
+
+  console.log('Updating category with ID:', id, 'and payload:', body);
+
+  const res = await authFetch(`${BASE_URL}/admin/category/${id}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
+    body: JSON.stringify(body),
   });
-
-  if (res.status === 401) redirect('/admin/login');
 
   const data = await res.json();
 
+  console.log('Update category response:', data);
+
   if (!res.ok) {
-    throw new ApiError(
-      data?.message || 'Failed to update category',
-      data?.statusCode ?? res.status,
-    );
+    throw new Error(data?.message || 'Failed to update category');
   }
 
   return data;
 }
 
 export async function deleteCategoryService(id: string) {
-  const res = await authFetch(`${BASE_URL}/admin/${id}`, {
+  const res = await authFetch(`${BASE_URL}/admin/category/${id}`, {
     method: 'DELETE',
   });
 
-  if (res.status === 401) redirect('/admin/login');
-
   const data = await res.json();
+
+  console.log('Delete category response:', data);
 
   if (!res.ok) {
     throw new ApiError(
@@ -116,8 +133,6 @@ export async function toggleCategoryStatusService(id: string) {
     method: 'PUT',
   });
 
-  if (res.status === 401) redirect('/admin/login');
-
   const data = await res.json();
 
   if (!res.ok) {
@@ -131,13 +146,11 @@ export async function toggleCategoryStatusService(id: string) {
 }
 
 export async function reorderCategoryService(id: string, displayOrder: number) {
-  const res = await authFetch(`${BASE_URL}/admin/${id}/reorder`, {
+  const res = await authFetch(`${BASE_URL}/admin/category/${id}/reorder`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ displayOrder }),
   });
-
-  if (res.status === 401) redirect('/admin/login');
 
   const data = await res.json();
 
@@ -162,8 +175,6 @@ export async function createSubcategoryService(
     body: JSON.stringify(payload),
   });
 
-  if (res.status === 401) redirect('/admin/login');
-
   const data = await res.json();
 
   if (!res.ok) {
@@ -180,8 +191,6 @@ export async function getSubcategoriesService() {
   const res = await authFetch(`${BASE_URL}/admin/subcategories`, {
     method: 'GET',
   });
-
-  if (res.status === 401) redirect('/admin/login');
 
   const data = await res.json();
 
@@ -200,8 +209,6 @@ export async function getSubcategoryByIdService(id: string) {
     method: 'GET',
   });
 
-  if (res.status === 401) redirect('/admin/login');
-
   const data = await res.json();
 
   if (!res.ok) {
@@ -215,11 +222,12 @@ export async function getSubcategoryByIdService(id: string) {
 }
 
 export async function getSubcategoriesByCategoryIdService(categoryId: string) {
-  const res = await authFetch(`${BASE_URL}/admin/${categoryId}/subcategories`, {
-    method: 'GET',
-  });
-
-  if (res.status === 401) redirect('/admin/login');
+  const res = await authFetch(
+    `${BASE_URL}/admin/category/${categoryId}/subcategories`,
+    {
+      method: 'GET',
+    },
+  );
 
   const data = await res.json();
 
@@ -243,8 +251,6 @@ export async function updateSubcategoryService(
     body: JSON.stringify(payload),
   });
 
-  if (res.status === 401) redirect('/admin/login');
-
   const data = await res.json();
 
   if (!res.ok) {
@@ -261,8 +267,6 @@ export async function deleteSubcategoryService(id: string) {
   const res = await authFetch(`${BASE_URL}/admin/subcategories/${id}`, {
     method: 'DELETE',
   });
-
-  if (res.status === 401) redirect('/admin/login');
 
   const data = await res.json();
 
@@ -281,8 +285,6 @@ export async function toggleSubcategoryStatusService(id: string) {
     `${BASE_URL}/admin/subcategories/${id}/toggle-status`,
     { method: 'PUT' },
   );
-
-  if (res.status === 401) redirect('/admin/login');
 
   const data = await res.json();
 
@@ -305,8 +307,6 @@ export async function reorderSubcategoryService(
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ displayOrder }),
   });
-
-  if (res.status === 401) redirect('/admin/login');
 
   const data = await res.json();
 

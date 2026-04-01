@@ -46,7 +46,7 @@ export async function onboardingService(
 }
 
 export async function getBusinessTypeService() {
-  const res = await authFetch(`${BASE_URL}/admin`, {
+  const res = await authFetch(`${BASE_URL}/admin/categories`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',

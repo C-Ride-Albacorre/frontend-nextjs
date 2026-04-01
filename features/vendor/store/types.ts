@@ -22,7 +22,7 @@ export interface OperatingHour {
 
 export interface CreateStoreData {
   storeName: string;
-  storeCategory: string;
+  categoryId: string;
   storeDescription?: string;
   storeAddress: string;
   phoneNumber: string;
@@ -36,7 +36,7 @@ export interface CreateStoreData {
 export interface StoreData {
   id: string;
   storeName: string;
-  storeCategory: string;
+  categoryId: string;
   storeDescription?: string;
   storeAddress: string;
   phoneNumber: string;
@@ -57,7 +57,7 @@ export interface StoreData {
 export interface StoreResponse {
   id: string;
   storeName: string;
-  storeCategory: string;
+  categoryId: string;
   storeDescription?: string;
   storeAddress: string;
   phoneNumber: string;

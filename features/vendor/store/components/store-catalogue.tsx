@@ -15,7 +15,7 @@ export default function StoreCatalogue({
   const {
     storeLogo,
     storeName,
-    storeCategory,
+    categoryId,
     storeAddress,
     status,
     operatingHours,
@@ -80,7 +80,7 @@ export default function StoreCatalogue({
                 </span>
 
                 <span className="font-medium text-primary text-xs">
-                  {storeCategory}
+                  {categoryId}
                 </span>
               </div>
 

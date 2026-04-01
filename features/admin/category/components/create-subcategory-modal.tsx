@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useActionState, useEffect, useState, useTransition } from 'react';
 import { toast } from 'sonner';
 import { createSubcategoryAction } from '@/features/admin/category/action';
 import {
-  CreateSubcategoryPayload,
   Category,
+  CreateSubcategoryState,
 } from '@/features/admin/category/types';
 import Modal from '@/components/layout/modal';
 import Input from '@/components/ui/inputs/input';
@@ -14,7 +14,7 @@ import { Select } from '@/components/ui/inputs/select';
 import { Button } from '@/components/ui/buttons/button';
 import ToggleSwitch from '@/components/ui/buttons/toggle-switch';
 
-interface CreateSubcategoryModalProps {
+interface Props {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
@@ -22,70 +22,42 @@ interface CreateSubcategoryModalProps {
   preselectedCategoryId?: string;
 }
 
+const initialState: CreateSubcategoryState = {
+  status: 'idle',
+};
 export default function CreateSubcategoryModal({
   isOpen,
   onClose,
   onSuccess,
   categories,
   preselectedCategoryId,
-}: CreateSubcategoryModalProps) {
-  const [isPending, startTransition] = useTransition();
-  const [form, setForm] = useState({
-    name: '',
-    description: '',
-    categoryId: preselectedCategoryId ?? '',
-    isActive: true,
-    displayOrder: 1,
-  });
+}: Props) {
+  const [categoryId, setCategoryId] = useState(preselectedCategoryId || '');
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-  };
+  const [state, action, isPending] = useActionState(
+    createSubcategoryAction,
+    initialState,
+  );
 
-  const handleSubmit = () => {
-    if (!form.name.trim()) {
-      toast.error('Subcategory name is required');
-      return;
-    }
-    if (!form.categoryId) {
-      toast.error('Please select a parent category');
-      return;
+  const isError = state.status === 'error';
+
+  useEffect(() => {
+    if (state.status === 'success') {
+      toast.success(state.message);
+      onClose();
+      onSuccess();
     }
 
-    startTransition(async () => {
-      const payload: CreateSubcategoryPayload = {
-        name: form.name.trim(),
-        categoryId: form.categoryId,
-        ...(form.description && { description: form.description.trim() }),
-        isActive: form.isActive,
-        displayOrder: Number(form.displayOrder) || 1,
-      };
+    if (isError && state.message) {
+      toast.error(state.message);
+    }
+  }, [state]);
 
-      console.log('[CreateSubcategory] Submitting payload:', payload);
-
-      const result = await createSubcategoryAction(payload);
-
-      console.log('[CreateSubcategory] Result:', result);
-
-      if (result.success) {
-        toast.success(result.message);
-        setForm({
-          name: '',
-          description: '',
-          categoryId: preselectedCategoryId ?? '',
-          isActive: true,
-          displayOrder: 1,
-        });
-        onSuccess();
-        onClose();
-      } else {
-        toast.error(result.message);
-      }
-    });
-  };
+  useEffect(() => {
+    if (state.data?.categoryId) {
+      setCategoryId(state.data.categoryId);
+    }
+  }, [state.data]);
 
   const categoryOptions = categories.map((cat) => ({
     label: cat.name,
@@ -94,7 +66,7 @@ export default function CreateSubcategoryModal({
 
   return (
     <Modal isModalOpen={isOpen} onClose={onClose}>
-      <div className="space-y-6">
+      <form action={action} className="space-y-6">
         <div className="space-y-1">
           <h2 className="text-xl font-semibold text-neutral-900">
             Create Subcategory
@@ -106,16 +78,13 @@ export default function CreateSubcategoryModal({
 
         <div className="space-y-6">
           <Select
-            id="categoryId"
+          id='categoryId'
             name="categoryId"
             label="Parent Category"
-            placeholder="Select a category"
             options={categoryOptions}
-            value={form.categoryId}
-            onChange={(value) =>
-              setForm((prev) => ({ ...prev, categoryId: value }))
-            }
-            disabled={isPending}
+            value={categoryId}
+            onChange={setCategoryId}
+            errorMessage={isError ? state.errors?.categoryId?.[0] : undefined}
           />
 
           <Input
@@ -123,8 +92,8 @@ export default function CreateSubcategoryModal({
             name="name"
             label="Subcategory Name"
             placeholder="e.g. Italian Restaurant"
-            value={form.name}
-            onChange={handleChange}
+            defaultValue={state.data?.name || ''}
+            errorMessage={isError ? state.errors?.name?.[0] : undefined}
             disabled={isPending}
           />
 
@@ -133,8 +102,8 @@ export default function CreateSubcategoryModal({
             name="description"
             label="Description"
             placeholder="Describe this subcategory"
-            value={form.description}
-            onChange={handleChange}
+            defaultValue={state.data?.description || ''}
+            errorMessage={isError ? state.errors?.description?.[0] : undefined}
             disabled={isPending}
           />
 
@@ -144,13 +113,8 @@ export default function CreateSubcategoryModal({
             label="Display Order"
             type="number"
             placeholder="1"
-            value={String(form.displayOrder)}
-            onChange={(e) =>
-              setForm((prev) => ({
-                ...prev,
-                displayOrder: Number(e.target.value),
-              }))
-            }
+            defaultValue={String(state.data?.displayOrder) || ''}
+            errorMessage={isError ? state.errors?.displayOrder?.[0] : undefined}
             disabled={isPending}
           />
 
@@ -158,32 +122,23 @@ export default function CreateSubcategoryModal({
             <label htmlFor="sub-isActive" className="text-sm font-medium">
               Active
             </label>
-            <ToggleSwitch
-              checked={form.isActive}
-              onChange={() =>
-                !isPending &&
-                setForm((prev) => ({ ...prev, isActive: !prev.isActive }))
-              }
-              disabled={isPending}
+            <input
+              type="hidden"
+              name="isActive"
+              value={String(state.data?.isActive ?? true)}
             />
-            {/* type="button"
-              role="switch"
-              aria-checked={form.isActive}
-              onClick={() =>
-                !isPending &&
-                setForm((prev) => ({ ...prev, isActive: !prev.isActive }))
-              }
-              disabled={isPending}
-              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                form.isActive ? 'bg-primary' : 'bg-neutral-300'
-              } ${isPending ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
-            >
-              <span
-                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                  form.isActive ? 'translate-x-6' : 'translate-x-1'
-                }`}
-              />
-            </button> */}
+
+            <ToggleSwitch
+              checked={state.data?.isActive ?? true}
+              onChange={() => {
+                const input = document.querySelector(
+                  'input[name="isActive"]',
+                ) as HTMLInputElement;
+
+                const newVal = input.value !== 'true';
+                input.value = String(newVal);
+              }}
+            />
           </div>
         </div>
 
@@ -199,14 +154,13 @@ export default function CreateSubcategoryModal({
           <Button
             variant="primary"
             size="icon"
-            onClick={handleSubmit}
             loading={isPending}
             disabled={isPending}
           >
-            Create Subcategory
+            {isPending ? 'Creating...' : 'Create Subcategory'}
           </Button>
         </div>
-      </div>
+      </form>
     </Modal>
   );
 }

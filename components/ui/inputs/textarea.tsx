@@ -5,6 +5,7 @@ export default function Textarea({
   name,
   label,
   placeholder,
+  defaultValue,
   value,
   rows = 4,
   onChange,
@@ -25,6 +26,7 @@ export default function Textarea({
         name={name}
         rows={rows}
         {...props}
+        defaultValue={defaultValue}
         value={value}
         onChange={onChange}
         placeholder={placeholder}

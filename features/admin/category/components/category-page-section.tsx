@@ -35,6 +35,7 @@ import ToggleSwitch from '@/components/ui/buttons/toggle-switch';
 export default function CategoryPageSection() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [isPending, startTransition] = useTransition();
+  const [hasFetched, setHasFetched] = useState(false);
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
 
   // Modal states
@@ -59,6 +60,7 @@ export default function CategoryPageSection() {
       console.log('[CategoryPage] Categories received:', data);
 
       setCategories(data);
+      setHasFetched(true);
     });
   };
 
@@ -109,24 +111,6 @@ export default function CategoryPageSection() {
       toast.error(result.message);
     }
   };
-  //   const handleDeleteSubcategory = async (
-  //     subcategoryId: string,
-  //     subcategoryName: string,
-  //   ) => {
-  //     console.log('[CategoryPage] Deleting subcategory:', subcategoryId);
-  //     const result = await deleteSubcategoryAction(subcategoryId);
-  //     console.log('[CategoryPage] Delete subcategory result:', result);
-
-  //     if (result.success) {
-  //       startTransition(() => {
-  //         toast.success(`"${subcategoryName}" deactivated successfully`);
-  //         fetchCategories();
-  //       });
-  //     } else {
-  //       toast.error(result.message);
-  //     }
-  //   };
-
   const handleDeleteSubcategory = async (
     subcategoryId: string,
     subcategoryName: string,
@@ -147,30 +131,11 @@ export default function CategoryPageSection() {
     if (result.success) {
       toast.success(`"${subcategoryName}" deleted`);
     } else {
-      setCategories(prev); // rollback
+      setCategories(prev); 
       toast.error(result.message);
     }
   };
-
-  //   const handleToggleSubcategoryStatus = async (
-  //     subcategoryId: string,
-  //     subcategoryName: string,
-  //   ) => {
-  //     console.log('[CategoryPage] Toggling subcategory status:', subcategoryId);
-  //     const result = await toggleSubcategoryStatusAction(subcategoryId);
-  //     console.log('[CategoryPage] Toggle subcategory result:', result);
-
-  //     if (result.success) {
-  //       startTransition(() => {
-  //         toast.success(`"${subcategoryName}" status toggled`);
-  //         fetchCategories();
-  //       });
-  //     } else {
-  //       toast.error(result.message);
-  //     }
-  //   };
-
-  const handleToggleSubcategoryStatus = async (
+ const handleToggleSubcategoryStatus = async (
     subcategoryId: string,
     subcategoryName: string,
   ) => {
@@ -251,7 +216,7 @@ export default function CategoryPageSection() {
         </div>
 
         {/* Categories list */}
-        {isPending && categories.length === 0 ? (
+        {!hasFetched ? (
           <div className="flex items-center justify-center py-12">
             <p className="text-sm text-neutral-500">Loading categories...</p>
           </div>

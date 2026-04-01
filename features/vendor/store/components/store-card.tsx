@@ -92,7 +92,7 @@ export default function VendorStoreCard() {
           </span>
 
           <span className="text-[10px]  truncate block text-neutral-500">
-            {store.storeCategory}
+            {store.categoryId}
           </span>
         </div>
       </div>

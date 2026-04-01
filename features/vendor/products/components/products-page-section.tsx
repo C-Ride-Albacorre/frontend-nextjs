@@ -67,7 +67,7 @@ export default function ProductsPageSection({
 
   const filteredProducts =
     sort && sort !== 'All'
-      ? products.filter((p: Product) => p.productCategory === sort)
+      ? products.filter((p: Product) => p.subcategoryId === sort)
       : products;
 
   return (
@@ -126,7 +126,7 @@ export default function ProductsPageSection({
                               </span>
                             )}
                             <p className="text-xs text-neutral-500">
-                              {store.storeCategory}
+                              {store.categoryId}
                             </p>
                           </div>
                         </div>

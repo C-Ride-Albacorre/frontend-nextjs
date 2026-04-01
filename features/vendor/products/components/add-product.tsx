@@ -7,16 +7,7 @@ import { ProductFormProps } from '../type';
 import AddProductType from './add-product-type';
 import SingleProductForm from './form/single-product';
 import VariableProductForm from './variable-product';
-
-const CATEGORIES = [
-  { label: 'Nigerian', value: 'Nigerian' },
-  { label: 'Chinese', value: 'Chinese' },
-  { label: 'Indian', value: 'Indian' },
-  { label: 'Italian', value: 'Italian' },
-  { label: 'Snacks', value: 'Snacks' },
-  { label: 'Beverages', value: 'Beverages' },
-  { label: 'Desserts', value: 'Desserts' },
-];
+import { useSubcategories } from '@/features/admin/category/fetch';
 
 const STOCK_STATUSES = [
   { label: 'In Stock', value: 'IN_STOCK' },
@@ -48,8 +39,8 @@ export default function ProductForm({
   const [productName, setProductName] = useState(
     editProduct?.productName ?? '',
   );
-  const [productCategory, setProductCategory] = useState(
-    editProduct?.productCategory ?? '',
+  const [subcategoryId, setSubcategoryId] = useState(
+    editProduct?.subcategoryId ?? '',
   );
   const [sku, setSku] = useState(editProduct?.sku ?? '');
   const [description, setDescription] = useState(
@@ -83,12 +74,19 @@ export default function ProductForm({
     onSuccess?.();
   };
 
+  const { data: subcategories = [] } = useSubcategories();
+
+  const CATEGORIES = subcategories.map((sub: any) => ({
+    value: sub.id,
+    label: sub.name,
+  }));
+
   // ✅ shared fields passed down to both forms
   const sharedFields = {
     productName,
     setProductName,
-    productCategory,
-    setProductCategory,
+    subcategoryId,
+    setSubcategoryId,
     sku,
     setSku,
     description,

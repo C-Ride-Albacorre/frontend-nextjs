@@ -40,7 +40,7 @@ export async function fetchSubcategoriesAction(categoryId: string) {
   const result = await fetchSubcategoriesService(categoryId);
 
   console.log('id', categoryId);
-  return result.data ?? []; // Fixed: service already returns the data object
+  return result.data ?? [];
 }
 
 export async function fetchStoreDetailsAction(storeId: string) {

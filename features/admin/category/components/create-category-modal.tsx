@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useActionState, useEffect, useState, useTransition } from 'react';
 import { toast } from 'sonner';
-import { CreateCategoryPayload } from '@/features/admin/category/types';
+import { CreateCategoryPayload, CreateCategoryState } from '@/features/admin/category/types';
 import Modal from '@/components/layout/modal';
 import Input from '@/components/ui/inputs/input';
 import Textarea from '@/components/ui/inputs/textarea';
@@ -17,71 +17,43 @@ interface CreateCategoryModalProps {
   onSuccess: () => void;
 }
 
+const initialState: CreateCategoryState = {
+  status: 'idle',
+  message: '',
+  errors: {},
+  data: {},
+};
+
 export default function CreateCategoryModal({
   isOpen,
   onClose,
   onSuccess,
 }: CreateCategoryModalProps) {
-  const [isPending, startTransition] = useTransition();
   const [iconFile, setIconFile] = useState<File | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [form, setForm] = useState({
-    name: '',
-    description: '',
-    isActive: true,
-    displayOrder: 1,
-  });
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-  };
+  const [state, action, isPending] = useActionState(
+    createCategoryAction,
+    initialState,
+  );
 
-  const handleSubmit = () => {
-    if (!form.name.trim()) {
-      toast.error('Category name is required');
-      return;
+  const isError = state.status === 'error';
+
+  useEffect(() => {
+    if (state.status === 'success') {
+      toast.success(state.message);
+      onClose();
+      onSuccess();
     }
 
-    startTransition(async () => {
-      const payload: CreateCategoryPayload = {
-        name: form.name.trim(),
-        ...(form.description && { description: form.description.trim() }),
-        ...(iconFile && { icon: URL.createObjectURL(iconFile) }),
-        ...(imageFile && { image: URL.createObjectURL(imageFile) }),
-        isActive: form.isActive,
-        displayOrder: Number(form.displayOrder) || 1,
-      };
-
-      console.log('[CreateCategory] Submitting payload:', payload);
-
-      const result = await createCategoryAction(payload);
-
-      console.log('[CreateCategory] Result:', result);
-
-      if (result.success) {
-        toast.success(result.message);
-        setForm({
-          name: '',
-          description: '',
-          isActive: true,
-          displayOrder: 1,
-        });
-        setIconFile(null);
-        setImageFile(null);
-        onClose();
-        onSuccess();
-      } else {
-        toast.error(result.message);
-      }
-    });
-  };
+    if (isError && state.message) {
+      toast.error(state.message);
+    }
+  }, [state]);
 
   return (
     <Modal isModalOpen={isOpen} onClose={onClose}>
-      <div className="space-y-6">
+      <form action={action} className="space-y-6">
         <div className="space-y-1">
           <h2 className="text-xl font-semibold text-neutral-900">
             Create Category
@@ -97,8 +69,8 @@ export default function CreateCategoryModal({
             name="name"
             label="Category Name"
             placeholder="e.g. Restaurants"
-            value={form.name}
-            onChange={handleChange}
+            defaultValue={isError ? state.data?.name : ''}
+            errorMessage={isError ? state.errors?.name?.[0] : undefined}
             disabled={isPending}
           />
 
@@ -107,14 +79,15 @@ export default function CreateCategoryModal({
             name="description"
             label="Description"
             placeholder="Describe this category"
-            value={form.description}
-            onChange={handleChange}
+            defaultValue={isError ? state.data?.description : ''}
+            errorMessage={isError ? state.errors?.description?.[0] : undefined}
             disabled={isPending}
           />
 
           <FileDropzone
             label="Icon Image"
             accept="image/png, image/jpeg, image/svg+xml"
+            name="icon"
             maxSizeMB={5}
             value={iconFile}
             onChange={setIconFile}
@@ -124,24 +97,17 @@ export default function CreateCategoryModal({
             label="Category Image"
             accept="image/png, image/jpeg"
             maxSizeMB={10}
+            name="image"
             value={imageFile}
             onChange={setImageFile}
           />
 
           <Input
-            id="displayOrder"
             name="displayOrder"
-            label="Display Order"
             type="number"
-            placeholder="1"
-            value={String(form.displayOrder)}
-            onChange={(e) =>
-              setForm((prev) => ({
-                ...prev,
-                displayOrder: Number(e.target.value),
-              }))
-            }
-            disabled={isPending}
+            defaultValue="1"
+            label="Display Order"
+            errorMessage={isError ? state.errors?.displayOrder?.[0] : undefined}
           />
 
           <div className="flex items-center gap-8">
@@ -149,14 +115,24 @@ export default function CreateCategoryModal({
               Active
             </label>
 
-            <ToggleSwitch
-              checked={form.isActive}
-              onChange={() =>
-                !isPending &&
-                setForm((prev) => ({ ...prev, isActive: !prev.isActive }))
-              }
-              disabled={isPending}
+            <input
+              type="hidden"
+              name="isActive"
+              value={String(state.data?.isActive ?? true)}
             />
+
+            <ToggleSwitch
+              checked={state.data?.isActive ?? true}
+              onChange={() => {
+                const input = document.querySelector(
+                  'input[name="isActive"]',
+                ) as HTMLInputElement;
+
+                const newVal = input.value !== 'true';
+                input.value = String(newVal);
+              }}
+            />
+
             {/* <button
               id="isActive"
               type="button"
@@ -192,14 +168,13 @@ export default function CreateCategoryModal({
           <Button
             variant="primary"
             size="icon"
-            onClick={handleSubmit}
             loading={isPending}
             disabled={isPending}
           >
-            Create Category
+            {isPending ? 'Creating...' : 'Create Category'}
           </Button>
         </div>
-      </div>
+      </form>
     </Modal>
   );
 }

@@ -1,4 +1,4 @@
-// app/user/delivery/[id]/[slug]/delivery-confirmation/page.tsx
+
 'use client';
 
 import { useState } from 'react';
@@ -15,6 +15,7 @@ import { useOrderStore } from '@/features/user/delivery/order-store';
 import { useCartStore } from '@/features/user/delivery/store';
 import { createOrderAction } from '@/features/user/delivery/action';
 import { toast } from 'sonner';
+import Card from '@/components/layout/card';
 
 const SERVICE_FEE = 6500;
 const VAT_RATE = 0.075;
@@ -126,7 +127,7 @@ export default function DeliveryConfirmationPage() {
         </div>
       </div>
 
-      <div className="bg-green-100/10 flex gap-6 items-start p-8 rounded-2xl">
+      <Card className="bg-green-100/10 flex flex-col md:flex-row gap-6 items-start">
         <Shield size={24} className="text-green-100" />
         <div className="space-y-6">
           <h5 className="font-semibold text-lg">C-Ride Guarantee</h5>
@@ -143,7 +144,7 @@ export default function DeliveryConfirmationPage() {
             ))}
           </ul>
         </div>
-      </div>
+      </Card>
 
       <div className="space-y-12 mt-12">
         <div className="flex justify-between items-center">
@@ -184,7 +185,7 @@ export default function DeliveryConfirmationPage() {
         </div>
       </div>
 
-      <div className="p-6 rounded-xl bg-primary/10 flex gap-4 items-center mt-6">
+      <div className="p-6 rounded-xl bg-primary/10  flex flex-col md:flex-row gap-4 md:items-center mt-6">
         <Stars fill="#FFC814" stroke="0" size={20} />
         <span className="text-sm">
           Your order will be handled with care by our premium delivery partners

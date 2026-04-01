@@ -9,7 +9,7 @@ import { useBusinessTypes } from '../../onboarding/fetch';
 
 export interface StoreFormValues {
   storeName: string;
-  storeCategory: string;
+  categoryId: string;
   storeAddress: string;
   phoneNumber: string;
   email: string;
@@ -42,6 +42,7 @@ export function StoreInformation({
       label: type.name,
     })) ?? [];
 
+  console.log('store category options :', options);
   return (
     <Card
       spacing="md"
@@ -62,19 +63,21 @@ export function StoreInformation({
           />
 
           <Select
-            id="storeCategory"
-            name="storeCategory"
+            id="categoryId"
+            name="categoryId"
             label="Store Category"
             placeholder="Select category"
             spacing="sm"
             options={
-              isPending
-                ? [{ value: '', label: 'Loading Business Types...' }]
-                : options
+              error
+                ? [{ value: '', label: 'Error loading Business Types' }]
+                : isPending
+                  ? [{ value: '', label: 'Loading Business Types...' }]
+                  : options
             }
-            value={values.storeCategory}
-            onChange={(value) => onChange('storeCategory', value)}
-            errorMessage={errors?.storeCategory?.[0]}
+            value={values.categoryId}
+            onChange={(value) => onChange('categoryId', value)}
+            errorMessage={errors?.categoryId?.[0]}
             disabled={disabled}
           />
 

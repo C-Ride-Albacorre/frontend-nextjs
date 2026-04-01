@@ -36,7 +36,7 @@ export default function DashboardPage() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           <QuickAction
             icon={<Box className="text-primary" />}
-            label="New Delivery"
+            label="Delivery"
           />
           <QuickAction
             icon={<Wallet className="text-green-100" />}

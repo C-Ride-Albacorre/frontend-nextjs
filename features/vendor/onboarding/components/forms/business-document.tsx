@@ -8,7 +8,7 @@ import FileInput from '@/components/ui/inputs/file-input';
 import SuccessModal from '../success-modal';
 import { Button } from '@/components/ui/buttons/button';
 import { submitOnboardingService } from '../../service/upload-submit';
-
+import { useOnboardingStore, useOnboardingHydrated } from '../../store';
 
 type UploadStatus = 'idle' | 'done';
 
@@ -20,26 +20,44 @@ type DocumentSlot = {
   status: UploadStatus;
 };
 
-const DOCUMENT_SLOTS: DocumentSlot[] = [
-  { documentType: 'CAC', description: 'CAC certificate', label: 'CAC Certificate', file: null, status: 'idle' },
-  { documentType: 'BUSINESS_PERMIT', description: 'Operating license', label: 'Business Permit', file: null, status: 'idle' },
-  { documentType: 'ID_PROOF', description: "Owner's government-issued ID", label: 'Valid ID', file: null, status: 'idle' },
-];
+// const DOCUMENT_SLOTS: DocumentSlot[] = [
+//   {
+//     documentType: 'CAC',
+//     description: 'CAC certificate',
+//     label: 'CAC Certificate',
+//     file: null,
+//     status: 'idle',
+//   },
+//   {
+//     documentType: 'BUSINESS_PERMIT',
+//     description: 'Operating license',
+//     label: 'Business Permit',
+//     file: null,
+//     status: 'idle',
+//   },
+//   {
+//     documentType: 'ID_PROOF',
+//     description: "Owner's government-issued ID",
+//     label: 'Valid ID',
+//     file: null,
+//     status: 'idle',
+//   },
+// ];
 
 export default function BusinessDocumentForm() {
   const [isPending, startTransition] = useTransition();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [documents, setDocuments] = useState<DocumentSlot[]>(DOCUMENT_SLOTS);
+  const hydrated = useOnboardingHydrated();
 
-  // ✅ just store the file in state — no upload yet
+  const { documents, setDocuments, resetAll } = useOnboardingStore();
+
   function handleFileSelect(index: number, file: File) {
-    setDocuments((prev) =>
-      prev.map((doc, i) =>
-        i === index ? { ...doc, file, status: 'done' } : doc,
-      ),
+    const updated = documents.map((doc, i) =>
+      i === index ? { ...doc, file, status: 'done' as const } : doc,
     );
-  }
 
+    setDocuments(updated);
+  }
   function handleSubmit() {
     const selectedDocs = documents.filter((doc) => doc.file);
 
@@ -52,33 +70,57 @@ export default function BusinessDocumentForm() {
       try {
         const formData = new FormData();
 
-        selectedDocs.forEach((doc) => {
-          formData.append('documents', doc.file!);
+        documents.forEach((doc) => {
+          if (doc.file) {
+            formData.append('documents', doc.file);
+          }
         });
 
         formData.append(
           'documentsMetadata',
           JSON.stringify(
-            selectedDocs.map((doc) => ({
-              documentType: doc.documentType,
-              description: doc.description,
-            })),
+            documents
+              .filter((d) => d.file)
+              .map((doc) => ({
+                documentType: doc.documentType,
+                description: doc.description,
+              })),
           ),
         );
 
         await submitOnboardingService(formData);
 
         toast.success('Onboarding submitted successfully!');
+
+        resetAll(); // 🔥 CLEAR EVERYTHING
+
         setIsModalOpen(true);
       } catch (error) {
         toast.error(
-          error instanceof Error ? error.message : 'Failed to submit onboarding.',
+          error instanceof Error
+            ? error.message
+            : 'Failed to submit onboarding.',
         );
       }
     });
   }
 
   const allSelected = documents.every((doc) => doc.file !== null);
+
+  if (!hydrated) {
+    return (
+      <section className="space-y-12">
+        <OnboardingFormHeader
+          title="Business Document"
+          subtitle="Upload required documents for verification"
+          headerIcon={<FileText size={24} className="text-primary" />}
+        />
+        <div className="flex items-center justify-center py-12">
+          <p className="text-sm text-neutral-500">Loading...</p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="space-y-12">

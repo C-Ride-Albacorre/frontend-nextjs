@@ -25,7 +25,7 @@ export default async function StoreVendorsPage({
 
   const store = await fetchStoreDetailsAction(slug);
 
-   const storeSlug = store.storeName
+  const storeSlug = store.storeName
     .toLowerCase()
     .trim()
     .replace(/[^\w\s-]/g, '')
@@ -89,7 +89,7 @@ export default async function StoreVendorsPage({
           </div>
 
           <Button
-            href={`/user/delivery/${store.storeCategory}`}
+            href={`/user/delivery/${store.categoryId}`}
             variant="white"
             size="icon"
           >
@@ -156,7 +156,11 @@ export default async function StoreVendorsPage({
               </li>
             ))
           ) : (
-            <Card gap='sm' spacing='lg' className="text-center text-neutral-500 col-span-2">
+            <Card
+              gap="sm"
+              spacing="lg"
+              className="text-center text-neutral-500 col-span-2"
+            >
               <Package size={32} className="text-neutral-400 mx-auto" />
 
               <p>No products available for this store.</p>
@@ -168,7 +172,7 @@ export default async function StoreVendorsPage({
 
         <div className=" flex items-center justify-center">
           <Button
-          href={`/user/delivery/${storeSlug}/${slug}/delivery-type`}
+            href={`/user/delivery/${storeSlug}/${slug}/delivery-type`}
             variant="primary"
             size="lg"
             rightIcon={<ChevronRight size={16} />}

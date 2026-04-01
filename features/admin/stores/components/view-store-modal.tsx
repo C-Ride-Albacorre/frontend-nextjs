@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -144,7 +143,7 @@ export default function ViewStoreModal({
                 {storeDetail.storeName}
               </h2>
               <p className="text-sm text-neutral-500 mt-0.5">
-                {storeDetail.storeCategory}
+                {storeDetail.categoryId}
               </p>
             </div>
             <span
@@ -278,7 +277,7 @@ export default function ViewStoreModal({
                           {product.productName}
                         </p>
                         <p className="text-xs text-neutral-400">
-                          {product.productCategory} · SKU: {product.sku}
+                          {product.subcategoryId} · SKU: {product.sku}
                         </p>
                       </div>
                     </div>

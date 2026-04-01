@@ -46,7 +46,7 @@ export async function createProductAction(
 
   const rawData = {
     productName: formData.get('productName') as string,
-    productCategory: formData.get('productCategory') as string,
+    subcategoryId: formData.get('subcategoryId') as string,
     sku: formData.get('sku') as string,
     description: formData.get('description') as string,
     productType,
@@ -126,7 +126,7 @@ export async function updateProductAction(
 ): Promise<ProductFormState> {
   const rawData = {
     productName: formData.get('productName') as string,
-    productCategory: formData.get('productCategory') as string,
+    subcategoryId: formData.get('subcategoryId') as string,
     description: formData.get('description') as string,
     stockStatus: formData.get('stockStatus') as string,
     productStatus: formData.get('productStatus') as string,

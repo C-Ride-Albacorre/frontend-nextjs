@@ -10,24 +10,16 @@ import { businessBankAction } from '../../action';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
+import { useOnboardingStore, useOnboardingHydrated } from '../../store';
 
 export default function BusinessBankForm() {
-  const [fields, setFields] = useState({
-    bankName: '',
-    accountNumber: '',
-    accountName: '',
-  });
-
-  const handleChange =
-    (field: string) =>
-    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      setFields((prev) => ({ ...prev, [field]: e.target.value }));
-    };
-
+  const hydrated = useOnboardingHydrated();
   const [state, action, pending] = useActionState(
     businessBankAction,
     undefined,
   );
+
+  const { bankInfo, setBankInfo } = useOnboardingStore();
 
   const isError = state?.status === 'error';
 
@@ -45,6 +37,21 @@ export default function BusinessBankForm() {
     }
   }, [state, router]);
 
+  if (!hydrated) {
+    return (
+      <section className="space-y-12">
+        <OnboardingFormHeader
+          title="Bank Details"
+          subtitle="For receiving payments"
+          headerIcon={<CreditCard size={24} className="text-primary" />}
+        />
+        <div className="flex items-center justify-center py-12">
+          <p className="text-sm text-neutral-500">Loading...</p>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="space-y-12">
       <OnboardingFormHeader
@@ -60,8 +67,8 @@ export default function BusinessBankForm() {
           label="Business Bank Name"
           type="text"
           placeholder="Enter your business Bank name"
-          value={fields.bankName}
-          onChange={handleChange('bankName')}
+          value={bankInfo.bankName}
+          onChange={(e) => setBankInfo({ bankName: e.target.value })}
           errorMessage={isError ? state?.errors?.bankName?.[0] : undefined}
         />
 
@@ -71,12 +78,9 @@ export default function BusinessBankForm() {
           label="Business Account Number"
           type="text"
           placeholder="Enter your business account number"
-          value={fields.accountNumber}
+          value={bankInfo.accountNumber}
           onChange={(e) =>
-            setFields((prev) => ({
-              ...prev,
-              accountNumber: e.target.value.replace(/\D/g, ''),
-            }))
+            setBankInfo({ accountNumber: e.target.value.replace(/\s/g, '') })
           }
           errorMessage={isError ? state?.errors?.accountNumber?.[0] : undefined}
         />
@@ -88,8 +92,8 @@ export default function BusinessBankForm() {
           type="text"
           placeholder="Enter your account name"
           inputInfo="Must match your business name"
-          value={fields.accountName}
-          onChange={handleChange('accountName')}
+          value={bankInfo.accountName}
+          onChange={(e) => setBankInfo({ accountName: e.target.value })}
           errorMessage={isError ? state?.errors?.accountName?.[0] : undefined}
         />
 
@@ -106,17 +110,12 @@ export default function BusinessBankForm() {
           <Button
             type="submit"
             loading={pending}
-            disabled={
-              pending ||
-              !fields.bankName.trim() ||
-              !fields.accountNumber.trim() ||
-              !fields.accountName.trim()
-            }
+            disabled={pending}
             variant="primary"
             size="lg"
             rightIcon={<ChevronRight size={16} />}
           >
-            {pending ? 'Submitting...' : 'Save & Proceed'}
+            {pending ? 'Saving...' : 'Save & Proceed'}
           </Button>
         </div>
       </form>

@@ -61,7 +61,7 @@ export default function ProductCard({ item }: { item: Product }) {
 
           <div className="flex justify-between">
             <p className="text-xs text-neutral-500">
-              {item.productCategory || 'No category'}
+              {item.subcategoryId || 'No category'}
             </p>
             <p className="font-medium text-primary text-sm">
               ₦{item.basePrice.toLocaleString()}

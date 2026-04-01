@@ -108,9 +108,10 @@ export async function createStoreAction(
   formData: FormData,
 ): Promise<StoreFormState> {
   // Extract fields from FormData
+
   const rawData = {
     storeName: formData.get('storeName') as string,
-    storeCategory: formData.get('storeCategory') as string,
+    categoryId: formData.get('categoryId') as string,
     storeAddress: formData.get('storeAddress') as string,
     phoneNumber: formData.get('phoneNumber') as string,
     email: formData.get('email') as string,
@@ -118,6 +119,8 @@ export async function createStoreAction(
     minimumOrder: formData.get('minimumOrder') as string,
     preparationTime: formData.get('preparationTime') as string,
   };
+
+  console.log(rawData.categoryId);
 
   // Validate with Zod
   const result = StoreSchema.safeParse(rawData);
@@ -169,7 +172,7 @@ export async function createStoreAction(
   // Build FormData for API
   const apiFormData = new FormData();
   apiFormData.append('storeName', result.data.storeName);
-  apiFormData.append('storeCategory', result.data.storeCategory);
+  apiFormData.append('categoryId', result.data.categoryId);
   apiFormData.append('storeAddress', result.data.storeAddress);
   apiFormData.append('phoneNumber', result.data.phoneNumber);
   apiFormData.append('email', result.data.email);
@@ -264,7 +267,7 @@ export async function updateStoreAction(
   // Extract fields from FormData
   const rawData = {
     storeName: formData.get('storeName') as string,
-    storeCategory: formData.get('storeCategory') as string,
+    categoryId: formData.get('categoryId') as string,
     storeAddress: formData.get('storeAddress') as string,
     phoneNumber: formData.get('phoneNumber') as string,
     email: formData.get('email') as string,
@@ -323,7 +326,7 @@ export async function updateStoreAction(
   // Build FormData for API (store details)
   const apiFormData = new FormData();
   apiFormData.append('storeName', result.data.storeName);
-  apiFormData.append('storeCategory', result.data.storeCategory);
+  apiFormData.append('categoryId', result.data.categoryId);
   apiFormData.append('storeAddress', result.data.storeAddress);
   apiFormData.append('phoneNumber', result.data.phoneNumber);
 

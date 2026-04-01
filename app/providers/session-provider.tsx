@@ -4,6 +4,15 @@ import { useEffect, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import SessionExpiredModal from '@/components/layout/session-expired-modal';
 
+const AUTH_ROUTES = [
+  '/',
+  '/user/login',
+  '/user/register',
+  '/vendor/login',
+  '/vendor/register',
+  '/admin/login',
+];
+
 const CHECK_INTERVAL = 60_000;
 
 export default function SessionProvider({
@@ -30,7 +39,7 @@ export default function SessionProvider({
         const res = await fetch('/api/auth/check');
         const data = await res.json();
 
-        if (!data.authenticated) {
+        if (!data.authenticated && !data.canRefresh) {
           setSessionExpired(true);
         }
       } catch {
@@ -62,13 +71,18 @@ export default function SessionProvider({
     };
   }, []);
 
+  const isAuthRoute = AUTH_ROUTES.some((route) => pathname.startsWith(route));
+
   return (
     <>
       {children}
-      <SessionExpiredModal
-        isOpen={sessionExpired}
-        redirectPath={expiredPathRef.current}
-      />
+
+      {!isAuthRoute && (
+        <SessionExpiredModal
+          isOpen={sessionExpired}
+          redirectPath={expiredPathRef.current}
+        />
+      )}
     </>
   );
 }

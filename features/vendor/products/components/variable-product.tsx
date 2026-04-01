@@ -23,8 +23,8 @@ export interface VariableProductFormProps {
   isEditing: boolean;
   productName: string;
   setProductName: (v: string) => void;
-  productCategory: string;
-  setProductCategory: (v: string) => void;
+  subcategoryId: string;
+  setSubcategoryId: (v: string) => void;
   sku: string;
   setSku: (v: string) => void;
   description: string;
@@ -55,8 +55,8 @@ export default function VariableProductForm({
   isEditing,
   productName,
   setProductName,
-  productCategory,
-  setProductCategory,
+  subcategoryId,
+  setSubcategoryId,
   sku,
   setSku,
   description,
@@ -134,7 +134,7 @@ export default function VariableProductForm({
     if (step === 0) {
       const result = VariableDetailsSchema.safeParse({
         productName,
-        productCategory,
+        subcategoryId,
         sku,
         description,
         basePrice,
@@ -164,7 +164,7 @@ export default function VariableProductForm({
     const fd = new FormData();
 
     fd.append('productName', productName);
-    fd.append('productCategory', productCategory);
+    fd.append('subcategoryId', subcategoryId);
     fd.append('sku', sku);
     fd.append('description', description);
     fd.append('productType', 'VARIABLE');
@@ -264,8 +264,8 @@ export default function VariableProductForm({
         <VariableDetailsFields
           productName={productName}
           setProductName={setProductName}
-          productCategory={productCategory}
-          setProductCategory={setProductCategory}
+          subcategoryId={subcategoryId}
+          setSubcategoryId={setSubcategoryId}
           sku={sku}
           setSku={setSku}
           description={description}
