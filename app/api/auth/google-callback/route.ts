@@ -75,29 +75,77 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// GET: Cookies already set by backend redirect — decode role and re-set as httpOnly
+// GET: Cookies set by backend on its domain — try all sources to find tokens
 export async function GET(request: NextRequest) {
   try {
-    const accessToken = request.cookies.get('accessToken')?.value;
-    const refreshToken = request.cookies.get('refreshToken')?.value;
+    // 1. Check our own domain cookies first (accessToken / refreshToken)
+    let accessToken = request.cookies.get('accessToken')?.value;
+    let refreshToken = request.cookies.get('refreshToken')?.value;
 
     console.log(
-      '[Google GET] accessToken:',
+      '[Google GET] Own cookies — accessToken:',
       accessToken ? 'present' : 'missing',
     );
     console.log(
-      '[Google GET] refreshToken:',
+      '[Google GET] Own cookies — refreshToken:',
       refreshToken ? 'present' : 'missing',
     );
 
+    // 2. If no tokens on our domain, forward ALL cookies to backend /auth/profile
+    //    (backend may have set cookies on its own domain that the browser is sending)
     if (!accessToken) {
+      const cookieHeader = request.headers.get('cookie') ?? '';
+      console.log(
+        '[Google GET] Forwarding cookie header to backend profile:',
+        cookieHeader ? 'has cookies' : 'empty',
+      );
+
+      const profileRes = await fetch(`${BASE_URL}/auth/profile`, {
+        method: 'GET',
+        headers: {
+          cookie: cookieHeader,
+          'Content-Type': 'application/json',
+        },
+        cache: 'no-store',
+        redirect: 'manual',
+      });
+
+      console.log('[Google GET] Backend profile status:', profileRes.status);
+
+      if (profileRes.ok) {
+        const profileData = await profileRes.json();
+        const profile = profileData.data ?? profileData;
+
+        // Try extracting tokens from set-cookie response
+        const setCookieHeader = profileRes.headers.get('set-cookie') ?? '';
+        const extractedAccess = extractTokenFromSetCookie(
+          setCookieHeader,
+          'accessToken',
+        );
+        const extractedRefresh = extractTokenFromSetCookie(
+          setCookieHeader,
+          'refreshToken',
+        );
+
+        if (extractedAccess) accessToken = extractedAccess;
+        if (extractedRefresh) refreshToken = extractedRefresh;
+
+        // If we got tokens, set them on our domain
+        if (accessToken && refreshToken) {
+          return buildCookieResponse(accessToken, refreshToken, profile.role);
+        }
+
+        // Profile succeeded but no tokens — return role anyway
+        return NextResponse.json({ success: true, role: profile.role });
+      }
+
       return NextResponse.json(
-        { success: false, error: 'No access token in cookies' },
+        { success: false, error: 'No access token found' },
         { status: 401 },
       );
     }
 
-    // Decode role from the JWT — backend already verified it when setting the cookie
+    // 3. We have accessToken — decode role from JWT
     let role: string;
     try {
       const payload = jwtDecode<{ role: string }>(accessToken);
@@ -113,7 +161,6 @@ export async function GET(request: NextRequest) {
       return buildCookieResponse(accessToken, refreshToken, role);
     }
 
-    // No refresh token but access token works — return role
     const response = NextResponse.json({ success: true, role });
     response.cookies.set('accessToken', accessToken, {
       httpOnly: true,
@@ -130,4 +177,14 @@ export async function GET(request: NextRequest) {
       { status: 500 },
     );
   }
+}
+
+function extractTokenFromSetCookie(
+  header: string,
+  name: string,
+): string | null {
+  const parts = header.split(/,(?=\s*\w+=)/);
+  const match = parts.find((p) => p.trim().startsWith(`${name}=`));
+  if (!match) return null;
+  return match.trim().split(';')[0].split('=').slice(1).join('=') || null;
 }
