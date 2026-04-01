@@ -9,7 +9,7 @@ import { IconButton } from '@/components/ui/buttons/icon-button';
 import { VENDOR_SIDEBAR_CONFIG } from '@/config/sidebar';
 import VendorStoreCard from '@/features/vendor/store/components/store-card';
 
-export default function OnboardingLayout({
+export default function VendorLayout({
   children,
 }: {
   children: React.ReactNode;

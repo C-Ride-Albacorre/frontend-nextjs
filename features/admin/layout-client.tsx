@@ -8,7 +8,6 @@ import { MenuIcon } from 'lucide-react';
 import Sidebar from '@/components/navigation/sidebar';
 import { ADMIN_SIDEBAR_CONFIG } from '@/config/sidebar';
 import { IconButton } from '@/components/ui/buttons/icon-button';
-import SessionProvider from '@/app/providers/session-provider';
 
 type Props = {
   children: React.ReactNode;

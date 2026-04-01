@@ -43,7 +43,7 @@ function GoogleCallbackHandler() {
 
     if (accessToken && refreshToken) {
       // Backend included tokens in redirect URL — send to our API to set httpOnly cookies
-      fetch('https://backend-service-1rc7.onrender.com/api/v1/auth/google-callback', {
+      fetch('https://backend-service-1rc7.onrender.com/api/v1/auth/google', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ accessToken, refreshToken }),
@@ -53,7 +53,7 @@ function GoogleCallbackHandler() {
         .catch(handleError);
     } else if (success === 'true') {
       // Backend set cookies on its domain — use our server-side API route (no CORS)
-      fetch('https://backend-service-1rc7.onrender.com/api/v1/auth/google-callback', {
+      fetch('https://backend-service-1rc7.onrender.com/api/v1/auth/google', {
         method: 'GET',
         credentials: 'include',
       })

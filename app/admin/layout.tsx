@@ -11,6 +11,8 @@ export default async function AdminLayout({
 }) {
   const user = await getCurrentUser()
 
+  console.log('Admin User:', user);
+
   return (
     <AdminLayoutClient user={user}>
       {children}

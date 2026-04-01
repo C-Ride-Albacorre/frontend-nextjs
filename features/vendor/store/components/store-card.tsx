@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { Star, Store } from 'lucide-react';
 import { StoreData } from '../types';
 import { getStoreAction } from '../action';
+import Card from '@/components/layout/card';
 
 export default function VendorStoreCard() {
   const [store, setStore] = useState<StoreData | null>(null);
@@ -63,11 +64,11 @@ export default function VendorStoreCard() {
   }
 
   return (
-    <div className="rounded-2xl bg-primary/10 border border-border p-4">
+    <Card spacing='sm' gap='sm' className="bg-primary/10">
       <div className="flex items-start gap-3">
         {/* Store Logo */}
         {store.storeLogo ? (
-          <div className="relative h-12 w-12 rounded-full overflow-hidden shrink-0 bg-white shadow-md">
+          <div className="relative h-10 w-10 rounded-full overflow-hidden shrink-0 bg-white shadow-md">
             <Image
               src={`${store.storeLogo}?t=${store.updatedAt}`}
               alt={store.storeName}
@@ -82,16 +83,16 @@ export default function VendorStoreCard() {
           </div>
         )}
 
-        <div className="w-full space-y-1.5">
-          <p className="font-medium text-primary-text-100 text-sm truncate">
+        <div className="w-full flex flex-col gap-y-1.5  min-w-0">
+          <p className="font-medium text-primary-text-100 text-sm wrap-break-word">
             {store.storeName}
           </p>
 
-          <span className="text-[10px]  truncate block">
+          <span className="text-[10px]  truncate block flex-wrap text-neutral-500 wrap-break-word">
             {store.storeAddress}
           </span>
 
-          <span className="text-[10px]  truncate block text-neutral-500">
+          <span className="text-[10px]  truncate block flex-wrap text-neutral-500 wrap-break-word">
             {store.categoryId}
           </span>
         </div>
@@ -118,6 +119,6 @@ export default function VendorStoreCard() {
           </span>
         )}
       </div>
-    </div>
+    </Card>
   );
 }
