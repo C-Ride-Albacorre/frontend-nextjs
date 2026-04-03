@@ -28,8 +28,14 @@ export async function fetchCategoryStoresAction(
   categoryId: string,
   lat?: number,
   lng?: number,
+  subcategoryId?: string,
 ) {
-  const result = await fetchCategoryStoresService(categoryId);
+  const result = await fetchCategoryStoresService(
+    categoryId,
+    lat,
+    lng,
+    subcategoryId,
+  );
 
   console.log('Category Details:', result);
 
@@ -37,10 +43,20 @@ export async function fetchCategoryStoresAction(
 }
 
 export async function fetchSubcategoriesAction(categoryId: string) {
-  const result = await fetchSubcategoriesService(categoryId);
+  try {
+    const result = await fetchSubcategoriesService(categoryId);
 
-  console.log('id', categoryId);
-  return result.data ?? [];
+    console.log('id', categoryId);
+    return result.data ?? [];
+  } catch (error) {
+    return {
+      status: 'error',
+      message:
+        error instanceof Error
+          ? error.message
+          : 'Failed to fetch subcategories',
+    };
+  }
 }
 
 export async function fetchStoreDetailsAction(storeId: string) {

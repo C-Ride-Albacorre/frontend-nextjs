@@ -3,9 +3,14 @@ import CategoryIcons from '@/features/user/delivery/components/category-icons';
 import LocationChips from '@/features/user/delivery/components/location-chips';
 import StoreGrid from '@/features/user/delivery/components/store-grid';
 import Location from '@/features/public/homepage/components/location';
-import { Suspense } from 'react';
-import CategoriesSkeleton from '@/features/user/delivery/components/categories-skeleton';
-import { fetchCategoryStoresAction } from '@/features/user/delivery/action';
+import {
+  fetchCategoryStoresAction,
+  fetchSubcategoriesAction,
+} from '@/features/user/delivery/action';
+import { Store } from 'lucide-react';
+import Card from '@/components/layout/card';
+import RetryButton from '@/components/ui/buttons/retry-button';
+import { Button } from '@/components/ui/buttons/button';
 
 export default async function CategoryDeliveryPage({
   params,
@@ -14,29 +19,36 @@ export default async function CategoryDeliveryPage({
   params: Promise<{ id: string }>;
   searchParams: Promise<{
     name?: string;
+    subcategoryId?: string;
     latitude?: string;
     longitude?: string;
   }>;
 }) {
   const { id } = await params;
-  const { name, latitude, longitude } = await searchParams;
+  const { latitude, longitude } = await searchParams;
 
-  let stores: any[] = [];
-  let isError = false;
+  let stores = [];
+  let subCategory = [];
+  let isStoreError = false;
+  let isSubCategoryError = false;
 
   try {
-    stores = await fetchCategoryStoresAction(
-      id,
-      latitude ? parseFloat(latitude) : undefined,
-      longitude ? parseFloat(longitude) : undefined,
-    );
-  } catch (e) {
-    isError = true;
+    const lat = latitude ? parseFloat(latitude) : undefined;
+    const lng = longitude ? parseFloat(longitude) : undefined;
+
+    stores = await fetchCategoryStoresAction(id, lat, lng);
+  } catch (error) {
+    isStoreError = true;
   }
 
-  const title = stores?.length
-    ? `${stores[0].storeName} / Stores`
-    : `${name ?? 'Category'} / Stores`;
+  try {
+    subCategory = await fetchSubcategoriesAction(id);
+  } catch (error) {
+    isSubCategoryError = true;
+  }
+
+  const title =
+    stores?.length > 0 ? `${stores[0].storeName} / Stores` : 'Stores';
 
   return (
     <section>
@@ -59,14 +71,50 @@ export default async function CategoryDeliveryPage({
           />
         </form> */}
 
-        <CategoryIcons id={id} />
+        {subCategory.length === 0 && !isSubCategoryError ? (
+          <p className="text-neutral-500 text-center">
+            No subcategories available.
+          </p>
+        ) : isSubCategoryError ? (
+          <div className="flex md:flex-row flex-col justify-between gap-3 items-center">
+            <p className="text-red-500 text-center">Failed to load subcategories.</p>
+
+            <RetryButton />
+          </div>
+        ) : (
+          <CategoryIcons subcategories={subCategory} />
+        )}
 
         {/* <Filters /> */}
 
         <LocationChips />
-        <Suspense fallback={<CategoriesSkeleton />}>
+        {!isStoreError && stores.length === 0 ? (
+          <Card
+            gap="md"
+            spacing="lg"
+            className="flex  flex-col  items-center"
+          >
+            <Store size={48} className="text-neutral-400" />
+            <p className="text-neutral-500 text-center">No stores available.</p>
+
+            <Button variant="primary" size="icon" href="/user/delivery">
+              Go to Categories
+            </Button>
+          </Card>
+        ) : isStoreError ? (
+          <Card
+            gap="md"
+            spacing="lg"
+            className="flex  flex-col gap-4 items-center"
+          >
+           
+            <p className="text-red-500 text-center">Failed to load stores.</p>
+
+            <RetryButton />
+          </Card>
+        ) : (
           <StoreGrid stores={stores} />
-        </Suspense>
+        )}
       </div>
 
       <div>

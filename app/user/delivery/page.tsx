@@ -1,6 +1,9 @@
 import DeliveryHeader from '@/features/user/delivery/components/delivery-header';
 import DeliveryAddressModal from '@/features/user/delivery/components/delivery-address-modal';
 import Categories from '@/features/user/delivery/components/categories';
+import { fetchCategoriesAction } from '@/features/user/delivery/action';
+import { Suspense } from 'react';
+import CategoriesSkeleton from '@/features/user/delivery/components/categories-skeleton';
 
 export default async function CreateDeliveryPage({
   searchParams,
@@ -11,6 +14,15 @@ export default async function CreateDeliveryPage({
 }) {
   const { newUser } = await searchParams;
   const shouldShowModal = newUser === 'true';
+
+  let categories = [];
+  let isError = false;
+
+  try {
+    categories = await fetchCategoriesAction();
+  } catch (e) {
+    isError = true;
+  }
 
   return (
     <>
@@ -32,7 +44,14 @@ export default async function CreateDeliveryPage({
           </div>
 
           {/* Categories */}
-          <Categories />
+
+          {isError ? (
+            <p className="text-red-500">Failed to load categories.</p>
+          ) : (
+            <Suspense fallback={<CategoriesSkeleton />}>
+              <Categories categories={categories} />
+            </Suspense>
+          )}
         </div>
       </main>
     </>

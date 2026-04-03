@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { StoreCardProps } from '../types';
-import { Bike, Dot, MapPin, Star } from 'lucide-react';
+import { Bike,  MapPin, Star } from 'lucide-react';
 import Image from 'next/image';
 
 export default function StoreCard({

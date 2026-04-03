@@ -25,20 +25,24 @@ export async function fetchCategoriesService() {
 
 export async function fetchCategoryStoresService(
   categoryId: string,
-  latitude?: number,
-  longitude?: number,
+  lat?: number,
+  lng?: number,
+  subcategoryId?: string,
 ) {
   const params = new URLSearchParams();
 
-  if (latitude !== undefined) {
-    params.set('latitude', String(latitude));
+  if (lat !== undefined) {
+    params.set('latitude', String(lat));
   }
 
-  if (longitude !== undefined) {
-    params.set('longitude', String(longitude));
+  if (lng !== undefined) {
+    params.set('longitude', String(lng));
   }
+
+  if (subcategoryId) params.set('subcategoryId', subcategoryId);
 
   const queryString = params.toString();
+
   const url = `${BASE_URL}/customer/stores/category/${categoryId}${
     queryString ? `?${queryString}` : ''
   }`;

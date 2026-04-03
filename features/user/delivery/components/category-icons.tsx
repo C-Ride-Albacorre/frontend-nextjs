@@ -1,8 +1,9 @@
 'use client';
 
 import { Donut, Drumstick, IceCreamCone, Pizza, Tag } from 'lucide-react';
-import { useSubcategories } from '../fetch';
-import CategoryIconsSkeleton from './category-icon-skeleton';
+import { IconButton } from '@/components/ui/buttons/icon-button';
+import { use, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 type Subcategory = {
   id: string;
@@ -11,34 +12,48 @@ type Subcategory = {
   storeCount?: number;
 };
 
-export default function CategoryIcons({ id }: { id: string }) {
-  const { data: subcategories, isError, isPending } = useSubcategories(id);
+export default function CategoryIcons({
+  subcategories,
+}: {
+  
+  subcategories: Subcategory[];
+}) {
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
-  if (isPending) {
-    return <CategoryIconsSkeleton />;
-  }
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
-  if (isError) {
-    return <p className="text-sm text-red-500">Failed to load subcategories</p>;
-  }
+  const handleSubcategorySelect = (id: string) => {
+    setSelectedId(id);
 
-  if (!subcategories?.length) {
-    return <p className="text-sm text-neutral-500">No subcategories found</p>;
-  }
+
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('subcategoryId', id);
+    router.push(`?${params.toString()}`);
+  };
 
   return (
     <section>
       <div
-        className={`flex flex-wrap   ${subcategories.length < 3 ? ' gap-8 md:gap-14' : 'justify-center md:justify-between items-center gap-8 md:gap-12'}  `}
+        className={`flex flex-wrap   ${
+          subcategories.length < 3
+            ? ' gap-8 md:gap-14'
+            : 'justify-center md:justify-between items-center gap-8 md:gap-12'
+        }  `}
       >
         {subcategories.map((cat: Subcategory) => (
           <div
             key={cat.id}
             className="flex flex-col justify-center items-center"
           >
-            <div className="w-10 h-10 lg:w-14 lg:h-14 rounded-full bg-primary hover:bg-primary-hover cursor-pointer flex items-center justify-center">
-              <Tag />
-            </div>
+            <IconButton
+              className={`bg-primary hover:bg-primary-hover ${
+                selectedId === cat.id ? 'ring-2 ring-offset-2 ring-primary' : ''
+              }`}
+              onClick={() => handleSubcategorySelect(cat.id)}
+            >
+              <Tag size={20} />
+            </IconButton>
 
             <p className="mt-3 text-xs md:text-sm text-primary-text-100">
               {cat.name}
