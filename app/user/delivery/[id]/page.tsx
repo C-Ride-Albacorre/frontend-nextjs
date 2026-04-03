@@ -11,6 +11,8 @@ import { Store } from 'lucide-react';
 import Card from '@/components/layout/card';
 import RetryButton from '@/components/ui/buttons/retry-button';
 import { Button } from '@/components/ui/buttons/button';
+import PaginationControls from '@/components/ui/buttons/pagination-control';
+import StoreSearch from '@/features/user/delivery/components/store-search';
 
 export default async function CategoryDeliveryPage({
   params,
@@ -22,21 +24,42 @@ export default async function CategoryDeliveryPage({
     subcategoryId?: string;
     latitude?: string;
     longitude?: string;
+    page?: string;
+    limit?: string;
+    search?: string;
+    radiusKm?: string;
   }>;
 }) {
   const { id } = await params;
-  const { latitude, longitude } = await searchParams;
+  const { latitude, longitude, subcategoryId, page, limit, search, radiusKm } =
+    await searchParams;
 
-  let stores = [];
+  let stores: any[] = [];
+  let total = 0;
   let subCategory = [];
   let isStoreError = false;
   let isSubCategoryError = false;
 
+  const pageNum = page ? parseInt(page) : 1;
+  const limitNum = limit ? parseInt(limit) : 10;
+
   try {
     const lat = latitude ? parseFloat(latitude) : undefined;
     const lng = longitude ? parseFloat(longitude) : undefined;
+    const radius = radiusKm ? parseFloat(radiusKm) : undefined;
 
-    stores = await fetchCategoryStoresAction(id, lat, lng);
+    const result = await fetchCategoryStoresAction(
+      id,
+      lat,
+      lng,
+      subcategoryId,
+      pageNum,
+      limitNum,
+      search,
+      radius,
+    );
+    stores = result.stores;
+    total = result.total;
   } catch (error) {
     isStoreError = true;
   }
@@ -50,6 +73,8 @@ export default async function CategoryDeliveryPage({
   const title =
     stores?.length > 0 ? `${stores[0].storeName} / Stores` : 'Stores';
 
+  const totalPages = Math.ceil(total / limitNum);
+
   return (
     <section>
       <DashboardHeader />
@@ -62,14 +87,7 @@ export default async function CategoryDeliveryPage({
           </p>
         </div>
 
-        {/* <form action="">
-          <ActionInput
-            ariaLabel="Search items"
-            placeholder="Find what you want today"
-            leftIcon={<Search className="h-6 w-6 text-neutral-500" />}
-            buttonText="Search"
-          />
-        </form> */}
+        <StoreSearch categoryId={id} />
 
         {subCategory.length === 0 && !isSubCategoryError ? (
           <p className="text-neutral-500 text-center">
@@ -77,7 +95,9 @@ export default async function CategoryDeliveryPage({
           </p>
         ) : isSubCategoryError ? (
           <div className="flex md:flex-row flex-col justify-between gap-3 items-center">
-            <p className="text-red-500 text-center">Failed to load subcategories.</p>
+            <p className="text-red-500 text-center">
+              Failed to load subcategories.
+            </p>
 
             <RetryButton />
           </div>
@@ -89,11 +109,7 @@ export default async function CategoryDeliveryPage({
 
         <LocationChips />
         {!isStoreError && stores.length === 0 ? (
-          <Card
-            gap="md"
-            spacing="lg"
-            className="flex  flex-col  items-center"
-          >
+          <Card gap="md" spacing="lg" className="flex  flex-col  items-center">
             <Store size={48} className="text-neutral-400" />
             <p className="text-neutral-500 text-center">No stores available.</p>
 
@@ -107,13 +123,16 @@ export default async function CategoryDeliveryPage({
             spacing="lg"
             className="flex  flex-col gap-4 items-center"
           >
-           
             <p className="text-red-500 text-center">Failed to load stores.</p>
 
             <RetryButton />
           </Card>
         ) : (
           <StoreGrid stores={stores} />
+        )}
+
+        {stores.length > 0 && (
+          <PaginationControls currentPage={pageNum} totalPages={totalPages} />
         )}
       </div>
 

@@ -29,17 +29,28 @@ export async function fetchCategoryStoresAction(
   lat?: number,
   lng?: number,
   subcategoryId?: string,
+  page?: number,
+  limit?: number,
+  search?: string,
+  radiusKm?: number,
 ) {
   const result = await fetchCategoryStoresService(
     categoryId,
     lat,
     lng,
     subcategoryId,
+    page,
+    limit,
+    search,
+    radiusKm,
   );
 
   console.log('Category Details:', result);
 
-  return result.data.data ?? []; // Fixed: service already returns the data object
+  return {
+    stores: result.data.data ?? [],
+    total: result.data.total ?? 0,
+  };
 }
 
 export async function fetchSubcategoriesAction(categoryId: string) {

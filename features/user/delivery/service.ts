@@ -28,18 +28,27 @@ export async function fetchCategoryStoresService(
   lat?: number,
   lng?: number,
   subcategoryId?: string,
+  page?: number,
+  limit?: number,
+  search?: string,
+  radiusKm?: number,
 ) {
   const params = new URLSearchParams();
 
   if (lat !== undefined) {
-    params.set('latitude', String(lat));
+    params.set('lat', String(lat));
   }
 
   if (lng !== undefined) {
-    params.set('longitude', String(lng));
+    params.set('lng', String(lng));
   }
 
   if (subcategoryId) params.set('subcategoryId', subcategoryId);
+
+  if (page) params.set('page', String(page));
+  if (limit) params.set('limit', String(limit));
+  if (search) params.set('search', search);
+  if (radiusKm) params.set('radiusKm', String(radiusKm));
 
   const queryString = params.toString();
 
