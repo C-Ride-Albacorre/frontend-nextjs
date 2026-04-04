@@ -1,6 +1,5 @@
 'use client';
 
-import { setAuthCookies } from '@/utils/cookies';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
@@ -11,7 +10,6 @@ export default function GoogleOAuthCallback() {
     const run = async () => {
       const params = new URLSearchParams(window.location.search);
       const success = params.get('success');
-
       const accessToken = params.get('accessToken');
       const refreshToken = params.get('refreshToken');
 
@@ -20,11 +18,21 @@ export default function GoogleOAuthCallback() {
         return;
       }
 
-      await setAuthCookies(accessToken, refreshToken);
+      // Clear tokens from URL immediately to reduce exposure
+      window.history.replaceState({}, '', '/google/callback');
 
       try {
+        // Send tokens to server-side API route to set httpOnly cookies
+        const cookieRes = await fetch('/api/auth/google-callback', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ accessToken, refreshToken }),
+        });
+
+        if (!cookieRes.ok) throw new Error('Failed to set session');
+
         const res = await fetch(
-          'https://backend-service-1rc7.onrender.com/api/v1/auth/profile',
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/profile`,
           {
             method: 'GET',
             credentials: 'include',
