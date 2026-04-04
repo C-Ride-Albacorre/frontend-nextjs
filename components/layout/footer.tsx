@@ -42,8 +42,6 @@ export default function Footer() {
                 buttonVariant="white"
               />
             </form>
-
-         
           </motion.div>
         </div>
 
@@ -125,9 +123,16 @@ export default function Footer() {
                   <Phone className="h-4 w-4 text-primary" />
                   +234 800 CRIDE 00
                 </li>
-                <li className="flex items-center gap-3">
+                <li className="flex items-start gap-3">
                   <MapPin className="h-4 w-4 text-primary" />
-                  Lagos, Nigeria
+
+                  <div className='flex flex-col gap-1'>
+                    <span>1b, Chidi's Court, Cluster One Estate</span>
+
+                    <span>Ikota, Lagos</span>
+
+                    <span>Nigeria</span>
+                  </div>
                 </li>
               </ul>
             </div>
