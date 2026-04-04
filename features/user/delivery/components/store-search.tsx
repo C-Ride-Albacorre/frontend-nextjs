@@ -4,6 +4,7 @@ import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Search, Loader2 } from 'lucide-react';
 import clsx from 'clsx';
+import { Button } from '@/components/ui/buttons/button';
 
 type StoreSuggestion = {
   id: string;
@@ -135,8 +136,8 @@ export default function StoreSearch({ categoryId }: { categoryId: string }) {
   return (
     <div ref={wrapperRef} className="relative w-full">
       <form onSubmit={handleSubmit}>
-        <div className="w-full flex items-center gap-2 rounded-xl border px-4 py-2 border-border bg-foreground-200">
-          <Search className="h-6 w-6 text-neutral-500 shrink-0" />
+        <div className="w-full flex items-center gap-2 rounded-xl border px-4 py-1 border-border bg-foreground-200">
+          <Search className="h-4 w-4 text-neutral-500 shrink-0" />
 
           <input
             type="text"
@@ -145,7 +146,7 @@ export default function StoreSearch({ categoryId }: { categoryId: string }) {
             value={query}
             onChange={handleChange}
             onFocus={() => suggestions.length > 0 && setShowDropdown(true)}
-            className="w-full bg-transparent outline-none text-base md:text-sm placeholder:text-sm placeholder:text-white/40 focus:outline-none"
+            className="w-full bg-transparent outline-none text-base md:text-sm placeholder:text-sm placeholder:text-neutral-400 focus:outline-none"
           />
 
           {isLoading && (
@@ -153,21 +154,19 @@ export default function StoreSearch({ categoryId }: { categoryId: string }) {
           )}
 
           {query && !isLoading && (
-            <button
+            <Button
               type="button"
+              variant="default-inverted"
               onClick={handleClear}
-              className="text-neutral-400 hover:text-neutral-200 text-sm shrink-0 cursor-pointer"
+              size="xs"
             >
               Clear
-            </button>
+            </Button>
           )}
 
-          <button
-            type="submit"
-            className="p-4 rounded-xl font-medium text-xs transition cursor-pointer bg-primary hover:bg-primary-hover text-primary-text-100"
-          >
+          <Button size="icon" type="submit">
             Search
-          </button>
+          </Button>
         </div>
       </form>
 

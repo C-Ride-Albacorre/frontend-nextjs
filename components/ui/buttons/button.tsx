@@ -41,7 +41,9 @@ export function Button({
       'justify-evenly': justify === 'evenly',
 
       // variants
-      'text-primary': variant === 'default',
+      'text-primary hover:text-primary-hover': variant === 'default',
+
+      'text-neutral-400 hover:text-neutral-200 ': variant === 'default-inverted',
 
       'bg-primary text-primary-text-100 hover:bg-primary-hover':
         variant === 'primary',

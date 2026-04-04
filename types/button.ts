@@ -1,5 +1,6 @@
 type ButtonVariant =
   | 'default'
+  | 'default-inverted'
   | 'primary'
   | 'primary-inverted'
   | 'primary-black-outline'
