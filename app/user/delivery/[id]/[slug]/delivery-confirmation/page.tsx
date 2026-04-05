@@ -139,8 +139,8 @@ export default function DeliveryConfirmationPage() {
         </div>
       </div>
 
-      <Card className="bg-green-100/10 flex flex-col md:flex-row gap-6 items-start">
-        <Shield size={24} className="text-green-100" />
+      <Card className="bg-green-100/10 flex flex-col md:flex-row gap-4 md:gap-6 items-start">
+        <Shield size={24} className="text-green-100 mb-0" />
         <div className="space-y-6">
           <h5 className="font-semibold text-lg">C-Ride Guarantee</h5>
           <ul className="space-y-4">
@@ -207,7 +207,7 @@ export default function DeliveryConfirmationPage() {
         </span>
       </div>
 
-      <div className="mt-12 flex items-center justify-around gap-8">
+      <div className="mt-12 flex flex-col md:flex-row items-center justify-around gap-8">
         <Button
           href={`/user/delivery/${id}/${slug}/delivery-location`}
           variant="outline"

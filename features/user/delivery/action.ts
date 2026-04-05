@@ -269,9 +269,14 @@ export async function initializePaymentAction(payload: {
   }
 
   try {
+    console.log(
+      '[initializePaymentAction] Payload:',
+      JSON.stringify(parsed.data, null, 2),
+    );
     const res = await initializePaymentService(parsed.data);
     return { success: true, data: res.data };
   } catch (e: any) {
+    console.error('[initializePaymentAction] Error:', e.message, e);
     return {
       success: false,
       error: e.message || 'Failed to initialize payment',

@@ -127,11 +127,37 @@ export default function OrdersModal({
     }
 
     const data = result.data;
+
+    console.log(
+      '[OrdersModal] Payment response data:',
+      JSON.stringify(data, null, 2),
+    );
+
+    // Monnify may nest the checkout URL at different levels
     const redirectUrl =
-      data?.checkoutUrl ?? data?.paymentUrl ?? data?.authorizationUrl ?? null;
+      data?.checkoutUrl ??
+      data?.paymentUrl ??
+      data?.authorizationUrl ??
+      data?.body?.checkoutUrl ??
+      data?.body?.paymentUrl ??
+      data?.body?.authorizationUrl ??
+      data?.responseBody?.checkoutUrl ??
+      data?.responseBody?.paymentUrl ??
+      data?.responseBody?.authorizationUrl ??
+      null;
+
+    const ref =
+      data?.reference ??
+      data?.transactionReference ??
+      data?.paymentReference ??
+      data?.body?.transactionReference ??
+      data?.body?.paymentReference ??
+      data?.responseBody?.transactionReference ??
+      data?.responseBody?.paymentReference ??
+      '';
 
     setPaymentData({
-      reference: data?.reference ?? data?.transactionReference ?? '',
+      reference: ref,
       amount: order.totalAmount ?? order.amount ?? 0,
       method: 'CARD',
     });
@@ -357,8 +383,7 @@ export default function OrdersModal({
                       className="flex items-center justify-between py-2"
                     >
                       <span className="capitalize">
-                        {item.productName?.toLowerCase() }{' '}
-                        × {item.quantity}
+                        {item.productName?.toLowerCase()} × {item.quantity}
                       </span>
                       <span className="font-medium">
                         ₦{item.totalPrice.toLocaleString()}
@@ -408,8 +433,12 @@ export default function OrdersModal({
             </p>
 
             {/* Actions */}
-            <div className="flex gap-3">
-              {isPayable(selectedOrder.status) && (
+            <div className="flex flex-col md:flex-row gap-3">
+              {isPayable(
+                selectedOrder.orderStatus ??
+                  selectedOrder.paymentStatus ??
+                  selectedOrder.status,
+              ) && (
                 <Button
                   variant="primary"
                   size="lg"
@@ -428,7 +457,9 @@ export default function OrdersModal({
                 </Button>
               )}
 
-              {isCancellable(selectedOrder.status) && (
+              {isCancellable(
+                selectedOrder.orderStatus ?? selectedOrder.status,
+              ) && (
                 <Button
                   variant="red-secondary"
                   size="lg"

@@ -51,12 +51,36 @@ export default function PaymentModal({
 
     const data = result.data;
 
-    // Monnify returns a redirect URL — field name may vary, adjust to match your API response
+    console.log(
+      '[PaymentModal] Payment response data:',
+      JSON.stringify(data, null, 2),
+    );
+
+    // Monnify may nest the checkout URL at different levels
     const redirectUrl =
-      data?.checkoutUrl ?? data?.paymentUrl ?? data?.authorizationUrl ?? null;
+      data?.checkoutUrl ??
+      data?.paymentUrl ??
+      data?.authorizationUrl ??
+      data?.body?.checkoutUrl ??
+      data?.body?.paymentUrl ??
+      data?.body?.authorizationUrl ??
+      data?.responseBody?.checkoutUrl ??
+      data?.responseBody?.paymentUrl ??
+      data?.responseBody?.authorizationUrl ??
+      null;
+
+    const ref =
+      data?.reference ??
+      data?.transactionReference ??
+      data?.paymentReference ??
+      data?.body?.transactionReference ??
+      data?.body?.paymentReference ??
+      data?.responseBody?.transactionReference ??
+      data?.responseBody?.paymentReference ??
+      '';
 
     setPaymentData({
-      reference: data?.reference ?? data?.transactionReference ?? '',
+      reference: ref,
       amount: totalAmount,
       method: 'CARD',
     });
