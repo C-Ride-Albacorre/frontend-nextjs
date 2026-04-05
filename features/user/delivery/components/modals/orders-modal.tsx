@@ -185,12 +185,15 @@ export default function OrdersModal({
         {/* ── Header ── */}
         <div className="flex items-center justify-between">
           {selectedOrderId ? (
-            <button
+            <Button
+              rounded="full"
+              variant="white"
+              size="xs"
               onClick={handleBack}
-              className="flex items-center gap-1 text-sm text-primary hover:underline cursor-pointer"
+              leftIcon={<ChevronLeft size={14} />}
             >
-              <ChevronLeft size={16} /> Back to Orders
-            </button>
+              Back to Orders
+            </Button>
           ) : (
             <h2 className="text-xl font-semibold">Your Orders</h2>
           )}
@@ -223,8 +226,8 @@ export default function OrdersModal({
                   const id = order.id ?? order.orderId ?? '';
                   return (
                     <li key={id}>
-                      <Card className="bg-foreground-200 space-y-2">
-                        <div className="flex items-center justify-between">
+                      <Card gap="md" className="bg-foreground-200 ">
+                        <div className="flex items-center justify-between mb-6">
                           <p className="text-xs font-medium">
                             #{order.orderNumber}
                           </p>
@@ -239,26 +242,27 @@ export default function OrdersModal({
                           </span>
                         </div>
 
-                        <div className="space-y-3">
+                        <div className="space-y-4">
                           <div className=" text-xs text-neutral-500 space-y-1">
                             <p>Items:</p>
                             <p className="text-primary-text-100 text-sm">
                               {order.items?.length ?? 0}
                             </p>
                           </div>
+                          <div className="flex justify-between items-center">
+                            <div className=" text-xs text-neutral-500 space-y-1">
+                              <p>Order Date:</p>
+                              <p className="text-primary-text-100 text-sm">
+                                {formatDate(order.createdAt)}
+                              </p>
+                            </div>
 
-                          <div className=" text-xs text-neutral-500 space-y-1">
-                            <p>Order Date:</p>
-                            <p className="text-primary-text-100 text-sm">
-                              {formatDate(order.createdAt)}
-                            </p>
-                          </div>
-
-                          <div className=" text-xs text-neutral-500 space-y-1">
-                            <p>Payment Status:</p>
-                            <p className="text-primary-text-100 text-sm">
-                              {order.paymentStatus}
-                            </p>
+                            <div className=" text-xs text-neutral-500 space-y-1 text-right">
+                              <p>Payment Status:</p>
+                              <p className="text-primary-text-100 text-sm">
+                                {order.paymentStatus}
+                              </p>
+                            </div>
                           </div>
 
                           <div className="flex justify-between items-center">
@@ -297,43 +301,50 @@ export default function OrdersModal({
           <div className="space-y-6">
             {/* Status badge + ID */}
             <div className="flex items-center justify-between">
-              <p className="font-medium">
-                Order #
-                {(selectedOrder.id ?? selectedOrder.orderId ?? '')
-                  .slice(-8)
-                  .toUpperCase()}
-              </p>
+              <div className="space-y-1">
+                <p className="font-medium text-xs text-neutral-500">
+                  Order Number{' '}
+                </p>
+                <p className="text-sm">
+                  {(selectedOrder.orderNumber ?? '').toUpperCase()}
+                </p>
+              </div>
+
               <span
-                className={`rounded-full px-2 py-0.5 text-[0.65rem] font-medium capitalize ${statusColor(selectedOrder.status)}`}
+                className={`rounded-full px-2 py-0.5 text-[0.65rem] font-medium capitalize ${statusColor(
+                  selectedOrder.orderStatus,
+                )}`}
               >
-                {selectedOrder.status?.toLowerCase().replace(/_/g, ' ') ??
+                {selectedOrder.orderStatus?.toLowerCase().replace(/_/g, ' ') ??
                   'unknown'}
               </span>
             </div>
 
             {/* Delivery info */}
-            {selectedOrder.dropoffLocation && (
-              <Card className="bg-foreground-200 text-sm space-y-1">
-                <p className="font-medium text-xs text-neutral-500">
-                  Delivery To
-                </p>
-                <p>{selectedOrder.recipientName}</p>
-                <p className="text-neutral-400">
-                  {[
-                    selectedOrder.dropoffLocation.address,
-                    selectedOrder.dropoffLocation.city,
-                    selectedOrder.dropoffLocation.state,
-                  ]
-                    .filter(Boolean)
-                    .join(', ')}
-                </p>
-                {selectedOrder.recipientPhone && (
-                  <p className="text-neutral-400">
-                    {selectedOrder.recipientPhone}
-                  </p>
-                )}
-              </Card>
-            )}
+            {selectedOrder.dropoffLocation &&
+              (() => {
+                const loc =
+                  typeof selectedOrder.dropoffLocation === 'string'
+                    ? JSON.parse(selectedOrder.dropoffLocation)
+                    : selectedOrder.dropoffLocation;
+                return (
+                  <Card gap="xs" className="bg-foreground-200 text-sm">
+                    <p className="font-medium text-xs text-neutral-500">
+                      Delivery To
+                    </p>
+                    <p className="text-sm">{selectedOrder.recipientName}</p>
+                    <p className="text-sm capitalize">
+                      {[loc.address, loc.city, loc.state]
+                        .filter(Boolean)
+                        .join(', ')
+                        .toLocaleLowerCase()}
+                    </p>
+                    {selectedOrder.recipientPhone && (
+                      <p className="text-sm">{selectedOrder.recipientPhone}</p>
+                    )}
+                  </Card>
+                );
+              })()}
 
             {/* Items */}
             {selectedOrder.items && selectedOrder.items.length > 0 && (
@@ -346,7 +357,8 @@ export default function OrdersModal({
                       className="flex items-center justify-between py-2"
                     >
                       <span className="capitalize">
-                        {item.productName ?? item.name} × {item.quantity}
+                        {item.productName?.toLowerCase() }{' '}
+                        × {item.quantity}
                       </span>
                       <span className="font-medium">
                         ₦{item.totalPrice.toLocaleString()}
