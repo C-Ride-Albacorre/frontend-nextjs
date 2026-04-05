@@ -218,7 +218,7 @@ export async function createOrderAction(
   }
 }
 
-export async function getOrdersAction(): Promise<ActionResult> {
+export async function getOrdersAction(): Promise<ActionResult<any[]>> {
   try {
     const res = await getOrdersService();
     return { success: true, data: res.data };
@@ -229,7 +229,7 @@ export async function getOrdersAction(): Promise<ActionResult> {
 
 export async function getOrderDetailsAction(
   orderId: string,
-): Promise<ActionResult> {
+): Promise<ActionResult<any>> {
   try {
     const res = await getOrderDetailsService(orderId);
     return { success: true, data: res.data };
@@ -243,7 +243,7 @@ export async function getOrderDetailsAction(
 
 export async function cancelOrderAction(
   orderId: string,
-): Promise<ActionResult> {
+): Promise<ActionResult<any>> {
   try {
     const res = await cancelOrderService(orderId);
     return { success: true, data: res.data };

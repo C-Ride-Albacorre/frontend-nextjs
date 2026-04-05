@@ -1,17 +1,20 @@
 'use client';
 
 import Link from 'next/link';
-import { Loader2, ShoppingCart } from 'lucide-react';
+import { ClipboardList, Loader2, ShoppingCart } from 'lucide-react';
 import { usePathname } from 'next/navigation';
+import { useState } from 'react';
 import Stepper from '@/components/navigation/stepper';
 import { STEPS } from '@/features/user/delivery/data';
 import { useCartStore } from '../store';
 import { Button } from '@/components/ui/buttons/button';
 import CartModal from './cart-modal';
+import OrdersModal from './modals/orders-modal';
 
 export default function DeliveryHeader() {
   const path = usePathname();
   const { cart, isLoading, openCart } = useCartStore();
+  const [isOrdersOpen, setIsOrdersOpen] = useState(false);
 
   const currentStep = (() => {
     if (!path || typeof path !== 'string') return 0;
@@ -49,8 +52,18 @@ export default function DeliveryHeader() {
       </header>
 
       <>
-        {/* Cart */}
-        <div className="flex justify-end">
+        {/* Cart & Orders */}
+        <div className="flex justify-end gap-3">
+          <button
+            onClick={() => setIsOrdersOpen(true)}
+            className="mt-4 flex items-center gap-4 rounded-xl border border-border px-4 py-2 hover:bg-foreground-200 transition-colors cursor-pointer"
+          >
+            <span className="flex items-center gap-2 text-xs">
+              <ClipboardList size={16} />
+              Orders
+            </span>
+          </button>
+
           <button
             onClick={openCart}
             className="mt-4 flex items-center gap-4 rounded-xl border border-border px-4 py-2 hover:bg-foreground-200 transition-colors cursor-pointer"
@@ -79,6 +92,12 @@ export default function DeliveryHeader() {
 
       {/* Cart Modal */}
       <CartModal />
+
+      {/* Orders Modal */}
+      <OrdersModal
+        isOpen={isOrdersOpen}
+        onClose={() => setIsOrdersOpen(false)}
+      />
     </>
   );
 }
