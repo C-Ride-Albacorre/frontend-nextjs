@@ -7,10 +7,11 @@ import Stepper from '@/components/navigation/stepper';
 import { STEPS } from '@/features/user/delivery/data';
 import { useCartStore } from '../store';
 import { Button } from '@/components/ui/buttons/button';
+import CartModal from './cart-modal';
 
 export default function DeliveryHeader() {
   const path = usePathname();
-  const { cart, isLoading } = useCartStore();
+  const { cart, isLoading, openCart } = useCartStore();
 
   const currentStep = (() => {
     if (!path || typeof path !== 'string') return 0;
@@ -42,11 +43,7 @@ export default function DeliveryHeader() {
           Create New Delivery
         </h1>
 
-        <Button
-        size='icon'
-          href="/user/dashboard"
-          variant="white"
-        >
+        <Button size="icon" href="/user/dashboard" variant="white">
           Close
         </Button>
       </header>
@@ -54,7 +51,10 @@ export default function DeliveryHeader() {
       <>
         {/* Cart */}
         <div className="flex justify-end">
-          <button className="mt-4 flex items-center gap-4 rounded-xl border border-border px-4 py-2 hover:bg-foreground-200 transition-colors cursor-pointer">
+          <button
+            onClick={openCart}
+            className="mt-4 flex items-center gap-4 rounded-xl border border-border px-4 py-2 hover:bg-foreground-200 transition-colors cursor-pointer"
+          >
             <span className="flex items-center gap-2 text-xs">
               <ShoppingCart size={16} />
               {isLoading ? (
@@ -76,6 +76,9 @@ export default function DeliveryHeader() {
         {/* Stepper */}
         <Stepper STEPS={STEPS} currentStep={currentStep} />
       </>
+
+      {/* Cart Modal */}
+      <CartModal />
     </>
   );
 }

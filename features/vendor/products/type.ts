@@ -47,6 +47,7 @@ export interface ProductImage {
 // Main product data structure
 export interface Product {
   id: string;
+  name?: string;
   productName: string;
   subcategoryId: string;
   sku: string;

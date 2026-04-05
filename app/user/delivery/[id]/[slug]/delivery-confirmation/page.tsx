@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -6,8 +5,15 @@ import { useParams } from 'next/navigation';
 import { Button } from '@/components/ui/buttons/button';
 import Input from '@/components/ui/inputs/input';
 import {
-  Box, Dot, FileText, Info, Shield, Stars,
-  ChevronLeft, ChevronRight, Loader2,
+  Box,
+  Dot,
+  FileText,
+  Info,
+  Shield,
+  Stars,
+  ChevronLeft,
+  ChevronRight,
+  Loader2,
 } from 'lucide-react';
 import PaymentModal from '@/features/user/delivery/components/modals/payment';
 import PaymentSuccessModal from '@/features/user/delivery/components/modals/payment-success';
@@ -24,11 +30,12 @@ export default function DeliveryConfirmationPage() {
   const { id, slug } = useParams<{ id: string; slug: string }>();
 
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
-  const [isPaymentSuccessModalOpen, setIsPaymentSuccessModalOpen] = useState(false);
+  const [isPaymentSuccessModalOpen, setIsPaymentSuccessModalOpen] =
+    useState(false);
   const [isCreatingOrder, setIsCreatingOrder] = useState(false);
 
   const {
-    deliveryOptionId,
+    // deliveryOptionId,
     dropoffLocation,
     recipientName,
     recipientPhone,
@@ -39,6 +46,8 @@ export default function DeliveryConfirmationPage() {
   } = useOrderStore();
 
   const { cart } = useCartStore();
+
+  console.log('[DeliveryConfirmationPage] Cart:', cart);
 
   // Real totals from cart
   const subTotal = cart?.subTotal ?? 0;
@@ -63,14 +72,18 @@ export default function DeliveryConfirmationPage() {
 
     setIsCreatingOrder(true);
 
-    const result = await createOrderAction({
+    const payload = {
       cartId: cart.id,
-      deliveryOptionId,
+      // deliveryOptionId,
       dropoffLocation,
       recipientName,
       recipientPhone,
       deliveryInstructions,
-    });
+    };
+
+    console.log('[DeliveryConfirmationPage] Create order payload:', payload);
+
+    const result = await createOrderAction(payload);
 
     setIsCreatingOrder(false);
 
@@ -79,8 +92,7 @@ export default function DeliveryConfirmationPage() {
       return;
     }
 
-    // API may return id as `id` or `orderId`
-    const newOrderId = result.data?.id ?? result.data?.orderId;
+    const newOrderId = result.data.id ?? result.data.orderId;
     if (!newOrderId) {
       toast.error('Order created but ID is missing. Please contact support.');
       return;
@@ -120,7 +132,7 @@ export default function DeliveryConfirmationPage() {
           <label className="text-sm font-medium block">Promo Code</label>
           <div className="flex justify-center items-center gap-6 mt-2">
             <Input type="text" placeholder="Enter promo code" spacing="none" />
-            <Button variant="primary-outline" type="button" size="sm">
+            <Button variant="primary-outline" type="button" size="icon">
               Apply
             </Button>
           </div>
@@ -138,7 +150,10 @@ export default function DeliveryConfirmationPage() {
               '24/7 customer support',
               'Real-time tracking included',
             ].map((item) => (
-              <li key={item} className="flex items-center gap-2 text-neutral-400 text-sm">
+              <li
+                key={item}
+                className="flex items-center gap-2 text-neutral-400 text-sm"
+              >
                 <Dot size={16} /> {item}
               </li>
             ))}

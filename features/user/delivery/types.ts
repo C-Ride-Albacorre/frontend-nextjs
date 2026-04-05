@@ -1,3 +1,5 @@
+// ─── Store Card ───
+
 export type StoreCardProps = {
   id: string;
   image: string;
@@ -9,6 +11,8 @@ export type StoreCardProps = {
   delivery: string;
   time: string;
 };
+
+// ─── Cart ───
 
 export type CartItemType = 'PRODUCT' | 'PACKAGE';
 
@@ -24,6 +28,7 @@ export interface CartItem {
   productName: string;
   productImage?: string;
   basePrice: number;
+  unitPrice: number;
   totalPrice: number;
 }
 
@@ -48,15 +53,54 @@ export interface UpdateCartQuantityPayload {
   quantity: number;
 }
 
-export interface CartState {
-  cart: Cart | null;
-  isLoading: boolean;
-  error: string | null;
+// ─── Orders ───
+
+export interface DropoffLocation {
+  address: string;
+  city: string;
+  state: string;
+  country: string;
+  postalCode?: string;
 }
 
-export type Order = {
+export interface CreateOrderPayload {
+  cartId: string;
+  deliveryOptionId?: string; 
+  dropoffLocation: DropoffLocation;
+  recipientName: string;
+  recipientPhone: string;
+  deliveryInstructions?: string;
+}
+
+export interface Order {
   id: string;
   status?: string;
   amount?: number;
   reference?: string;
-};
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+// ─── Payment ───
+
+export interface InitializePaymentPayload {
+  orderId: string;
+  paymentMethod: 'CARD';
+  callbackUrl: string;
+}
+
+// ─── Vendor Address ───
+
+export interface VendorAddress {
+  address: string;
+  city: string;
+  state: string;
+  country: string;
+  postalCode?: string;
+}
+
+// ─── API Result ───
+
+export type ActionResult<T = unknown> =
+  | { success: true; data: T }
+  | { success: false; error: string };

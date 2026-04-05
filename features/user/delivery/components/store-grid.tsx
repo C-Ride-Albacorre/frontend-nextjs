@@ -1,4 +1,4 @@
-'use client';
+
 
 import StoreCard from './store-card';
 import CategoriesSkeleton from './categories-skeleton';
@@ -10,6 +10,7 @@ type ApiStore = {
   storeName: string;
   storeLogo: string | null;
   categoryId: string;
+  storeCategory: string;
   storeAddress: string;
   storeDescription: string;
   preparationTime: number;
@@ -56,7 +57,7 @@ export default function StoreGrid({
           id={store.id}
           image={store.storeLogo ?? ''}
           name={store.storeName}
-          tag={store.categoryId}
+          tag={store.storeCategory}
           cuisine={store.storeDescription}
           rating={0}
           location={store.storeAddress}

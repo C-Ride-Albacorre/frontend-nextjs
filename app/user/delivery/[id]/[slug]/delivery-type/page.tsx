@@ -10,7 +10,7 @@ import { getDeliveryOptionsAction } from '@/features/user/delivery/action';
 // 🔁 Swap these out once backend seeds real delivery options
 const FALLBACK_OPTIONS = [
   {
-    id: '00000000-0000-0000-0000-000000000000', // hardcoded UUID — replace later
+    id: '290d07e7-60a5-4bb0-8883-9417b72fbe6q', // hardcoded UUID — replace later
     label: 'Standard Delivery',
     badge: 'Fast',
     description: 'Delivered within 60 – 90 mins',
@@ -18,7 +18,7 @@ const FALLBACK_OPTIONS = [
     duration: '60–90 mins',
   },
   {
-    id: '00000000-0000-0000-0000-000000000001', // hardcoded UUID — replace later
+    id: '120c07e7-60a5-4cc0-8883-9417b72fbh9r', // hardcoded UUID — replace later
     label: 'Express Delivery',
     badge: 'Urgent',
     description: 'Delivered within 30 – 45 mins',

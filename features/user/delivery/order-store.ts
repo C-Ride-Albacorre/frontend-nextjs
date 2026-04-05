@@ -1,14 +1,7 @@
 // features/user/delivery/order-store.ts
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-
-interface DropoffLocation {
-  address: string;
-  city: string;
-  state: string;
-  country: string;
-  postalCode?: string;
-}
+import { DropoffLocation } from './types';
 
 interface OrderState {
   deliveryOptionId: string;
@@ -23,8 +16,6 @@ interface OrderState {
   amountPaid: number | null;
   paymentMethod: string | null;
 
-  // 🔁 Remove setDeliveryOption and deliveryOptionId from initialState
-  // once backend seeds real options — drive from DeliveryTypePage fetch instead
   setDeliveryOption: (id: string) => void;
   setDropoffLocation: (loc: DropoffLocation) => void;
   setRecipientName: (name: string) => void;

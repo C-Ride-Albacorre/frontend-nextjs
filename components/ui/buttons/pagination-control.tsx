@@ -22,7 +22,7 @@ export default function PaginationControls({
   };
 
   return (
-    <div className="flex justify-end items-center gap-6">
+    <div className="flex justify-center md:justify-end items-center gap-6">
       <Button
         disabled={currentPage <= 1}
         onClick={() => updatePage(currentPage - 1)}

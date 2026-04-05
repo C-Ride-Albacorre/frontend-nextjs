@@ -4,9 +4,6 @@ import Image from 'next/image';
 import {
   Dot,
   Clock,
-  Minus,
-  Plus,
-  X,
   ChevronRight,
   Package,
 } from 'lucide-react';

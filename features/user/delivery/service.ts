@@ -1,26 +1,63 @@
 import { BASE_URL } from '@/config/api';
 import { ApiError } from '@/features/libs/api-error';
 import { authFetch } from '@/features/libs/auth-fetch';
-import { AddToCartPayload } from './types';
+import {
+  AddToCartPayload,
+  CreateOrderPayload,
+  InitializePaymentPayload,
+} from './types';
 
-export async function fetchCategoriesService() {
-  const res = await authFetch(`${BASE_URL}/customer/categories`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+// ─── Logging helper ───
+
+function logRequest(tag: string, method: string, url: string, body?: unknown) {
+  console.log(`[${tag}] REQUEST ${method} ${url}`, body ?? '');
+}
+
+function logResponse(tag: string, status: number, data: unknown) {
+  console.log(`[${tag}] RESPONSE ${status}`, data);
+}
+
+function logError(tag: string, error: unknown) {
+  console.error(`[${tag}] ERROR`, error);
+}
+
+// ─── Helper ───
+
+async function request(
+  tag: string,
+  url: string,
+  options: RequestInit & { body?: string } = {},
+) {
+  const method = options.method ?? 'GET';
+  const parsed = options.body ? JSON.parse(options.body) : undefined;
+  logRequest(tag, method, url, parsed);
+
+  const res = await authFetch(url, {
+    ...options,
+    headers: { 'Content-Type': 'application/json', ...options.headers },
   });
 
   const data = await res.json();
+  logResponse(tag, res.status, data);
 
   if (!res.ok) {
-    throw new ApiError(
-      data?.message || 'Failed to fetch categories',
+    const err = new ApiError(
+      data?.message || `${tag} failed`,
       data?.statusCode ?? res.status,
     );
+    logError(tag, err);
+    throw err;
   }
 
   return data;
+}
+
+// ═══════════════════════════════════════
+// CATEGORIES & STORES
+// ═══════════════════════════════════════
+
+export async function fetchCategoriesService() {
+  return request('FetchCategories', `${BASE_URL}/customer/categories`);
 }
 
 export async function fetchCategoryStoresService(
@@ -34,295 +71,137 @@ export async function fetchCategoryStoresService(
   radiusKm?: number,
 ) {
   const params = new URLSearchParams();
-
-  if (lat !== undefined) {
-    params.set('lat', String(lat));
-  }
-
-  if (lng !== undefined) {
-    params.set('lng', String(lng));
-  }
-
+  if (lat !== undefined) params.set('lat', String(lat));
+  if (lng !== undefined) params.set('lng', String(lng));
   if (subcategoryId) params.set('subcategoryId', subcategoryId);
-
   if (page) params.set('page', String(page));
   if (limit) params.set('limit', String(limit));
   if (search) params.set('search', search);
   if (radiusKm) params.set('radiusKm', String(radiusKm));
 
-  const queryString = params.toString();
+  const qs = params.toString();
+  const url = `${BASE_URL}/customer/stores/category/${categoryId}${qs ? `?${qs}` : ''}`;
 
-  const url = `${BASE_URL}/customer/stores/category/${categoryId}${
-    queryString ? `?${queryString}` : ''
-  }`;
-
-  const res = await authFetch(url, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-
-  const data = await res.json();
-
-  if (!res.ok) {
-    throw new ApiError(
-      data?.message || 'Failed to fetch stores for category',
-      data?.statusCode ?? res.status,
-    );
-  }
-
-  return data;
+  return request('FetchCategoryStores', url);
 }
 
 export async function fetchSubcategoriesService(categoryId: string) {
-  const res = await authFetch(
+  return request(
+    'FetchSubcategories',
     `${BASE_URL}/customer/subcategories/category/${categoryId}`,
-    {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    },
   );
-
-  const data = await res.json();
-
-  if (!res.ok) {
-    throw new ApiError(
-      data?.message || 'Failed to fetch subcategories',
-      data?.statusCode ?? res.status,
-    );
-  }
-
-  return data;
 }
 
 export async function fetchStoreDetailsService(storeId: string) {
-  const res = await authFetch(`${BASE_URL}/customer/stores/${storeId}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-
-  const data = await res.json();
-
-  if (!res.ok) {
-    throw new ApiError(
-      data?.message || 'Failed to fetch store details',
-      data?.statusCode ?? res.status,
-    );
-  }
-
-  return data;
+  return request('FetchStoreDetails', `${BASE_URL}/customer/stores/${storeId}`);
 }
 
+export async function fetchVendorAddressService(storeId: string) {
+  return request(
+    'FetchVendorAddress',
+    `${BASE_URL}/customer/vendor-address/${storeId}`,
+  );
+}
+
+// ═══════════════════════════════════════
+// CART
+// ═══════════════════════════════════════
+
 export async function getCartService() {
-  const res = await authFetch(`${BASE_URL}/customer/cart`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-
-  const data = await res.json();
-
-  if (!res.ok) {
-    throw new ApiError(
-      data?.message || 'Failed to fetch cart',
-      data?.statusCode ?? res.status,
-    );
-  }
-
-  console.log('Get Cart Response:', data);
-
-  return data;
+  return request('GetCart', `${BASE_URL}/customer/cart`);
 }
 
 export async function addToCartService(payload: AddToCartPayload) {
-  const res = await authFetch(`${BASE_URL}/customer/cart/add`, {
+  return request('AddToCart', `${BASE_URL}/customer/cart/add`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
     body: JSON.stringify(payload),
   });
-
-  const data = await res.json();
-
-  console.log('Add to Cart Response:', data);
-
-  if (!res.ok) {
-    throw new ApiError(
-      data?.message || 'Failed to add item to cart',
-      data?.statusCode ?? res.status,
-    );
-  }
-
-  return data;
 }
 
 export async function updateCartQuantityService(
   itemId: string,
   quantity: number,
 ) {
-  const res = await authFetch(
+  return request(
+    'UpdateCartQuantity',
     `${BASE_URL}/customer/cart/item/${itemId}/quantity`,
     {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
       body: JSON.stringify({ quantity }),
     },
   );
-
-  const data = await res.json();
-
-  if (!res.ok) {
-    throw new ApiError(
-      data?.message || 'Failed to update cart quantity',
-      data?.statusCode ?? res.status,
-    );
-  }
-
-  return data;
 }
 
 export async function removeFromCartService(itemId: string) {
-  const res = await authFetch(
+  return request(
+    'RemoveFromCart',
     `${BASE_URL}/customer/cart/item/${itemId}/remove`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    },
+    { method: 'POST' },
   );
-
-  const data = await res.json();
-
-  if (!res.ok) {
-    throw new ApiError(
-      data?.message || 'Failed to remove item from cart',
-      data?.statusCode ?? res.status,
-    );
-  }
-
-  return data;
 }
 
 export async function clearCartService() {
-  const res = await authFetch(`${BASE_URL}/customer/cart/clear`, {
+  return request('ClearCart', `${BASE_URL}/customer/cart/clear`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
   });
-
-  const data = await res.json();
-
-  if (!res.ok) {
-    throw new ApiError(
-      data?.message || 'Failed to clear cart',
-      data?.statusCode ?? res.status,
-    );
-  }
-
-  return data;
 }
 
-export async function createOrderService(payload: any) {
-  const res = await authFetch(`${BASE_URL}/customer/orders`, {
+// ═══════════════════════════════════════
+// ORDERS
+// ═══════════════════════════════════════
+
+export async function createOrderService(payload: CreateOrderPayload) {
+  return request('CreateOrder', `${BASE_URL}/customer/orders`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
   });
-
-  const data = await res.json();
-
-  if (!res.ok) {
-    throw new ApiError(data?.message || 'Failed to create order', res.status);
-  }
-
-  return data;
 }
 
 export async function getOrdersService() {
-  const res = await authFetch(`${BASE_URL}/customer/orders`);
-  const data = await res.json();
+  return request('GetOrders', `${BASE_URL}/customer/orders`);
+}
 
-  if (!res.ok) {
-    throw new ApiError(data?.message || 'Failed to fetch orders', res.status);
-  }
-
-  return data;
+export async function getOrderDetailsService(orderId: string) {
+  return request('GetOrderDetails', `${BASE_URL}/customer/orders/${orderId}`);
 }
 
 export async function cancelOrderService(orderId: string) {
-  const res = await authFetch(`${BASE_URL}/customer/orders/${orderId}/cancel`, {
-    method: 'POST',
-  });
-
-  const data = await res.json();
-
-  if (!res.ok) {
-    throw new ApiError(data?.message || 'Failed to cancel order', res.status);
-  }
-
-  return data;
+  return request(
+    'CancelOrder',
+    `${BASE_URL}/customer/orders/${orderId}/cancel`,
+    { method: 'POST' },
+  );
 }
 
-export async function initializePaymentService(payload: {
-  orderId: string;
-  paymentMethod: 'CARD';
-  callbackUrl: string;
-}) {
-  const res = await authFetch(`${BASE_URL}/customer/payment/initialize`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
-  });
+// ═══════════════════════════════════════
+// PAYMENT
+// ═══════════════════════════════════════
 
-  const data = await res.json();
-
-  if (!res.ok) {
-    throw new ApiError(data?.message || 'Payment init failed', res.status);
-  }
-
-  return data;
+export async function initializePaymentService(
+  payload: InitializePaymentPayload,
+) {
+  return request(
+    'InitializePayment',
+    `${BASE_URL}/customer/payment/initialize`,
+    {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    },
+  );
 }
 
 export async function verifyPaymentService(reference: string) {
-  const res = await authFetch(
+  return request(
+    'VerifyPayment',
     `${BASE_URL}/customer/payment/verify/${reference}`,
     { method: 'POST' },
   );
-
-  const data = await res.json();
-
-  if (!res.ok) {
-    throw new ApiError(data?.message || 'Verification failed', res.status);
-  }
-
-  return data;
 }
 
+// ═══════════════════════════════════════
+// DELIVERY OPTIONS
+// ═══════════════════════════════════════
+
 export async function getDeliveryOptionsService() {
-  const res = await authFetch(`${BASE_URL}/customer/delivery-options`, {
-    method: 'GET',
-    headers: { 'Content-Type': 'application/json' },
-  });
-
-  const data = await res.json();
-
-  if (!res.ok) {
-    throw new ApiError(
-      data?.message || 'Failed to fetch delivery options',
-      data?.statusCode ?? res.status,
-    );
-  }
-
-  return data;
+  return request('GetDeliveryOptions', `${BASE_URL}/customer/delivery-options`);
 }

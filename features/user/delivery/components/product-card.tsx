@@ -16,7 +16,13 @@ export default function ProductCard({ item }: { item: Product }) {
 
   const handleAdd = () => {
     if (!cartItem) {
-      addItem(item, 1);
+      addItem(
+        {
+          ...item,
+          variantId: item.variants?.[0]?.id,
+        },
+        1,
+      );
     } else {
       updateQuantity(cartItem.id, quantity + 1);
     }
@@ -61,7 +67,7 @@ export default function ProductCard({ item }: { item: Product }) {
 
           <div className="flex justify-between">
             <p className="text-xs text-neutral-500">
-              {item.subcategoryId || 'No category'}
+              {item.name || 'No category'}
             </p>
             <p className="font-medium text-primary text-sm">
               ₦{item.basePrice.toLocaleString()}

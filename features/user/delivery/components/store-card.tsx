@@ -63,13 +63,13 @@ export default function StoreCard({
           <p className="text-sm text-neutral-500">{cuisine}</p>
         </div>
 
-        <div className="flex justify-between items-center   mt-3">
-          <div className="flex items-center gap-2 text-sm text-neutral-500">
+        <div className="grid grid-cols-6   mt-3 gap-2">
+          <div className="flex items-start gap-2 text-xs text-neutral-500 col-span-5">
             <MapPin size={16} />
-            <span>{location}</span>
+            <span className='wrap-break-word'>{location}</span>
           </div>
 
-          <p className="text-green-100 text-sm">{delivery}</p>
+          <p className="text-green-100 text-xs col-span-1 text-end ">{delivery}</p>
         </div>
       </div>
     </Link>
