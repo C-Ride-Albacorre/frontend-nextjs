@@ -23,6 +23,7 @@ export default function Header() {
     'Profile & Address': pathName === '/user/profile',
     'Help Center': pathName === '/user/help-center',
     'Payments Method': pathName === '/user/wallet',
+    'Payment Confirmation': pathName === '/user/delivery/payment-callback',
   });
 
   return (

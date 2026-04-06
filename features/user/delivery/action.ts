@@ -274,6 +274,8 @@ export async function initializePaymentAction(payload: {
       JSON.stringify(parsed.data, null, 2),
     );
     const res = await initializePaymentService(parsed.data);
+
+    console.log('[initializePaymentAction] Response:', JSON.stringify(res.data, null, 2));
     return { success: true, data: res.data };
   } catch (e: any) {
     console.error('[initializePaymentAction] Error:', e.message, e);

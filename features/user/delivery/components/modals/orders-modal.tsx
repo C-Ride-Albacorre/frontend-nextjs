@@ -6,6 +6,9 @@ import {
   ChevronRight,
   CreditCard,
   Loader2,
+  MapPin,
+  Phone,
+  User,
   X,
 } from 'lucide-react';
 import Modal from '@/components/layout/modal';
@@ -19,6 +22,7 @@ import {
   useCancelOrder,
 } from '../../hooks/use-orders';
 import { toast } from 'sonner';
+import Image from 'next/image';
 
 interface OrderItem {
   id: string;
@@ -27,6 +31,10 @@ interface OrderItem {
   quantity: number;
   unitPrice: number;
   totalPrice: number;
+  product?: {
+    productName?: string;
+    productImages?: { imageUrl?: string | null }[];
+  };
 }
 
 interface OrderSummary {
@@ -68,8 +76,7 @@ export default function OrdersModal({
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
   const [isInitiatingPayment, setIsInitiatingPayment] = useState(false);
 
-  const { setOrderId, setPaymentData, setCheckoutUrl, checkoutUrls } =
-    useOrderStore();
+  const { setOrderId } = useOrderStore();
 
   // React Query hooks
   const {
@@ -84,6 +91,8 @@ export default function OrdersModal({
     isLoading: isLoadingDetails,
     error: detailsError,
   } = useOrderDetails(selectedOrderId);
+
+  console.log(' [OrdersModal] Selected order details:', selectedOrder);
 
   const cancelMutation = useCancelOrder();
 
@@ -107,36 +116,25 @@ export default function OrdersModal({
   };
 
   const handlePayNow = async (order: OrderDetail) => {
-    const orderId = order.id ?? order.orderId;
+    const orderId = order.id;
     if (!orderId) {
       toast.error('Order ID not found');
       return;
     }
 
-    const isResumingPayment =
-      !!order.paymentReference || !!order.monnifyReference;
-    console.log(
-      `[OrdersModal] ${isResumingPayment ? 'Resuming' : 'Initializing'} payment for order:`,
-      orderId,
-      isResumingPayment ? `(existing ref: ${order.paymentReference})` : '',
-    );
+    setIsInitiatingPayment(true);
 
-    // If payment was already initialized, try the cached checkout URL first
-    if (isResumingPayment) {
-      const cachedUrl = checkoutUrls[orderId] ?? null;
-      if (cachedUrl) {
-        console.log('[OrdersModal] Using cached checkout URL:', cachedUrl);
-        window.location.href = cachedUrl;
-        return;
-      }
+    // If order already has both references, verify the monnify one directly
+    if (order.paymentReference && order.monnifyReference) {
       console.log(
-        '[OrdersModal] No cached checkout URL — backend must support re-initialization',
+        '[OrdersModal] Verifying existing monnifyReference:',
+        order.monnifyReference,
       );
+      window.location.href = `/user/delivery/payment-callback?paymentReference=${encodeURIComponent(order.monnifyReference)}`;
+      return;
     }
 
-    setIsInitiatingPayment(true);
-    setOrderId(orderId);
-
+    // Otherwise initialize a new payment
     const callbackUrl = `${window.location.origin}/user/delivery/payment-callback`;
     const result = await initializePaymentAction({
       orderId,
@@ -148,65 +146,20 @@ export default function OrdersModal({
     setIsInitiatingPayment(false);
 
     if (!result.success) {
-      // If backend says already initialized and we don't have a cached URL
-      if (
-        result.error?.toLowerCase().includes('already initialized') ||
-        result.error?.toLowerCase().includes('already exists')
-      ) {
-        toast.error(
-          'Payment was already started but the checkout link expired. Please contact support or cancel and create a new order.',
-        );
-      } else {
-        toast.error(result.error || 'Payment initialization failed');
-      }
+      toast.error(result.error || 'Payment initialization failed');
       return;
     }
 
     const data = result.data;
+    const checkoutUrl =
+      data?.checkoutUrl ?? data?.responseBody?.checkoutUrl ?? null;
 
-    console.log(
-      '[OrdersModal] Payment response data:',
-      JSON.stringify(data, null, 2),
-    );
-
-    // Monnify may nest the checkout URL at different levels
-    const redirectUrl =
-      data?.checkoutUrl ??
-      data?.paymentUrl ??
-      data?.authorizationUrl ??
-      data?.body?.checkoutUrl ??
-      data?.body?.paymentUrl ??
-      data?.body?.authorizationUrl ??
-      data?.responseBody?.checkoutUrl ??
-      data?.responseBody?.paymentUrl ??
-      data?.responseBody?.authorizationUrl ??
-      null;
-
-    const ref =
-      data?.reference ??
-      data?.transactionReference ??
-      data?.paymentReference ??
-      data?.body?.transactionReference ??
-      data?.body?.paymentReference ??
-      data?.responseBody?.transactionReference ??
-      data?.responseBody?.paymentReference ??
-      '';
-
-    setPaymentData({
-      reference: ref,
-      amount: order.totalAmount ?? order.amount ?? 0,
-      method: 'CARD',
-    });
-
-    if (redirectUrl) {
-      // Cache the checkout URL so we can resume without re-initializing
-      setCheckoutUrl(orderId, redirectUrl);
-      window.location.href = redirectUrl;
+    if (checkoutUrl) {
+      window.location.href = checkoutUrl;
       return;
     }
 
-    toast.success('Payment processed');
-    onClose();
+    toast.error('Could not get payment checkout URL. Please try again.');
   };
 
   const isCancellable = (status?: string) => {
@@ -224,11 +177,11 @@ export default function OrdersModal({
   const statusColor = (status?: string) => {
     if (!status) return 'bg-neutral-200 text-neutral-600';
     const s = status.toUpperCase();
-    if (s === 'DELIVERED' || s === 'COMPLETED')
-      return 'bg-green-100 text-green-700';
-    if (s === 'CANCELLED') return 'bg-red-100 text-red-700';
-    if (s === 'IN_TRANSIT' || s === 'PROCESSING')
-      return 'bg-blue-100 text-blue-700';
+    if (s === 'DELIVERED' || s === 'PAID' || s === 'CONFIRMED')
+      return 'bg-green-100/20 text-green-700';
+    if (s === 'CANCELLED') return 'bg-red-100/30 text-red-700';
+    if (s === 'AWAITING_PAYMENT' || s === 'CREATED')
+      return 'bg-blue-100/20 text-blue-700';
     return 'bg-primary-text-100 text-primary';
   };
 
@@ -244,8 +197,8 @@ export default function OrdersModal({
   };
 
   return (
-    <Modal isModalOpen={isOpen} onClose={handleClose}>
-      <div className="space-y-6">
+    <Modal wrapperClassName='max-w-xl mx-auto' isModalOpen={isOpen} onClose={handleClose}>
+      <div className="space-y-6 ">
         {/* ── Header ── */}
         <div className="flex items-center justify-between">
           {selectedOrderId ? (
@@ -285,7 +238,7 @@ export default function OrdersModal({
                 No orders yet
               </p>
             ) : (
-              <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[75vh] overflow-y-auto">
+              <ul className="grid grid-cols-1 gap-4 max-h-[75vh] overflow-y-auto">
                 {orders.map((order) => {
                   const id = order.id ?? order.orderId ?? '';
                   return (
@@ -306,13 +259,13 @@ export default function OrdersModal({
                           </span>
                         </div>
 
-                        <div className="space-y-4">
-                          <div className=" text-xs text-neutral-500 space-y-1">
+                        <div className="space-y-6">
+                          {/* <div className=" text-xs text-neutral-500 space-y-1">
                             <p>Items:</p>
                             <p className="text-primary-text-100 text-sm">
                               {order.items?.length ?? 0}
                             </p>
-                          </div>
+                          </div> */}
                           <div className="flex justify-between items-center">
                             <div className=" text-xs text-neutral-500 space-y-1">
                               <p>Order Date:</p>
@@ -323,9 +276,13 @@ export default function OrdersModal({
 
                             <div className=" text-xs text-neutral-500 space-y-1 text-right">
                               <p>Payment Status:</p>
-                              <p className="text-primary-text-100 text-sm">
-                                {order.paymentStatus}
-                              </p>
+                              <span
+                                className={`text-right rounded-full w-fit px-2 py-0.5 text-[0.65rem] font-medium capitalize ${statusColor(order.paymentStatus)}`}
+                              >
+                                {order.paymentStatus
+                                  ?.toLowerCase()
+                                  .replace(/_/g, ' ') ?? 'unknown'}
+                              </span>
                             </div>
                           </div>
 
@@ -396,15 +353,22 @@ export default function OrdersModal({
                     <p className="font-medium text-xs text-neutral-500">
                       Delivery To
                     </p>
-                    <p className="text-sm">{selectedOrder.recipientName}</p>
-                    <p className="text-sm capitalize">
+                    <p className="text-sm flex items-center gap-2">
+                      <User size={14} className="text-neutral-400" />
+                      {selectedOrder.recipientName}
+                    </p>
+                    <p className="text-sm capitalize flex items-center gap-2">
+                      <MapPin size={14} className="text-neutral-400" />
                       {[loc.address, loc.city, loc.state]
                         .filter(Boolean)
                         .join(', ')
                         .toLocaleLowerCase()}
                     </p>
                     {selectedOrder.recipientPhone && (
-                      <p className="text-sm">{selectedOrder.recipientPhone}</p>
+                      <p className="text-sm flex items-center gap-2">
+                        <Phone size={14} className="text-neutral-400" />
+                        {selectedOrder.recipientPhone}
+                      </p>
                     )}
                   </Card>
                 );
@@ -412,16 +376,25 @@ export default function OrdersModal({
 
             {/* Items */}
             {selectedOrder.items && selectedOrder.items.length > 0 && (
-              <div className="space-y-2">
+              <div className="space-y-4">
                 <p className="text-sm font-medium">Items</p>
                 <ul className="divide-y divide-border text-sm">
                   {selectedOrder.items.map((item: OrderItem) => (
                     <li
                       key={item.id}
-                      className="flex items-center justify-between py-2"
+                      className="flex items-center justify-between py-4"
                     >
+                      <Image
+                        src={item.product?.productImages?.[0]?.imageUrl ?? ''}
+                        alt={item.product?.productName ?? ''}
+                        width={40}
+                        height={40}
+                        priority
+                        className="rounded-md"
+                      />
                       <span className="capitalize">
-                        {item.productName?.toLowerCase()} × {item.quantity}
+                        {item.product?.productName?.toLowerCase()} ×{' '}
+                        {item.quantity}
                       </span>
                       <span className="font-medium">
                         ₦{item.totalPrice.toLocaleString()}
@@ -494,8 +467,8 @@ export default function OrdersModal({
                   {isInitiatingPayment
                     ? 'Processing...'
                     : selectedOrder.paymentReference
-                      ? `Continue Payment ₦${(selectedOrder.totalAmount ?? 0).toLocaleString()}`
-                      : `Pay ₦${(selectedOrder.totalAmount ?? 0).toLocaleString()}`}
+                      ? `Continue Payment - ₦${(selectedOrder.totalAmount ?? 0).toLocaleString()}`
+                      : `Pay - ₦${(selectedOrder.totalAmount ?? 0).toLocaleString()}`}
                 </Button>
               )}
 

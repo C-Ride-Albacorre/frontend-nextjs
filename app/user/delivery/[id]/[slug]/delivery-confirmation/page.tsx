@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useParams, useSearchParams, useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { useParams } from 'next/navigation';
 import { Button } from '@/components/ui/buttons/button';
 import Input from '@/components/ui/inputs/input';
 import {
@@ -14,7 +14,6 @@ import {
   ChevronRight,
   Loader2,
 } from 'lucide-react';
-import PaymentResultModal from '@/features/user/delivery/components/modals/payment-result-modal';
 import OrderDetailModal from '@/features/user/delivery/components/modals/order-detail-modal';
 import { useOrderStore } from '@/features/user/delivery/order-store';
 import { useCartStore } from '@/features/user/delivery/store';
@@ -24,34 +23,9 @@ import Card from '@/components/layout/card';
 
 export default function DeliveryConfirmationPage() {
   const { id, slug } = useParams<{ id: string; slug: string }>();
-  const searchParams = useSearchParams();
-  const router = useRouter();
 
   const [isOrderDetailModalOpen, setIsOrderDetailModalOpen] = useState(false);
-  const [isPaymentResultModalOpen, setIsPaymentResultModalOpen] =
-    useState(false);
-  const [returnedPaymentRef, setReturnedPaymentRef] = useState('');
   const [isCreatingOrder, setIsCreatingOrder] = useState(false);
-
-  // Detect payment reference from Monnify redirect
-  useEffect(() => {
-    const ref =
-      searchParams.get('paymentReference') ??
-      searchParams.get('transactionReference') ??
-      searchParams.get('ref') ??
-      searchParams.get('reference');
-
-    if (ref) {
-      console.log('[DeliveryConfirmation] Payment ref from redirect:', ref);
-      setReturnedPaymentRef(ref);
-      setIsPaymentResultModalOpen(true);
-
-      // Clean the URL without reloading the page
-      router.replace(`/user/delivery/${id}/${slug}/delivery-confirmation`, {
-        scroll: false,
-      });
-    }
-  }, [searchParams, id, slug, router]);
 
   const {
     // deliveryOptionId,
@@ -240,17 +214,6 @@ export default function DeliveryConfirmationPage() {
         onClose={() => setIsOrderDetailModalOpen(false)}
         orderId={orderId}
         cartItems={cart?.items}
-        onPaymentSuccess={(ref) => {
-          setIsOrderDetailModalOpen(false);
-          setReturnedPaymentRef(ref);
-          setIsPaymentResultModalOpen(true);
-        }}
-      />
-
-      <PaymentResultModal
-        isModalOpen={isPaymentResultModalOpen}
-        onClose={() => setIsPaymentResultModalOpen(false)}
-        paymentRef={returnedPaymentRef}
       />
     </>
   );

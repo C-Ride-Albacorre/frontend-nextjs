@@ -1,15 +1,20 @@
-
 'use client';
 
 import { useState } from 'react';
-import { CreditCard, Loader2, MapPin, Phone, ShoppingBag, User } from 'lucide-react';
+import {
+  CreditCard,
+  Loader2,
+  MapPin,
+  Phone,
+  ShoppingBag,
+  User,
+} from 'lucide-react';
 import Image from 'next/image';
 import Modal from '@/components/layout/modal';
 import { Button } from '@/components/ui/buttons/button';
 import Card from '@/components/layout/card';
 import { useOrderDetails } from '../../hooks/use-orders';
 import { initializePaymentAction } from '../../action';
-import { useOrderStore } from '../../order-store';
 import { toast } from 'sonner';
 import type { CartItem } from '../../types';
 
@@ -18,7 +23,6 @@ interface OrderDetailModalProps {
   onClose: () => void;
   orderId: string | null;
   cartItems?: CartItem[];
-  onPaymentSuccess?: (ref: string) => void;
 }
 
 export default function OrderDetailModal({
@@ -26,10 +30,8 @@ export default function OrderDetailModal({
   onClose,
   orderId,
   cartItems = [],
-  onPaymentSuccess,
 }: OrderDetailModalProps) {
   const [isInitiatingPayment, setIsInitiatingPayment] = useState(false);
-  const { setPaymentData, setCheckoutUrl } = useOrderStore();
 
   const {
     data: order,
@@ -38,9 +40,7 @@ export default function OrderDetailModal({
   } = useOrderDetails(isModalOpen ? orderId : null);
 
   // Build a lookup from productId -> cart item for name/image
-  const cartLookup = new Map(
-    cartItems.map((ci) => [ci.productId, ci]),
-  );
+  const cartLookup = new Map(cartItems.map((ci) => [ci.productId, ci]));
 
   if (!isModalOpen) return null;
 
@@ -52,7 +52,7 @@ export default function OrderDetailModal({
 
     setIsInitiatingPayment(true);
 
-    const callbackUrl = `${window.location.origin}${window.location.pathname}`;
+    const callbackUrl = `${window.location.origin}/user/delivery/payment-callback`;
     const result = await initializePaymentAction({
       orderId,
       paymentMethod: 'CARD',
@@ -68,53 +68,22 @@ export default function OrderDetailModal({
     }
 
     const data = result.data;
+    const checkoutUrl =
+      data?.checkoutUrl ?? data?.responseBody?.checkoutUrl ?? null;
 
-    // Extract redirect URL from Monnify response
-    const redirectUrl =
-      data?.checkoutUrl ??
-      data?.paymentUrl ??
-      data?.authorizationUrl ??
-      data?.body?.checkoutUrl ??
-      data?.body?.paymentUrl ??
-      data?.body?.authorizationUrl ??
-      data?.responseBody?.checkoutUrl ??
-      data?.responseBody?.paymentUrl ??
-      data?.responseBody?.authorizationUrl ??
-      null;
-
-    const ref =
-      data?.reference ??
-      data?.transactionReference ??
-      data?.paymentReference ??
-      data?.body?.transactionReference ??
-      data?.body?.paymentReference ??
-      data?.responseBody?.transactionReference ??
-      data?.responseBody?.paymentReference ??
-      '';
-
-    setPaymentData({
-      reference: ref,
-      amount: order?.totalAmount ?? 0,
-      method: 'CARD',
-    });
-
-    if (redirectUrl) {
-      setCheckoutUrl(orderId, redirectUrl);
-      window.location.href = redirectUrl;
+    if (checkoutUrl) {
+      window.location.href = checkoutUrl;
       return;
     }
 
-    // No redirect URL — inline/wallet flow
-    if (ref && onPaymentSuccess) {
-      onPaymentSuccess(ref);
-    }
+    toast.error('Could not get payment checkout URL. Please try again.');
   };
 
   const statusColor = (status?: string) => {
     if (!status) return 'bg-neutral-200 text-neutral-600';
     const s = status.toUpperCase();
-    if (s === 'DELIVERED' || s === 'COMPLETED')
-      return 'bg-green-100 text-green-700';
+    if (s === 'DELIVERED' || s === 'CONFIRMED')
+      return 'bg-green-100/20 text-green-700';
     if (s === 'CANCELLED') return 'bg-red-100 text-red-700';
     if (s === 'IN_TRANSIT' || s === 'PROCESSING')
       return 'bg-blue-100 text-blue-700';
@@ -133,11 +102,7 @@ export default function OrderDetailModal({
   };
 
   return (
-    <Modal
-      
-      isModalOpen={isModalOpen}
-      onClose={onClose}
-    >
+    <Modal isModalOpen={isModalOpen} onClose={onClose}>
       <div className="space-y-6">
         {/* Loading */}
         {isLoading && (
@@ -230,8 +195,8 @@ export default function OrderDetailModal({
                   {order.items.map((item: any) => {
                     const cartItem = cartLookup.get(item.productId);
                     const name =
+                      item.product?.productName ??
                       item.productName ??
-                      item.product?.name ??
                       cartItem?.productName ??
                       item.name ??
                       'Item';
@@ -279,8 +244,7 @@ export default function OrderDetailModal({
                         <span className="font-medium shrink-0">
                           ₦
                           {(
-                            item.totalPrice ??
-                            item.unitPrice * item.quantity
+                            item.totalPrice ?? item.unitPrice * item.quantity
                           ).toLocaleString()}
                         </span>
                       </li>

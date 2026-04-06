@@ -19,10 +19,6 @@ import {
   Star,
 } from 'lucide-react';
 import StatCard from '@/components/layout/stat-card';
-import Card from '@/components/layout/card';
-import { RouteItem } from '@/features/user/track-order/components/section';
-import { Button } from '@/components/ui/buttons/button';
-import Avatar from '@/components/ui/avatar';
 import { orders } from '@/features/user/order-history/data';
 import OrderCard from '@/features/user/order-history/components/order-card';
 
