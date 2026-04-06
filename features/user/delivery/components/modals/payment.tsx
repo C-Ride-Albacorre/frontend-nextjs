@@ -24,7 +24,7 @@ export default function PaymentModal({
   totalAmount: number;
 }) {
   const [isLoading, setIsLoading] = useState(false);
-  const { orderId, setPaymentData } = useOrderStore();
+  const { orderId, setPaymentData, setCheckoutUrl } = useOrderStore();
 
   const handlePay = async () => {
     if (!orderId) {
@@ -34,7 +34,7 @@ export default function PaymentModal({
 
     setIsLoading(true);
 
-    const callbackUrl = `${window.location.origin}/user/delivery/payment-callback`;
+    const callbackUrl = `${window.location.origin}${window.location.pathname}`;
 
     const result = await initializePaymentAction({
       orderId,
@@ -86,6 +86,8 @@ export default function PaymentModal({
     });
 
     if (redirectUrl) {
+      // Cache the checkout URL so we can resume without re-initializing
+      if (orderId) setCheckoutUrl(orderId, redirectUrl);
       // Redirect to Monnify hosted checkout
       window.location.href = redirectUrl;
       return;

@@ -16,6 +16,9 @@ interface OrderState {
   amountPaid: number | null;
   paymentMethod: string | null;
 
+  // Cached checkout URLs keyed by orderId (Monnify won't re-initialize)
+  checkoutUrls: Record<string, string>;
+
   setDeliveryOption: (id: string) => void;
   setDropoffLocation: (loc: DropoffLocation) => void;
   setRecipientName: (name: string) => void;
@@ -27,6 +30,7 @@ interface OrderState {
     amount: number;
     method: string;
   }) => void;
+  setCheckoutUrl: (orderId: string, url: string) => void;
   reset: () => void;
 }
 
@@ -44,6 +48,7 @@ const initialState = {
   paymentReference: null,
   amountPaid: null,
   paymentMethod: null,
+  checkoutUrls: {},
 };
 
 export const useOrderStore = create<OrderState>()(
@@ -63,6 +68,10 @@ export const useOrderStore = create<OrderState>()(
           amountPaid: data.amount,
           paymentMethod: data.method,
         }),
+      setCheckoutUrl: (orderId, url) =>
+        set((state) => ({
+          checkoutUrls: { ...state.checkoutUrls, [orderId]: url },
+        })),
       reset: () => set(initialState),
     }),
     {

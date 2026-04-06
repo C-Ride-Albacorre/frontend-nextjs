@@ -33,6 +33,10 @@ interface OrderSummary {
   id: string;
   orderId?: string;
   status?: string;
+  orderStatus?: string;
+  paymentStatus?: string;
+  paymentReference?: string;
+  monnifyReference?: string;
   totalAmount?: number;
   amount?: number;
   createdAt?: string;
@@ -64,7 +68,8 @@ export default function OrdersModal({
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
   const [isInitiatingPayment, setIsInitiatingPayment] = useState(false);
 
-  const { setOrderId, setPaymentData } = useOrderStore();
+  const { setOrderId, setPaymentData, setCheckoutUrl, checkoutUrls } =
+    useOrderStore();
 
   // React Query hooks
   const {
@@ -101,11 +106,32 @@ export default function OrdersModal({
     });
   };
 
-  const handlePayNow = async (order: any) => {
+  const handlePayNow = async (order: OrderDetail) => {
     const orderId = order.id ?? order.orderId;
     if (!orderId) {
       toast.error('Order ID not found');
       return;
+    }
+
+    const isResumingPayment =
+      !!order.paymentReference || !!order.monnifyReference;
+    console.log(
+      `[OrdersModal] ${isResumingPayment ? 'Resuming' : 'Initializing'} payment for order:`,
+      orderId,
+      isResumingPayment ? `(existing ref: ${order.paymentReference})` : '',
+    );
+
+    // If payment was already initialized, try the cached checkout URL first
+    if (isResumingPayment) {
+      const cachedUrl = checkoutUrls[orderId] ?? null;
+      if (cachedUrl) {
+        console.log('[OrdersModal] Using cached checkout URL:', cachedUrl);
+        window.location.href = cachedUrl;
+        return;
+      }
+      console.log(
+        '[OrdersModal] No cached checkout URL — backend must support re-initialization',
+      );
     }
 
     setIsInitiatingPayment(true);
@@ -122,7 +148,17 @@ export default function OrdersModal({
     setIsInitiatingPayment(false);
 
     if (!result.success) {
-      toast.error(result.error || 'Payment initialization failed');
+      // If backend says already initialized and we don't have a cached URL
+      if (
+        result.error?.toLowerCase().includes('already initialized') ||
+        result.error?.toLowerCase().includes('already exists')
+      ) {
+        toast.error(
+          'Payment was already started but the checkout link expired. Please contact support or cancel and create a new order.',
+        );
+      } else {
+        toast.error(result.error || 'Payment initialization failed');
+      }
       return;
     }
 
@@ -163,6 +199,8 @@ export default function OrdersModal({
     });
 
     if (redirectUrl) {
+      // Cache the checkout URL so we can resume without re-initializing
+      setCheckoutUrl(orderId, redirectUrl);
       window.location.href = redirectUrl;
       return;
     }
@@ -453,7 +491,11 @@ export default function OrdersModal({
                   onClick={() => handlePayNow(selectedOrder)}
                   disabled={isInitiatingPayment || cancelMutation.isPending}
                 >
-                  {isInitiatingPayment ? 'Processing...' : 'Pay Now'}
+                  {isInitiatingPayment
+                    ? 'Processing...'
+                    : selectedOrder.paymentReference
+                      ? `Continue Payment ₦${(selectedOrder.totalAmount ?? 0).toLocaleString()}`
+                      : `Pay ₦${(selectedOrder.totalAmount ?? 0).toLocaleString()}`}
                 </Button>
               )}
 

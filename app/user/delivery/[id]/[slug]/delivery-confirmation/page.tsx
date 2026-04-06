@@ -1,13 +1,12 @@
 'use client';
 
-import { useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { useParams, useSearchParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/buttons/button';
 import Input from '@/components/ui/inputs/input';
 import {
   Box,
   Dot,
-  FileText,
   Info,
   Shield,
   Stars,
@@ -15,24 +14,44 @@ import {
   ChevronRight,
   Loader2,
 } from 'lucide-react';
-import PaymentModal from '@/features/user/delivery/components/modals/payment';
-import PaymentSuccessModal from '@/features/user/delivery/components/modals/payment-success';
+import PaymentResultModal from '@/features/user/delivery/components/modals/payment-result-modal';
+import OrderDetailModal from '@/features/user/delivery/components/modals/order-detail-modal';
 import { useOrderStore } from '@/features/user/delivery/order-store';
 import { useCartStore } from '@/features/user/delivery/store';
 import { createOrderAction } from '@/features/user/delivery/action';
 import { toast } from 'sonner';
 import Card from '@/components/layout/card';
 
-const SERVICE_FEE = 6500;
-const VAT_RATE = 0.075;
-
 export default function DeliveryConfirmationPage() {
   const { id, slug } = useParams<{ id: string; slug: string }>();
+  const searchParams = useSearchParams();
+  const router = useRouter();
 
-  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
-  const [isPaymentSuccessModalOpen, setIsPaymentSuccessModalOpen] =
+  const [isOrderDetailModalOpen, setIsOrderDetailModalOpen] = useState(false);
+  const [isPaymentResultModalOpen, setIsPaymentResultModalOpen] =
     useState(false);
+  const [returnedPaymentRef, setReturnedPaymentRef] = useState('');
   const [isCreatingOrder, setIsCreatingOrder] = useState(false);
+
+  // Detect payment reference from Monnify redirect
+  useEffect(() => {
+    const ref =
+      searchParams.get('paymentReference') ??
+      searchParams.get('transactionReference') ??
+      searchParams.get('ref') ??
+      searchParams.get('reference');
+
+    if (ref) {
+      console.log('[DeliveryConfirmation] Payment ref from redirect:', ref);
+      setReturnedPaymentRef(ref);
+      setIsPaymentResultModalOpen(true);
+
+      // Clean the URL without reloading the page
+      router.replace(`/user/delivery/${id}/${slug}/delivery-confirmation`, {
+        scroll: false,
+      });
+    }
+  }, [searchParams, id, slug, router]);
 
   const {
     // deliveryOptionId,
@@ -45,14 +64,13 @@ export default function DeliveryConfirmationPage() {
     setOrderId,
   } = useOrderStore();
 
-  const { cart } = useCartStore();
+  const { cart, clearCart } = useCartStore();
 
   console.log('[DeliveryConfirmationPage] Cart:', cart);
 
   // Real totals from cart
   const subTotal = cart?.subTotal ?? 0;
-  const vat = Math.round((subTotal + SERVICE_FEE) * VAT_RATE);
-  const total = subTotal + SERVICE_FEE + vat;
+  const total = subTotal;
 
   const handleContinue = async () => {
     if (!cart?.id) {
@@ -61,12 +79,6 @@ export default function DeliveryConfirmationPage() {
     }
     if (!dropoffLocation) {
       toast.error('Please go back and select a delivery address');
-      return;
-    }
-
-    // If order was already created (user navigated back), skip straight to payment
-    if (orderId) {
-      setIsPaymentModalOpen(true);
       return;
     }
 
@@ -99,7 +111,8 @@ export default function DeliveryConfirmationPage() {
     }
 
     setOrderId(newOrderId);
-    setIsPaymentModalOpen(true);
+    clearCart();
+    setIsOrderDetailModalOpen(true);
   };
 
   return (
@@ -178,20 +191,6 @@ export default function DeliveryConfirmationPage() {
               ₦ {subTotal.toLocaleString()}
             </span>
           </li>
-          <li className="flex justify-between items-center">
-            <span className="flex gap-3 items-center">
-              <FileText size={16} /> Service fee
-            </span>
-            <span className="text-base text-primary-text-100">
-              ₦ {SERVICE_FEE.toLocaleString()}
-            </span>
-          </li>
-          <li className="flex justify-between items-center">
-            <span>VAT (7.5%)</span>
-            <span className="text-base text-primary-text-100">
-              ₦ {vat.toLocaleString()}
-            </span>
-          </li>
         </ul>
 
         <div className="flex justify-between items-center text-xl border-t border-border py-6">
@@ -207,13 +206,13 @@ export default function DeliveryConfirmationPage() {
         </span>
       </div>
 
-      <div className="mt-12 flex flex-col md:flex-row items-center justify-around gap-8">
+      <div className="mt-12 flex flex-col md:flex-row items-center justify-around gap-4 md:gap-8">
         <Button
           href={`/user/delivery/${id}/${slug}/delivery-location`}
           variant="outline"
           size="lg"
           leftIcon={<ChevronLeft size={16} />}
-          className="px-12"
+          className="px-12 w-full md:w-auto"
         >
           Back
         </Button>
@@ -223,7 +222,7 @@ export default function DeliveryConfirmationPage() {
           variant="primary"
           size="lg"
           rightIcon={isCreatingOrder ? undefined : <ChevronRight size={16} />}
-          className="px-12"
+          className="px-12 w-full md:w-auto"
           disabled={isCreatingOrder}
         >
           {isCreatingOrder ? (
@@ -236,19 +235,22 @@ export default function DeliveryConfirmationPage() {
         </Button>
       </div>
 
-      <PaymentModal
-        isModalOpen={isPaymentModalOpen}
-        onClose={() => setIsPaymentModalOpen(false)}
-        setIsPaymentSuccessModalOpen={() => {
-          setIsPaymentModalOpen(false);
-          setIsPaymentSuccessModalOpen(true);
+      <OrderDetailModal
+        isModalOpen={isOrderDetailModalOpen}
+        onClose={() => setIsOrderDetailModalOpen(false)}
+        orderId={orderId}
+        cartItems={cart?.items}
+        onPaymentSuccess={(ref) => {
+          setIsOrderDetailModalOpen(false);
+          setReturnedPaymentRef(ref);
+          setIsPaymentResultModalOpen(true);
         }}
-        totalAmount={total}
       />
 
-      <PaymentSuccessModal
-        isModalOpen={isPaymentSuccessModalOpen}
-        onClose={() => setIsPaymentSuccessModalOpen(false)}
+      <PaymentResultModal
+        isModalOpen={isPaymentResultModalOpen}
+        onClose={() => setIsPaymentResultModalOpen(false)}
+        paymentRef={returnedPaymentRef}
       />
     </>
   );
