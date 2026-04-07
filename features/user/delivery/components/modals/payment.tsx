@@ -83,6 +83,7 @@ export default function PaymentModal({
       reference: ref,
       amount: totalAmount,
       method: 'CARD',
+      status: 'PENDING',
     });
 
     if (redirectUrl) {

@@ -27,7 +27,7 @@ export default function OrderSummary() {
         <ul className="space-y-6">
           {items.map((item: any) => (
             <li key={item.id} className="flex justify-between items-center">
-              <p className="text-neutral-500 text-sm">
+              <p className="text-neutral-500 text-sm text-left">
                 {item.productName} x {item.quantity}
               </p>
 

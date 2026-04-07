@@ -65,7 +65,7 @@ export interface DropoffLocation {
 
 export interface CreateOrderPayload {
   cartId: string;
-  deliveryOptionId?: string; 
+  deliveryOptionId?: string;
   dropoffLocation: DropoffLocation;
   recipientName: string;
   recipientPhone: string;

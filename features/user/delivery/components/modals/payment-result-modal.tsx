@@ -49,6 +49,7 @@ export default function PaymentResultModal({
             paymentRef,
           amount: data?.amount ?? data?.totalAmount ?? amountPaid ?? 0,
           method: data?.paymentMethod ?? 'CARD',
+          status: data?.status ?? 'success',
         });
 
         setStatus('success');

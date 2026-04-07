@@ -38,12 +38,14 @@ export default function Sidebar({
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between">
             <Link href={config.logoHref} onClick={onClose}>
+           
               <Image
                 src="/assets/svg/logo-main.svg"
                 alt="C-ride Logo"
                 width={120}
                 height={48}
                 priority
+                className="object-cover"
               />
             </Link>
 

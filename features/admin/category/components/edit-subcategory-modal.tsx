@@ -55,7 +55,7 @@ export default function EditSubcategoryModal({
     if (state.status === 'success') {
       toast.success(state.message);
       onClose();
-      onSuccess();
+      onSuccess?.();
     }
     if (isError && state.message) {
       toast.error(state.message);

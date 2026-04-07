@@ -130,12 +130,12 @@ export default function OrdersModal({
         '[OrdersModal] Verifying existing monnifyReference:',
         order.monnifyReference,
       );
-      window.location.href = `/user/delivery/payment-callback?paymentReference=${encodeURIComponent(order.monnifyReference)}`;
+      window.location.href = `/payment/callback?paymentReference=${encodeURIComponent(order.monnifyReference)}`;
       return;
     }
 
     // Otherwise initialize a new payment
-    const callbackUrl = `${window.location.origin}/user/delivery/payment-callback`;
+    const callbackUrl = `${window.location.origin}/payment/callback`;
     const result = await initializePaymentAction({
       orderId,
       paymentMethod: 'CARD',
@@ -197,7 +197,11 @@ export default function OrdersModal({
   };
 
   return (
-    <Modal wrapperClassName='max-w-xl mx-auto' isModalOpen={isOpen} onClose={handleClose}>
+    <Modal
+      wrapperClassName=" mx-auto"
+      isModalOpen={isOpen}
+      onClose={handleClose}
+    >
       <div className="space-y-6 ">
         {/* ── Header ── */}
         <div className="flex items-center justify-between">
@@ -382,7 +386,7 @@ export default function OrdersModal({
                   {selectedOrder.items.map((item: OrderItem) => (
                     <li
                       key={item.id}
-                      className="flex items-center justify-between py-4"
+                      className="flex items-center justify-between py-4 gap-2 md:gap-8"
                     >
                       <Image
                         src={item.product?.productImages?.[0]?.imageUrl ?? ''}
@@ -392,10 +396,12 @@ export default function OrdersModal({
                         priority
                         className="rounded-md"
                       />
-                      <span className="capitalize">
-                        {item.product?.productName?.toLowerCase()} ×{' '}
+                      <div className="capitalize  bg-amber-500 w-full  text-left">
+                        <p>
+                          {item.product?.productName?.toLowerCase()} ×{' '}
                         {item.quantity}
-                      </span>
+                        </p>
+                      </div>
                       <span className="font-medium">
                         ₦{item.totalPrice.toLocaleString()}
                       </span>

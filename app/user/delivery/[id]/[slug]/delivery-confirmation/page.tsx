@@ -61,7 +61,13 @@ export default function DeliveryConfirmationPage() {
     const payload = {
       cartId: cart.id,
       // deliveryOptionId,
-      dropoffLocation,
+      dropoffLocation: {
+        address: dropoffLocation.address,
+        city: dropoffLocation.city || 'N/A',
+        state: dropoffLocation.state || 'N/A',
+        country: dropoffLocation.country || 'Nigeria',
+        postalCode: dropoffLocation.postalCode,
+      },
       recipientName,
       recipientPhone,
       deliveryInstructions,

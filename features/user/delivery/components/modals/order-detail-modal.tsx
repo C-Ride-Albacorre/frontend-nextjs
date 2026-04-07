@@ -52,7 +52,7 @@ export default function OrderDetailModal({
 
     setIsInitiatingPayment(true);
 
-    const callbackUrl = `${window.location.origin}/user/delivery/payment-callback`;
+    const callbackUrl = `${window.location.origin}/payment/callback`;
     const result = await initializePaymentAction({
       orderId,
       paymentMethod: 'CARD',
@@ -230,7 +230,7 @@ export default function OrderDetailModal({
                         </div>
 
                         {/* Name + qty */}
-                        <div className="flex-1 min-w-0">
+                        <div className="flex-1 min-w-0 text-left">
                           <p className="font-medium capitalize truncate">
                             {name.toLowerCase()}
                           </p>

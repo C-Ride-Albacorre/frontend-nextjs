@@ -11,6 +11,7 @@ import DeleteConfirmModal from './delete-confirm-modal';
 import { Product } from '../type';
 import { useRouter } from 'next/navigation';
 import { StoreData } from '@/features/vendor/store/types';
+import Image from 'next/image';
 
 type Props = {
   stores: StoreData[];
@@ -36,6 +37,8 @@ export default function ProductsPageSection({
   const handleSelectStore = (storeId: string) => {
     router.push(`/vendor/products?storeId=${encodeURIComponent(storeId)}`);
   };
+
+  console.log(stores);
 
   const handleBackToStores = () => {
     router.push('/vendor/products');
@@ -91,18 +94,20 @@ export default function ProductsPageSection({
                     className={
                       store.status === 'PENDING_APPROVAL'
                         ? 'opacity-50 pointer-events-none grayscale'
-                        : ''
+                        : 'bg-white'
                     }
                   >
                     <div className="space-y-8">
                       {/* Store Header */}
                       <div className="flex items-center gap-4">
-                        <div className="w-14 h-14 rounded-lg overflow-hidden bg-neutral-100 flex items-center justify-center">
+                        <div className="relative w-20 h-14 rounded-lg overflow-hidden bg-neutral-100 flex items-center justify-center">
                           {store.storeLogo ? (
-                            <img
+                            <Image
                               src={store.storeLogo}
                               alt={store.storeName}
-                              className="w-full h-full object-cover"
+                              fill
+                              priority
+                              className="object-contain"
                             />
                           ) : (
                             <span className="text-sm font-semibold text-neutral-500">
@@ -114,46 +119,53 @@ export default function ProductsPageSection({
                           <p className="font-medium text-neutral-900">
                             {store.storeName}
                           </p>
-                          <div className="flex items-center gap-2">
+                          <div>
                             {store.status === 'PENDING_APPROVAL' && (
                               <span className="text-primary bg-primary-text-100 px-2 py-1 rounded-2xl text-[10px]">
-                                pending
+                                Pending
                               </span>
                             )}
                             {store.status === 'ACTIVE' && (
                               <span className="text-[#10B981] bg-[#108981]/10 px-2 py-1 rounded-2xl text-[10px]">
-                                active
+                                Active
                               </span>
                             )}
-                            <p className="text-xs text-neutral-500">
-                              {store.categoryId}
-                            </p>
                           </div>
                         </div>
                       </div>
 
                       {/* Store Info */}
-                      <div className="text-sm text-neutral-600 space-y-4">
-                        <p className="space-x-1">
-                          <span className="font-medium text-neutral-800">
-                            Store id:
-                          </span>{' '}
-                          <span>{store.id.slice(0, 24)}...</span>
-                        </p>
-                        <p className="space-x-1">
-                          <span className="font-medium text-neutral-800">
-                            Address:
-                          </span>
-                          <span>{store.storeAddress}</span>
-                        </p>
-                        <p className="space-x-1">
-                          <span className="font-medium text-neutral-800">
-                            Created on:
-                          </span>
-                          <span>
+                      <div className="text-sm  space-y-4">
+                        {/* <div className='space-y-1'>
+
+                          <p className='text-xs text-neutral-500'>Category ID</p>
+
+                            <p className="text-sm">
+                              {store.categoryId}
+                            </p>
+                        </div> */}
+
+                        <div className="space-y-1">
+                          <p className="text-xs text-neutral-500">Address</p>
+                          <p className="text-sm">{store.storeAddress}</p>
+                        </div>
+
+                        <div className="space-y-1">
+                          <p className="text-xs text-neutral-500">Email</p>{' '}
+                          <p className="text-sm">{store.email}</p>
+                        </div>
+
+                        <div className="space-y-1">
+                          <p className="text-xs text-neutral-500">Phone Number</p>{' '}
+                          <p className="text-sm">{store.phoneNumber}</p>
+                        </div>
+
+                        <div className="space-y-1">
+                          <p className="text-xs text-neutral-500">Created on</p>
+                          <p className="text-sm">
                             {new Date(store.createdAt).toDateString()}
-                          </span>
-                        </p>
+                          </p>
+                        </div>
                       </div>
 
                       {/* Action */}

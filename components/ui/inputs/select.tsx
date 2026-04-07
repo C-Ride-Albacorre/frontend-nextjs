@@ -1,7 +1,7 @@
 'use client';
 
 import clsx from 'clsx';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { SelectProps } from '@/types/input';
 
@@ -24,6 +24,18 @@ export function Select({
   disabled,
 }: SelectProps) {
   const [open, setOpen] = useState(false);
+  const selectRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (selectRef.current && !selectRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [open]);
 
   const wrapperClasses = clsx(
     'relative flex w-full items-center gap-2 rounded-xl px-4 py-3.5 text-base md:text-sm outline-none cursor-pointer',
@@ -50,7 +62,7 @@ export function Select({
     typeof rightIcon === 'function' ? rightIcon(open) : rightIcon;
 
   return (
-    <div className="space-y-2 w-full">
+    <div className="space-y-2 w-full" ref={selectRef}>
       {label && (
         <label htmlFor={id} className="text-sm font-medium">
           {label}

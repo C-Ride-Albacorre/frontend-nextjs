@@ -30,6 +30,7 @@ export default function DeliveryLocation() {
   const {
     recipientName,
     recipientPhone,
+    dropoffLocation,
     setRecipientName,
     setRecipientPhone,
     setDropoffLocation,
@@ -46,11 +47,38 @@ export default function DeliveryLocation() {
       .then((data) => {
         const list: Address[] = data ?? [];
         setAddresses(list);
+
+        // If the user previously selected an address (stored in order store),
+        // try to match it with one of the fetched addresses so it stays selected
+        if (dropoffLocation) {
+          const match = list.find((a) => a.address === dropoffLocation.address);
+          if (match) {
+            setSelectedAddress(match);
+            return;
+          }
+        }
+
+        // Otherwise fall back to the default address
         const def = list.find((a) => a.isDefault);
         if (def) setSelectedAddress(def);
       })
       .finally(() => setIsFetching(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const toDropoff = (addr: Address) => ({
+    address: addr.address,
+    city: addr.city || 'N/A',
+    state: addr.state || 'N/A',
+    country: addr.country || 'Nigeria',
+    postalCode: addr.postalCode,
+  });
+
+  const handleAddressSelect = (addr: Address) => {
+    setSelectedAddress(addr);
+    // Sync to order store immediately so it's never stale
+    setDropoffLocation(toDropoff(addr));
+  };
 
   const handleProceed = () => {
     if (!selectedAddress) {
@@ -69,13 +97,7 @@ export default function DeliveryLocation() {
     // Persist to order store
     setRecipientName(name.trim());
     setRecipientPhone(phone.trim());
-    setDropoffLocation({
-      address: selectedAddress.address,
-      city: selectedAddress.city ?? '',
-      state: selectedAddress.state ?? '',
-      country: selectedAddress.country ?? 'Nigeria',
-      postalCode: selectedAddress.postalCode,
-    });
+    setDropoffLocation(toDropoff(selectedAddress));
 
     router.push(`/user/delivery/${id}/${slug}/delivery-confirmation`);
   };
@@ -100,7 +122,7 @@ export default function DeliveryLocation() {
             defaultAddress={defaultAddress}
             otherAddresses={otherAddresses}
             selected={selectedAddress}
-            onSelect={setSelectedAddress}
+            onSelect={handleAddressSelect}
           />
         )}
       </Card>

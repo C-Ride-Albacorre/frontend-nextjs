@@ -193,7 +193,7 @@ export async function initializePaymentService(
 export async function verifyPaymentService(reference: string) {
   return request(
     'VerifyPayment',
-    `${BASE_URL}/customer/payment/verify/${reference}`,
+    `${BASE_URL}/customer/payment/verify/${encodeURIComponent(reference)}`,
     { method: 'POST' },
   );
 }

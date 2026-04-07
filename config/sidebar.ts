@@ -151,11 +151,11 @@ const ADMIN_SIDEBAR_SECTIONS: SidebarSection[] = [
         icon: LayoutDashboard,
         href: '/admin/dashboard',
       },
-      {
-        label: 'Analytics',
-        icon: BarChart3,
-        href: '/admin/analytics',
-      },
+      // {
+      //   label: 'Analytics',
+      //   icon: BarChart3,
+      //   href: '/admin/analytics',
+      // },
       {
         label: 'Product Category',
         icon: ScanBarcode,
@@ -168,11 +168,11 @@ const ADMIN_SIDEBAR_SECTIONS: SidebarSection[] = [
   {
     title: 'User Management',
     items: [
-      {
-        label: 'Driver Onboarding',
-        icon: TruckIcon,
-        href: '/admin/driver-onboarding',
-      },
+      // {
+      //   label: 'Driver Onboarding',
+      //   icon: TruckIcon,
+      //   href: '/admin/driver-onboarding',
+      // },
       {
         label: 'Vendor Onboarding',
         icon: Users2,
@@ -183,76 +183,76 @@ const ADMIN_SIDEBAR_SECTIONS: SidebarSection[] = [
         icon: Store,
         href: '/admin/stores',
       },
-      {
-        label: 'Customer Accounts',
-        icon: Users,
-        href: '/admin/customer-accounts',
-      },
+      // {
+      //   label: 'Customer Accounts',
+      //   icon: Users,
+      //   href: '/admin/customer-accounts',
+      // },
     ],
   },
   {
-    title: 'Operations',
+    // title: 'Operations',
     items: [
-      {
-        label: 'All Deliveries',
-        icon: Package,
-        href: '/admin/all-deliveries',
-      },
-      {
-        label: 'Dispatch Panel',
-        icon: ActivityIcon,
-        href: '/admin/dispatch-panel',
-      },
-      {
-        label: 'Dispute Resolution',
-        icon: HelpCircle,
-        href: '/admin/support-tickets',
-      },
+      // {
+      //   label: 'All Deliveries',
+      //   icon: Package,
+      //   href: '/admin/all-deliveries',
+      // },
+      // {
+      //   label: 'Dispatch Panel',
+      //   icon: ActivityIcon,
+      //   href: '/admin/dispatch-panel',
+      // },
+      // {
+      //   label: 'Dispute Resolution',
+      //   icon: HelpCircle,
+      //   href: '/admin/support-tickets',
+      // },
     ],
   },
   {
-    title: 'Financial',
+    // title: 'Financial',
     items: [
-      {
-        label: 'Platform Earnings',
-        icon: TrendingUp,
-        href: '/admin/platform-earnings',
-      },
-      {
-        label: 'Vendor Payouts',
-        icon: CreditCard,
-        href: '/admin/vendor-payouts',
-      },
-      {
-        label: 'Pricing Rules',
-        icon: DollarSign,
-        href: '/admin/pricing-rules',
-      },
-      {
-        label: 'Promotions',
-        icon: Tag,
-        href: '/admin/promotions',
-      },
+      // {
+      //   label: 'Platform Earnings',
+      //   icon: TrendingUp,
+      //   href: '/admin/platform-earnings',
+      // },
+      // {
+      //   label: 'Vendor Payouts',
+      //   icon: CreditCard,
+      //   href: '/admin/vendor-payouts',
+      // },
+      // {
+      //   label: 'Pricing Rules',
+      //   icon: DollarSign,
+      //   href: '/admin/pricing-rules',
+      // },
+      // {
+      //   label: 'Promotions',
+      //   icon: Tag,
+      //   href: '/admin/promotions',
+      // },
     ],
   },
   {
-    title: 'Analytics & Metrics',
+    // title: 'Analytics & Metrics',
     items: [
-      {
-        label: 'Driver Performance',
-        icon: UserCheck,
-        href: '/admin/driver-performance',
-      },
-      {
-        label: 'Customer Analytics',
-        icon: Users,
-        href: '/admin/customer-analytics',
-      },
-      {
-        label: 'Vendor Analytics',
-        icon: ShoppingBag,
-        href: '/admin/vendor-analytics',
-      },
+      // {
+      //   label: 'Driver Performance',
+      //   icon: UserCheck,
+      //   href: '/admin/driver-performance',
+      // },
+      // {
+      //   label: 'Customer Analytics',
+      //   icon: Users,
+      //   href: '/admin/customer-analytics',
+      // },
+      // {
+      //   label: 'Vendor Analytics',
+      //   icon: ShoppingBag,
+      //   href: '/admin/vendor-analytics',
+      // },
     ],
   },
   {
@@ -264,26 +264,26 @@ const ADMIN_SIDEBAR_SECTIONS: SidebarSection[] = [
         href: '/admin/create-admin',
         role: 'SUPER_ADMIN',
       },
-      {
-        label: 'Fraud Detection',
-        icon: TriangleAlert,
-        href: '/admin/fraud-detection',
-      },
-      {
-        label: 'Zone Management',
-        icon: MapPin,
-        href: '/admin/zone-management',
-      },
-      {
-        label: 'System Logs',
-        icon: FileText,
-        href: '/admin/system-logs',
-      },
-      {
-        label: 'Global Settings',
-        icon: Settings,
-        href: '/admin/settings',
-      },
+      // {
+      //   label: 'Fraud Detection',
+      //   icon: TriangleAlert,
+      //   href: '/admin/fraud-detection',
+      // },
+      // {
+      //   label: 'Zone Management',
+      //   icon: MapPin,
+      //   href: '/admin/zone-management',
+      // },
+      // {
+      //   label: 'System Logs',
+      //   icon: FileText,
+      //   href: '/admin/system-logs',
+      // },
+      // {
+      //   label: 'Global Settings',
+      //   icon: Settings,
+      //   href: '/admin/settings',
+      // },
     ],
   },
   {
