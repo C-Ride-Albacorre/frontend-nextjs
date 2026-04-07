@@ -18,7 +18,7 @@ import { updateSubcategoryAction } from '../action';
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess: () => void;
+  onSuccess?: () => void;
   subcategory: Subcategory | null;
   categories: Category[];
 }
@@ -43,7 +43,6 @@ export default function EditSubcategoryModal({
 
   const [state, action, isPending] = useActionState(boundAction, initialState);
   const isError = state.status === 'error';
-
 
   useEffect(() => {
     if (subcategory) {

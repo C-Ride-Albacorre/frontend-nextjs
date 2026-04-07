@@ -2,7 +2,10 @@
 
 import { useActionState, useEffect, useState, useTransition } from 'react';
 import { toast } from 'sonner';
-import { CreateCategoryPayload, CreateCategoryState } from '@/features/admin/category/types';
+import {
+  CreateCategoryPayload,
+  CreateCategoryState,
+} from '@/features/admin/category/types';
 import Modal from '@/components/layout/modal';
 import Input from '@/components/ui/inputs/input';
 import Textarea from '@/components/ui/inputs/textarea';
@@ -14,7 +17,7 @@ import { createCategoryAction } from '../action';
 interface CreateCategoryModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess: () => void;
+  onSuccess?: () => void;
 }
 
 const initialState: CreateCategoryState = {
@@ -43,7 +46,7 @@ export default function CreateCategoryModal({
     if (state.status === 'success') {
       toast.success(state.message);
       onClose();
-      onSuccess();
+      onSuccess?.();
     }
 
     if (isError && state.message) {

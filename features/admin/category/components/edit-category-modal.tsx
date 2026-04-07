@@ -18,7 +18,7 @@ import { updateCategoryAction } from '../action';
 interface EditCategoryModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess: () => void;
+  onSuccess?: () => void;
   category: Category | null;
 }
 
@@ -77,7 +77,7 @@ export default function EditCategoryModal({
     if (state.status === 'success') {
       toast.success(state.message);
       onClose();
-      onSuccess();
+      onSuccess?.();
     }
     if (isError && state.message) {
       toast.error(state.message);

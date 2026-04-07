@@ -17,7 +17,7 @@ import ToggleSwitch from '@/components/ui/buttons/toggle-switch';
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess: () => void;
+  onSuccess?: () => void;
   categories: Category[];
   preselectedCategoryId?: string;
 }
@@ -45,7 +45,7 @@ export default function CreateSubcategoryModal({
     if (state.status === 'success') {
       toast.success(state.message);
       onClose();
-      onSuccess();
+      onSuccess?.();
     }
 
     if (isError && state.message) {
@@ -78,7 +78,7 @@ export default function CreateSubcategoryModal({
 
         <div className="space-y-6">
           <Select
-          id='categoryId'
+            id="categoryId"
             name="categoryId"
             label="Parent Category"
             options={categoryOptions}

@@ -1,9 +1,8 @@
 'use client';
 
-import { useState, useEffect, useTransition } from 'react';
+import { useState, useEffect, useTransition, use } from 'react';
 import { toast } from 'sonner';
 import {
-  getCategoriesAction,
   deleteCategoryAction,
   toggleCategoryStatusAction,
   deleteSubcategoryAction,
@@ -31,14 +30,36 @@ import CreateSubcategoryModal from './create-subcategory-modal';
 import EditSubcategoryModal from './edit-subcategory-modal';
 import { IconButton } from '@/components/ui/buttons/icon-button';
 import ToggleSwitch from '@/components/ui/buttons/toggle-switch';
+import Modal from '@/components/layout/modal';
+import DeleteCategoryModal from './delete-category-modal';
+import DeleteSubCategoryModal from './delete-subcategory-modal';
 
-export default function CategoryPageSection() {
-  const [categories, setCategories] = useState<Category[]>([]);
+interface CategoryPageSectionProps {
+  data: Category[];
+}
+
+export default function CategoryPageSection({
+  data,
+}: CategoryPageSectionProps) {
+  const [categories, setCategories] = useState<Category[]>(data);
   const [isPending, startTransition] = useTransition();
-  const [hasFetched, setHasFetched] = useState(false);
+  const [hasFetched, setHasFetched] = useState(true);
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
 
-  // Modal states
+  const [deleteCategoryModalOpen, setDeleteCategoryModalOpen] = useState(false);
+  const [categoryToDelete, setCategoryToDelete] = useState<{
+    id: string;
+    name: string;
+  } | null>(null);
+
+  const [deleteSubCategoryModalOpen, setDeleteSubCategoryModalOpen] =
+    useState(false);
+
+  const [subcategoryToDelete, setSubcategoryToDelete] = useState<{
+    id: string;
+    name: string;
+  } | null>(null);
+
   const [showCreateCategory, setShowCreateCategory] = useState(false);
   const [showEditCategory, setShowEditCategory] = useState(false);
   const [showCreateSubcategory, setShowCreateSubcategory] = useState(false);
@@ -52,21 +73,27 @@ export default function CategoryPageSection() {
     string | undefined
   >();
 
-  const fetchCategories = async () => {
-    console.log('[CategoryPage] Fetching categories...');
-    const data = await getCategoriesAction();
+  useEffect(() => {
+    setCategories(data);
+  }, [data]);
 
-    startTransition(() => {
-      console.log('[CategoryPage] Categories received:', data);
-
-      setCategories(data);
-      setHasFetched(true);
-    });
+  const handleConfirmDeleteCategory = (
+    categoryId: string,
+    categoryName: string,
+  ) => {
+    setCategoryToDelete({ id: categoryId, name: categoryName });
+    setDeleteCategoryModalOpen(true);
   };
 
-  useEffect(() => {
-    fetchCategories();
-  }, []);
+  const handleCloseDeleteCategoryModal = () => {
+    setDeleteCategoryModalOpen(false);
+    setCategoryToDelete(null);
+  };
+
+  const handleCloseDeleteSubcategoryModal = () => {
+    setDeleteSubCategoryModalOpen(false);
+    setSubcategoryToDelete(null);
+  };
 
   const handleDeleteCategory = async (
     categoryId: string,
@@ -111,6 +138,14 @@ export default function CategoryPageSection() {
       toast.error(result.message);
     }
   };
+  const handleConfirmDeleteSubcategory = (
+    subcategoryId: string,
+    subcategoryName: string,
+  ) => {
+    setSubcategoryToDelete({ id: subcategoryId, name: subcategoryName });
+    setDeleteSubCategoryModalOpen(true);
+  };
+
   const handleDeleteSubcategory = async (
     subcategoryId: string,
     subcategoryName: string,
@@ -131,11 +166,12 @@ export default function CategoryPageSection() {
     if (result.success) {
       toast.success(`"${subcategoryName}" deleted`);
     } else {
-      setCategories(prev); 
+      setCategories(prev);
       toast.error(result.message);
     }
   };
- const handleToggleSubcategoryStatus = async (
+
+  const handleToggleSubcategoryStatus = async (
     subcategoryId: string,
     subcategoryName: string,
   ) => {
@@ -308,9 +344,11 @@ export default function CategoryPageSection() {
                         variant="red"
                         rounded="lg"
                         onClick={() =>
-                          handleDeleteCategory(category.id, category.name)
+                          handleConfirmDeleteCategory(
+                            category.id,
+                            category.name,
+                          )
                         }
-                        disabled={isPending}
                       >
                         <Trash2 size={14} />
                       </IconButton>
@@ -407,9 +445,8 @@ export default function CategoryPageSection() {
                               variant="red"
                               rounded="lg"
                               onClick={() =>
-                                handleDeleteSubcategory(sub.id, sub.name)
+                                handleConfirmDeleteSubcategory(sub.id, sub.name)
                               }
-                              disabled={isPending}
                             >
                               <Trash2 size={14} />
                             </IconButton>
@@ -453,16 +490,29 @@ export default function CategoryPageSection() {
         )}
       </Card>
 
+      
+      <DeleteCategoryModal
+        deleteCategoryModalOpen={deleteCategoryModalOpen}
+        handleCloseDeleteCategoryModal={handleCloseDeleteCategoryModal}
+        categoryToDelete={categoryToDelete}
+        handleDeleteCategory={handleDeleteCategory}
+      />
+
+      <DeleteSubCategoryModal
+        deleteSubCategoryModalOpen={deleteSubCategoryModalOpen}
+        handleCloseDeleteSubcategoryModal={handleCloseDeleteSubcategoryModal}
+        subcategoryToDelete={subcategoryToDelete}
+        handleDeleteSubcategory={handleDeleteSubcategory}
+      />
+
       {/* Modals */}
       <CreateCategoryModal
         isOpen={showCreateCategory}
-        onSuccess={fetchCategories}
         onClose={() => setShowCreateCategory(false)}
       />
 
       <EditCategoryModal
         isOpen={showEditCategory}
-        onSuccess={fetchCategories}
         onClose={() => {
           setShowEditCategory(false);
           setSelectedCategory(null);
@@ -472,7 +522,6 @@ export default function CategoryPageSection() {
 
       <CreateSubcategoryModal
         isOpen={showCreateSubcategory}
-        onSuccess={fetchCategories}
         onClose={() => {
           setShowCreateSubcategory(false);
           setPreselectedCategoryId(undefined);
@@ -483,7 +532,6 @@ export default function CategoryPageSection() {
 
       <EditSubcategoryModal
         isOpen={showEditSubcategory}
-        onSuccess={fetchCategories}
         onClose={() => {
           setShowEditSubcategory(false);
           setSelectedSubcategory(null);
