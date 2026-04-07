@@ -5,8 +5,9 @@ import { VENDOR_SIDEBAR_CONFIG } from '@/config/sidebar';
 import { useState } from 'react';
 import VendorStoreCard from './store-card';
 import { IconButton } from '@/components/ui/buttons/icon-button';
-import { Link, MenuIcon } from 'lucide-react';
+import { MenuIcon } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { StoreData } from './store/types';
 
 type Props = {
