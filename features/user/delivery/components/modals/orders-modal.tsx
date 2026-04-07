@@ -396,7 +396,7 @@ export default function OrdersModal({
                         priority
                         className="rounded-md"
                       />
-                      <div className="capitalize  bg-amber-500 w-full  text-left">
+                      <div className="capitalize  bg-amber-500 w-full text-left">
                         <p>
                           {item.product?.productName?.toLowerCase()} ×{' '}
                         {item.quantity}
