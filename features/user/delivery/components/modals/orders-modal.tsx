@@ -135,7 +135,8 @@ export default function OrdersModal({
     }
 
     // Otherwise initialize a new payment
-    const callbackUrl = `${window.location.origin}/payment/callback`;
+    const callbackUrl =
+      'https://backend-service-1rc7.onrender.com/api/v1/payment/callback';
     const result = await initializePaymentAction({
       orderId,
       paymentMethod: 'CARD',
@@ -380,26 +381,27 @@ export default function OrdersModal({
 
             {/* Items */}
             {selectedOrder.items && selectedOrder.items.length > 0 && (
-              <div className="space-y-4">
+              <div className="space-y-4 mb-0">
                 <p className="text-sm font-medium">Items</p>
-                <ul className="divide-y divide-border text-sm">
+                <ul className="divide-y divide-border text-sm space-y-8">
                   {selectedOrder.items.map((item: OrderItem) => (
                     <li
                       key={item.id}
-                      className="flex items-center justify-between py-4 gap-2 md:gap-8"
+                      className="flex items-center justify-between py-6 gap-4 md:gap-12 mb-0"
                     >
-                      <Image
-                        src={item.product?.productImages?.[0]?.imageUrl ?? ''}
-                        alt={item.product?.productName ?? ''}
-                        width={40}
-                        height={40}
-                        priority
-                        className="rounded-md"
-                      />
-                      <div className="capitalize  bg-amber-500 w-full text-left">
+                      <div className="relative w-32 h-16 ">
+                        <Image
+                          src={item.product?.productImages?.[0]?.imageUrl ?? ''}
+                          alt={item.product?.productName ?? ''}
+                          fill
+                          className="object-cover rounded-md"
+                        />
+                      </div>
+
+                      <div className="capitalize  w-full text-left">
                         <p>
                           {item.product?.productName?.toLowerCase()} ×{' '}
-                        {item.quantity}
+                          {item.quantity}
                         </p>
                       </div>
                       <span className="font-medium">

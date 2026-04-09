@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import { Toaster } from 'sonner';
 import './globals.css';
 
-import ReactQueryProvider from '@/components/providers/react-query-provider';
+import ReactQueryProvider from '@/app/providers/react-query-provider';
 import SessionProvider from './providers/session-provider';
 
 export const metadata: Metadata = {

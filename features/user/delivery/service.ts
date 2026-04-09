@@ -190,11 +190,11 @@ export async function initializePaymentService(
   );
 }
 
-export async function verifyPaymentService(reference: string) {
+export async function getPaymentStatusService(transactionReference: string) {
+  const params = new URLSearchParams({ transactionReference });
   return request(
-    'VerifyPayment',
-    `${BASE_URL}/customer/payment/verify/${encodeURIComponent(reference)}`,
-    { method: 'POST' },
+    'GetPaymentStatus',
+    `${BASE_URL}/payment/status?${params.toString()}`,
   );
 }
 

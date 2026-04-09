@@ -210,7 +210,7 @@ export default function DeliveryConfirmationPage() {
               <Loader2 size={16} className="animate-spin" /> Creating Order...
             </span>
           ) : (
-            'Continue'
+            'Create Order'
           )}
         </Button>
       </div>

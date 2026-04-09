@@ -52,7 +52,8 @@ export default function OrderDetailModal({
 
     setIsInitiatingPayment(true);
 
-    const callbackUrl = `${window.location.origin}/payment/callback`;
+    const callbackUrl =
+      'https://backend-service-1rc7.onrender.com/api/v1/payment/callback';
     const result = await initializePaymentAction({
       orderId,
       paymentMethod: 'CARD',

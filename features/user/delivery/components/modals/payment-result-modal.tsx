@@ -7,7 +7,7 @@ import Card from '@/components/layout/card';
 import Modal from '@/components/layout/modal';
 import { Button } from '@/components/ui/buttons/button';
 import { useOrderStore } from '@/features/user/delivery/order-store';
-import { verifyPaymentAction } from '@/features/user/delivery/action';
+import { getPaymentStatusAction } from '@/features/user/delivery/action';
 
 type Status = 'loading' | 'success' | 'error';
 
@@ -34,9 +34,9 @@ export default function PaymentResultModal({
     setErrorMessage('');
 
     const verify = async () => {
-      console.log('[PaymentResultModal] Verifying payment:', paymentRef);
-      const result = await verifyPaymentAction(paymentRef);
-      console.log('[PaymentResultModal] Verification result:', result);
+      console.log('[PaymentResultModal] Checking payment status:', paymentRef);
+      const result = await getPaymentStatusAction(paymentRef);
+      console.log('[PaymentResultModal] Status result:', result);
 
       if (result.success) {
         const data = result.data;

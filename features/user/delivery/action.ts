@@ -24,7 +24,7 @@ import {
   initializePaymentService,
   removeFromCartService,
   updateCartQuantityService,
-  verifyPaymentService,
+  getPaymentStatusService,
 } from './service';
 import { AddToCartPayload, ActionResult, CreateOrderPayload } from './types';
 
@@ -289,14 +289,17 @@ export async function initializePaymentAction(payload: {
   }
 }
 
-export async function verifyPaymentAction(
-  reference: string,
+export async function getPaymentStatusAction(
+  transactionReference: string,
 ): Promise<ActionResult<any>> {
   try {
-    const res = await verifyPaymentService(reference);
+    const res = await getPaymentStatusService(transactionReference);
     return { success: true, data: res.data };
   } catch (e: any) {
-    return { success: false, error: e.message || 'Failed to verify payment' };
+    return {
+      success: false,
+      error: e.message || 'Failed to get payment status',
+    };
   }
 }
 
