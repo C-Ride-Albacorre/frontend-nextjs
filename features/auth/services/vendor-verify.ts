@@ -1,11 +1,12 @@
 import { BASE_URL } from '@/config/api';
 import { ApiError } from '../../libs/api-error';
+import { authFetch } from '@/features/libs/auth-fetch';
 
 export async function verifyVendorPhoneService(data: {
   phoneNumber: string;
   otp: string;
 }) {
-  const res = await fetch(`${BASE_URL}/auth/vendor/verify/phone`, {
+  const res = await authFetch(`${BASE_URL}/auth/user/verify/phone`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
@@ -26,7 +27,7 @@ export async function verifyVendorEmailService(data: {
   email: string;
   otp: string;
 }) {
-  const res = await fetch(`${BASE_URL}/auth/vendor/verify/email`, {
+  const res = await authFetch(`${BASE_URL}/auth/user/verify/email`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),

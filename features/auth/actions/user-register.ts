@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 import { RegisterFormSchema, FormState } from '../libs/register.schema';
 import { registerUser } from '../services/user-register';
 import { setCookie } from '@/utils/cookies';
+import { getTokenExpiry } from '@/utils/jwt';
 
 export async function userRegisterAction(
   _state: FormState,
@@ -39,6 +40,8 @@ export async function userRegisterAction(
 
     const rawMethod = result.data.registrationMethod;
 
+    console.log('Registration method from API:', result);
+
     const registrationMethod = rawMethod === 'PHONE_NUMBER' ? 'phone' : 'email';
 
     if (
@@ -58,12 +61,15 @@ export async function userRegisterAction(
         maxAge: 60 * 30,
       });
 
-      redirectTo = `/verify`;
-    } else if (
-      !result.data.requiresVerification &&
-      result.data.status !== 'NEW'
-    ) {
-      redirectTo = '/user/delivery';
+      await setCookie({
+        name: 'accessToken',
+        value: result.data.accessToken,
+        maxAge: getTokenExpiry(result.data.accessToken),
+      });
+
+     
+
+      redirectTo = `/verify/user`;
     } else {
       return {
         status: 'error',

@@ -2,11 +2,11 @@
 
 import { redirect } from 'next/navigation';
 import { VerifyOtpSchema, VerifyOtpState } from '../libs/verify-code.schema';
-import { verifyOtpService } from '../services/verify-code';
+import { verifyAdminOtpService } from '../services/admin-verify';
 import { getTokenExpiry } from '@/utils/jwt';
 import { deleteCookie, getCookie, setCookie } from '@/utils/cookies';
 
-export async function VerifyCodeAction(
+export async function AdminVerifyCodeAction(
   prevState: VerifyOtpState | null,
   formData: FormData,
 ): Promise<VerifyOtpState | null> {
@@ -27,22 +27,17 @@ export async function VerifyCodeAction(
   if (!identifier || !registrationMethod) {
     return {
       status: 'error',
-      message: 'Verification session expired. Please register again.',
+      message: 'Verification session expired. Please login again.',
     };
   }
-
-  console.log('Verifying OTP for identifier:', identifier);
-  console.log('OTP entered:', validated.data.otp);
 
   let redirectTo: string | null = null;
 
   try {
-    const result = await verifyOtpService({
+    const result = await verifyAdminOtpService({
       identifier,
       otp: validated.data.otp,
     });
-
-    console.log('Verify OTP response:', result);
 
     if (!result?.data?.accessToken) {
       return {
@@ -60,11 +55,7 @@ export async function VerifyCodeAction(
     await deleteCookie('verify_identifier');
     await deleteCookie('registration_method');
 
-    let userNewData = true;
-
-    if (userNewData) {
-      redirectTo = '/user/delivery?newUser=true';
-    }
+    redirectTo = '/admin/dashboard';
   } catch (error) {
     return {
       status: 'error',
@@ -76,6 +67,6 @@ export async function VerifyCodeAction(
   if (redirectTo) {
     redirect(redirectTo);
   } else {
-    redirect('/user/delivery');
+    redirect('/admin/dashboard');
   }
 }

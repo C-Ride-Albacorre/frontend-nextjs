@@ -1,21 +1,34 @@
 import { BASE_URL } from '@/config/api';
 import { ApiError } from '@/features/libs/api-error';
 
-export type loginApiResponse = {
-  status: string;
-  statusCode: number;
-  timestamp: string;
-  path: string;
-  data: {
-    accessToken: string;
-    refreshToken: string;
-    user: {
-      id: string;
-      email: string;
-      role: string;
+export type loginApiResponse =
+  | {
+      status: string;
+      statusCode: number;
+      timestamp: string;
+      path: string;
+      data: {
+        accessToken: string;
+        refreshToken: string;
+        user: {
+          id: string;
+          email: string;
+          role: string;
+          isNewUser?: boolean;
+        };
+      };
+    }
+  | {
+      status: string;
+      statusCode: number;
+      timestamp: string;
+      path: string;
+      data: {
+        status: 'OTP_REQUIRED';
+        requiresVerification: true;
+        verificationIdentifier: string;
+      };
     };
-  };
-};
 
 type LoginAdminPayload = {
   email: string;

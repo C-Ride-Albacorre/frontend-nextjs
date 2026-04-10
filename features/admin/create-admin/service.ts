@@ -10,7 +10,7 @@ type CreateAdminPayload = {
 };
 
 export async function createAdminService(payload: CreateAdminPayload) {
-  const res = await authFetch(`${BASE_URL}/admin/create-admin`, {
+  const res = await authFetch(`${BASE_URL}/auth/create-admin`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

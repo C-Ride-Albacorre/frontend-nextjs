@@ -1,5 +1,6 @@
 'use server';
 
+import { getTokenExpiry } from '@/utils/jwt';
 import { FormState, VendorRegisterFormSchema } from '../libs/register.schema';
 import { registerVendorService } from '../services/vendor-register';
 import { setCookie } from '@/utils/cookies';
@@ -36,16 +37,24 @@ export async function vendorRegisterAction(
       };
     }
 
+    console.log('Vendor registration successful:', result.data);
+
     await setCookie({
       name: 'vendor_email',
-      value: result.data.vendor.email,
+      value: result.data.user.email,
       maxAge: 60 * 30,
     });
 
     await setCookie({
       name: 'vendor_phone_number',
-      value: result.data.vendor.phoneNumber,
+      value: result.data.user.phoneNumber,
       maxAge: 60 * 30,
+    });
+
+    await setCookie({
+      name: 'accessToken',
+      value: result.data.accessToken,
+      maxAge: getTokenExpiry(result.data.accessToken),
     });
 
     return {

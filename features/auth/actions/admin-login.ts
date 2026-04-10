@@ -6,7 +6,7 @@ import {
   AdminLoginFormState,
 } from '../libs/admin-login.schema';
 import { adminLoginService } from '../services/admin-login';
-import { setAuthCookies } from '@/utils/cookies';
+import { setAuthCookies, setCookie } from '@/utils/cookies';
 
 export async function adminLoginAction(
   _state: AdminLoginFormState,
@@ -32,27 +32,87 @@ export async function adminLoginAction(
   try {
     const result = await adminLoginService(validatedFields.data);
 
-    const accessToken = result.data.accessToken;
-    const refreshToken = result.data.refreshToken;
+    // Handle OTP_REQUIRED response
+    if (
+      'status' in result.data &&
+      result.data.status === 'OTP_REQUIRED' &&
+      result.data.requiresVerification &&
+      result.data.verificationIdentifier
+    ) {
+      await setCookie({
+        name: 'verify_identifier',
+        value: result.data.verificationIdentifier,
+        maxAge: 60 * 30,
+      });
+      await setCookie({
+        name: 'registration_method',
+        value: 'email',
+        maxAge: 60 * 30,
+      });
+      redirectTo = '/verify/admin';
+      // No tokens to set, just redirect to verify
+    } else if ('user' in result.data) {
+      const accessToken = result.data.accessToken;
+      const refreshToken = result.data.refreshToken;
 
-    await setAuthCookies(accessToken, refreshToken ?? accessToken);
+      await setAuthCookies(accessToken, refreshToken ?? accessToken);
 
-    const customRedirect = formData.get('redirect') as string;
-    redirectTo =
-      customRedirect && customRedirect.startsWith('/')
-        ? customRedirect
-        : '/admin/dashboard';
-  } catch (error) {
-    return {
-      status: 'error',
-      message:
-        error instanceof Error
-          ? error.message
-          : 'Something went wrong. Please try again.',
-      fields: {
-        email: formData.get('email') as string,
-      },
-    };
+      // Check isNewUser flag
+      if (result.data.user?.isNewUser) {
+        await setCookie({
+          name: 'verify_identifier',
+          value: result.data.user.email,
+          maxAge: 60 * 30,
+        });
+        await setCookie({
+          name: 'registration_method',
+          value: 'email',
+          maxAge: 60 * 30,
+        });
+        redirectTo = '/verify/admin';
+      } else {
+        const customRedirect = formData.get('redirect') as string;
+        redirectTo =
+          customRedirect && customRedirect.startsWith('/')
+            ? customRedirect
+            : '/admin/dashboard';
+      }
+    } else {
+      // Unexpected response
+      return {
+        status: 'error',
+        message: 'Unexpected login response.',
+        fields: {
+          email: formData.get('email') as string,
+        },
+      };
+    }
+  } catch (error: any) {
+    // Handle unverified admin
+    if (error?.statusCode === 403 && error?.reason === 'UNVERIFIED') {
+      await setCookie({
+        name: 'verify_identifier',
+        value: formData.get('email') as string,
+        maxAge: 60 * 30,
+      });
+      await setCookie({
+        name: 'registration_method',
+        value: 'email',
+        maxAge: 60 * 30,
+      });
+      redirectTo = '/verify/admin';
+    } else {
+      return {
+        status: 'error',
+        message:
+          error instanceof Error
+            ? error.message
+            : 'Something went wrong. Please try again.',
+        fields: {
+          email: formData.get('email') as string,
+        },
+      };
+    }
   }
 
   if (redirectTo) {

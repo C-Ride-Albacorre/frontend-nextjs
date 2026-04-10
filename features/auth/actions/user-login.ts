@@ -66,7 +66,7 @@ export async function userLoginAction(
         value: isPhone ? 'phone' : 'email',
         maxAge: 60 * 30, 
       });
-      redirectTo = `/verify`;
+      redirectTo = `/verify/user`;
     } else {
       return {
         status: 'error',

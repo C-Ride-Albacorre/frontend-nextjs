@@ -28,7 +28,12 @@ export async function VendorVerifyPhoneAction(
   }
 
   try {
-    await verifyVendorPhoneService({ phoneNumber, otp: validated.data.otp });
+    const data = await verifyVendorPhoneService({
+      phoneNumber,
+      otp: validated.data.otp,
+    });
+
+    console.log('Phone number verification successful for:', data);
   } catch (error) {
     return {
       status: 'error',
@@ -40,7 +45,7 @@ export async function VendorVerifyPhoneAction(
   return {
     status: 'success',
     message: 'Phone number verified successfully!',
-    redirectTo: '/verify/vendor-email',
+    redirectTo: '/onboarding/business-info',
   };
 }
 
@@ -70,14 +75,16 @@ export async function VendorVerifyEmailAction(
     });
 
     await setCookie({
-      name: 'accessToken',
-      value: result.data.accessToken,
-      maxAge: getTokenExpiry(result.data.accessToken),
+      name: 'refreshToken',
+      value: result.data.refreshToken,
+      maxAge: getTokenExpiry(result.data.refreshToken),
     });
+
+    console.log('Email verification successful for:', result.data);
 
     await setCookie({
       name: 'vendor_id',
-      value: result.data.vendor.id,
+      value: result.data.user?.id ?? result.data.vendor?.id,
       maxAge: 60 * 60,
     });
   } catch (error) {

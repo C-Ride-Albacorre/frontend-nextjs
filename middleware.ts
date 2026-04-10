@@ -2,6 +2,7 @@ import { jwtDecode } from 'jwt-decode';
 import { NextRequest, NextResponse } from 'next/server';
 
 const USER_PROTECTED_ROUTES = [
+  '/verify/user',
   '/user/dashboard',
   '/user/profile',
   '/user/settings',
@@ -9,6 +10,8 @@ const USER_PROTECTED_ROUTES = [
 ];
 
 const VENDOR_PROTECTED_ROUTES = [
+  '/verify/vendor-phone',
+  '/verify/vendor-email',
   '/onboarding/business-info',
   '/onboarding/contact-info',
   '/onboarding/address-info',
@@ -38,7 +41,7 @@ const ADMIN_PROTECTED_ROUTES = [
 const USER_AUTH_ROUTES = ['/user/register', '/user/login'];
 const VENDOR_AUTH_ROUTES = ['/vendor/register', '/vendor/login'];
 const ADMIN_AUTH_ROUTES = ['/admin/login'];
-const SHARED_AUTH_ROUTES = ['/verify', '/reset', '/reset/reset-password'];
+const SHARED_AUTH_ROUTES = ['/reset', '/reset/reset-password'];
 const SUPER_ADMIN_ONLY_ROUTES = ['/admin/create-admin'];
 
 function isTokenExpired(token: string) {

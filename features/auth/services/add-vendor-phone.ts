@@ -2,23 +2,18 @@ import { BASE_URL } from '@/config/api';
 import { ApiError } from '../../libs/api-error';
 import { authFetch } from '@/features/libs/auth-fetch';
 
-export async function verifyOtpService(data: {
-  identifier: string;
-  otp: string;
-}) {
-  const res = await authFetch(`${BASE_URL}/auth/customer/verify`, {
+export async function addVendorPhoneService(data: { phoneNumber: string }) {
+  const res = await authFetch(`${BASE_URL}/auth/user/add/phone`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
   });
 
-
   const result = await res.json();
-  
 
   if (!res.ok) {
     throw new ApiError(
-      result?.message || 'Verification failed',
+      result?.message || 'Failed to add phone number',
       result?.statusCode ?? res.status,
     );
   }

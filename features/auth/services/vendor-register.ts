@@ -10,11 +10,13 @@ export type RegisterApiResponse = {
   data: {
     success: string;
     message: string;
-    vendor: {
+    accessToken: string;
+    user: {
       id: string;
       email: string;
       phoneNumber: string;
       status: string;
+      role: string;
     };
     nextSteps: string[];
   };

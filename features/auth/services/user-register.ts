@@ -9,6 +9,8 @@ export type RegisterApiResponse = {
   message?: string;
   data: {
     status: string;
+    accessToken: string;
+    // refreshToken: string;
     requiresVerification: boolean;
     registrationMethod: string;
     verificationIdentifier: string;
