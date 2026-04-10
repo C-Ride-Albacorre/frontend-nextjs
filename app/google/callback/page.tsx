@@ -27,6 +27,7 @@ export default function GoogleOAuthCallback() {
       });
 
       if (success !== 'true' || !accessToken || !refreshToken) {
+        console.error('[OAuth] Missing required params — redirecting to login');
         router.replace('/vendor/login?error=oauth_failed');
         return;
       }
@@ -35,8 +36,7 @@ export default function GoogleOAuthCallback() {
       window.history.replaceState({}, '', '/google/callback');
 
       try {
-        // Send tokens to server-side API route to set httpOnly cookies
-
+        // Step 1: Set httpOnly cookies via Next.js API route
         console.log(
           '[OAuth] Step 1: Setting cookies via /api/auth/google-callback...',
         );
@@ -54,34 +54,47 @@ export default function GoogleOAuthCallback() {
 
         if (!cookieRes.ok) throw new Error('Failed to set session');
 
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/profile`,
-          {
-            method: 'GET',
-            credentials: 'include',
-          },
-        );
+        // Step 2: Decode role directly from the accessToken in URL params.
+        // Do NOT call /auth/profile — cookies are httpOnly on the Next.js domain,
+        // so the backend (on a different domain) can't see them → always 401.
+        console.log('[OAuth] Step 2: Decoding role from accessToken...');
 
-        console.log('Profile response:', res);
+        let role: string | null = null;
+        try {
+          const payload = JSON.parse(atob(accessToken.split('.')[1]));
+          role = payload.role ?? null;
+          console.log('[OAuth] Decoded JWT payload:', payload);
+        } catch (e) {
+          console.error('[OAuth] Failed to decode accessToken:', e);
+          throw new Error('Invalid access token');
+        }
 
-        if (!res.ok) throw new Error('Not authenticated');
+        console.log('[OAuth] Resolved values:', {
+          role,
+          isPhoneVerified,
+          onboardingStatus,
+          onBoardingStep,
+        });
 
-        const user = await res.json();
-
-        if (user.role === 'VENDOR') {
-          // Use params from Google callback
+        // Step 3: Route based on role + vendor state
+        if (role === 'VENDOR') {
           if (isPhoneVerified === 'false') {
-            console.log('[OAuth] → Redirecting to /add-google-phone');
+            console.log(
+              '[OAuth] → Phone not verified, redirecting to /add-google-phone',
+            );
             window.location.href = '/add-google-phone';
             return;
           }
-          // If phone is verified, check onboarding status
+
           if (isPhoneVerified === 'true') {
-            if (onboardingStatus !== 'completed' && onBoardingStep) {
-              // Save onboarding step and status in cookies
+            if (
+              onboardingStatus !== 'completed' &&
+              onBoardingStep &&
+              onBoardingStep !== 'null'
+            ) {
               document.cookie = `onboardingStatus=${encodeURIComponent(onboardingStatus || '')}; path=/;`;
               document.cookie = `onBoardingStep=${encodeURIComponent(onBoardingStep)}; path=/;`;
-              // Map onboardingStep to correct route (fix TS error)
+
               const stepNum = Number(onBoardingStep);
               const stepRoutes: Record<number, string> = {
                 1: '/onboarding/business-info',
@@ -90,26 +103,42 @@ export default function GoogleOAuthCallback() {
                 4: '/onboarding/business-bank',
                 5: '/onboarding/business-document',
               };
-              const redirectPath = Object.prototype.hasOwnProperty.call(
-                stepRoutes,
-                stepNum,
-              )
-                ? stepRoutes[stepNum]
-                : '/onboarding/business-info';
+              const redirectPath =
+                stepRoutes[stepNum] ?? '/onboarding/business-info';
+              console.log(
+                '[OAuth] → Onboarding incomplete, redirecting to:',
+                redirectPath,
+              );
               window.location.href = redirectPath;
               return;
             }
-            // If onboarding is completed or no step, go to vendor store
+
+            console.log(
+              '[OAuth] → Onboarding complete, redirecting to /vendor/store',
+            );
             window.location.href = '/vendor/store';
             return;
           }
-        } else if (user.role === 'ADMIN') {
-          router.replace('/admin/dashboard');
+
+          // isPhoneVerified is neither 'true' nor 'false' (e.g. null) — safe fallback
+          console.warn(
+            '[OAuth] isPhoneVerified was unexpected value:',
+            isPhoneVerified,
+            '— falling back to /add-google-phone',
+          );
+          window.location.href = '/add-google-phone';
+          return;
+        } else if (role === 'ADMIN' || role === 'SUPER_ADMIN') {
+          console.log('[OAuth] → Admin user, redirecting to /admin/dashboard');
+          window.location.href = '/admin/dashboard';
         } else {
-          router.replace('/user/dashboard');
+          console.log(
+            '[OAuth] → Customer user, redirecting to /user/dashboard',
+          );
+          window.location.href = '/user/dashboard';
         }
       } catch (error) {
-        console.error(error);
+        console.error('[OAuth] Fatal error during callback:', error);
         router.replace('/vendor/login?error=session_failed');
       }
     };
@@ -120,7 +149,7 @@ export default function GoogleOAuthCallback() {
   return (
     <div className="flex min-h-screen items-center justify-center">
       <div className="text-muted-foreground text-sm space-x-2 flex items-center">
-        <Loader2 className="animate-spin text-primary" />{' '}
+        <Loader2 className="animate-spin text-primary" />
         <p>Signing you in...</p>
       </div>
     </div>
