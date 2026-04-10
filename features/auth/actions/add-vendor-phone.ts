@@ -14,17 +14,18 @@ export async function AddVendorPhoneAction(
 
   console.log('Adding vendor phone number:', phoneNumber);
 
-
   try {
     const result = await addVendorPhoneService({ phoneNumber });
 
     console.log('Add vendor phone response:', result);
 
-    await setCookie({
-      name: 'vendor_phone_number',
-      value: phoneNumber,
-      maxAge: 60 * 30,
-    });
+    if (result.data.success === 'true') {
+      await setCookie({
+        name: 'vendor_phone_number',
+        value: phoneNumber,
+        maxAge: 60 * 30,
+      });
+    }
 
     return { status: 'success', redirectTo: '/verify/vendor-phone' };
   } catch (error: any) {
