@@ -31,9 +31,6 @@ export default function GoogleOAuthCallback() {
 
         if (!cookieRes.ok) throw new Error('Failed to set session');
 
-        // Wait a tick to ensure cookies are set before fetching profile
-        await new Promise((resolve) => setTimeout(resolve, 200));
-
         const res = await fetch(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/profile`,
           {
@@ -42,12 +39,14 @@ export default function GoogleOAuthCallback() {
           },
         );
 
+        console.log('Profile response:', res);
+
         if (!res.ok) throw new Error('Not authenticated');
 
         const user = await res.json();
 
         if (user.role === 'VENDOR') {
-          router.replace('/vendor/add-google-phone');
+          window.location.href = '/vendor/add-google-phone';
         } else if (user.role === 'ADMIN') {
           router.replace('/admin/dashboard');
         } else {

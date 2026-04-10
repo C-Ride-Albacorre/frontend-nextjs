@@ -32,7 +32,6 @@ export async function adminLoginAction(
   try {
     const result = await adminLoginService(validatedFields.data);
 
-
     // Handle OTP_REQUIRED response
     if (
       'status' in result.data &&
@@ -40,6 +39,17 @@ export async function adminLoginAction(
       result.data.requiresVerification &&
       result.data.verificationIdentifier
     ) {
+      // Some OTP_REQUIRED responses may include accessToken
+      const otpData = result.data as typeof result.data & {
+        accessToken?: string;
+      };
+      if (otpData.accessToken) {
+        await setCookie({
+          name: 'accessToken',
+          value: otpData.accessToken,
+          maxAge: 60 * 60, 
+        });
+      }
       await setCookie({
         name: 'verify_identifier',
         value: result.data.verificationIdentifier,
@@ -52,7 +62,6 @@ export async function adminLoginAction(
       });
 
       redirectTo = '/verify/admin';
-      // No tokens to set, just redirect to verify
     } else if ('user' in result.data) {
       const accessToken = result.data.accessToken;
       const refreshToken = result.data.refreshToken;
