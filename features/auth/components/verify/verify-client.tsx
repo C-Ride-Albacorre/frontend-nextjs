@@ -5,6 +5,7 @@ import { OtpInput } from '@/components/ui/inputs/otp-input';
 import { Button } from '@/components/ui/buttons/button';
 import { VerifyOtpState } from '../../libs/verify-code.schema';
 import ResendOtpButton from './resend-otp-button';
+import { useRouter } from 'next/navigation';
 
 type VerifyClientProps = {
   identifier: string;
@@ -19,15 +20,15 @@ export default function VerifyClient({
   action,
   pending,
   state,
-  redirectHref,
 }: VerifyClientProps & {
   action: (payload: FormData) => void;
   pending: boolean;
   state: VerifyOtpState | null;
-  redirectHref: string;
 }) {
   const [code, setCode] = useState<string[]>(Array(6).fill(''));
   const inputsRef = useRef<Array<HTMLInputElement | null>>([]);
+
+  const router = useRouter();
 
   const handleChange = (value: string, index: number) => {
     if (!/^[0-9]?$/.test(value)) return;
@@ -68,7 +69,6 @@ export default function VerifyClient({
 
   return (
     <div>
-      
       <h1 className="text-2xl font-semibold mb-2">Verify your Identity</h1>
 
       <p className="text-sm text-neutral-500">
@@ -125,7 +125,7 @@ export default function VerifyClient({
       {/* ACTIONS */}
       <div className="mt-8 space-y-3 text-sm">
         <Button
-          href={redirectHref}
+          onClick={() => router.back()}
           size="none"
           variant="default"
           className="block text-primary font-medium"

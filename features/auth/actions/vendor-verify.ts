@@ -42,10 +42,14 @@ export async function VendorVerifyPhoneAction(
     };
   }
 
+  const email = await getCookie('vendor_email');
+
+  const redirectTo = email ? '/verify/vendor-email' : '/onboarding/business-info';
+
   return {
     status: 'success',
     message: 'Phone number verified successfully!',
-    redirectTo: '/onboarding/business-info',
+    redirectTo,
   };
 }
 

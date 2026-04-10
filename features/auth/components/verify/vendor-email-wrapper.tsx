@@ -40,7 +40,6 @@ export default function VendorEmailWrapper({
         action={action}
         pending={pending}
         state={state}
-        redirectHref="/vendor/register"
       />
 
       <VerificationSuccessModal
