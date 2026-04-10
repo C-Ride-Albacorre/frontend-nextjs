@@ -1,5 +1,6 @@
 'use server';
 
+import { setCookie } from '@/utils/cookies';
 import { addVendorPhoneService } from '../services/add-vendor-phone';
 
 export async function AddVendorPhoneAction(
@@ -11,9 +12,16 @@ export async function AddVendorPhoneAction(
     return { status: 'error', message: 'Phone number is required.' };
   }
   try {
-    await addVendorPhoneService({ phoneNumber });
-    // Set cookie for phone number to use in OTP verification
-    // (optional, if your OTP flow expects it)
+    const result = await addVendorPhoneService({ phoneNumber });
+
+    console.log('Add vendor phone response:', result);
+
+    await setCookie({
+      name: 'vendor_phone_number',
+      value: result.data.user.phoneNumber,
+      maxAge: 60 * 30,
+    });
+
     return { status: 'success', redirectTo: '/verify/vendor-phone' };
   } catch (error: any) {
     return {
