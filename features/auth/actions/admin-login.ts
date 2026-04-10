@@ -32,6 +32,7 @@ export async function adminLoginAction(
   try {
     const result = await adminLoginService(validatedFields.data);
 
+
     // Handle OTP_REQUIRED response
     if (
       'status' in result.data &&
@@ -49,6 +50,7 @@ export async function adminLoginAction(
         value: 'email',
         maxAge: 60 * 30,
       });
+
       redirectTo = '/verify/admin';
       // No tokens to set, just redirect to verify
     } else if ('user' in result.data) {

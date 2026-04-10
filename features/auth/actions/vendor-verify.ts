@@ -6,7 +6,7 @@ import {
   verifyVendorEmailService,
   verifyVendorPhoneService,
 } from '../services/vendor-verify';
-import { getCookie, setAuthCookies, setCookie } from '@/utils/cookies';
+import { getCookie, setCookie } from '@/utils/cookies';
 
 export async function VendorVerifyPhoneAction(
   prevState: VerifyOtpState | null,

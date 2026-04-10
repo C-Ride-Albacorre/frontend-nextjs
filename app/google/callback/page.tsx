@@ -31,6 +31,9 @@ export default function GoogleOAuthCallback() {
 
         if (!cookieRes.ok) throw new Error('Failed to set session');
 
+        // Wait a tick to ensure cookies are set before fetching profile
+        await new Promise((resolve) => setTimeout(resolve, 200));
+
         const res = await fetch(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/profile`,
           {
