@@ -28,10 +28,9 @@ export default function VendorGoogleVerifyPhone() {
 
       <p className="text-sm text-neutral-500">
         Please input your phone number to receive a verification code via SMS.
-        This helps us secure your account and provide better service.
       </p>
 
-      <form className="flex flex-col items-center" action={action}>
+      <form className="flex flex-col items-center space-y-4" action={action}>
         <Input
           label="phone"
           name="phone"
