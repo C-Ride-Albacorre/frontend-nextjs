@@ -11,6 +11,10 @@ export async function AddVendorPhoneAction(
   if (!phoneNumber) {
     return { status: 'error', message: 'Phone number is required.' };
   }
+
+  console.log('Adding vendor phone number:', phoneNumber);
+
+
   try {
     const result = await addVendorPhoneService({ phoneNumber });
 
@@ -18,7 +22,7 @@ export async function AddVendorPhoneAction(
 
     await setCookie({
       name: 'vendor_phone_number',
-      value: result.data.user.phoneNumber,
+      value: phoneNumber,
       maxAge: 60 * 30,
     });
 
