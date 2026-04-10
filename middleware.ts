@@ -10,7 +10,7 @@ const USER_PROTECTED_ROUTES = [
 ];
 
 const VENDOR_PROTECTED_ROUTES = [
-  '/vendor/add-google-phone',
+  '/add-google-phone',
   '/verify/vendor-phone',
   '/verify/vendor-email',
   '/onboarding/business-info',

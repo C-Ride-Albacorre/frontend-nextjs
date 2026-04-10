@@ -1,5 +1,6 @@
 'use client';
 
+import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
@@ -12,6 +13,9 @@ export default function GoogleOAuthCallback() {
       const success = params.get('success');
       const accessToken = params.get('accessToken');
       const refreshToken = params.get('refreshToken');
+      const isPhoneVerified = params.get('isPhoneVerified');
+      const onboardingStatus = params.get('onboardingStatus');
+      const onBoardingStep = params.get('onboardingStep');
 
       if (success !== 'true' || !accessToken || !refreshToken) {
         router.replace('/vendor/login?error=oauth_failed');
@@ -46,7 +50,39 @@ export default function GoogleOAuthCallback() {
         const user = await res.json();
 
         if (user.role === 'VENDOR') {
-          window.location.href = '/vendor/add-google-phone';
+          // Use params from Google callback
+          if (isPhoneVerified === 'false') {
+            window.location.href = '/vendor/add-google-phone';
+            return;
+          }
+          // If phone is verified, check onboarding status
+          if (isPhoneVerified === 'true') {
+            if (onboardingStatus !== 'completed' && onBoardingStep) {
+              // Save onboarding step and status in cookies
+              document.cookie = `onboardingStatus=${encodeURIComponent(onboardingStatus || '')}; path=/;`;
+              document.cookie = `onBoardingStep=${encodeURIComponent(onBoardingStep)}; path=/;`;
+              // Map onboardingStep to correct route (fix TS error)
+              const stepNum = Number(onBoardingStep);
+              const stepRoutes: Record<number, string> = {
+                1: '/onboarding/business-info',
+                2: '/onboarding/business-contact',
+                3: '/onboarding/business-address',
+                4: '/onboarding/business-bank',
+                5: '/onboarding/business-document',
+              };
+              const redirectPath = Object.prototype.hasOwnProperty.call(
+                stepRoutes,
+                stepNum,
+              )
+                ? stepRoutes[stepNum]
+                : '/onboarding/business-info';
+              window.location.href = redirectPath;
+              return;
+            }
+            // If onboarding is completed or no step, go to vendor store
+            window.location.href = '/vendor/store';
+            return;
+          }
         } else if (user.role === 'ADMIN') {
           router.replace('/admin/dashboard');
         } else {
@@ -63,7 +99,9 @@ export default function GoogleOAuthCallback() {
 
   return (
     <div className="flex min-h-screen items-center justify-center">
-      <p className="text-muted-foreground text-sm">Signing you in...</p>
+      <div className="text-muted-foreground text-sm space-x-2 flex items-center">
+        <Loader2 className="animate-spin" /> <p>Signing you in...</p>
+      </div>
     </div>
   );
 }
