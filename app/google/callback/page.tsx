@@ -17,6 +17,15 @@ export default function GoogleOAuthCallback() {
       const onboardingStatus = params.get('onboardingStatus');
       const onBoardingStep = params.get('onboardingStep');
 
+      console.log('[OAuth] Params received:', {
+        success,
+        hasAccessToken: !!accessToken,
+        hasRefreshToken: !!refreshToken,
+        isPhoneVerified,
+        onboardingStatus,
+        onBoardingStep,
+      });
+
       if (success !== 'true' || !accessToken || !refreshToken) {
         router.replace('/vendor/login?error=oauth_failed');
         return;
@@ -27,10 +36,20 @@ export default function GoogleOAuthCallback() {
 
       try {
         // Send tokens to server-side API route to set httpOnly cookies
+
+        console.log(
+          '[OAuth] Step 1: Setting cookies via /api/auth/google-callback...',
+        );
+
         const cookieRes = await fetch('/api/auth/google-callback', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ accessToken, refreshToken }),
+        });
+
+        console.log('[OAuth] Cookie set response:', {
+          status: cookieRes.status,
+          ok: cookieRes.ok,
         });
 
         if (!cookieRes.ok) throw new Error('Failed to set session');
@@ -52,7 +71,8 @@ export default function GoogleOAuthCallback() {
         if (user.role === 'VENDOR') {
           // Use params from Google callback
           if (isPhoneVerified === 'false') {
-            window.location.href = '/vendor/add-google-phone';
+            console.log('[OAuth] → Redirecting to /add-google-phone');
+            window.location.href = '/add-google-phone';
             return;
           }
           // If phone is verified, check onboarding status
@@ -100,7 +120,8 @@ export default function GoogleOAuthCallback() {
   return (
     <div className="flex min-h-screen items-center justify-center">
       <div className="text-muted-foreground text-sm space-x-2 flex items-center">
-        <Loader2 className="animate-spin" /> <p>Signing you in...</p>
+        <Loader2 className="animate-spin text-primary" />{' '}
+        <p>Signing you in...</p>
       </div>
     </div>
   );
