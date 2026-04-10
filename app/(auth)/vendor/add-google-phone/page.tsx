@@ -23,14 +23,14 @@ export default function VendorGoogleVerifyPhone() {
   }, [state, router]);
 
   return (
-    <div>
+    <div className='max-w-md'>
       <h1 className="text-2xl font-semibold mb-2">Verify your Phone Number</h1>
 
       <p className="text-sm text-neutral-500">
         Please input your phone number to receive a verification code via SMS.
       </p>
 
-      <form className="flex flex-col items-center space-y-4" action={action}>
+      <form className="flex flex-col items-center gap-4" action={action}>
         <Input
           label="phone"
           name="phone"
@@ -38,7 +38,8 @@ export default function VendorGoogleVerifyPhone() {
           placeholder="Your phone number here"
         />
 
-        <Button size="6xl" variant="primary" type="submit" disabled={pending}>
+
+        <Button size="lg" variant="primary" type="submit" disabled={pending} className='w-full'>
           {pending ? 'Sending...' : 'Receive OTP'}
         </Button>
       </form>

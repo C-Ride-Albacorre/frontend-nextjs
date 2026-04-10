@@ -44,7 +44,7 @@ export default function GoogleOAuthCallback() {
         const user = await res.json();
 
         if (user.role === 'VENDOR') {
-          router.replace('/verify/add-google-phone');
+          router.replace('/vendor/add-google-phone');
         } else if (user.role === 'ADMIN') {
           router.replace('/admin/dashboard');
         } else {
