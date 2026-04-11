@@ -10,6 +10,7 @@ export default function AuthFormHeader() {
           alt="Logo"
           width={120}
           height={48}
+          priority
         />
       </Link>
 

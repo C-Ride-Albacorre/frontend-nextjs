@@ -3,7 +3,6 @@
 import { useActionState, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/buttons/button';
-import Input from '@/components/ui/inputs/input';
 import { AddVendorPhoneAction } from '@/features/auth/actions/add-vendor-phone';
 import AuthFormHeader from '@/components/ui/headers/auth-form-header';
 import Card from '@/components/layout/card';
@@ -36,7 +35,7 @@ export default function VendorGoogleVerifyPhone() {
 
         <div className="space-y-2  text-center">
           <h1 className="text-2xl font-semibold mb-2">
-            Verify your Phone Number
+            Verify Phone Number
           </h1>
 
           <p className="text-sm text-neutral-500 text-center">
