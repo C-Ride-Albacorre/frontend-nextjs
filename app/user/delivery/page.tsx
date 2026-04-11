@@ -4,9 +4,6 @@ import Categories from '@/features/user/delivery/components/categories';
 import { fetchCategoriesAction } from '@/features/user/delivery/action';
 import { Suspense } from 'react';
 import CategoriesSkeleton from '@/features/user/delivery/components/categories-skeleton';
-import Card from '@/components/layout/card';
-import { Package } from 'lucide-react';
-import { Button } from '@/components/ui/buttons/button';
 import CategoriesError from '@/features/user/delivery/components/error';
 
 export default async function CreateDeliveryPage({

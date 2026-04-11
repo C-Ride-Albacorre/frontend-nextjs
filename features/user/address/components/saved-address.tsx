@@ -6,7 +6,7 @@ import Card from '@/components/layout/card';
 
 
 export default function SavedAddresses() {
-  const { data = [], isLoading } = useAddresses();
+  const { data , isLoading, error } = useAddresses();
 
   return (
     <div className="space-y-4">
@@ -21,7 +21,12 @@ export default function SavedAddresses() {
         <div className="flex justify-center py-20">
           <Loader2 className="animate-spin text-primary" size={32} />
         </div>
-      ) : (
+      ) : error ? (
+        <p className="flex flex-col justify-center items-center text-center text-sm py-20 text-red-500 gap-3">
+          <MapPinHouse size={24} className="text-red-500" />
+          <p>{error.message || 'Failed to load addresses'}</p>
+        </p>
+      ) : data && data.length > 0 ? (
         data.map((item: any) => (
           <Card key={item.id} className="flex items-start">
             <div className="flex-1 flex flex-col md:flex-row md:items-center gap-4 mb-0">
@@ -55,6 +60,11 @@ export default function SavedAddresses() {
             )}
           </Card>
         ))
+      ) : (
+        <p className="flex flex-col justify-center items-center text-center text-sm py-20 text-neutral-500 gap-3">
+          <MapPinHouse size={24} className="text-neutral-500" />
+          <p>No saved addresses found</p>
+        </p>
       )}
     </div>
   );

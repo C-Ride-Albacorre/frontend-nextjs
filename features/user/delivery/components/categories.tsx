@@ -1,10 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import CategoriesSkeleton from './categories-skeleton';
-import { toast } from 'sonner';
 import Card from '@/components/layout/card';
 import { Store } from 'lucide-react';
-import { fetchCategoriesAction } from '../action';
 
 type Category = {
   id: string;

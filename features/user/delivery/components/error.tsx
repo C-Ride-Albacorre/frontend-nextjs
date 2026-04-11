@@ -9,10 +9,14 @@ export default function CategoriesError() {
   const router = useRouter();
 
   return (
-    <Card className="flex flex-col justify-center items-center mt-8">
+    <Card
+      spacing="lg"
+      gap='sm'
+      className="flex flex-col justify-center items-center mt-8 "
+    >
       <Package size={24} className="text-red-500" />
       <p className="text-red-500">Failed to load categories.</p>
-      <Button onClick={() => router.refresh()}>
+      <Button variant="white" size="icon" onClick={() => router.refresh()}>
         Retry
       </Button>
     </Card>

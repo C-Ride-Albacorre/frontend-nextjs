@@ -12,7 +12,7 @@ import Card from '@/components/layout/card';
 export default function Address() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const { data = [], isLoading, error } = useAddresses();
+  const { data , isLoading, error } = useAddresses();
 
   console.log('Address Data:', data);
 
@@ -38,8 +38,8 @@ export default function Address() {
             <Loader2 className="animate-spin text-primary" size={32} />
           </div>
         ) : error ? (
-          <p className="flex flex-col justify-center items-center text-center text-sm py-20 text-red-500">
-            <MapPinHouse size={18} className="text-red-500" />
+          <p className="flex flex-col justify-center items-center text-center text-sm py-20 text-red-500 gap-3">
+            <MapPinHouse size={24} className="text-red-500" />
            <p>{error.message || 'Failed to load addresses'}</p> 
           </p>
         ) : data ? (

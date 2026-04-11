@@ -1,6 +1,5 @@
 'use server';
 
-
 import { LocationSchema, LocationState } from './schema';
 import { fetchSavedAddressesService, saveAddressService } from './service';
 
@@ -10,7 +9,7 @@ export async function saveLocationAction(
 ): Promise<LocationState> {
   const rawData = {
     label: formData.get('locationName'),
-    address: formData.get('streetAddress') ,
+    address: formData.get('streetAddress'),
     postalCode: formData.get('postalCode') || undefined,
     city: formData.get('city') || undefined,
     state: formData.get('state') || undefined,
@@ -21,8 +20,6 @@ export async function saveLocationAction(
   };
 
   const validated = LocationSchema.safeParse(rawData);
-
- 
 
   if (!validated.success) {
     return {
@@ -65,17 +62,7 @@ export async function saveLocationAction(
 }
 
 export async function fetchSavedAddressesAction() {
-  try {
-    const result = await fetchSavedAddressesService();
+  const result = await fetchSavedAddressesService();
 
-    return result.data;
-  } catch (error) {
-    return {
-      status: 'error',
-      message:
-        error instanceof Error
-          ? error.message
-          : 'Failed to fetch saved addresses.',
-    };
-  }
+  return result.data;
 }
