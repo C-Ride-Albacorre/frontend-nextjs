@@ -20,10 +20,12 @@ export default function VerifyClient({
   action,
   pending,
   state,
+  redirectHref,
 }: VerifyClientProps & {
   action: (payload: FormData) => void;
   pending: boolean;
   state: VerifyOtpState | null;
+  redirectHref?: string;
 }) {
   const [code, setCode] = useState<string[]>(Array(6).fill(''));
   const inputsRef = useRef<Array<HTMLInputElement | null>>([]);
@@ -125,7 +127,13 @@ export default function VerifyClient({
       {/* ACTIONS */}
       <div className="mt-8 space-y-3 text-sm">
         <Button
-          onClick={() => router.back()}
+          onClick={() => {
+            if (redirectHref) {
+              router.push(redirectHref);
+            } else {
+              router.back();
+            }
+          }}
           size="none"
           variant="default"
           className="block text-primary font-medium"
