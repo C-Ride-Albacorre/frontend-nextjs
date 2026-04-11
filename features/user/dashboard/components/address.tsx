@@ -35,9 +35,9 @@ export default function Address() {
           <div className="flex justify-center py-20">
             <Loader2 className="animate-spin text-primary" size={32} />
           </div>
-        ) : (
+        ) : data ? (
           <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-72 overflow-y-scroll">
-            {data.map((item: any) => (
+            {data?.map((item: any) => (
               <li key={item.id}>
                 <Card spacing="sm" className="flex items-start h-full">
                   <div className="flex-1 flex flex-col md:flex-row gap-2 mb-0">
@@ -81,7 +81,7 @@ export default function Address() {
               <Button
                 onClick={() => setIsModalOpen(true)}
                 variant="outline"
-                className='w-full'
+                className="w-full"
                 size="icon"
               >
                 <span className="bg-white rounded-full p-1">
@@ -91,6 +91,20 @@ export default function Address() {
               </Button>
             </li>
           </ul>
+        ) : (
+          <div className="flex flex-col items-center justify-center gap-6">
+            <Button
+              onClick={() => setIsModalOpen(true)}
+              variant="outline"
+              className="w-full"
+              size="icon"
+            >
+              <span className="bg-white rounded-full p-1">
+                <Plus size={16} />
+              </span>
+              Add a new location
+            </Button>
+          </div>
         )}
       </Card>
 
