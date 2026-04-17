@@ -53,6 +53,11 @@ export async function setAuthCookies(
   refreshToken: string,
 ) {
   const cookieStore = await cookies();
+
+  cookieStore.delete(COOKIE_KEYS.ACCESS_TOKEN);
+  cookieStore.delete(COOKIE_KEYS.REFRESH_TOKEN);
+  cookieStore.delete(COOKIE_KEYS.USER_ROLE);
+
   const accessTokenMaxAge = getTokenExpiry(accessToken);
   const refreshTokenMaxAge = getTokenExpiry(refreshToken);
 

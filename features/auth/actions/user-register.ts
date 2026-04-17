@@ -28,6 +28,8 @@ export async function userRegisterAction(
 
   let redirectTo: string | null = null;
 
+  console.log('Validated registration fields:', validatedFields.data);
+
   try {
     const result = await registerUser({ ...validatedFields.data });
 

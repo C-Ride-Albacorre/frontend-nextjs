@@ -1,6 +1,12 @@
+import { Button } from '@/components/ui/buttons/button';
 import { Plus } from 'lucide-react';
+import { getOrdersAction } from '../../delivery/action';
 
-export default function DeliverySummary() {
+export default async function DeliverySummary() {
+  const orders = await getOrdersAction();
+
+  console.log('Dashboard Orders:', orders);
+
   return (
     <div className="rounded-2xl border border-border p-6 text-center">
       <div className="flex justify-between">
@@ -17,12 +23,17 @@ export default function DeliverySummary() {
           the button below
         </p>
 
-        <button className="mx-auto mt-4 inline-flex items-center gap-2 rounded-xl bg-foreground-100 px-6 py-3 text-sm">
+        <Button
+          href="/user/delivery"
+          className="mx-auto mt-4 inline-flex items-center gap-2  text-sm w-full md:w-auto"
+          variant="outline"
+          size="icon"
+        >
           <span className="bg-white rounded-full p-1">
             <Plus size={16} />
           </span>
           Order Now
-        </button>
+        </Button>
       </div>
     </div>
   );

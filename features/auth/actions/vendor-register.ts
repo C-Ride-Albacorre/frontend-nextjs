@@ -57,6 +57,8 @@ export async function vendorRegisterAction(
       maxAge: getTokenExpiry(result.data.accessToken),
     });
 
+    
+
     return {
       status: 'success' as const,
       data: {

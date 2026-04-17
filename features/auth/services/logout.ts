@@ -11,9 +11,10 @@ export async function logoutService(accessToken: string) {
     cache: 'no-store',
   });
 
+  const data = await res.json();
+
   // 200 or 401 — either way we clear cookies locally
   if (!res.ok && res.status !== 401) {
-    const data = await res.json();
     throw new ApiError(
       data?.message || 'Logout failed',
       data?.statusCode ?? res.status,
