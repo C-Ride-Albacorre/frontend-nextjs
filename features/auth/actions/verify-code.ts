@@ -44,7 +44,7 @@ export async function VerifyCodeAction(
 
     console.log('Verify OTP response:', result);
 
-    if (!result?.data?.accessToken) {
+    if (!result?.data) {
       return {
         status: 'error',
         message: 'Invalid or expired OTP.',

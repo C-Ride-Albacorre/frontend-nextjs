@@ -15,7 +15,6 @@ export async function vendorRegisterAction(
     email: formData.get('email'),
     phoneNumber: formData.get('phoneNumber'),
     password: formData.get('password'),
-    referralCode: formData.get('referralCode') || undefined,
   });
 
   if (!validatedFields.success) {

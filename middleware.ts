@@ -2,7 +2,6 @@ import { jwtDecode } from 'jwt-decode';
 import { NextRequest, NextResponse } from 'next/server';
 
 const USER_PROTECTED_ROUTES = [
-  '/verify/user',
   '/user/dashboard',
   '/user/profile',
   '/user/settings',
@@ -10,9 +9,6 @@ const USER_PROTECTED_ROUTES = [
 ];
 
 const VENDOR_PROTECTED_ROUTES = [
-  '/add-google-phone',
-  '/verify/vendor-phone',
-  '/verify/vendor-email',
   '/onboarding/business-info',
   '/onboarding/contact-info',
   '/onboarding/address-info',
@@ -37,6 +33,14 @@ const ADMIN_PROTECTED_ROUTES = [
   '/admin/create-admin',
   '/admin/stores',
   '/admin/category',
+];
+
+const VERIFICATION_ROUTES = [
+  '/verify/user',
+  '/verify/vendor-phone',
+  '/verify/vendor-email',
+  '/add-google-phone',
+  '/verify/admin',
 ];
 
 const USER_AUTH_ROUTES = ['/user/register', '/user/login'];
@@ -162,6 +166,7 @@ export async function middleware(request: NextRequest) {
   const isAdminProtected = ADMIN_PROTECTED_ROUTES.some((r) =>
     pathname.startsWith(r),
   );
+
   const isUserAuth = USER_AUTH_ROUTES.some((r) => pathname.startsWith(r));
   const isVendorAuth = VENDOR_AUTH_ROUTES.some((r) => pathname.startsWith(r));
   const isAdminAuth = ADMIN_AUTH_ROUTES.some((r) => pathname.startsWith(r));
@@ -283,10 +288,13 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  const isAuthenticated = !!userRole;
+  // const isAuthenticated = !!userRole;
+
+  const hasAccessToken = !!accessToken && !isTokenExpired(accessToken);
+  const hasRefreshToken = !!refreshToken;
 
   console.log('[🔐 Middleware] Auth state', {
-    isAuthenticated,
+    // isAuthenticated,
     userRole,
     isUserProtected,
     isVendorProtected,
@@ -296,10 +304,19 @@ export async function middleware(request: NextRequest) {
     isAdminAuth,
   });
 
+  const isFullyAuthenticated = hasAccessToken && hasRefreshToken;
+  const isVerificationState = hasAccessToken && !hasRefreshToken;
+
+  if (VERIFICATION_ROUTES.some((r) => pathname.startsWith(r))) {
+    if (!hasAccessToken) {
+      return NextResponse.redirect(new URL('/user/register', request.url));
+    }
+  }
+
   // -------------------------
   // UNAUTHENTICATED ACCESS
   // -------------------------
-  if (isUserProtected && !isAuthenticated && !refreshToken) {
+  if (isUserProtected && !isFullyAuthenticated ) {
     console.log(
       '[🚫 Middleware] Unauthenticated (no refresh token) → redirecting to /user/login',
     );
@@ -307,7 +324,7 @@ export async function middleware(request: NextRequest) {
     url.searchParams.set('callbackUrl', pathname);
     return NextResponse.redirect(url);
   }
-  if (isVendorProtected && !isAuthenticated && !refreshToken) {
+  if (isVendorProtected && !isFullyAuthenticated ) {
     console.log(
       '[🚫 Middleware] Unauthenticated (no refresh token) → redirecting to /vendor/login',
     );
@@ -315,7 +332,7 @@ export async function middleware(request: NextRequest) {
     url.searchParams.set('callbackUrl', pathname);
     return NextResponse.redirect(url);
   }
-  if (isAdminProtected && !isAuthenticated && !refreshToken) {
+  if (isAdminProtected && !isFullyAuthenticated ) {
     console.log(
       '[🚫 Middleware] Unauthenticated (no refresh token) → redirecting to /admin/login',
     );
@@ -349,7 +366,7 @@ export async function middleware(request: NextRequest) {
   // -------------------------
   if (
     (isUserAuth || isVendorAuth || isAdminAuth || isSharedAuth) &&
-    (isAuthenticated || refreshToken)
+    (isFullyAuthenticated || refreshToken)
   ) {
     // Try to decode role from refresh token if we don't have it yet
     let redirectRole = userRole;
