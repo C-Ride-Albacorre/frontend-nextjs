@@ -82,41 +82,41 @@ export default function GoogleOAuthCallback() {
             console.log(
               '[OAuth] → Phone not verified, redirecting to /add-google-phone',
             );
-            window.location.href = '/add-google-phone';
+            // window.location.href = '/add-google-phone';
             return;
           }
 
           if (isPhoneVerified === 'true') {
-            if (
-              onboardingStatus !== 'completed' &&
-              onBoardingStep &&
-              onBoardingStep !== 'null'
-            ) {
-              document.cookie = `onboardingStatus=${encodeURIComponent(onboardingStatus || '')}; path=/;`;
-              document.cookie = `onBoardingStep=${encodeURIComponent(onBoardingStep)}; path=/;`;
+            // if (
+            //   onboardingStatus !== 'completed' &&
+            //   onBoardingStep &&
+            //   onBoardingStep !== 'null'
+            // ) {
+            //   document.cookie = `onboardingStatus=${encodeURIComponent(onboardingStatus || '')}; path=/;`;
+            //   document.cookie = `onBoardingStep=${encodeURIComponent(onBoardingStep)}; path=/;`;
 
-              const stepNum = Number(onBoardingStep);
-              const stepRoutes: Record<number, string> = {
-                1: '/onboarding/business-info',
-                2: '/onboarding/business-contact',
-                3: '/onboarding/business-address',
-                4: '/onboarding/business-bank',
-                5: '/onboarding/business-document',
-              };
-              const redirectPath =
-                stepRoutes[stepNum] ?? '/onboarding/business-info';
-              console.log(
-                '[OAuth] → Onboarding incomplete, redirecting to:',
-                redirectPath,
-              );
-              window.location.href = redirectPath;
-              return;
-            }
+            //   const stepNum = Number(onBoardingStep);
+            //   const stepRoutes: Record<number, string> = {
+            //     1: '/onboarding/business-info',
+            //     2: '/onboarding/business-contact',
+            //     3: '/onboarding/business-address',
+            //     4: '/onboarding/business-bank',
+            //     5: '/onboarding/business-document',
+            //   };
+            //   const redirectPath =
+            //     stepRoutes[stepNum] ?? '/onboarding/business-info';
+            //   console.log(
+            //     '[OAuth] → Onboarding incomplete, redirecting to:',
+            //     redirectPath,
+            //   );
+            //   window.location.href = redirectPath;
+            //   return;
+            // }
 
             console.log(
               '[OAuth] → Onboarding complete, redirecting to /vendor/store',
             );
-            window.location.href = '/vendor/store';
+            // window.location.href = '/vendor/store';
             return;
           }
 
