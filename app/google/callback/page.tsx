@@ -113,8 +113,8 @@ export default function GoogleOAuthCallback() {
 
   return (
     <div className="flex min-h-screen items-center justify-center">
-      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-        <Loader2 className="animate-spin" />
+      <div className="flex items-center gap-2 text-sm text-muted-foreground text-primary">
+        <Loader2 className="animate-spin text-primary" />
         Signing you in...
       </div>
     </div>
