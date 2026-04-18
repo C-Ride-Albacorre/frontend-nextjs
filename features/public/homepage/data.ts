@@ -2,22 +2,29 @@ export const HERO_CONTENT = {
   food: {
     label: 'Food',
     image: '/assets/image/hero.jpg',
-    title: ['Food, Grocery & Gift Delivered at Your Door in Time'],
+    title: ['Premium Delivery for People Who Expect More'],
+    description:
+      'From fine meals to everyday essentials, every order handled with care and delivered to perfection.',
   },
   grocery: {
     label: 'Grocery',
     image: '/assets/image/hero-3.jpg',
-    title: ['Fresh Groceries Delivered Fast'],
+    title: ['Fresh Groceries, Delivered with Care'],
+    description: '',
   },
   gift: {
     label: 'Gift Shop',
     image: '/assets/image/hero-4.png',
-    title: ['Thoughtful Gifts For Every Moment'],
+    title: ['Thoughtful Gifts, Delivered with Excellence'],
+    description: '',
   },
-  care: {
-    label: 'Care',
+  essentials: {
+    label: 'Essentials',
     image: '/assets/image/hero-2.png',
-    title: ['Care Services When You Need Them'],
+    title: [
+      'Pharmacy, medical, and sensitive items delivered safely and discreetly.',
+    ],
+    description: '',
   },
 } as const;
 
