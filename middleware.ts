@@ -9,11 +9,6 @@ const USER_PROTECTED_ROUTES = [
 ];
 
 const VENDOR_PROTECTED_ROUTES = [
-  '/onboarding/business-info',
-  '/onboarding/contact-info',
-  '/onboarding/address-info',
-  '/onboarding/bank-info',
-  '/onboarding/business-document',
   '/vendor/active-deliveries',
   '/vendor/analytics',
   '/vendor/delivery',
@@ -41,6 +36,11 @@ const VERIFICATION_ROUTES = [
   '/verify/vendor-email',
   '/add-google-phone',
   '/verify/admin',
+  '/onboarding/business-info',
+  '/onboarding/contact-info',
+  '/onboarding/address-info',
+  '/onboarding/bank-info',
+  '/onboarding/business-document',
 ];
 
 const USER_AUTH_ROUTES = ['/user/register', '/user/login'];
@@ -316,7 +316,7 @@ export async function middleware(request: NextRequest) {
   // -------------------------
   // UNAUTHENTICATED ACCESS
   // -------------------------
-  if (isUserProtected && !isFullyAuthenticated ) {
+  if (isUserProtected && !isFullyAuthenticated) {
     console.log(
       '[🚫 Middleware] Unauthenticated (no refresh token) → redirecting to /user/login',
     );
@@ -324,7 +324,7 @@ export async function middleware(request: NextRequest) {
     url.searchParams.set('callbackUrl', pathname);
     return NextResponse.redirect(url);
   }
-  if (isVendorProtected && !isFullyAuthenticated ) {
+  if (isVendorProtected && !isFullyAuthenticated) {
     console.log(
       '[🚫 Middleware] Unauthenticated (no refresh token) → redirecting to /vendor/login',
     );
@@ -332,7 +332,7 @@ export async function middleware(request: NextRequest) {
     url.searchParams.set('callbackUrl', pathname);
     return NextResponse.redirect(url);
   }
-  if (isAdminProtected && !isFullyAuthenticated ) {
+  if (isAdminProtected && !isFullyAuthenticated) {
     console.log(
       '[🚫 Middleware] Unauthenticated (no refresh token) → redirecting to /admin/login',
     );

@@ -1,6 +1,5 @@
 'use server';
 
-import { redirect } from 'next/navigation';
 import { VerifyOtpSchema, VerifyOtpState } from '../libs/verify-code.schema';
 import { verifyOtpService } from '../services/verify-code';
 import { getTokenExpiry } from '@/utils/jwt';
@@ -10,6 +9,9 @@ export async function VerifyCodeAction(
   prevState: VerifyOtpState | null,
   formData: FormData,
 ): Promise<VerifyOtpState | null> {
+  // -------------------------
+  // VALIDATE INPUT
+  // -------------------------
   const validated = VerifyOtpSchema.safeParse({
     otp: formData.get('otp'),
   });
@@ -21,6 +23,9 @@ export async function VerifyCodeAction(
     };
   }
 
+  // -------------------------
+  // SESSION CHECK
+  // -------------------------
   const identifier = await getCookie('verify_identifier');
   const registrationMethod = await getCookie('registration_method');
 
@@ -32,9 +37,6 @@ export async function VerifyCodeAction(
   }
 
   console.log('Verifying OTP for identifier:', identifier);
-  console.log('OTP entered:', validated.data.otp);
-
-  let redirectTo: string | null = null;
 
   try {
     const result = await verifyOtpService({
@@ -44,38 +46,102 @@ export async function VerifyCodeAction(
 
     console.log('Verify OTP response:', result);
 
-    if (!result?.data) {
+    const data = result?.data;
+
+    // -------------------------
+    // STRICT RESPONSE VALIDATION
+    // -------------------------
+    if (
+      !data ||
+      !data.accessToken ||
+      !data.refreshToken ||
+      !data.user
+    ) {
       return {
         status: 'error',
-        message: 'Invalid or expired OTP.',
+        message: 'Invalid verification response. Please try again.',
       };
     }
 
+    // -------------------------
+    // STORE TOKENS
+    // -------------------------
     await setCookie({
-      name: 'refreshToken',
-      value: result.data.refreshToken,
-      maxAge: getTokenExpiry(result.data.refreshToken),
+      name: 'accessToken',
+      value: data.accessToken,
+      maxAge: getTokenExpiry(data.accessToken),
     });
 
+    await setCookie({
+      name: 'refreshToken',
+      value: data.refreshToken,
+      maxAge: getTokenExpiry(data.refreshToken),
+    });
+
+    // -------------------------
+    // CLEANUP TEMP COOKIES
+    // -------------------------
     await deleteCookie('verify_identifier');
     await deleteCookie('registration_method');
 
-    let userNewData = true;
+    // -------------------------
+    // ROUTING LOGIC (BACKEND-DRIVEN)
+    // -------------------------
+    let redirectTo = '/';
 
-    if (userNewData) {
-      redirectTo = '/user/delivery?newUser=true';
+    if (data.user.role === 'CUSTOMER') {
+      redirectTo = data.user.isNewUser
+        ? '/user/delivery?newUser=true'
+        : '/user/dashboard';
     }
+
+    if (data.user.role === 'VENDOR') {
+      // (future-proof if reused)
+      redirectTo = '/vendor/store';
+    }
+
+    if (data.user.role === 'ADMIN') {
+      redirectTo = '/admin/dashboard';
+    }
+
+    // -------------------------
+    // SUCCESS RESPONSE
+    // -------------------------
+    return {
+      status: 'success',
+      message: 'Verification successful!',
+      redirectTo,
+    };
   } catch (error) {
+    // -------------------------
+    // GRACEFUL ERROR HANDLING
+    // -------------------------
+    if (error instanceof Error) {
+      const msg = error.message.toLowerCase();
+
+      if (msg.includes('expired')) {
+        return {
+          status: 'error',
+          message: 'OTP expired. Please request a new one.',
+        };
+      }
+
+      if (msg.includes('invalid')) {
+        return {
+          status: 'error',
+          message: 'Incorrect OTP. Please try again.',
+        };
+      }
+
+      return {
+        status: 'error',
+        message: error.message,
+      };
+    }
+
     return {
       status: 'error',
-      message:
-        error instanceof Error ? error.message : 'Invalid or expired OTP.',
+      message: 'Something went wrong. Please try again.',
     };
-  }
-
-  if (redirectTo) {
-    redirect(redirectTo);
-  } else {
-    redirect('/user/delivery');
   }
 }

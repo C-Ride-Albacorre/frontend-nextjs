@@ -156,17 +156,7 @@ export default function VendorRegisterForm() {
           errorMessage={isError ? state.errors?.password?.[0] : undefined}
         />
 
-        {/* REFERRAL */}
-        <Input
-          id="referralCode"
-          type="text"
-          name="referralCode"
-          value={formValues.referralCode}
-          onChange={changeHandler('referralCode')}
-          label="Referral Code (Optional)"
-          spacing="sm"
-          placeholder="Enter code"
-        />
+       
 
         {/* TERMS CHECKBOX */}
         <div className="space-y-2">

@@ -41,8 +41,6 @@ export default function UserRegisterForm() {
     undefined,
   );
 
-
-
   const changeHandler =
     (field: keyof FieldValues) => (e: React.ChangeEvent<HTMLInputElement>) => {
       setFormValues((prev) => ({ ...prev, [field]: e.target.value }));
@@ -60,8 +58,6 @@ export default function UserRegisterForm() {
       );
     }
   }, [state]);
-
-
 
   useEffect(() => {
     if (state?.status === 'success') {
@@ -143,7 +139,17 @@ export default function UserRegisterForm() {
           }
         />
 
-      
+        {/* REFERRAL */}
+        <Input
+          id="referralCode"
+          type="text"
+          name="referralCode"
+          value={formValues.referralCode}
+          onChange={changeHandler('referralCode')}
+          label="Referral Code (Optional)"
+          spacing="sm"
+          placeholder="Enter code"
+        />
 
         <label className="flex gap-3 text-sm">
           <input
