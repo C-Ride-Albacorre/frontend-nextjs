@@ -64,11 +64,11 @@ export const VENDOR_SIDEBAR: SidebarSection[] = [
   {
     title: 'Main Menu',
     items: [
-      {
-        label: 'Orders',
-        icon: ShoppingBag,
-        href: '/vendor/orders',
-      },
+      // {
+      //   label: 'Orders',
+      //   icon: ShoppingBag,
+      //   href: '/vendor/orders',
+      // },
       {
         label: 'Products',
         icon: Package,
@@ -124,11 +124,11 @@ export const VENDOR_SIDEBAR: SidebarSection[] = [
         icon: BadgeCheck,
         href: '/vendor/partner-program',
       },
-      {
-        label: 'Onboarding',
-        icon: Settings,
-        href: '/vendor/onboarding',
-      },
+      // {
+      //   label: 'Onboarding',
+      //   icon: Settings,
+      //   href: '/vendor/onboarding',
+      // },
     ],
   },
   {
