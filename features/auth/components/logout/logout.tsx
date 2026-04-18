@@ -13,18 +13,23 @@ export default function Logout({ onClose }: { onClose?: () => void }) {
 
   const pathName = usePathname();
 
-  function getLoginPath() {
-    if (pathName.startsWith('/admin')) return '/admin/login';
-    if (pathName.startsWith('/vendor')) return '/vendor/login';
-    return '/user/login';
-  }
+  // function getLoginPath() {
+  //   if (pathName.startsWith('/admin')) return '/admin/login';
+  //   if (pathName.startsWith('/vendor')) return '/vendor/login';
+  //   return '/user/login';
+  // }
 
-  function handleLogout() {
-    startTransition(async () => {
-      await logoutAction(getLoginPath());
-      onClose?.();
-    });
-  }
+function handleLogout() {
+  startTransition(async () => {
+    const res = await logoutAction();
+
+    onClose?.();
+
+    if (res?.redirectTo) {
+      window.location.href = res.redirectTo;
+    }
+  });
+}
 
   return (
     <>

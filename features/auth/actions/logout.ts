@@ -1,7 +1,11 @@
 'use server';
 
 import { logoutService } from '../services/logout';
-import { clearAuthCookies, deleteCookie, getCookie } from '@/utils/cookies';
+import {
+  clearAuthCookies,
+  deleteCookie,
+  getCookie,
+} from '@/utils/cookies';
 import { jwtDecode } from 'jwt-decode';
 
 type Role = 'CUSTOMER' | 'VENDOR' | 'ADMIN' | 'SUPER_ADMIN';
