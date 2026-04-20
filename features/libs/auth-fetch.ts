@@ -1,11 +1,11 @@
-import { getCookie } from '@/utils/cookies';
+import { COOKIE_KEYS, getCookie } from '@/utils/cookies';
 import { refreshSession } from '@/features/libs/refresh-session';
 
 export async function authFetch(
   url: string,
   options: RequestInit = {},
 ): Promise<Response> {
-  let accessToken = await getCookie('accessToken');
+  let accessToken = await getCookie(COOKIE_KEYS.ACCESS_TOKEN);
 
   const headers = new Headers(options.headers);
 

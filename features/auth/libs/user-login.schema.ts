@@ -6,6 +6,11 @@ export const LoginFormSchema = z.object({
     .trim()
     .min(1, { message: 'Email or phone is required.' }),
   password: z.string().min(1, { message: 'Password is required.' }),
+  countryCode: z
+    .string()
+    .trim()
+    .length(2, { message: 'Invalid country code' })
+    .optional(),
 });
 
 export type LoginFormData = z.infer<typeof LoginFormSchema>;

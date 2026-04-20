@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import { User } from 'lucide-react';
-import { profileService } from '@/features/user/profile/service/profile';
+import { profileService } from '@/features/user/profile/service';
 import { ApiError } from '@/features/libs/api-error';
 import { redirect } from 'next/navigation';
 

@@ -3,8 +3,7 @@
 import { redirect } from 'next/navigation';
 import { LoginFormSchema, LoginFormState } from '../libs/user-login.schema';
 import { LoginPayload, loginUser } from '../services/user-login';
-import { setAuthCookies, setCookie } from '@/utils/cookies'; 
-import { ApiError } from '../../libs/api-error';
+import { setAuthCookies, setVerificationCookies } from '@/utils/cookies';
 
 export async function userLoginAction(
   _state: LoginFormState,
@@ -40,42 +39,53 @@ export async function userLoginAction(
 
   let redirectTo: string | null = null;
 
+
+  console.log(' Login payload:', payload);
+
   try {
+
+console.log(' Attempting to log in user with payload:', payload);
+
     const result = await loginUser(payload);
-    const { accessToken, refreshToken } = result.data;
 
-    await setAuthCookies(accessToken, refreshToken);
-
-     console.log('User login successful:', result);
-
-    redirectTo = safeCallback;
-  } catch (error) {
-    
-    if (
-      error instanceof ApiError &&
-      error.statusCode === 403 &&
-      error.reason === 'UNVERIFIED'
-    ) {
-      await setCookie({
-        name: 'verify_identifier',
-        value: rawIdentifier,
-        maxAge: 60 * 30, 
-      });
-      await setCookie({
-        name: 'registration_method',
-        value: isPhone ? 'phone' : 'email',
-        maxAge: 60 * 30, 
-      });
-      redirectTo = `/verify/user`;
-    } else {
+    if (!result.data) {
       return {
         status: 'error',
-        message:
-          error instanceof Error
-            ? error.message
-            : 'Something went wrong. Please try again.',
+        message: 'Login failed.',
       };
     }
+
+    console.log('Login API result:', result);
+
+    if (!result.data.success && result.data.status === 'UNVERIFIED') {
+      if (result.data.verificationToken) {
+        await setVerificationCookies({
+          verificationToken: result.data.verificationToken,
+          verifyIdentifier: result.data.identifier,
+          registrationMethod: result.data.verificationMethod,
+        });
+      }
+
+      redirectTo = '/verify/user';
+    }
+
+    if (result.data.success) {
+      const { accessToken, refreshToken } = result.data;
+
+      await setAuthCookies(accessToken, refreshToken);
+
+      console.log('User login successful:', result);
+
+      redirectTo = safeCallback;
+    }
+  } catch (error) {
+    return {
+      status: 'error',
+      message:
+        error instanceof Error
+          ? error.message
+          : 'Something went wrong. Please try again.',
+    };
   }
 
   if (redirectTo) redirect(redirectTo);

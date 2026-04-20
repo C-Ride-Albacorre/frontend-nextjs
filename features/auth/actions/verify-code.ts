@@ -2,8 +2,13 @@
 
 import { VerifyOtpSchema, VerifyOtpState } from '../libs/verify-code.schema';
 import { verifyOtpService } from '../services/verify-code';
-import { getTokenExpiry } from '@/utils/jwt';
-import { deleteCookie, getCookie, setCookie } from '@/utils/cookies';
+
+import {
+  clearVerificationCookies,
+  COOKIE_KEYS,
+  getCookie,
+  setAuthCookies,
+} from '@/utils/cookies';
 
 export async function VerifyCodeAction(
   prevState: VerifyOtpState | null,
@@ -27,6 +32,8 @@ export async function VerifyCodeAction(
   // SESSION CHECK
   // -------------------------
   const identifier = await getCookie('verify_identifier');
+  const verificationToken = await getCookie(COOKIE_KEYS.VERIFICATION_TOKEN);
+
   const registrationMethod = await getCookie('registration_method');
 
   if (!identifier || !registrationMethod) {
@@ -36,12 +43,20 @@ export async function VerifyCodeAction(
     };
   }
 
-  console.log('Verifying OTP for identifier:', identifier);
+  console.log(
+    'Verifying OTP for identifier:',
+    identifier,
+    'OTP:',
+    validated.data.otp,
+    'verificationToken:',
+    verificationToken,
+  );
 
   try {
     const result = await verifyOtpService({
       identifier,
       otp: validated.data.otp,
+      verificationToken: verificationToken,
     });
 
     console.log('Verify OTP response:', result);
@@ -51,12 +66,7 @@ export async function VerifyCodeAction(
     // -------------------------
     // STRICT RESPONSE VALIDATION
     // -------------------------
-    if (
-      !data ||
-      !data.accessToken ||
-      !data.refreshToken ||
-      !data.user
-    ) {
+    if (!data || !data.accessToken || !data.refreshToken || !data.user) {
       return {
         status: 'error',
         message: 'Invalid verification response. Please try again.',
@@ -66,23 +76,12 @@ export async function VerifyCodeAction(
     // -------------------------
     // STORE TOKENS
     // -------------------------
-    await setCookie({
-      name: 'accessToken',
-      value: data.accessToken,
-      maxAge: getTokenExpiry(data.accessToken),
-    });
-
-    await setCookie({
-      name: 'refreshToken',
-      value: data.refreshToken,
-      maxAge: getTokenExpiry(data.refreshToken),
-    });
+    await setAuthCookies(data.accessToken, data.refreshToken);
 
     // -------------------------
     // CLEANUP TEMP COOKIES
     // -------------------------
-    await deleteCookie('verify_identifier');
-    await deleteCookie('registration_method');
+    await clearVerificationCookies();
 
     // -------------------------
     // ROUTING LOGIC (BACKEND-DRIVEN)

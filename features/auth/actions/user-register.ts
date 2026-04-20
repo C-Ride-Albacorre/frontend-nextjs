@@ -3,8 +3,7 @@
 import { redirect } from 'next/navigation';
 import { RegisterFormSchema, FormState } from '../libs/register.schema';
 import { registerUser } from '../services/user-register';
-import { setCookie } from '@/utils/cookies';
-import { getTokenExpiry } from '@/utils/jwt';
+import { setCookie, setVerificationCookies } from '@/utils/cookies';
 
 export async function userRegisterAction(
   _state: FormState,
@@ -15,6 +14,7 @@ export async function userRegisterAction(
     lastName: formData.get('lastName'),
     email: formData.get('email') || undefined,
     phoneNumber: formData.get('phoneNumber') || undefined,
+    countryCode: formData.get('countryCode') || undefined,
     password: formData.get('password'),
     referralCode: formData.get('referralCode')?.toString().trim() || undefined,
   });
@@ -48,28 +48,27 @@ export async function userRegisterAction(
 
     if (
       result.status === 'success' &&
+      result.data.status === 'NEW' &&
       result.data.requiresVerification &&
       result.data.verificationIdentifier
     ) {
-      await setCookie({
-        name: 'verify_identifier',
-        value: result.data.verificationIdentifier,
-        maxAge: 60 * 30,
-      });
+      // await setCookie({
+      //   name: 'verify_identifier',
+      //   value: result.data.verificationIdentifier,
+      //   maxAge: 60 * 30,
+      // });
 
-      await setCookie({
-        name: 'registration_method',
-        value: registrationMethod,
-        maxAge: 60 * 30,
-      });
+      // await setCookie({
+      //   name: 'registration_method',
+      //   value: registrationMethod,
+      //   maxAge: 60 * 30,
+      // });
 
-      await setCookie({
-        name: 'accessToken',
-        value: result.data.accessToken,
-        maxAge: getTokenExpiry(result.data.accessToken),
+      await setVerificationCookies({
+        verificationToken: result.data.verificationToken,
+        verifyIdentifier: result.data.verificationIdentifier,
+        registrationMethod,
       });
-
-     
 
       redirectTo = `/verify/user`;
     } else {

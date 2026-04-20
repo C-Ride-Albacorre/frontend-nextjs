@@ -7,6 +7,11 @@ export const VendorLoginFormSchema = z.object({
     .min(1, { message: 'Email is required.' })
     .email({ message: 'Invalid email address.' }),
   password: z.string().min(1, { message: 'Password is required.' }),
+  countryCode: z
+    .string()
+    .trim()
+    .length(2, { message: 'Invalid country code' })
+    .optional(),
 });
 
 export type VendorLoginFormData = z.infer<typeof VendorLoginFormSchema>;

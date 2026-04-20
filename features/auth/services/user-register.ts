@@ -10,10 +10,11 @@ export type RegisterApiResponse = {
   data: {
     status: string;
     accessToken: string;
-    // refreshToken: string;
     requiresVerification: boolean;
     registrationMethod: string;
     verificationIdentifier: string;
+    role: string;
+    verificationToken: string;
   };
 };
 
@@ -26,7 +27,7 @@ export async function registerUser(
 ): Promise<RegisterApiResponse> {
   const res = await fetch(`${BASE_URL}/auth/customer/signup`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
     body: JSON.stringify(payload),
   });
 

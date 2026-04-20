@@ -26,6 +26,11 @@ export const RegisterFormSchema = z
         message:
           'Phone number must be at least 11 digits and may start with +.',
       }),
+    countryCode: z
+      .string()
+      .trim()
+      .length(2, { message: 'Invalid country code' })
+      .optional(),
 
     password: z
       .string()
@@ -76,7 +81,11 @@ export const VendorRegisterFormSchema = z.object({
     .refine((val) => /^\+?\d{11,}$/.test(val), {
       message: 'Phone number must be at least 11 digits and may start with +.',
     }),
-
+  countryCode: z
+    .string()
+    .trim()
+    .length(2, { message: 'Invalid country code' })
+    .optional(),
   password: z
     .string()
     .trim()

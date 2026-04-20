@@ -2,34 +2,31 @@ import Card from '@/components/layout/card';
 import Avatar from '@/components/ui/avatar';
 import { Button } from '@/components/ui/buttons/button';
 import Header from '@/components/ui/headers/user-route-header';
-import { Calendar, Edit, Home, Image, Mail, Phone } from 'lucide-react';
-import { profileService } from '@/features/user/profile/service/profile';
+import { Calendar, Edit, Image, Mail, Phone } from 'lucide-react';
+import { profileService } from '@/features/user/profile/service';
 import ProfileSettings from '@/features/user/profile/components/profile-settings';
 import SavedAddress from '@/features/user/profile/components/saved-address';
 import DeleteAccountButton from '@/features/user/profile/components/delete-account';
-import { ApiError } from 'next/dist/server/api-utils';
-import { redirect } from 'next/navigation';
 import Logout from '@/features/auth/components/logout/logout';
 
 export default async function UserProfilePage() {
   let data;
 
-  try {
-    const result = await profileService();
+  const result = await profileService();
 
-    data = result.data;
-  } catch (error) {
-    if (error instanceof ApiError && error.statusCode === 401) {
-      redirect('/user/login');
-    }
-    throw error;
+  data = result.data;
+
+  console.log('Profile Data:', data);
+
+  if (!result.data) {
+    return <div>Failed to load profile</div>;
   }
 
-  const firstName = data.firstName.toLowerCase();
-  const lastName = data.lastName.toLowerCase();
+  const firstName = data?.firstName?.toLowerCase();
+  const lastName = data?.lastName?.toLowerCase();
   const fullName = `${firstName} ${lastName}`;
-  const email = data.email.toLowerCase();
-  const phone = data.phone;
+  const email = data?.email?.toLowerCase();
+  const phone = data?.phone;
 
   return (
     <>

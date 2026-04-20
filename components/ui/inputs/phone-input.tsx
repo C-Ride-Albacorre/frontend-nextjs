@@ -186,6 +186,9 @@ export default function PhoneInput({
           </div>
         )}
 
+        {/* Hidden input — country code */}
+        <input type="hidden" name="countryCode" value={selected.code} />
+
         {/* Hidden input — full value with dial code */}
         <input type="hidden" name={name} value={fullValue} />
 

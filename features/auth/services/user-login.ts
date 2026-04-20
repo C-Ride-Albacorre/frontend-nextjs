@@ -5,8 +5,14 @@ export type LoginApiResponse = {
   status: string;
   statusCode: number;
   data: {
+    success: boolean;
+    status: string;
+    message: string;
     accessToken: string;
     refreshToken: string;
+    verificationToken?: string;
+    verificationMethod: string;
+    identifier: string;
     user: {
       id: string;
       email: string;
@@ -31,19 +37,14 @@ export async function loginUser(
 
   const data = await res.json();
 
+  console.log('Login API error response:', data);
+
   if (!res.ok) {
-
-      console.log('Login API error response:', data);
-
-
     throw new ApiError(
-      data?.message || 'Login failed',
+      data?.message ?? 'Login failed',
       data?.statusCode ?? res.status,
       data?.reason,
     );
-
-
-  
   }
 
   console.log('Login API response:', data);

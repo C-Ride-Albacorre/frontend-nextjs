@@ -8,9 +8,12 @@ export const COOKIE_KEYS = {
   ACCESS_TOKEN: 'accessToken',
   REFRESH_TOKEN: 'refreshToken',
   USER_ROLE: 'userRole',
+  VERIFICATION_TOKEN: 'verificationToken',
+  VERIFY_IDENTIFIER: 'verify_identifier',
+  REGISTRATION_METHOD: 'registration_method',
 } as const;
 
-type CookieKey = (typeof COOKIE_KEYS)[keyof typeof COOKIE_KEYS];
+
 
 // Default cookie options
 const defaultOptions = {
@@ -47,6 +50,33 @@ export async function deleteCookie(name: string) {
   cookieStore.delete(name);
 }
 
+// Set cookies after registration — gates access to /verify/* routes
+export async function setVerificationCookies({
+  verificationToken,
+  verifyIdentifier,
+  registrationMethod,
+}: {
+  verificationToken: string;
+  verifyIdentifier: string;
+  registrationMethod: string;
+}) {
+  const cookieStore = await cookies();
+  const maxAge = getTokenExpiry(verificationToken); // respect the token's own expiry
+
+  cookieStore.set(COOKIE_KEYS.VERIFICATION_TOKEN, verificationToken, {
+    ...defaultOptions,
+    maxAge,
+  });
+  cookieStore.set(COOKIE_KEYS.VERIFY_IDENTIFIER, verifyIdentifier, {
+    ...defaultOptions,
+    maxAge,
+  });
+  cookieStore.set(COOKIE_KEYS.REGISTRATION_METHOD, registrationMethod, {
+    ...defaultOptions,
+    maxAge,
+  });
+}
+
 // Set auth cookies (access + refresh tokens)
 export async function setAuthCookies(
   accessToken: string,
@@ -56,7 +86,6 @@ export async function setAuthCookies(
 
   cookieStore.delete(COOKIE_KEYS.ACCESS_TOKEN);
   cookieStore.delete(COOKIE_KEYS.REFRESH_TOKEN);
-  cookieStore.delete(COOKIE_KEYS.USER_ROLE);
 
   const accessTokenMaxAge = getTokenExpiry(accessToken);
   const refreshTokenMaxAge = getTokenExpiry(refreshToken);
@@ -87,6 +116,16 @@ export async function clearAuthCookies() {
   cookieStore.delete(COOKIE_KEYS.ACCESS_TOKEN);
   cookieStore.delete(COOKIE_KEYS.REFRESH_TOKEN);
   cookieStore.delete(COOKIE_KEYS.USER_ROLE);
+  cookieStore.delete(COOKIE_KEYS.VERIFICATION_TOKEN);
+  cookieStore.delete(COOKIE_KEYS.VERIFY_IDENTIFIER);
+  cookieStore.delete(COOKIE_KEYS.REGISTRATION_METHOD);
+}
+
+export async function clearVerificationCookies() {
+  const cookieStore = await cookies();
+  cookieStore.delete(COOKIE_KEYS.VERIFICATION_TOKEN);
+  cookieStore.delete(COOKIE_KEYS.VERIFY_IDENTIFIER);
+  cookieStore.delete(COOKIE_KEYS.REGISTRATION_METHOD);
 }
 
 // Check if user is authenticated (has valid access token)

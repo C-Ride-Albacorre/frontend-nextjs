@@ -3,6 +3,7 @@
 import { logoutService } from '../services/logout';
 import {
   clearAuthCookies,
+  COOKIE_KEYS,
   deleteCookie,
   getCookie,
 } from '@/utils/cookies';
@@ -11,8 +12,8 @@ import { jwtDecode } from 'jwt-decode';
 type Role = 'CUSTOMER' | 'VENDOR' | 'ADMIN' | 'SUPER_ADMIN';
 
 export async function logoutAction() {
-  const refreshToken = await getCookie('refreshToken');
-  const accessToken = await getCookie('accessToken');
+  const refreshToken = await getCookie(COOKIE_KEYS.REFRESH_TOKEN);
+  const accessToken = await getCookie(COOKIE_KEYS.ACCESS_TOKEN);
 
   let role: Role | null = null;
 

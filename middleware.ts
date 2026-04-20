@@ -9,6 +9,11 @@ const USER_PROTECTED_ROUTES = [
 ];
 
 const VENDOR_PROTECTED_ROUTES = [
+  '/onboarding/business-info',
+  '/onboarding/contact-info',
+  '/onboarding/address-info',
+  '/onboarding/bank-info',
+  '/onboarding/business-document',
   '/vendor/active-deliveries',
   '/vendor/analytics',
   '/vendor/delivery',
@@ -36,11 +41,6 @@ const VERIFICATION_ROUTES = [
   '/verify/vendor-email',
   '/add-google-phone',
   '/verify/admin',
-  '/onboarding/business-info',
-  '/onboarding/contact-info',
-  '/onboarding/address-info',
-  '/onboarding/bank-info',
-  '/onboarding/business-document',
 ];
 
 const USER_AUTH_ROUTES = ['/user/register', '/user/login'];
@@ -157,6 +157,10 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+  const isVerificationRoute = VERIFICATION_ROUTES.some((r) =>
+    pathname.startsWith(r),
+  );
+
   const isUserProtected = USER_PROTECTED_ROUTES.some((r) =>
     pathname.startsWith(r),
   );
@@ -181,7 +185,11 @@ export async function middleware(request: NextRequest) {
   // -------------------------
   // AUTO REFRESH ACCESS TOKEN
   // -------------------------
-  if ((!accessToken || isTokenExpired(accessToken)) && refreshToken) {
+  if (
+    !isVerificationRoute &&
+    (!accessToken || isTokenExpired(accessToken)) &&
+    refreshToken
+  ) {
     console.log(
       accessToken
         ? '[⏰ Middleware] Access token expired — attempting refresh'
@@ -305,11 +313,19 @@ export async function middleware(request: NextRequest) {
   });
 
   const isFullyAuthenticated = hasAccessToken && hasRefreshToken;
-  const isVerificationState = hasAccessToken && !hasRefreshToken;
 
   if (VERIFICATION_ROUTES.some((r) => pathname.startsWith(r))) {
-    if (!hasAccessToken) {
-      return NextResponse.redirect(new URL('/user/register', request.url));
+    const verificationToken = request.cookies.get('verificationToken')?.value;
+
+    if (!verificationToken) {
+      // Route-aware redirect
+      let fallback = '/user/register';
+      if (pathname.startsWith('/verify/vendor')) fallback = '/vendor/register';
+      if (pathname.startsWith('/verify/admin')) fallback = '/admin/login';
+
+      const url = new URL(fallback, request.url);
+      url.searchParams.set('expired', 'true');
+      return NextResponse.redirect(url);
     }
   }
 
