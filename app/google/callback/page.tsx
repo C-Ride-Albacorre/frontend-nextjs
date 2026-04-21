@@ -44,7 +44,11 @@ export default function GoogleOAuthCallback() {
         const cookieRes = await fetch('/api/auth/google-callback', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ accessToken, refreshToken }),
+          body: JSON.stringify({
+            accessToken,
+            refreshToken,
+            verificationToken,
+          }),
         });
 
         if (!cookieRes.ok) throw new Error('Failed to set session');
@@ -76,6 +80,11 @@ export default function GoogleOAuthCallback() {
         if (role === 'VENDOR') {
           // 1. PHONE NOT VERIFIED
           if (!isPhoneVerified) {
+            if (!verificationToken) {
+              router.replace('/vendor/login?error=missing_verification_token');
+              return;
+            }
+
             router.replace('/add-google-phone');
             return;
           }

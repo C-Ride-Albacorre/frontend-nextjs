@@ -1,6 +1,6 @@
 'use server';
 
-import { setCookie } from '@/utils/cookies';
+import { COOKIE_KEYS, getCookie, setCookie } from '@/utils/cookies';
 import { addVendorPhoneService } from '../services/add-vendor-phone';
 
 export async function AddVendorPhoneAction(
@@ -9,6 +9,8 @@ export async function AddVendorPhoneAction(
 ) {
   const phoneNumber = formData.get('phone') as string;
   const countryCode = formData.get('countryCode') as string;
+
+  const verificationToken = await getCookie(COOKIE_KEYS.VERIFICATION_TOKEN);
 
   // -------------------------
   // 1. INPUT VALIDATION
@@ -20,8 +22,19 @@ export async function AddVendorPhoneAction(
     };
   }
 
+  if (!verificationToken) {
+    return {
+      status: 'error',
+      message: 'Verification session expired. Please start again.',
+    };
+  }
+
   try {
-    const result = await addVendorPhoneService({ phoneNumber, countryCode });
+    const result = await addVendorPhoneService({
+      phoneNumber,
+      countryCode,
+      verificationToken,
+    });
 
     console.log('Add phone response:', result);
 

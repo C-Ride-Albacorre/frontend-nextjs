@@ -13,7 +13,7 @@ const cookieOptions = {
 
 export async function POST(req: NextRequest) {
   try {
-    const { accessToken, refreshToken } = await req.json();
+    const { accessToken, refreshToken, verificationToken } = await req.json();
 
     if (!accessToken || !refreshToken) {
       return NextResponse.json({ error: 'Missing tokens' }, { status: 400 });
@@ -30,6 +30,13 @@ export async function POST(req: NextRequest) {
       ...cookieOptions,
       maxAge: getTokenExpiry(refreshToken),
     });
+
+    if (verificationToken) {
+      cookieStore.set('verificationToken', verificationToken, {
+        ...cookieOptions,
+        maxAge: getTokenExpiry(verificationToken),
+      });
+    }
 
     return NextResponse.json({ success: true });
   } catch {
