@@ -13,7 +13,15 @@ const cookieOptions = {
 
 export async function POST(req: NextRequest) {
   try {
-    const { accessToken, refreshToken, verificationToken } = await req.json();
+    const body = await req.json();
+
+    // Normalize "undefined" strings to null — backend may send literal "undefined"
+    const normalize = (v: unknown) =>
+      typeof v === 'string' && v !== 'undefined' ? v : null;
+
+    const accessToken = normalize(body.accessToken);
+    const refreshToken = normalize(body.refreshToken);
+    const verificationToken = normalize(body.verificationToken);
 
     if (!accessToken || !refreshToken) {
       return NextResponse.json({ error: 'Missing tokens' }, { status: 400 });

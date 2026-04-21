@@ -12,9 +12,14 @@ export default function GoogleOAuthCallback() {
       const params = new URLSearchParams(window.location.search);
 
       const success = params.get('success');
-      const accessToken = params.get('accessToken');
-      const refreshToken = params.get('refreshToken');
-      const verificationToken = params.get('verificationToken');
+
+      // Normalize "undefined" strings to null up front
+      const normalize = (v: string | null) =>
+        !v || v === 'undefined' ? null : v;
+
+      const accessToken = normalize(params.get('accessToken'));
+      const refreshToken = normalize(params.get('refreshToken'));
+      const verificationToken = normalize(params.get('verificationToken'));
 
       const isPhoneVerifiedRaw = params.get('isPhoneVerified');
       const onboardingStatus = params.get('onboardingStatus');
@@ -44,7 +49,7 @@ export default function GoogleOAuthCallback() {
       // 2. PHONE VERIFICATION FLOW (IMPORTANT EXCEPTION)
       // -------------------------
       // No auth tokens BUT verification token exists → go to phone verification
-      if ((!accessToken || accessToken === 'undefined') && verificationToken) {
+      if (!accessToken && verificationToken) {
         router.replace('/add-google-phone');
         return;
       }
