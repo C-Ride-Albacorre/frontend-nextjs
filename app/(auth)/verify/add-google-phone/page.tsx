@@ -29,51 +29,51 @@ export default function VendorGoogleVerifyPhone() {
   }, [state, router]);
 
   return (
-    <main className="min-h-screen bg-neutral-50 flex items-center justify-center px-4">
-      <Card spacing="lg" className="w-full max-w-2xl bg-white">
-        <AuthFormHeader />
+    // <main className="min-h-screen bg-neutral-50 flex items-center justify-center px-4">
+    //   <Card spacing="lg" className="w-full max-w-2xl bg-white">
+    //     <AuthFormHeader />
 
-        <div className="space-y-2  text-center">
-          <h1 className="text-2xl font-semibold mb-2">
-            Verify Phone Number
-          </h1>
+    //   </Card>
+    // </main>
 
-          <p className="text-sm text-neutral-500 text-center">
-            Please input your phone number to receive a verification code via
-            SMS.
-          </p>
-        </div>
+    <>
+      <div className="space-y-2  text-center">
+        <h1 className="text-2xl font-semibold mb-2">Verify Phone Number</h1>
 
-        {state?.status === 'error' && (
-          <ErrorMessage
-            message={state?.status === 'error' ? state?.message : undefined}
-          />
-        )}
+        <p className="text-sm text-neutral-500 text-center">
+          Please input your phone number to receive a verification code via SMS.
+        </p>
+      </div>
 
-        <form className="flex flex-col items-center gap-6" action={action}>
-          <PhoneInput
-            name="phone"
-            placeholder="Your phone number here"
-            value={formValues.phoneNumber}
-            onChange={(e) =>
-              setFormValues({ ...formValues, phoneNumber: e.target.value })
-            }
-            errorMessage={
-              state?.status === 'error' ? state?.errors?.phone?.[0] : undefined
-            }
-          />
+      {state?.status === 'error' && (
+        <ErrorMessage
+          message={state?.status === 'error' ? state?.message : undefined}
+        />
+      )}
 
-          <Button
-            size="lg"
-            variant="primary"
-            type="submit"
-            disabled={pending}
-            className="w-full"
-          >
-            {pending ? 'Sending...' : 'Send Verification Code'}
-          </Button>
-        </form>
-      </Card>
-    </main>
+      <form className="flex flex-col items-center gap-6" action={action}>
+        <PhoneInput
+          name="phone"
+          placeholder="Your phone number here"
+          value={formValues.phoneNumber}
+          onChange={(e) =>
+            setFormValues({ ...formValues, phoneNumber: e.target.value })
+          }
+          errorMessage={
+            state?.status === 'error' ? state?.errors?.phone?.[0] : undefined
+          }
+        />
+
+        <Button
+          size="lg"
+          variant="primary"
+          type="submit"
+          disabled={pending}
+          className="w-full"
+        >
+          {pending ? 'Sending...' : 'Send Verification Code'}
+        </Button>
+      </form>
+    </>
   );
 }
