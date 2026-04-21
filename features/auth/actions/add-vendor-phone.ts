@@ -60,7 +60,7 @@ export async function AddVendorPhoneAction(
     await setCookie({
       name: COOKIE_KEYS.VENDOR_PHONE_NUMBER,
       value: result.identifier,
-      maxAge: 60 * 30, // 30 minutes
+      maxAge: 60 * 30, 
     });
 
 
