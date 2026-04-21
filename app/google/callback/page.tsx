@@ -15,6 +15,8 @@ export default function GoogleOAuthCallback() {
       const accessToken = params.get('accessToken');
       const refreshToken = params.get('refreshToken');
 
+      const verificationToken = params.get('verificationToken');
+
       const isPhoneVerifiedRaw = params.get('isPhoneVerified');
       const onboardingStatus = params.get('onboardingStatus');
       const onboardingStep = params.get('onboardingStep');
@@ -25,6 +27,7 @@ export default function GoogleOAuthCallback() {
         success,
         hasAccessToken: !!accessToken,
         hasRefreshToken: !!refreshToken,
+        verificationToken: !!verificationToken,
         isPhoneVerified: isPhoneVerifiedRaw,
         onboardingStatus,
         onboardingStep,

@@ -39,12 +39,16 @@ const VERIFICATION_ROUTES = [
   '/verify/user',
   '/verify/vendor-phone',
   '/verify/vendor-email',
-  '/add-google-phone',
+
   '/verify/admin',
 ];
 
 const USER_AUTH_ROUTES = ['/user/register', '/user/login'];
-const VENDOR_AUTH_ROUTES = ['/vendor/register', '/vendor/login'];
+const VENDOR_AUTH_ROUTES = [
+  '/add-google-phone',
+  '/vendor/register',
+  '/vendor/login',
+];
 const ADMIN_AUTH_ROUTES = ['/admin/login'];
 const SHARED_AUTH_ROUTES = ['/reset', '/reset/reset-password'];
 const SUPER_ADMIN_ONLY_ROUTES = ['/admin/create-admin'];

@@ -8,6 +8,7 @@ export async function AddVendorPhoneAction(
   formData: FormData,
 ) {
   const phoneNumber = formData.get('phone') as string;
+  const countryCode = formData.get('countryCode') as string;
 
   // -------------------------
   // 1. INPUT VALIDATION
@@ -20,7 +21,7 @@ export async function AddVendorPhoneAction(
   }
 
   try {
-    const result = await addVendorPhoneService({ phoneNumber });
+    const result = await addVendorPhoneService({ phoneNumber, countryCode });
 
     console.log('Add phone response:', result);
 
