@@ -1,6 +1,13 @@
 import type { NextConfig } from 'next';
+import { execSync } from 'child_process';
 
 const nextConfig: NextConfig = {
+  generateBuildId: async () => {
+    return execSync('git rev-parse HEAD').toString().trim();
+  },
+
+  output: 'standalone',
+
   experimental: {
     serverActions: {
       bodySizeLimit: '10mb',
