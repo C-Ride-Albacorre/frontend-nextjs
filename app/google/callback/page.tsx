@@ -33,7 +33,7 @@ export default function GoogleOAuthCallback() {
         onboardingStep,
       });
 
-      if (success !== 'true' || !accessToken || !refreshToken) {
+      if (success !== 'true' || !accessToken || !refreshToken || !verificationToken) {
         router.replace('/vendor/login?error=oauth_failed');
         return;
       }
