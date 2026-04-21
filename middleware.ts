@@ -439,12 +439,12 @@ export async function middleware(request: NextRequest) {
     }
 
     let dest = '/';
-    // if (redirectRole === 'VENDOR') dest = '/vendor/store';
+    // if (redirectRole === 'VENDOR') dest = '/onboarding/business-info';
 
-    if (redirectRole === 'VENDOR') {
-      const isOnboarding = pathname.startsWith('/onboarding');
-      dest = isOnboarding ? pathname : '/vendor/store';
-    }
+    // if (redirectRole === 'VENDOR') {
+    //   const isOnboarding = pathname.startsWith('/onboarding');
+    //   dest = isOnboarding ? pathname : '/vendor/store';
+    // }
 
     if (redirectRole === 'CUSTOMER') dest = '/user/dashboard';
     if (redirectRole === 'ADMIN' || redirectRole === 'SUPER_ADMIN')
