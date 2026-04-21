@@ -45,7 +45,7 @@ export async function AddVendorPhoneAction(
       result?.status === 'success' 
 
     const message =
-      result?.message || 'Unable to send OTP. Please try again.';
+      result?.data.message || 'Unable to send OTP. Please try again.';
 
     if (!isSuccess) {
       return {
@@ -59,7 +59,7 @@ export async function AddVendorPhoneAction(
     // -------------------------
     await setCookie({
       name: COOKIE_KEYS.VENDOR_PHONE_NUMBER,
-      value: result.identifier,
+      value: result.data.identifier,
       maxAge: 60 * 30, 
     });
 
@@ -71,7 +71,7 @@ export async function AddVendorPhoneAction(
     // -------------------------
     return {
       status: 'success',
-      message: result.nextAction || 'OTP sent successfully.',
+      message: result.data.nextAction || 'OTP sent successfully.',
       redirectTo: '/verify/vendor-phone',
     };
   } catch (error: unknown) {
