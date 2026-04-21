@@ -39,7 +39,7 @@ const VERIFICATION_ROUTES = [
   '/verify/user',
   '/verify/vendor-phone',
   '/verify/vendor-email',
-  '/add-google-phone',
+  '/verify/add-google-phone',
   '/verify/admin',
 ];
 

@@ -17,13 +17,13 @@ export default function GoogleOAuthCallback() {
       const normalize = (v: string | null) =>
         !v || v === 'undefined' ? null : v;
 
-      const accessToken = normalize(params.get('accessToken'));
-      const refreshToken = normalize(params.get('refreshToken'));
+      const accessToken       = normalize(params.get('accessToken'));
+      const refreshToken      = normalize(params.get('refreshToken'));
       const verificationToken = normalize(params.get('verificationToken'));
 
       const isPhoneVerifiedRaw = params.get('isPhoneVerified');
-      const onboardingStatus = params.get('onboardingStatus');
-      const onboardingStep = params.get('onboardingStep');
+      const onboardingStatus   = params.get('onboardingStatus');
+      const onboardingStep     = params.get('onboardingStep');
 
       const isPhoneVerified = isPhoneVerifiedRaw === 'true';
 
@@ -57,15 +57,14 @@ export default function GoogleOAuthCallback() {
             body: JSON.stringify({ verificationToken }),
           });
 
-          if (!cookieRes.ok)
-            throw new Error('Failed to set verification session');
+          if (!cookieRes.ok) throw new Error('Failed to set verification session');
         } catch (error) {
           console.error('[OAuth] Failed to save verificationToken:', error);
           router.replace('/vendor/login?error=session_failed');
           return;
         }
 
-        router.replace('/add-google-phone');
+        router.replace('/verify/add-google-phone');
         return;
       }
 
@@ -122,7 +121,7 @@ export default function GoogleOAuthCallback() {
         if (role === 'VENDOR') {
           // 1. PHONE NOT VERIFIED
           if (!isPhoneVerified) {
-            router.replace('/add-google-phone');
+            router.replace('/verify/add-google-phone');
             return;
           }
 
