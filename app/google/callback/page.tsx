@@ -14,7 +14,6 @@ export default function GoogleOAuthCallback() {
       const success = params.get('success');
       const accessToken = params.get('accessToken');
       const refreshToken = params.get('refreshToken');
-
       const verificationToken = params.get('verificationToken');
 
       const isPhoneVerifiedRaw = params.get('isPhoneVerified');
@@ -27,17 +26,40 @@ export default function GoogleOAuthCallback() {
         success,
         hasAccessToken: !!accessToken,
         hasRefreshToken: !!refreshToken,
-        verificationToken: !!verificationToken,
-        isPhoneVerified: isPhoneVerifiedRaw,
+        hasVerificationToken: !!verificationToken,
+        isPhoneVerified,
         onboardingStatus,
         onboardingStep,
       });
 
-      if (success !== 'true' || !accessToken || !refreshToken || !verificationToken) {
+      // -------------------------
+      // 1. INVALID REQUEST (hard fail)
+      // -------------------------
+      if (success !== 'true') {
         router.replace('/vendor/login?error=oauth_failed');
         return;
       }
 
+      // -------------------------
+      // 2. PHONE VERIFICATION FLOW (IMPORTANT EXCEPTION)
+      // -------------------------
+      // No auth tokens BUT verification token exists → go to phone verification
+      if ((!accessToken || accessToken === 'undefined') && verificationToken) {
+        router.replace('/add-google-phone');
+        return;
+      }
+
+      // -------------------------
+      // 3. INVALID AUTH STATE (no usable flow)
+      // -------------------------
+      if (!accessToken || !refreshToken) {
+        router.replace('/vendor/login?error=oauth_failed');
+        return;
+      }
+
+      // -------------------------
+      // 4. CLEAN URL
+      // -------------------------
       window.history.replaceState({}, '', '/google/callback');
 
       try {
@@ -80,11 +102,6 @@ export default function GoogleOAuthCallback() {
         if (role === 'VENDOR') {
           // 1. PHONE NOT VERIFIED
           if (!isPhoneVerified) {
-            if (!verificationToken) {
-              router.replace('/vendor/login?error=missing_verification_token');
-              return;
-            }
-
             router.replace('/add-google-phone');
             return;
           }
