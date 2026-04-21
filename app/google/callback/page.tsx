@@ -46,10 +46,25 @@ export default function GoogleOAuthCallback() {
       }
 
       // -------------------------
-      // 2. PHONE VERIFICATION FLOW (IMPORTANT EXCEPTION)
+      // 2. PHONE VERIFICATION FLOW
       // -------------------------
-      // No auth tokens BUT verification token exists → go to phone verification
+      // No auth tokens BUT verification token exists → save cookie then go to phone verification
       if (!accessToken && verificationToken) {
+        try {
+          const cookieRes = await fetch('/api/auth/google-callback', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ verificationToken }),
+          });
+
+          if (!cookieRes.ok)
+            throw new Error('Failed to set verification session');
+        } catch (error) {
+          console.error('[OAuth] Failed to save verificationToken:', error);
+          router.replace('/vendor/login?error=session_failed');
+          return;
+        }
+
         router.replace('/add-google-phone');
         return;
       }
