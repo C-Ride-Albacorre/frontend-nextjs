@@ -1,61 +1,111 @@
 'use server';
 
-import { getTokenExpiry } from '@/utils/jwt';
 import { VerifyOtpSchema, VerifyOtpState } from '../libs/verify-code.schema';
 import {
   verifyVendorEmailService,
   verifyVendorPhoneService,
 } from '../services/vendor-verify';
-import { getCookie, setCookie } from '@/utils/cookies';
+import {
+  COOKIE_KEYS,
+  getCookie,
+  setAuthCookies,
+  clearVerificationCookies,
+} from '@/utils/cookies';
+
+const VendorStatus = {
+  PENDING_VERIFICATION: 'PENDING_VERIFICATION',
+  PENDING_EMAIL_VERIFICATION: 'PENDING_EMAIL_VERIFICATION',
+  PENDING_PHONE_VERIFICATION: 'PENDING_PHONE_VERIFICATION',
+  PENDING_ONBOARDING: 'PENDING_ONBOARDING',
+  UNDER_REVIEW: 'UNDER_REVIEW',
+  ACTIVE: 'ACTIVE',
+  APPROVED: 'APPROVED',
+} as const;
+
+const OnBoardingStatus = {
+  NOT_STARTED: 'NOT_STARTED',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+} as const;
 
 type VendorUser = {
   status?: string;
   onboardingStatus?: string;
-  onboardingStep?: string | null;
+  onboardingStep?: number | string | null;
   isPhoneVerified?: boolean;
   isEmailVerified?: boolean;
 };
 
-// ✅ CENTRALIZED FLOW CONTROL (very important)
-function resolveNextRoute(user: VendorUser): string | null {
-  // 1. Email still needs verification
-  if (!user.isEmailVerified && user.status === 'PENDING_EMAIL_VERIFICATION') {
-    return '/verify/vendor-email';
-  }
+const ONBOARDING_STEP_ROUTES: Record<string, string> = {
+  CONTACT_INFO: '/onboarding/contact-info',
+  ADDRESS_INFO: '/onboarding/address-info',
+  BANK_INFO: '/onboarding/bank-info',
+  DOCUMENT: '/onboarding/business-document',
+};
 
-  // 2. Onboarding stage
-  if (user.status === 'PENDING_ONBOARDING') {
-    if (user.onboardingStatus === 'NOT_STARTED') {
+function resolveNextRoute(user: VendorUser): string | null {
+  switch (user.status) {
+    case VendorStatus.PENDING_VERIFICATION:
+      return '/verify/vendor-phone';
+
+    case VendorStatus.PENDING_PHONE_VERIFICATION:
+      return '/verify/vendor-phone';
+
+    case VendorStatus.PENDING_EMAIL_VERIFICATION:
+      return '/verify/vendor-email';
+
+    case VendorStatus.PENDING_ONBOARDING: {
+      if (
+        !user.onboardingStatus ||
+        user.onboardingStatus === OnBoardingStatus.NOT_STARTED ||
+        user.onboardingStep === 0
+      ) {
+        return '/onboarding/business-info';
+      }
+
+      if (user.onboardingStatus === OnBoardingStatus.IN_PROGRESS) {
+        return (
+          ONBOARDING_STEP_ROUTES[user.onboardingStep as string] ||
+          '/onboarding/business-info'
+        );
+      }
+
       return '/onboarding/business-info';
     }
 
-    if (user.onboardingStatus === 'IN_PROGRESS') {
-      // Optional: map steps if backend provides onboardingStep
-      switch (user.onboardingStep) {
-        case 'CONTACT_INFO':
-          return '/onboarding/contact-info';
-        case 'ADDRESS_INFO':
-          return '/onboarding/address-info';
-        case 'BANK_INFO':
-          return '/onboarding/bank-info';
-        case 'DOCUMENT':
-          return '/onboarding/business-document';
-        default:
-          return '/onboarding/business-info';
-      }
+    case VendorStatus.UNDER_REVIEW:
+      return null;
+
+    case VendorStatus.APPROVED:
+    case VendorStatus.ACTIVE:
+      return '/vendor/store';
+
+    default:
+      return null;
+  }
+}
+
+function handleVerificationError(error: unknown): VerifyOtpState {
+  if (error instanceof Error) {
+    const msg = error.message.toLowerCase();
+
+    if (msg.includes('expired')) {
+      return {
+        status: 'error',
+        message: 'OTP expired. Please request a new one.',
+      };
+    }
+    if (msg.includes('invalid')) {
+      return { status: 'error', message: 'Incorrect OTP. Please try again.' };
     }
 
-    // fallback
-    return '/onboarding/business-info';
+    return { status: 'error', message: error.message };
   }
 
-  // 3. Fully onboarded
-  if (user.status === 'ACTIVE') {
-    return '/vendor/store';
-  }
-
-  // 4. Unknown state
-  return null;
+  return {
+    status: 'error',
+    message: 'Something went wrong. Please try again.',
+  };
 }
 
 export async function VendorVerifyPhoneAction(
@@ -65,13 +115,11 @@ export async function VendorVerifyPhoneAction(
   const validated = VerifyOtpSchema.safeParse({ otp: formData.get('otp') });
 
   if (!validated.success) {
-    return {
-      status: 'error',
-      errors: validated.error.flatten().fieldErrors,
-    };
+    return { status: 'error', errors: validated.error.flatten().fieldErrors };
   }
 
-  const phoneNumber = await getCookie('vendor_phone_number');
+  const phoneNumber = await getCookie(COOKIE_KEYS.VENDOR_PHONE_NUMBER);
+  const verificationToken = await getCookie(COOKIE_KEYS.VERIFICATION_TOKEN);
 
   if (!phoneNumber) {
     return {
@@ -84,9 +132,11 @@ export async function VendorVerifyPhoneAction(
     const res = await verifyVendorPhoneService({
       phoneNumber,
       otp: validated.data.otp,
+      verificationToken,
     });
 
-    const user = res?.data?.user;
+    const data = res?.data;
+    const user = data?.user;
 
     console.log('Phone verification response:', res);
 
@@ -97,46 +147,33 @@ export async function VendorVerifyPhoneAction(
       };
     }
 
-    const nextRoute = resolveNextRoute(user);
+    if (data.accessToken && data.refreshToken && user.isEmailVerified) {
+      await setAuthCookies(data.accessToken, data.refreshToken);
+      await clearVerificationCookies();
+      const nextRoute = resolveNextRoute(user);
 
-    if (!nextRoute) {
+      if (!nextRoute) {
+        return {
+          status: 'error',
+          message: 'Unexpected verification state. Please contact support.',
+        };
+      }
+
       return {
-        status: 'error',
-        message: 'Unexpected verification state. Please contact support.',
+        status: 'success',
+        message: 'Phone number verified successfully!',
+        redirectTo: nextRoute,
       };
     }
 
+    // ✅ Standard registration — no tokens yet, email still needs verification
     return {
       status: 'success',
       message: 'Phone number verified successfully!',
-      redirectTo: nextRoute,
+      redirectTo: '/verify/vendor-email',
     };
   } catch (error) {
-    if (error instanceof Error) {
-      if (error.message.toLowerCase().includes('expired')) {
-        return {
-          status: 'error',
-          message: 'OTP expired. Please request a new one.',
-        };
-      }
-
-      if (error.message.toLowerCase().includes('invalid')) {
-        return {
-          status: 'error',
-          message: 'Incorrect OTP. Please try again.',
-        };
-      }
-
-      return {
-        status: 'error',
-        message: error.message,
-      };
-    }
-
-    return {
-      status: 'error',
-      message: 'Something went wrong. Please try again.',
-    };
+    return handleVerificationError(error);
   }
 }
 
@@ -147,13 +184,12 @@ export async function VendorVerifyEmailAction(
   const validated = VerifyOtpSchema.safeParse({ otp: formData.get('otp') });
 
   if (!validated.success) {
-    return {
-      status: 'error',
-      errors: validated.error.flatten().fieldErrors,
-    };
+    return { status: 'error', errors: validated.error.flatten().fieldErrors };
   }
 
-  const email = await getCookie('vendor_email');
+  // ✅ Read cookies inside the action
+  const email = await getCookie(COOKIE_KEYS.VENDOR_EMAIL);
+  const verificationToken = await getCookie(COOKIE_KEYS.VERIFICATION_TOKEN);
 
   if (!email) {
     return {
@@ -166,21 +202,28 @@ export async function VendorVerifyEmailAction(
     const res = await verifyVendorEmailService({
       email,
       otp: validated.data.otp,
+      verificationToken,
     });
 
-    const user = res?.data?.user;
+    const data = res?.data;
+    const user = data?.user;
 
     console.log('Email verification response:', res);
 
-    // ✅ Always refresh accessToken after verification
-    if (res?.data?.accessToken) {
-      await setCookie({
-        name: 'accessToken',
-        value: res.data.accessToken,
-        maxAge: getTokenExpiry(res.data.accessToken),
-      });
+    if (!data || !data.accessToken || !data.refreshToken || !user) {
+      return {
+        status: 'error',
+        message: 'Invalid verification response. Please try again.',
+      };
     }
 
+    // ✅ Email verification is the final step — set real auth cookies now
+    await setAuthCookies(data.accessToken, data.refreshToken);
+
+    // ✅ Clean up all verification cookies
+    await clearVerificationCookies();
+
+    // ✅ Resolve next route — PENDING_ONBOARDING goes to onboarding, not dashboard
     const nextRoute = resolveNextRoute(user);
 
     if (!nextRoute) {
@@ -196,30 +239,6 @@ export async function VendorVerifyEmailAction(
       redirectTo: nextRoute,
     };
   } catch (error) {
-    if (error instanceof Error) {
-      if (error.message.toLowerCase().includes('expired')) {
-        return {
-          status: 'error',
-          message: 'OTP expired. Please request a new one.',
-        };
-      }
-
-      if (error.message.toLowerCase().includes('invalid')) {
-        return {
-          status: 'error',
-          message: 'Incorrect OTP. Please try again.',
-        };
-      }
-
-      return {
-        status: 'error',
-        message: error.message,
-      };
-    }
-
-    return {
-      status: 'error',
-      message: 'Something went wrong. Please try again.',
-    };
+    return handleVerificationError(error);
   }
 }

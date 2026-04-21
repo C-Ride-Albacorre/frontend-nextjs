@@ -23,7 +23,7 @@ export type LoginApiResponse = {
 
 export type LoginPayload =
   | { email: string; password: string }
-  | { phoneNumber: string; password: string };
+  | { phoneNumber: string; password: string; countryCode: string  };
 
 export async function loginUser(
   payload: LoginPayload,

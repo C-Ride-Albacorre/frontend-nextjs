@@ -11,12 +11,16 @@ export async function userLoginAction(
 ): Promise<LoginFormState> {
   const rawIdentifier = formData.get('identifier')?.toString().trim() ?? '';
   const password = formData.get('password')?.toString() ?? '';
+  const countryCode = formData.get('countryCode')?.toString() ?? undefined;
+
+
   const callbackUrl =
     formData.get('callbackUrl')?.toString() ?? '/user/delivery';
 
   const validated = LoginFormSchema.safeParse({
     identifier: rawIdentifier,
     password,
+    countryCode,
   });
 
   if (!validated.success) {
@@ -30,7 +34,7 @@ export async function userLoginAction(
 
   // ✅ Send as separate fields matching your API contract
   const payload: LoginPayload = isPhone
-    ? { phoneNumber: rawIdentifier, password }
+    ? { phoneNumber: rawIdentifier, password, countryCode: countryCode ?? '' }
     : { email: rawIdentifier, password };
 
   const safeCallback = callbackUrl.startsWith('/')

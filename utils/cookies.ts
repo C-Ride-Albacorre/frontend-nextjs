@@ -10,6 +10,8 @@ export const COOKIE_KEYS = {
   USER_ROLE: 'userRole',
   VERIFICATION_TOKEN: 'verificationToken',
   VERIFY_IDENTIFIER: 'verify_identifier',
+  VENDOR_PHONE_NUMBER: 'vendor_phone',
+  VENDOR_EMAIL: 'vendor_email',
   REGISTRATION_METHOD: 'registration_method',
 } as const;
 
@@ -77,6 +79,33 @@ export async function setVerificationCookies({
   });
 }
 
+
+export async function setVendorVerificationCookies({
+  verificationToken,
+  vendorPhoneNumber,
+  vendorEmail,
+}:{
+  verificationToken: string;
+  vendorPhoneNumber: string;
+  vendorEmail: string;
+}){
+  const cookieStore = await cookies();
+  const maxAge = getTokenExpiry(verificationToken); // respect the token's own expiry
+
+  cookieStore.set(COOKIE_KEYS.VERIFICATION_TOKEN, verificationToken, {
+    ...defaultOptions,
+    maxAge,
+  });
+  cookieStore.set(COOKIE_KEYS.VENDOR_PHONE_NUMBER, vendorPhoneNumber, {
+    ...defaultOptions,
+    maxAge,
+  });
+  cookieStore.set(COOKIE_KEYS.VENDOR_EMAIL, vendorEmail, {
+    ...defaultOptions,
+    maxAge,
+  });
+
+}
 // Set auth cookies (access + refresh tokens)
 export async function setAuthCookies(
   accessToken: string,
@@ -126,6 +155,9 @@ export async function clearVerificationCookies() {
   cookieStore.delete(COOKIE_KEYS.VERIFICATION_TOKEN);
   cookieStore.delete(COOKIE_KEYS.VERIFY_IDENTIFIER);
   cookieStore.delete(COOKIE_KEYS.REGISTRATION_METHOD);
+  cookieStore.delete(COOKIE_KEYS.VENDOR_PHONE_NUMBER);
+  cookieStore.delete(COOKIE_KEYS.VENDOR_EMAIL);
+
 }
 
 // Check if user is authenticated (has valid access token)

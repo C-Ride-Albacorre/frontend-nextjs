@@ -5,16 +5,23 @@ export type VendorLoginApiResponse = {
   status: string;
   statusCode: number;
   data: {
+    success: boolean;
+    status: string;
+    message: string;
+    phoneNumber: string;
+    email: string;
     accessToken: string;
     refreshToken: string;
+    verificationToken: string;
+    isEmailVerified: boolean;
+    isPhoneVerified: boolean;
     user: {
       id: string;
       email: string;
       role: string;
     };
-    onboardingStatus: 'PENDING' | 'COMPLETED';
+    onboardingStatus: string;
     onboardingStep: number;
-    status: 'PENDING' | 'UNDER_REVIEW' | 'APPROVED' | 'REJECTED';
   };
 };
 
@@ -36,10 +43,8 @@ export async function loginVendor(
   const data = await res.json();
 
   if (!res.ok) {
+    console.log('Login API error response:', data);
 
-      console.log('Login API error response:', data);
-
-      
     throw new ApiError(
       data?.message || 'Login failed',
       data?.statusCode ?? res.status,

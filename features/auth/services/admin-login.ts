@@ -1,34 +1,23 @@
+// features/auth/services/admin-login.ts
 import { BASE_URL } from '@/config/api';
 import { ApiError } from '@/features/libs/api-error';
 
-export type loginApiResponse =
-  | {
-      status: string;
-      statusCode: number;
-      timestamp: string;
-      path: string;
-      data: {
-        accessToken: string;
-        refreshToken: string;
-        user: {
-          id: string;
-          email: string;
-          role: string;
-          isNewUser?: boolean;
-        };
-      };
-    }
-  | {
-      status: string;
-      statusCode: number;
-      timestamp: string;
-      path: string;
-      data: {
-        status: 'OTP_REQUIRED';
-        requiresVerification: true;
-        verificationIdentifier: string;
-      };
-    };
+export type AdminLoginApiResponse = {
+  status: string;
+  statusCode: number;
+  timestamp: string;
+  message?: string;
+  path: string;
+  data: {
+    status: 'OTP_REQUIRED';
+    requiresVerification: true;
+    verificationIdentifier: string;
+    verificationToken: string;
+    verificationMethod: string;
+    accessToken: null;
+    refreshToken: null;
+  };
+};
 
 type LoginAdminPayload = {
   email: string;
@@ -37,12 +26,12 @@ type LoginAdminPayload = {
 
 export async function adminLoginService(
   payload: LoginAdminPayload,
-): Promise<loginApiResponse> {
+): Promise<AdminLoginApiResponse> {
   const res = await fetch(`${BASE_URL}/auth/admin/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    credentials: 'include',
     body: JSON.stringify(payload),
+    cache: 'no-store',
   });
 
   const data = await res.json();
@@ -57,5 +46,5 @@ export async function adminLoginService(
 
   console.log('Admin Login API response:', data);
 
-  return data as loginApiResponse;
+  return data as AdminLoginApiResponse;
 }

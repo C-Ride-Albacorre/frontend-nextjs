@@ -1,9 +1,8 @@
 'use server';
 
-import { getTokenExpiry } from '@/utils/jwt';
 import { FormState, VendorRegisterFormSchema } from '../libs/register.schema';
 import { registerVendorService } from '../services/vendor-register';
-import { setCookie } from '@/utils/cookies';
+import { setVendorVerificationCookies } from '@/utils/cookies';
 
 export async function vendorRegisterAction(
   _state: FormState,
@@ -14,6 +13,7 @@ export async function vendorRegisterAction(
     lastName: formData.get('lastName'),
     email: formData.get('email'),
     phoneNumber: formData.get('phoneNumber'),
+    countryCode: formData.get('countryCode') || undefined,
     password: formData.get('password'),
   });
 
@@ -38,25 +38,13 @@ export async function vendorRegisterAction(
 
     console.log('Vendor registration successful:', result.data);
 
-    await setCookie({
-      name: 'vendor_email',
-      value: result.data.user.email,
-      maxAge: 60 * 30,
-    });
-
-    await setCookie({
-      name: 'vendor_phone_number',
-      value: result.data.user.phoneNumber,
-      maxAge: 60 * 30,
-    });
-
-    await setCookie({
-      name: 'accessToken',
-      value: result.data.accessToken,
-      maxAge: getTokenExpiry(result.data.accessToken),
-    });
-
-    
+    if (result.status === 'success' && result.data.verificationToken) {
+      await setVendorVerificationCookies({
+        verificationToken: result.data.verificationToken,
+        vendorPhoneNumber: result.data.user.phoneNumber,
+        vendorEmail: result.data.user.email,
+      });
+    }
 
     return {
       status: 'success' as const,

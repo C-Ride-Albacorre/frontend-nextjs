@@ -10,9 +10,9 @@ const USER_PROTECTED_ROUTES = [
 
 const VENDOR_PROTECTED_ROUTES = [
   '/onboarding/business-info',
-  '/onboarding/contact-info',
-  '/onboarding/address-info',
-  '/onboarding/bank-info',
+  '/onboarding/business-contact',
+  '/onboarding/business-address',
+  '/onboarding/business-bank',
   '/onboarding/business-document',
   '/vendor/active-deliveries',
   '/vendor/analytics',
@@ -399,7 +399,13 @@ export async function middleware(request: NextRequest) {
     }
 
     let dest = '/';
-    if (redirectRole === 'VENDOR') dest = '/vendor/store';
+    // if (redirectRole === 'VENDOR') dest = '/vendor/store';
+
+    if (redirectRole === 'VENDOR') {
+      const isOnboarding = pathname.startsWith('/onboarding');
+      dest = isOnboarding ? pathname : '/vendor/store';
+    }
+
     if (redirectRole === 'CUSTOMER') dest = '/user/dashboard';
     if (redirectRole === 'ADMIN' || redirectRole === 'SUPER_ADMIN')
       dest = '/admin/dashboard';

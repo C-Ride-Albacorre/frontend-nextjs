@@ -3,8 +3,12 @@
 import { redirect } from 'next/navigation';
 import { VerifyOtpSchema, VerifyOtpState } from '../libs/verify-code.schema';
 import { verifyAdminOtpService } from '../services/admin-verify';
-import { getTokenExpiry } from '@/utils/jwt';
-import { deleteCookie, getCookie, setCookie } from '@/utils/cookies';
+import {
+  COOKIE_KEYS,
+  getCookie,
+  setAuthCookies,
+  clearVerificationCookies,
+} from '@/utils/cookies';
 
 export async function AdminVerifyCodeAction(
   prevState: VerifyOtpState | null,
@@ -21,41 +25,37 @@ export async function AdminVerifyCodeAction(
     };
   }
 
-  const identifier = await getCookie('verify_identifier');
-  const registrationMethod = await getCookie('registration_method');
+  const identifier = await getCookie(COOKIE_KEYS.VERIFY_IDENTIFIER);
+  const registrationMethod = await getCookie(COOKIE_KEYS.REGISTRATION_METHOD);
+  const verificationToken = await getCookie(COOKIE_KEYS.VERIFICATION_TOKEN);
 
-  if (!identifier || !registrationMethod) {
+  if (!identifier || !registrationMethod || !verificationToken) {
     return {
       status: 'error',
       message: 'Verification session expired. Please login again.',
     };
   }
 
-  let redirectTo: string | null = null;
-
   try {
     const result = await verifyAdminOtpService({
       identifier,
       otp: validated.data.otp,
+      verificationToken,
     });
 
-    if (!result?.data?.accessToken) {
+    const data = result?.data;
+
+    if (!data?.accessToken || !data?.refreshToken) {
       return {
         status: 'error',
-        message: 'Invalid or expired OTP.',
+        message: 'Invalid verification response. Please try again.',
       };
     }
 
-    await setCookie({
-      name: 'refreshToken',
-      value: result.data.refreshToken,
-      maxAge: getTokenExpiry(result.data.refreshToken),
-    });
+    await setAuthCookies(data.accessToken, data.refreshToken);
 
-    await deleteCookie('verify_identifier');
-    await deleteCookie('registration_method');
-
-    redirectTo = '/admin/dashboard';
+  
+    await clearVerificationCookies();
   } catch (error) {
     return {
       status: 'error',
@@ -64,9 +64,5 @@ export async function AdminVerifyCodeAction(
     };
   }
 
-  if (redirectTo) {
-    redirect(redirectTo);
-  } else {
-    redirect('/admin/dashboard');
-  }
+  redirect('/admin/dashboard');
 }

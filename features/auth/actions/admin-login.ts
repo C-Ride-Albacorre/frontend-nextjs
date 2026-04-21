@@ -1,3 +1,4 @@
+// features/auth/actions/admin-login.ts
 'use server';
 
 import { redirect } from 'next/navigation';
@@ -6,7 +7,7 @@ import {
   AdminLoginFormState,
 } from '../libs/admin-login.schema';
 import { adminLoginService } from '../services/admin-login';
-import { setAuthCookies, setCookie } from '@/utils/cookies';
+import { setVerificationCookies } from '@/utils/cookies';
 
 export async function adminLoginAction(
   _state: AdminLoginFormState,
@@ -32,101 +33,58 @@ export async function adminLoginAction(
   try {
     const result = await adminLoginService(validatedFields.data);
 
-    // Handle OTP_REQUIRED response
-    if (
-      'status' in result.data &&
-      result.data.status === 'OTP_REQUIRED' &&
-      result.data.requiresVerification &&
-      result.data.verificationIdentifier
-    ) {
-      // Some OTP_REQUIRED responses may include accessToken
-      const otpData = result.data as typeof result.data & {
-        accessToken?: string;
+    if (!result.data) {
+      return {
+        status: 'error',
+        message: result.message ?? 'Login failed.',
+        fields: { email: validatedFields.data.email },
       };
-      if (otpData.accessToken) {
-        await setCookie({
-          name: 'accessToken',
-          value: otpData.accessToken,
-          maxAge: 60 * 60, 
-        });
+    }
+
+    if (
+      result.data.status === 'OTP_REQUIRED' &&
+      result.data.requiresVerification
+    ) {
+      // ✅ Error explicitly if token is missing — don't silently skip
+      if (!result.data.verificationToken) {
+        return {
+          status: 'error',
+          message: 'Login failed. Please try again.',
+          fields: { email: validatedFields.data.email },
+        };
       }
-      await setCookie({
-        name: 'verify_identifier',
-        value: result.data.verificationIdentifier,
-        maxAge: 60 * 30,
-      });
-      await setCookie({
-        name: 'registration_method',
-        value: 'email',
-        maxAge: 60 * 30,
+
+      await setVerificationCookies({
+        verificationToken: result.data.verificationToken,
+        verifyIdentifier: result.data.verificationIdentifier,
+        registrationMethod: result.data.verificationMethod,
       });
 
       redirectTo = '/verify/admin';
-    } else if ('user' in result.data) {
-      const accessToken = result.data.accessToken;
-      const refreshToken = result.data.refreshToken;
-
-      await setAuthCookies(accessToken, refreshToken ?? accessToken);
-
-      // Check isNewUser flag
-      if (result.data.user?.isNewUser) {
-        await setCookie({
-          name: 'verify_identifier',
-          value: result.data.user.email,
-          maxAge: 60 * 30,
-        });
-        await setCookie({
-          name: 'registration_method',
-          value: 'email',
-          maxAge: 60 * 30,
-        });
-        redirectTo = '/verify/admin';
-      } else {
-        const customRedirect = formData.get('redirect') as string;
-        redirectTo =
-          customRedirect && customRedirect.startsWith('/')
-            ? customRedirect
-            : '/admin/dashboard';
-      }
     } else {
-      // Unexpected response
       return {
         status: 'error',
         message: 'Unexpected login response.',
-        fields: {
-          email: formData.get('email') as string,
-        },
+        fields: { email: validatedFields.data.email },
       };
     }
-  } catch (error: any) {
-    // Handle unverified admin
-    if (error?.statusCode === 403 && error?.reason === 'UNVERIFIED') {
-      await setCookie({
-        name: 'verify_identifier',
-        value: formData.get('email') as string,
-        maxAge: 60 * 30,
-      });
-      await setCookie({
-        name: 'registration_method',
-        value: 'email',
-        maxAge: 60 * 30,
-      });
-      redirectTo = '/verify/admin';
-    } else {
-      return {
-        status: 'error',
-        message:
-          error instanceof Error
-            ? error.message
-            : 'Something went wrong. Please try again.',
-        fields: {
-          email: formData.get('email') as string,
-        },
-      };
-    }
+  } catch (error) {
+    return {
+      status: 'error',
+      message:
+        error instanceof Error
+          ? error.message
+          : 'Something went wrong. Please try again.',
+      fields: { email: validatedFields.data.email },
+    };
   }
 
-  if (redirectTo) {
-    redirect(redirectTo);
-  }
+  if (redirectTo) redirect(redirectTo);
+
+  // Fallback — should never reach here
+  return {
+    status: 'error',
+    message: 'Unexpected login state.',
+    fields: { email: validatedFields.data.email },
+  };
 }

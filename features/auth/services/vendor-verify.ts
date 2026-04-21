@@ -5,6 +5,7 @@ import { authFetch } from '@/features/libs/auth-fetch';
 export async function verifyVendorPhoneService(data: {
   phoneNumber: string;
   otp: string;
+  verificationToken?: string;
 }) {
   const res = await authFetch(`${BASE_URL}/auth/user/verify/phone`, {
     method: 'POST',
@@ -26,6 +27,7 @@ export async function verifyVendorPhoneService(data: {
 export async function verifyVendorEmailService(data: {
   email: string;
   otp: string;
+  verificationToken?: string;
 }) {
   const res = await authFetch(`${BASE_URL}/auth/user/verify/email`, {
     method: 'POST',

@@ -11,6 +11,7 @@ export type RegisterApiResponse = {
     success: string;
     message: string;
     accessToken: string;
+    verificationToken: string;
     user: {
       id: string;
       email: string;

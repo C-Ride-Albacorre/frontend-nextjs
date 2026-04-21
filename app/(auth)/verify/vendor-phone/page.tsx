@@ -1,12 +1,12 @@
 import { Suspense } from 'react';
 import { redirect } from 'next/navigation';
 import { VerifyPageSkeleton } from '@/features/auth/components/verify/verify-page-skeleton';
-import { getCookie } from '@/utils/cookies';
+import { COOKIE_KEYS, getCookie } from '@/utils/cookies';
 import { maskIdentifier } from '@/utils/mask-identifier';
 import VendorPhoneWrapper from '@/features/auth/components/verify/vendor-phone-wrapper';
 
 export default async function VendorVerifyPhonePage() {
-  const identifier = await getCookie('vendor_phone_number');
+  const identifier = await getCookie(COOKIE_KEYS.VENDOR_PHONE_NUMBER);
 
   if (!identifier) {
     redirect('/vendor/register');

@@ -1,7 +1,6 @@
 'use client';
 
 import { useActionState, useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 import { Eye, EyeOff } from 'lucide-react';
 import Link from 'next/link';
@@ -15,8 +14,7 @@ import { adminLoginAction } from '../../actions/admin-login';
 
 export default function AdminLoginForm() {
   const [showPassword, setShowPassword] = useState(false);
-  const searchParams = useSearchParams();
-  const redirectTo = searchParams.get('redirect') || '';
+
 
   const [state, action, pending] = useActionState(adminLoginAction, undefined);
 
@@ -36,7 +34,7 @@ export default function AdminLoginForm() {
 
   return (
     <form className="space-y-5" action={action}>
-      {redirectTo && <input type="hidden" name="redirect" value={redirectTo} />}
+    
       <Input
         name="email"
         type="email"

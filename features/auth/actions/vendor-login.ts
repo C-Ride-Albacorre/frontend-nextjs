@@ -6,10 +6,8 @@ import {
   VendorLoginFormState,
 } from '../libs/vendor-login.schema';
 import { loginVendor } from '../services/vendor-login';
-import { setAuthCookies, setCookie } from '@/utils/cookies';
-import { ApiError } from '../../libs/api-error';
+import { setAuthCookies, setVendorVerificationCookies } from '@/utils/cookies';
 
-// Map onboarding step numbers to routes
 const ONBOARDING_STEP_ROUTES: Record<number, string> = {
   1: '/onboarding/business-info',
   2: '/onboarding/business-contact',
@@ -25,6 +23,15 @@ export async function vendorLoginAction(
   const email = formData.get('email')?.toString().trim() ?? '';
   const password = formData.get('password')?.toString() ?? '';
 
+  const callbackUrl = formData.get('callbackUrl')?.toString() ?? '';
+
+  const safeCallbackUrl =
+    callbackUrl.startsWith('/') &&
+    !callbackUrl.startsWith('/vendor/login') &&
+    !callbackUrl.startsWith('/vendor/register')
+      ? callbackUrl
+      : null;
+
   const validated = VendorLoginFormSchema.safeParse({ email, password });
 
   if (!validated.success) {
@@ -38,61 +45,64 @@ export async function vendorLoginAction(
 
   try {
     const result = await loginVendor({ email, password });
-    const {
-      accessToken,
-      refreshToken,
-      onboardingStatus,
-      onboardingStep,
-      status,
-    } = result.data;
 
-    // Set auth cookies
-    await setAuthCookies(accessToken, refreshToken);
+    if (!result.data) {
+      return { status: 'error', message: 'Login failed.' };
+    }
 
-    console.log('Vendor login successful:', result);
+    const data = result.data;
 
-    // Determine redirect based on vendor status
-    if (status === 'UNDER_REVIEW') {
-      // Vendor is under review - show success modal on login page
-      return { status: 'under_review', email };
-    } else if (onboardingStatus !== 'COMPLETED') {
-      // Onboarding not completed - redirect to current step
-      redirectTo =
-        ONBOARDING_STEP_ROUTES[onboardingStep] || '/onboarding/business-info';
-    } else if (status === 'APPROVED') {
-      // Onboarding complete and approved - go to vendor dashboard
-      redirectTo = '/vendor/store';
+    // -------------------------
+    // UNVERIFIED — redirect to verification
+    // -------------------------
+    if (!data.success && data.status === 'UNVERIFIED') {
+      await setVendorVerificationCookies({
+        verificationToken: data.verificationToken,
+        vendorPhoneNumber: data.phoneNumber,
+        vendorEmail: data.email,
+      });
+
+      // Per API: start with phone if neither verified, email-only if just email pending
+      if (!data.isPhoneVerified) {
+        redirectTo = '/verify/vendor-phone';
+      } else if (!data.isEmailVerified) {
+        redirectTo = '/verify/vendor-email';
+      } else {
+        redirectTo = '/verify/vendor-phone';
+      }
+
+      // -------------------------
+      // VERIFIED — check onboarding + status
+      // -------------------------
     } else {
-      // Default - go to vendor dashboard/store
-      redirectTo = '/vendor/store';
+      const {
+        accessToken,
+        refreshToken,
+        onboardingStatus,
+        onboardingStep,
+        status,
+      } = data;
+
+      await setAuthCookies(accessToken, refreshToken);
+
+      if (status === 'UNDER_REVIEW') {
+        // ✅ Return early — no redirect, show modal on login page
+        return { status: 'under_review', email };
+      } else if (onboardingStatus !== 'COMPLETED') {
+        redirectTo =
+          ONBOARDING_STEP_ROUTES[onboardingStep] || '/onboarding/business-info';
+      } else {
+        redirectTo = safeCallbackUrl ?? '/vendor/store';
+      }
     }
   } catch (error) {
-    if (
-      error instanceof ApiError &&
-      error.statusCode === 403 &&
-      error.reason === 'UNVERIFIED'
-    ) {
-      // Handle unverified vendor - phone verification comes first
-      await setCookie({
-        name: 'verify_identifier',
-        value: email,
-        maxAge: 60 * 30,
-      });
-      await setCookie({
-        name: 'registration_method',
-        value: 'email',
-        maxAge: 60 * 30,
-      });
-      redirectTo = '/verify/vendor-phone';
-    } else {
-      return {
-        status: 'error',
-        message:
-          error instanceof Error
-            ? error.message
-            : 'Something went wrong. Please try again.',
-      };
-    }
+    return {
+      status: 'error',
+      message:
+        error instanceof Error
+          ? error.message
+          : 'Something went wrong. Please try again.',
+    };
   }
 
   if (redirectTo) redirect(redirectTo);

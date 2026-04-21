@@ -31,10 +31,11 @@ export async function VerifyCodeAction(
   // -------------------------
   // SESSION CHECK
   // -------------------------
-  const identifier = await getCookie('verify_identifier');
+  const identifier = await getCookie(COOKIE_KEYS.VERIFY_IDENTIFIER);
+  
   const verificationToken = await getCookie(COOKIE_KEYS.VERIFICATION_TOKEN);
 
-  const registrationMethod = await getCookie('registration_method');
+  const registrationMethod = await getCookie(COOKIE_KEYS.REGISTRATION_METHOD);
 
   if (!identifier || !registrationMethod) {
     return {
