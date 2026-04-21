@@ -278,46 +278,6 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-
-
-
-//   if (userRole === 'VENDOR' && accessToken && !isTokenExpired(accessToken)) {
-//   try {
-//     const payload = jwtDecode<{
-//       role: Role;
-//       onboardingStatus?: string;
-//       onboardingStep?: string;
-//     }>(accessToken);
-
-//     const onboardingStatus = payload.onboardingStatus;
-//     const onboardingStep = payload.onboardingStep;
-
-//     const isOnboardingRoute = pathname.startsWith('/onboarding');
-//     const isVerificationRoute = pathname.startsWith('/verify') || pathname === '/add-google-phone';
-
-//     const isCompleted = onboardingStatus === 'COMPLETED';
-
-//     if (!isCompleted && !isOnboardingRoute && !isVerificationRoute) {
-//       const stepRoutes: Record<string, string> = {
-//         CONTACT_INFO: '/onboarding/contact-info',
-//         ADDRESS_INFO: '/onboarding/address-info',
-//         BANK_INFO: '/onboarding/bank-info',
-//         DOCUMENT: '/onboarding/business-document',
-//       };
-
-//       let redirectPath = '/onboarding/business-info';
-
-//       if (onboardingStatus === 'IN_PROGRESS' && onboardingStep) {
-//         redirectPath = stepRoutes[onboardingStep] ?? redirectPath;
-//       }
-
-//       return NextResponse.redirect(new URL(redirectPath, request.url));
-//     }
-//   } catch (err) {
-//     console.error('[Middleware] Failed onboarding enforcement', err);
-//   }
-// }
-
   // Read role from valid (non-expired) access token if no refresh happened
   if (!userRole && accessToken && !isTokenExpired(accessToken)) {
     try {
