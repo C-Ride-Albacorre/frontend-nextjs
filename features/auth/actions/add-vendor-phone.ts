@@ -29,8 +29,11 @@ export async function AddVendorPhoneAction(
     };
   }
 
-
-  console.log('Add phone action called with:', { phoneNumber, countryCode, verificationToken });
+  console.log('Add phone action called with:', {
+    phoneNumber,
+    countryCode,
+    verificationToken,
+  });
 
   try {
     const result = await addVendorPhoneService({
@@ -44,11 +47,10 @@ export async function AddVendorPhoneAction(
     // -------------------------
     // 2. SAFE RESPONSE CHECKING
     // -------------------------
-    const isSuccess =
-      result?.status === 'success' 
+    const isSuccess = result?.status === 'success';
 
     const message =
-      result?.data.message || 'Unable to send OTP. Please try again.';
+      result?.data?.message || result?.message || 'Unable to send OTP.';
 
     if (!isSuccess) {
       return {
@@ -63,11 +65,8 @@ export async function AddVendorPhoneAction(
     await setCookie({
       name: COOKIE_KEYS.VENDOR_PHONE_NUMBER,
       value: result.data.identifier,
-      maxAge: 60 * 30, 
+      maxAge: 60 * 30,
     });
-
-
-  
 
     // -------------------------
     // 4. SUCCESS RESPONSE

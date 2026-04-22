@@ -50,7 +50,7 @@ export default function VendorGoogleVerifyPhone() {
       )}
 
       <form className="flex flex-col items-center gap-6" action={action}>
-        <div className="w-full">
+        <div className="w-full text-left">
           <PhoneInput
             name="phone"
             placeholder="Your phone number here"
