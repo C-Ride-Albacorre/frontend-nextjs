@@ -7,7 +7,7 @@ export async function verifyVendorPhoneService(data: {
   otp: string;
   verificationToken?: string;
 }) {
-  const res = await authFetch(`${BASE_URL}/auth/user/verify/phone`, {
+  const res = await fetch(`${BASE_URL}/auth/user/verify/phone`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
@@ -29,7 +29,7 @@ export async function verifyVendorEmailService(data: {
   otp: string;
   verificationToken?: string;
 }) {
-  const res = await authFetch(`${BASE_URL}/auth/user/verify/email`, {
+  const res = await fetch(`${BASE_URL}/auth/user/verify/email`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),

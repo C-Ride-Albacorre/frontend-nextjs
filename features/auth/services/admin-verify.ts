@@ -7,7 +7,7 @@ export async function verifyAdminOtpService(data: {
   otp: string;
   verificationToken: string;
 }) {
-  const res = await authFetch(`${BASE_URL}/auth/admin/verify`, {
+  const res = await fetch(`${BASE_URL}/auth/admin/verify`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),

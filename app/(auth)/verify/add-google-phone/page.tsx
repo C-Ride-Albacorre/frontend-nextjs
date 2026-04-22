@@ -4,8 +4,6 @@ import { useActionState, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/buttons/button';
 import { AddVendorPhoneAction } from '@/features/auth/actions/add-vendor-phone';
-import AuthFormHeader from '@/components/ui/headers/auth-form-header';
-import Card from '@/components/layout/card';
 import PhoneInput from '@/components/ui/inputs/phone-input';
 import ErrorMessage from '@/components/layout/error-message';
 
@@ -52,17 +50,19 @@ export default function VendorGoogleVerifyPhone() {
       )}
 
       <form className="flex flex-col items-center gap-6" action={action}>
-        <PhoneInput
-          name="phone"
-          placeholder="Your phone number here"
-          value={formValues.phoneNumber}
-          onChange={(e) =>
-            setFormValues({ ...formValues, phoneNumber: e.target.value })
-          }
-          errorMessage={
-            state?.status === 'error' ? state?.errors?.phone?.[0] : undefined
-          }
-        />
+        <div className="w-full">
+          <PhoneInput
+            name="phone"
+            placeholder="Your phone number here"
+            value={formValues.phoneNumber}
+            onChange={(e) =>
+              setFormValues({ ...formValues, phoneNumber: e.target.value })
+            }
+            errorMessage={
+              state?.status === 'error' ? state?.errors?.phone?.[0] : undefined
+            }
+          />
+        </div>
 
         <Button
           size="lg"

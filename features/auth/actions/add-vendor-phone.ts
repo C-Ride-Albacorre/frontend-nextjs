@@ -29,6 +29,9 @@ export async function AddVendorPhoneAction(
     };
   }
 
+
+  console.log('Add phone action called with:', { phoneNumber, countryCode, verificationToken });
+
   try {
     const result = await addVendorPhoneService({
       phoneNumber,
