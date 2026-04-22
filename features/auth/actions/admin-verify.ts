@@ -29,6 +29,13 @@ export async function AdminVerifyCodeAction(
   const registrationMethod = await getCookie(COOKIE_KEYS.REGISTRATION_METHOD);
   const verificationToken = await getCookie(COOKIE_KEYS.VERIFICATION_TOKEN);
 
+  if (!verificationToken) {
+    return {
+      status: 'error',
+      message: 'Verification session expired. Please start again.',
+    };
+  }
+
   if (!identifier || !registrationMethod || !verificationToken) {
     return {
       status: 'error',
@@ -54,7 +61,6 @@ export async function AdminVerifyCodeAction(
 
     await setAuthCookies(data.accessToken, data.refreshToken);
 
-  
     await clearVerificationCookies();
   } catch (error) {
     return {

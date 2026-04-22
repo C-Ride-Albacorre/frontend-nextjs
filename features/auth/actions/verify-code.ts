@@ -32,10 +32,17 @@ export async function VerifyCodeAction(
   // SESSION CHECK
   // -------------------------
   const identifier = await getCookie(COOKIE_KEYS.VERIFY_IDENTIFIER);
-  
+
   const verificationToken = await getCookie(COOKIE_KEYS.VERIFICATION_TOKEN);
 
   const registrationMethod = await getCookie(COOKIE_KEYS.REGISTRATION_METHOD);
+
+  if (!verificationToken) {
+    return {
+      status: 'error',
+      message: 'Verification session expired. Please start again.',
+    };
+  }
 
   if (!identifier || !registrationMethod) {
     return {

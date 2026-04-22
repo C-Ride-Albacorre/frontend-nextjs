@@ -26,6 +26,7 @@ export async function vendorLoginAction(
   const callbackUrl = formData.get('callbackUrl')?.toString() ?? '';
 
   const safeCallbackUrl =
+    callbackUrl &&
     callbackUrl.startsWith('/') &&
     !callbackUrl.startsWith('/vendor/login') &&
     !callbackUrl.startsWith('/vendor/register')
@@ -56,6 +57,13 @@ export async function vendorLoginAction(
     // UNVERIFIED — redirect to verification
     // -------------------------
     if (!data.success && data.status === 'UNVERIFIED') {
+      if (!data.verificationToken) {
+        return {
+          status: 'error',
+          message: 'Verification failed. Please try again.',
+        };
+      }
+
       await setVendorVerificationCookies({
         verificationToken: data.verificationToken,
         vendorPhoneNumber: data.phoneNumber,

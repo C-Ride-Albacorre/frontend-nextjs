@@ -43,6 +43,14 @@ const VERIFICATION_ROUTES = [
   '/verify/admin',
 ];
 
+const VERIFICATION_FALLBACKS: Record<string, string> = {
+  '/verify/user': '/user/login',
+  '/verify/vendor-phone': '/vendor/login',
+  '/verify/vendor-email': '/vendor/login',
+  '/verify/add-google-phone': '/vendor/login',
+  '/verify/admin': '/admin/login',
+};
+
 const USER_AUTH_ROUTES = ['/user/register', '/user/login'];
 const VENDOR_AUTH_ROUTES = ['/vendor/register', '/vendor/login'];
 const ADMIN_AUTH_ROUTES = ['/admin/login'];
@@ -314,21 +322,35 @@ export async function middleware(request: NextRequest) {
 
   const isFullyAuthenticated = hasAccessToken && hasRefreshToken;
 
-  if (VERIFICATION_ROUTES.some((r) => pathname.startsWith(r))) {
-    const verificationToken = request.cookies.get('verificationToken')?.value;
+const VERIFICATION_FALLBACKS: Record<string, string> = {
+  '/verify/user': '/user/login',
+  '/verify/vendor-phone': '/vendor/login',
+  '/verify/vendor-email': '/vendor/login',
+  '/verify/add-google-phone': '/vendor/login',
+  '/verify/admin': '/admin/login',
+};
 
-    if (!verificationToken) {
-      // Route-aware redirect
-      let fallback = '/user/register';
-      if (pathname.startsWith('/verify/vendor')) fallback = '/vendor/register';
-      if (pathname.startsWith('/verify/admin')) fallback = '/admin/login';
+if (VERIFICATION_ROUTES.some((r) => pathname.startsWith(r))) {
+  const verificationToken = request.cookies.get('verificationToken')?.value;
 
-      const url = new URL(fallback, request.url);
-      url.searchParams.set('expired', 'true');
-      return NextResponse.redirect(url);
-    }
+  if (!verificationToken) {
+    const matchedRoute = Object.keys(VERIFICATION_FALLBACKS).find((route) =>
+      pathname.startsWith(route),
+    );
+
+    const fallback =
+      (matchedRoute && VERIFICATION_FALLBACKS[matchedRoute]) ||
+      '/user/login';
+
+    const url = new URL(fallback, request.url);
+
+    url.searchParams.set('expired', 'true');
+    url.searchParams.set('reason', 'verification_expired');
+    url.searchParams.set('callbackUrl', pathname);
+
+    return NextResponse.redirect(url);
   }
-
+}
   // -------------------------
   // UNAUTHENTICATED ACCESS
   // -------------------------
@@ -400,7 +422,6 @@ export async function middleware(request: NextRequest) {
 
     let dest = '/';
 
-  
     if (redirectRole === 'VENDOR') {
       if (pathname.startsWith('/onboarding')) {
         return refreshedResponse ?? NextResponse.next();

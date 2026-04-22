@@ -121,6 +121,13 @@ export async function VendorVerifyPhoneAction(
   const phoneNumber = await getCookie(COOKIE_KEYS.VENDOR_PHONE_NUMBER);
   const verificationToken = await getCookie(COOKIE_KEYS.VERIFICATION_TOKEN);
 
+  if (!verificationToken) {
+    return {
+      status: 'error',
+      message: 'Verification session expired. Please start again.',
+    };
+  }
+
   if (!phoneNumber) {
     return {
       status: 'error',
@@ -190,6 +197,13 @@ export async function VendorVerifyEmailAction(
   // ✅ Read cookies inside the action
   const email = await getCookie(COOKIE_KEYS.VENDOR_EMAIL);
   const verificationToken = await getCookie(COOKIE_KEYS.VERIFICATION_TOKEN);
+
+  if (!verificationToken) {
+    return {
+      status: 'error',
+      message: 'Verification session expired. Please start again.',
+    };
+  }
 
   if (!email) {
     return {

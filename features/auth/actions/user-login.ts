@@ -13,9 +13,15 @@ export async function userLoginAction(
   const password = formData.get('password')?.toString() ?? '';
   const countryCode = formData.get('countryCode')?.toString() ?? undefined;
 
+  const callbackUrl = formData.get('callbackUrl')?.toString() ?? '';
 
-  const callbackUrl =
-    formData.get('callbackUrl')?.toString() ?? '/user/delivery';
+  const safeCallback =
+    callbackUrl &&
+    callbackUrl.startsWith('/') &&
+    !callbackUrl.startsWith('/user/login') &&
+    !callbackUrl.startsWith('/user/register')
+      ? callbackUrl
+      : '/user/dashboard';
 
   const validated = LoginFormSchema.safeParse({
     identifier: rawIdentifier,
@@ -37,18 +43,12 @@ export async function userLoginAction(
     ? { phoneNumber: rawIdentifier, password, countryCode: countryCode ?? '' }
     : { email: rawIdentifier, password };
 
-  const safeCallback = callbackUrl.startsWith('/')
-    ? callbackUrl
-    : '/user/delivery';
-
   let redirectTo: string | null = null;
-
 
   console.log(' Login payload:', payload);
 
   try {
-
-console.log(' Attempting to log in user with payload:', payload);
+    console.log(' Attempting to log in user with payload:', payload);
 
     const result = await loginUser(payload);
 
@@ -71,9 +71,7 @@ console.log(' Attempting to log in user with payload:', payload);
       }
 
       redirectTo = '/verify/user';
-    }
-
-    if (result.data.success) {
+    } else if (result.data.success) {
       const { accessToken, refreshToken } = result.data;
 
       await setAuthCookies(accessToken, refreshToken);
@@ -81,6 +79,11 @@ console.log(' Attempting to log in user with payload:', payload);
       console.log('User login successful:', result);
 
       redirectTo = safeCallback;
+    } else {
+      return {
+        status: 'error',
+        message: result.data.message || 'Login failed.',
+      };
     }
   } catch (error) {
     return {

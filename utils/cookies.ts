@@ -15,8 +15,6 @@ export const COOKIE_KEYS = {
   REGISTRATION_METHOD: 'registration_method',
 } as const;
 
-
-
 // Default cookie options
 const defaultOptions = {
   httpOnly: true,
@@ -79,18 +77,17 @@ export async function setVerificationCookies({
   });
 }
 
-
 export async function setVendorVerificationCookies({
   verificationToken,
   vendorPhoneNumber,
   vendorEmail,
-}:{
+}: {
   verificationToken: string;
   vendorPhoneNumber: string;
   vendorEmail: string;
-}){
+}) {
   const cookieStore = await cookies();
-  const maxAge = getTokenExpiry(verificationToken); // respect the token's own expiry
+  const maxAge = getTokenExpiry(verificationToken);
 
   cookieStore.set(COOKIE_KEYS.VERIFICATION_TOKEN, verificationToken, {
     ...defaultOptions,
@@ -104,7 +101,6 @@ export async function setVendorVerificationCookies({
     ...defaultOptions,
     maxAge,
   });
-
 }
 // Set auth cookies (access + refresh tokens)
 export async function setAuthCookies(
@@ -150,9 +146,6 @@ export async function clearAuthCookies() {
   cookieStore.delete(COOKIE_KEYS.REGISTRATION_METHOD);
 }
 
-
-
-
 export async function clearVerificationCookies() {
   const cookieStore = await cookies();
   cookieStore.delete(COOKIE_KEYS.VERIFICATION_TOKEN);
@@ -160,7 +153,6 @@ export async function clearVerificationCookies() {
   cookieStore.delete(COOKIE_KEYS.REGISTRATION_METHOD);
   cookieStore.delete(COOKIE_KEYS.VENDOR_PHONE_NUMBER);
   cookieStore.delete(COOKIE_KEYS.VENDOR_EMAIL);
-
 }
 
 // Check if user is authenticated (has valid access token)

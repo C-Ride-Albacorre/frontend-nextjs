@@ -15,7 +15,6 @@ import { adminLoginAction } from '../../actions/admin-login';
 export default function AdminLoginForm() {
   const [showPassword, setShowPassword] = useState(false);
 
-
   const [state, action, pending] = useActionState(adminLoginAction, undefined);
 
   const isError = state?.status === 'error';
@@ -34,7 +33,8 @@ export default function AdminLoginForm() {
 
   return (
     <form className="space-y-5" action={action}>
-    
+     
+
       <Input
         name="email"
         type="email"

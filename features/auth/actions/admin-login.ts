@@ -18,6 +18,7 @@ export async function adminLoginAction(
     password: formData.get('password'),
   });
 
+
   if (!validatedFields.success) {
     return {
       status: 'error',
@@ -79,7 +80,9 @@ export async function adminLoginAction(
     };
   }
 
-  if (redirectTo) redirect(redirectTo);
+  if (redirectTo) {
+    redirect(redirectTo);
+  }
 
   // Fallback — should never reach here
   return {

@@ -12,6 +12,13 @@ export async function AddVendorPhoneAction(
 
   const verificationToken = await getCookie(COOKIE_KEYS.VERIFICATION_TOKEN);
 
+  if (!verificationToken) {
+    return {
+      status: 'error',
+      message: 'Verification session expired. Please start again.',
+    };
+  }
+
   // -------------------------
   // 1. INPUT VALIDATION
   // -------------------------
@@ -19,13 +26,6 @@ export async function AddVendorPhoneAction(
     return {
       status: 'error',
       message: 'Please enter a valid phone number.',
-    };
-  }
-
-  if (!verificationToken) {
-    return {
-      status: 'error',
-      message: 'Verification session expired. Please start again.',
     };
   }
 

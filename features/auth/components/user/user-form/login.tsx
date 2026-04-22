@@ -21,10 +21,16 @@ type FieldValues = {
 
 const INITIAL_VALUES: FieldValues = { identifier: '', password: '' };
 
-export default function UserLoginForm() {
+export default function UserLoginForm({
+  callbackUrl,
+}: {
+  callbackUrl?: string;
+}) {
   const { method } = useAuthMethod();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get('callbackUrl') ?? '/user/dashboard';
+
+  const finalCallbackUrl =
+    searchParams.get('callbackUrl') || callbackUrl || '/user/dashboard';
 
   const [fields, setFields] = useState<FieldValues>(INITIAL_VALUES);
   const [showPassword, setShowPassword] = useState(false);
@@ -53,9 +59,10 @@ export default function UserLoginForm() {
       <AuthMethod />
 
       <form className="space-y-5" action={action}>
-        {/* Pass callbackUrl through so the action can redirect back */}
-        <input type="hidden" name="callbackUrl" value={callbackUrl} />
         
+        {finalCallbackUrl && (
+          <input type="hidden" name="callbackUrl" value={finalCallbackUrl} />
+        )}
 
         {method === 'phone' ? (
           <PhoneInput

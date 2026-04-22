@@ -1,12 +1,12 @@
 import { Suspense } from 'react';
 import { redirect } from 'next/navigation';
 import { VerifyPageSkeleton } from '@/features/auth/components/verify/verify-page-skeleton';
-import { getCookie } from '@/utils/cookies';
+import { COOKIE_KEYS, getCookie } from '@/utils/cookies';
 import { maskIdentifier } from '@/utils/mask-identifier';
 import VendorEmailWrapper from '@/features/auth/components/verify/vendor-email-wrapper';
 
 export default async function VendorVerifyEmailPage() {
-  const identifier = await getCookie('vendor_email');
+  const identifier = await getCookie(COOKIE_KEYS.VENDOR_EMAIL);
 
   if (!identifier) {
     redirect('/vendor/register');

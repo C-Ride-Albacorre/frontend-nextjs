@@ -20,13 +20,19 @@ type FieldValues = {
 
 const INITIAL_VALUES: FieldValues = { email: '', password: '' };
 
-export default function VendorLoginForm() {
+export default function VendorLoginForm({
+  callbackUrl,
+}: {
+  callbackUrl?: string;
+}) {
   const [fields, setFields] = useState<FieldValues>(INITIAL_VALUES);
   const [showPassword, setShowPassword] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get('callbackUrl') ?? '';
+
+  const finalCallbackUrl =
+    searchParams.get('callbackUrl') || callbackUrl || '/vendor/store';
 
   const [state, action, pending] = useActionState(vendorLoginAction, undefined);
 
@@ -63,8 +69,8 @@ export default function VendorLoginForm() {
       />
 
       <form className="space-y-5" action={action}>
-        {callbackUrl && (
-          <input type="hidden" name="callbackUrl" value={callbackUrl} />
+        {finalCallbackUrl && (
+          <input type="hidden" name="callbackUrl" value={finalCallbackUrl} />
         )}
 
         <Input

@@ -1,16 +1,16 @@
 import { Suspense } from 'react';
 import { redirect } from 'next/navigation';
 import { VerifyPageSkeleton } from '@/features/auth/components/verify/verify-page-skeleton';
-import { getCookie } from '@/utils/cookies';
+import { COOKIE_KEYS, getCookie } from '@/utils/cookies';
 import { maskIdentifier } from '@/utils/mask-identifier';
 import VerifyWrapper from '@/features/auth/components/verify/verify-wrapper';
 
 export default async function VerifyPage() {
-  const registrationMethod = await getCookie('registration_method');
-  const identifier = await getCookie('verify_identifier');
-  const accessToken = await getCookie('accessToken');
+  const registrationMethod = await getCookie(COOKIE_KEYS.REGISTRATION_METHOD);
+  const identifier = await getCookie(COOKIE_KEYS.VERIFY_IDENTIFIER);
 
-  if (!identifier || !registrationMethod && !accessToken) {
+
+  if (!identifier || !registrationMethod) {
     redirect('/user/register');
   }
 

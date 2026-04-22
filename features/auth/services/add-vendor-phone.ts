@@ -1,6 +1,6 @@
 import { BASE_URL } from '@/config/api';
 import { ApiError } from '../../libs/api-error';
-import { authFetch } from '@/features/libs/auth-fetch';
+
 
 export async function addVendorPhoneService(data: { phoneNumber: string , countryCode: string, verificationToken?: string }) {
 
