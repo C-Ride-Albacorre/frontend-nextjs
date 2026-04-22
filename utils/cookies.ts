@@ -150,6 +150,9 @@ export async function clearAuthCookies() {
   cookieStore.delete(COOKIE_KEYS.REGISTRATION_METHOD);
 }
 
+
+
+
 export async function clearVerificationCookies() {
   const cookieStore = await cookies();
   cookieStore.delete(COOKIE_KEYS.VERIFICATION_TOKEN);

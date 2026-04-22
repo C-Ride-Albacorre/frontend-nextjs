@@ -1,6 +1,6 @@
 'use client';
 
-import { useActionState, useEffect } from 'react';
+import { useActionState, useEffect, useState } from 'react';
 
 import { useRouter } from 'next/navigation';
 
@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 import VerifyClient from './verify-client';
 import { VerifyOtpState } from '../../libs/verify-code.schema';
 import { VendorVerifyPhoneAction } from '../../actions/vendor-verify';
+import VerificationSuccessModal from './verification-success-modal';
 
 export default function VendorPhoneWrapper({
   identifier,
@@ -17,6 +18,7 @@ export default function VendorPhoneWrapper({
   method: 'phone number';
 }) {
   const router = useRouter();
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const [state, action, pending] = useActionState<
     VerifyOtpState | null,
@@ -26,12 +28,20 @@ export default function VendorPhoneWrapper({
   useEffect(() => {
     if (state?.status === 'success') {
       toast.success(state.message);
-      if (state.redirectTo) {
+
+      if (state.redirectTo?.startsWith('/onboarding')) {
+        // Phone was the final verification step — show the onboarding modal
+        setShowSuccessModal(true);
+      } else if (state.redirectTo) {
+        // Still more verification to do (e.g. → /verify/vendor-email)
         router.push(state.redirectTo);
       }
     }
-  }, [state, router]);
 
+    if (state?.status === 'error' && state.message) {
+      toast.error(state.message);
+    }
+  }, [state, router]);
   return (
     <>
       <VerifyClient
@@ -41,7 +51,12 @@ export default function VendorPhoneWrapper({
         action={action}
         pending={pending}
         state={state}
-       
+      />
+
+      <VerificationSuccessModal
+        isOpen={showSuccessModal}
+        onClose={() => setShowSuccessModal(false)}
+        redirectTo={state?.redirectTo ?? '/onboarding/business-info'}
       />
     </>
   );

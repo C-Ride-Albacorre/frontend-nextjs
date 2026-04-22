@@ -399,7 +399,15 @@ export async function middleware(request: NextRequest) {
     }
 
     let dest = '/';
-    if (redirectRole === 'VENDOR') dest = '/onboarding/business-info';
+
+  
+    if (redirectRole === 'VENDOR') {
+      if (pathname.startsWith('/onboarding')) {
+        return refreshedResponse ?? NextResponse.next();
+      }
+      dest = '/vendor/store';
+    }
+    // if (redirectRole === 'VENDOR') dest = '/vendor/store';
 
     // if (redirectRole === 'VENDOR') {
     //   const isOnboarding = pathname.startsWith('/onboarding');

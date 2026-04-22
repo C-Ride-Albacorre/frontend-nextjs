@@ -3,6 +3,7 @@
 import Modal from '@/components/layout/modal';
 import { Button } from '@/components/ui/buttons/button';
 import { CheckCircle, ChevronRight } from 'lucide-react';
+import { completeVerificationAction } from '../../actions/complete-verify-session';
 
 type VerificationSuccessModalProps = {
   isOpen: boolean;
@@ -15,8 +16,13 @@ export default function VerificationSuccessModal({
   onClose,
   redirectTo,
 }: VerificationSuccessModalProps) {
+  const handleContinue = async () => {
+    await completeVerificationAction(); // clear now, just before leaving
+    window.location.href = redirectTo; // hard nav to avoid middleware cache issues
+  };
+
   return (
-    <Modal isModalOpen={isOpen} onClose={onClose}>
+    <Modal isModalOpen={isOpen}>
       <div className="flex flex-col items-center text-center py-4 space-y-8">
         {/* Success Icon */}
         <div className="mb-6 flex items-center justify-center w-16 h-16 bg-[#10B981] rounded-full">
@@ -77,7 +83,8 @@ export default function VerificationSuccessModal({
 
         {/* CTA Button */}
         <Button
-          href={redirectTo}
+          // href={redirectTo}
+          onClick={handleContinue}
           variant="primary"
           size="6xl"
           className="w-full max-w-md"

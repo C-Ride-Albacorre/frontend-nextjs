@@ -149,7 +149,7 @@ export async function VendorVerifyPhoneAction(
 
     if (data.accessToken && data.refreshToken && user.isEmailVerified) {
       await setAuthCookies(data.accessToken, data.refreshToken);
-      await clearVerificationCookies();
+      // await clearVerificationCookies();
       const nextRoute = resolveNextRoute(user);
 
       if (!nextRoute) {
@@ -221,7 +221,7 @@ export async function VendorVerifyEmailAction(
     await setAuthCookies(data.accessToken, data.refreshToken);
 
     // ✅ Clean up all verification cookies
-    await clearVerificationCookies();
+    // await clearVerificationCookies();
 
     // ✅ Resolve next route — PENDING_ONBOARDING goes to onboarding, not dashboard
     const nextRoute = resolveNextRoute(user);
