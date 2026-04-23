@@ -206,8 +206,8 @@ export default function SingleProductForm({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Select
             id="subcategoryId"
-            label="Category"
-            placeholder="Select category"
+            label="Subcategory"
+            placeholder="Select subcategory"
             options={CATEGORIES}
             value={subcategoryId}
             onChange={setSubcategoryId}

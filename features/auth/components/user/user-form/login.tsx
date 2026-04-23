@@ -13,6 +13,8 @@ import PhoneInput from '@/components/ui/inputs/phone-input';
 import Input from '@/components/ui/inputs/input';
 import { Button } from '@/components/ui/buttons/button';
 import { IconButton } from '@/components/ui/buttons/icon-button';
+import ErrorMessage from '@/components/layout/error-message';
+import { div } from 'framer-motion/client';
 
 type FieldValues = {
   identifier: string;
@@ -58,8 +60,13 @@ export default function UserLoginForm({
     <>
       <AuthMethod />
 
-      <form className="space-y-5" action={action}>
-        
+      {isError && (
+        <div className='mb-2'>
+          <ErrorMessage message={state.message || 'An error occurred'} />
+        </div>
+      )}
+
+      <form className="space-y-5 " action={action}>
         {finalCallbackUrl && (
           <input type="hidden" name="callbackUrl" value={finalCallbackUrl} />
         )}

@@ -11,7 +11,7 @@ export async function userLoginAction(
 ): Promise<LoginFormState> {
   const rawIdentifier = formData.get('identifier')?.toString().trim() ?? '';
   const password = formData.get('password')?.toString() ?? '';
-  const countryCode = formData.get('countryCode')?.toString() ?? undefined;
+  // const countryCode = formData.get('countryCode')?.toString() ?? undefined;
 
   const callbackUrl = formData.get('callbackUrl')?.toString() ?? '';
 
@@ -25,8 +25,8 @@ export async function userLoginAction(
 
   const validated = LoginFormSchema.safeParse({
     identifier: rawIdentifier,
+    // countryCode,
     password,
-    countryCode,
   });
 
   if (!validated.success) {
@@ -40,7 +40,8 @@ export async function userLoginAction(
 
   // ✅ Send as separate fields matching your API contract
   const payload: LoginPayload = isPhone
-    ? { phoneNumber: rawIdentifier, password, countryCode: countryCode ?? '' }
+    ? { phoneNumber: rawIdentifier, password, 
+     }
     : { email: rawIdentifier, password };
 
   let redirectTo: string | null = null;
@@ -98,3 +99,5 @@ export async function userLoginAction(
   if (redirectTo) redirect(redirectTo);
   return { status: 'success' };
 }
+
+

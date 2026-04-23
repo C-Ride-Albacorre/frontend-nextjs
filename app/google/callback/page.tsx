@@ -13,17 +13,22 @@ export default function GoogleOAuthCallback() {
 
       const success = params.get('success');
 
-      // Normalize "undefined" strings to null up front
       const normalize = (v: string | null) =>
         !v || v === 'undefined' ? null : v;
 
-      const accessToken       = normalize(params.get('accessToken'));
-      const refreshToken      = normalize(params.get('refreshToken'));
+      const accessToken = normalize(params.get('accessToken'));
+      const refreshToken = normalize(params.get('refreshToken'));
       const verificationToken = normalize(params.get('verificationToken'));
 
       const isPhoneVerifiedRaw = params.get('isPhoneVerified');
-      const onboardingStatus   = params.get('onboardingStatus');
-      const onboardingStep     = params.get('onboardingStep');
+      const onboardingStatus = params.get('onboardingStatus');
+      const onboardingStep = params.get('onboardingStep');
+
+      // -------------------------
+      // HANDLE BACKEND ERROR PARAMS
+      // -------------------------
+      const errorParam = params.get('error');
+      const messageParam = params.get('message');
 
       const isPhoneVerified = isPhoneVerifiedRaw === 'true';
 
@@ -35,12 +40,26 @@ export default function GoogleOAuthCallback() {
         isPhoneVerified,
         onboardingStatus,
         onboardingStep,
+        errorParam,
+        messageParam,
       });
 
       // -------------------------
       // 1. INVALID REQUEST (hard fail)
       // -------------------------
       if (success !== 'true') {
+        // -------------------------
+        // ROLE CONFLICT — account exists with different role
+        // -------------------------
+        if (messageParam?.toLowerCase().includes('different role')) {
+          router.replace(
+            `/user/login?error=role_conflict&message=${encodeURIComponent(
+              'This email is already registered with a different account type. Please sign in with the correct portal.',
+            )}`,
+          );
+          return;
+        }
+
         router.replace('/vendor/login?error=oauth_failed');
         return;
       }
@@ -48,7 +67,6 @@ export default function GoogleOAuthCallback() {
       // -------------------------
       // 2. PHONE VERIFICATION FLOW
       // -------------------------
-      // No auth tokens BUT verification token exists → save cookie then go to phone verification
       if (!accessToken && verificationToken) {
         try {
           const cookieRes = await fetch('/api/auth/google-callback', {
@@ -57,7 +75,8 @@ export default function GoogleOAuthCallback() {
             body: JSON.stringify({ verificationToken }),
           });
 
-          if (!cookieRes.ok) throw new Error('Failed to set verification session');
+          if (!cookieRes.ok)
+            throw new Error('Failed to set verification session');
         } catch (error) {
           console.error('[OAuth] Failed to save verificationToken:', error);
           router.replace('/vendor/login?error=session_failed');
@@ -69,7 +88,7 @@ export default function GoogleOAuthCallback() {
       }
 
       // -------------------------
-      // 3. INVALID AUTH STATE (no usable flow)
+      // 3. INVALID AUTH STATE
       // -------------------------
       if (!accessToken || !refreshToken) {
         router.replace('/vendor/login?error=oauth_failed');
@@ -126,7 +145,10 @@ export default function GoogleOAuthCallback() {
           }
 
           // 2. ONBOARDING NOT COMPLETED
-          const onboardingDone = onboardingStatus === 'completed';
+          const onboardingDone =
+            onboardingStatus === 'COMPLETED' ||
+            onboardingStatus === 'completed' ||
+            onboardingStatus === 'true';
 
           if (!onboardingDone) {
             const stepRoutes: Record<number, string> = {
@@ -138,7 +160,6 @@ export default function GoogleOAuthCallback() {
             };
 
             const step = Number(onboardingStep);
-
             router.replace(stepRoutes[step] ?? '/onboarding/business-info');
             return;
           }

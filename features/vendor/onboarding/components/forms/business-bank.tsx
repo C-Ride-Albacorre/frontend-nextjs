@@ -76,7 +76,7 @@ export default function BusinessBankForm() {
           id="accountNumber"
           name="accountNumber"
           label="Business Account Number"
-          type="text"
+          type="number"
           placeholder="Enter your business account number"
           value={bankInfo.accountNumber}
           onChange={(e) =>

@@ -13,6 +13,7 @@ const STOCK_STATUSES = [
   { label: 'In Stock', value: 'IN_STOCK' },
   { label: 'Low Stock', value: 'LOW_STOCK' },
   { label: 'Out of Stock', value: 'OUT_OF_STOCK' },
+  { label: 'Not Available', value: 'NOT_AVAILABLE' },
 ];
 
 const PRODUCT_STATUSES = [

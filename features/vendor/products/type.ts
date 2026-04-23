@@ -1,5 +1,5 @@
 // Stock status matches API
-export type StockStatus = 'IN_STOCK' | 'LOW_STOCK' | 'OUT_OF_STOCK';
+export type StockStatus = 'IN_STOCK' | 'LOW_STOCK' | 'OUT_OF_STOCK' | 'NOT_AVAILABLE';
 
 // Product status matches API
 export type ProductStatus = 'ACTIVE' | 'INACTIVE' | 'DRAFT';
