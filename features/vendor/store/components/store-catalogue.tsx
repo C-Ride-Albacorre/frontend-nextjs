@@ -79,7 +79,7 @@ export default function StoreCatalogue({
                   {statusDisplay}
                 </span>
 
-                <span className="font-medium text-primary text-xs truncate wrap-break-word">
+                <span className="font-medium text-primary text-xs">
                   {categoryId}
                 </span>
               </div>
