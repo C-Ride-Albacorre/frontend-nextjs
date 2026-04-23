@@ -12,7 +12,7 @@ export interface Variant {
   price: number;
   sku: string;
   stockQuantity: number;
-  stockStatus: 'IN_STOCK' | 'LOW_STOCK' | 'OUT_OF_STOCK';
+  stockStatus: 'IN_STOCK' | 'LOW_STOCK' | 'OUT_OF_STOCK' | 'NOT_AVAILABLE';
   attributes?: Record<string, string>;
 }
 
@@ -27,7 +27,7 @@ export default function VariantsForm({ variants, setVariants }: Props) {
   const [sku, setSku] = useState('');
   const [stockQuantity, setStockQuantity] = useState('');
   const [stockStatus, setStockStatus] = useState<
-    'IN_STOCK' | 'LOW_STOCK' | 'OUT_OF_STOCK'
+    'IN_STOCK' | 'LOW_STOCK' | 'OUT_OF_STOCK' | 'NOT_AVAILABLE'
   >('IN_STOCK');
 
   const [attributeName, setAttributeName] = useState('');

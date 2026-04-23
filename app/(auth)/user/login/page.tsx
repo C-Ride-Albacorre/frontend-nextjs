@@ -66,6 +66,8 @@ export default async function LoginPage({
         <UserLoginForm callbackUrl={callbackUrl} />
       </Suspense>
 
+      
+
       <AuthFooter variant="login" href="/user/register" />
     </>
   );
