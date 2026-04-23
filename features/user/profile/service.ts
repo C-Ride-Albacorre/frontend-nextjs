@@ -14,8 +14,6 @@ export async function profileService() {
     redirect('/user/login');
   }
 
-  console.log('Fetching profile data...:', res);
-
   const data = await res.json();
 
   if (!res.ok) {

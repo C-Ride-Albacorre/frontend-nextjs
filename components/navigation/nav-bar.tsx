@@ -3,13 +3,32 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 
-import { Menu, X, ChevronRight } from 'lucide-react';
+import { Menu, X, ChevronRight, User } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Button } from '../ui/buttons/button';
 import { IconButton } from '../ui/buttons/icon-button';
 import Image from 'next/image';
+import { div } from 'framer-motion/client';
 
-const NavBar = () => {
+type NavBarProps = {
+  isLoggedIn: boolean;
+  role?: string | null;
+};
+
+const getDashboardLink = (role?: string | null) => {
+  switch (role) {
+    case 'VENDOR':
+      return '/vendor/store';
+    case 'ADMIN':
+    case 'SUPER_ADMIN':
+      return '/admin/dashboard';
+    case 'CUSTOMER':
+    default:
+      return '/user/dashboard';
+  }
+};
+
+const NavBar = ({ isLoggedIn, role }: NavBarProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
   const [isAtTop, setIsAtTop] = useState<boolean>(true);
@@ -39,7 +58,7 @@ const NavBar = () => {
         `}
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 md:py-3">
-          <div className="lg:w-full">
+          <div className=" flex-1">
             <Link href="/">
               <Image
                 src="/assets/svg/logo-main.svg"
@@ -52,25 +71,69 @@ const NavBar = () => {
             </Link>
           </div>
 
-          <div className="hidden md:flex gap-10 lg:gap-0 justify-between items-center lg:w-full">
-            <div className="flex items-center gap-6 lg:gap-10 text-sm font-body  text-white">
-              <Button href="/" size="sm" variant="white-nav-link">
-                How it Works
-              </Button>
+          <div className="hidden md:flex gap-12  justify-between items-center">
+            <ul className="flex items-center gap-6 text-sm font-body  text-white">
+              <li>
+                <Button href="/vendor" size="sm" variant="white-nav-link">
+                  Vendor
+                </Button>
+              </li>
 
-              <Button href="/" size="sm" variant="white-nav-link">
-                Membership
-              </Button>
-            </div>
+              <li>
+                <Button
+                  href="/fulfillment-partner"
+                  size="sm"
+                  variant="white-nav-link"
+                >
+                  Drivers
+                </Button>
+              </li>
 
-            <div className="flex items-center gap-3">
+              <li>
+                <Button href="/" size="sm" variant="white-nav-link">
+                  How It Works
+                </Button>
+              </li>
+
+              <li>
+                <Button href="/" size="sm" variant="white-nav-link">
+                  Contact Us
+                </Button>
+              </li>
+            </ul>
+
+            {/* <div className="flex items-center gap-3">
               <Button href="/user/login" size="md" variant="white-outline">
                 Login
               </Button>
 
               <Button href="/user/register" size="md" variant="primary">
-                Get started
+                Get Started
               </Button>
+            </div> */}
+
+            <div className="flex items-center gap-3">
+              {isLoggedIn ? (
+                <Button
+                  href={getDashboardLink(role)}
+                  variant="white-outline"
+                  leftIcon={<User size={16} className="text-white" />}
+                  size="icon"
+                  rounded="full"
+                >
+                  Go to Dashboard
+                </Button>
+              ) : (
+                <>
+                  <Button href="/user/login" variant="white-outline">
+                    Login
+                  </Button>
+
+                  <Button href="/user/register" variant="primary">
+                    Get Started
+                  </Button>
+                </>
+              )}
             </div>
           </div>
 
@@ -135,13 +198,22 @@ const NavBar = () => {
                 </div>
 
                 {/* MENU LINKS */}
-                <div className="p-2 space-y-2 ">
+                <ul className="p-2 space-y-2 ">
                   <Link
-                    href="/"
+                    href="/vendor"
                     className="flex items-center justify-between py-6 px-2 text-base border-b border-border"
                     onClick={toggleMenu}
                   >
-                    Membership
+                    Vendor
+                    <ChevronRight size={18} />
+                  </Link>
+
+                  <Link
+                    href="/fulfillment-partner"
+                    className="flex items-center justify-between py-6 px-2 text-base border-b border-border"
+                    onClick={toggleMenu}
+                  >
+                    Driver
                     <ChevronRight size={18} />
                   </Link>
 
@@ -153,24 +225,51 @@ const NavBar = () => {
                     How It Works
                     <ChevronRight size={18} />
                   </Link>
-                </div>
+
+                  <Link
+                    href="/"
+                    className="flex items-center justify-between py-6 px-2 text-base border-b border-border"
+                    onClick={toggleMenu}
+                  >
+                    Contact Us
+                    <ChevronRight size={18} />
+                  </Link>
+                </ul>
               </div>
 
               {/* ACTION BUTTONS */}
-              <div className="px-6 pb-6 space-y-4">
-                <Button
-                  href="/user/login"
-                  size="full"
-                  variant="outline"
-                  onClick={toggleMenu}
-                >
-                  Login
-                </Button>
+              {isLoggedIn ? (
+                <div className="px-6 pb-6">
+                  <Button
+                    href={getDashboardLink(role)}
+                    variant="outline"
+                    leftIcon={<User size={16} />}
+                    size="full"
+                  >
+                    Go to Dashboard
+                  </Button>
+                </div>
+              ) : (
+                <div className="px-6 pb-6 space-y-4">
+                  <Button
+                    href="/user/login"
+                    size="full"
+                    variant="outline"
+                    onClick={toggleMenu}
+                  >
+                    Login
+                  </Button>
 
-                <Button href="/user/register" size="full" variant="primary">
-                  Get started
-                </Button>
-              </div>
+                  <Button
+                    href="/user/register"
+                    size="full"
+                    variant="primary"
+                    onClick={toggleMenu}
+                  >
+                    Get Started
+                  </Button>
+                </div>
+              )}
             </motion.div>
           </>
         )}

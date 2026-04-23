@@ -9,6 +9,7 @@ import SavedAddress from '@/features/user/profile/components/saved-address';
 import DeleteAccountButton from '@/features/user/profile/components/delete-account';
 import Logout from '@/features/auth/components/logout/logout';
 
+
 export default async function UserProfilePage() {
   let data;
 
@@ -17,6 +18,10 @@ export default async function UserProfilePage() {
   data = result.data;
 
   console.log('Profile Data:', data);
+
+ 
+
+
 
   if (!result.data) {
     return <div>Failed to load profile</div>;

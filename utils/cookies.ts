@@ -13,6 +13,12 @@ export const COOKIE_KEYS = {
   VENDOR_PHONE_NUMBER: 'vendor_phone',
   VENDOR_EMAIL: 'vendor_email',
   REGISTRATION_METHOD: 'registration_method',
+  USER_ID: 'userId',
+  FIRST_NAME: 'firstName',
+  LAST_NAME: 'lastName',
+  EMAIL: 'email',
+  PHONE_NUMBER: 'phone',
+  AVATAR_URL: 'avatarUrl',
 } as const;
 
 // Default cookie options
@@ -49,6 +55,56 @@ export async function deleteCookie(name: string) {
   const cookieStore = await cookies();
   cookieStore.delete(name);
 }
+
+// export async function setUserDisplayCookie(
+//   user: {
+//     id: string;
+//     firstName: string;
+//     lastName: string;
+//     email?: string;
+//     phone_number?: string;
+//     avatarUrl?: string;
+//   },
+//   refreshToken: string,
+// ) {
+//   const cookieStore = await cookies();
+
+//   const maxAge = getTokenExpiry(refreshToken);
+
+//   cookieStore.set(COOKIE_KEYS.USER_ID, user.id, {
+//     ...defaultOptions,
+//     maxAge,
+//   });
+
+//   cookieStore.set(COOKIE_KEYS.FIRST_NAME, user.firstName, {
+//     ...defaultOptions,
+//     maxAge,
+//   });
+
+//   cookieStore.set(COOKIE_KEYS.LAST_NAME, user.lastName, {
+//     ...defaultOptions,
+//     maxAge,
+//   });
+
+//   if (user.email) {
+//     cookieStore.set(COOKIE_KEYS.EMAIL, user.email, {
+//       ...defaultOptions,
+//       maxAge,
+//     });
+//   }
+//   if (user.phone_number) {
+//     cookieStore.set(COOKIE_KEYS.PHONE_NUMBER, user.phone_number, {
+//       ...defaultOptions,
+//       maxAge,
+//     });
+//   }
+//   if (user.avatarUrl) {
+//     cookieStore.set(COOKIE_KEYS.AVATAR_URL, user.avatarUrl, {
+//       ...defaultOptions,
+//       maxAge,
+//     });
+//   }
+// }
 
 // Set cookies after registration — gates access to /verify/* routes
 export async function setVerificationCookies({
@@ -126,6 +182,11 @@ export async function setAuthCookies(
   });
 }
 
+export async function getUserRole(): Promise<string | null> {
+  const cookieStore = await cookies();
+  return cookieStore.get(COOKIE_KEYS.USER_ROLE)?.value || null;
+}
+
 // Get auth tokens
 export async function getAuthTokens() {
   const cookieStore = await cookies();
@@ -144,6 +205,11 @@ export async function clearAuthCookies() {
   cookieStore.delete(COOKIE_KEYS.VERIFICATION_TOKEN);
   cookieStore.delete(COOKIE_KEYS.VERIFY_IDENTIFIER);
   cookieStore.delete(COOKIE_KEYS.REGISTRATION_METHOD);
+  cookieStore.delete(COOKIE_KEYS.FIRST_NAME);
+  cookieStore.delete(COOKIE_KEYS.LAST_NAME);
+  cookieStore.delete(COOKIE_KEYS.EMAIL);
+  cookieStore.delete(COOKIE_KEYS.PHONE_NUMBER);
+  cookieStore.delete(COOKIE_KEYS.AVATAR_URL);
 }
 
 export async function clearVerificationCookies() {
@@ -158,5 +224,16 @@ export async function clearVerificationCookies() {
 // Check if user is authenticated (has valid access token)
 export async function isAuthenticated(): Promise<boolean> {
   const { accessToken } = await getAuthTokens();
+
   return !!accessToken;
+}
+
+export async function getAuthInfo() {
+  const { accessToken } = await getAuthTokens();
+  const role = await getUserRole();
+
+  return {
+    isAuthenticated: !!accessToken,
+    role,
+  };
 }

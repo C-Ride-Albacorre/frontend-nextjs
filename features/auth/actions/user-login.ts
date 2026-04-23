@@ -72,7 +72,7 @@ export async function userLoginAction(
       }
 
       redirectTo = '/verify/user';
-    } else if (result.data.success) {
+    } else if (result.data.accessToken && result.data.refreshToken) {
       const { accessToken, refreshToken } = result.data;
 
       await setAuthCookies(accessToken, refreshToken);
