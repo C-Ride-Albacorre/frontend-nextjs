@@ -203,7 +203,22 @@ export async function clearCartAction(): Promise<ActionResult> {
 export async function createOrderAction(
   payload: CreateOrderPayload,
 ): Promise<ActionResult<{ id: string; orderId?: string }>> {
-  const parsed = CreateOrderSchema.safeParse(payload);
+  // Preprocess: convert null postalCode to undefined
+  const sanitizedPayload = {
+    ...payload,
+    dropoffLocation: {
+      ...payload.dropoffLocation,
+      postalCode:
+        payload.dropoffLocation?.postalCode === null
+          ? undefined
+          : payload.dropoffLocation?.postalCode,
+    },
+  };
+
+  console.log('Order payload validated:', sanitizedPayload);
+
+  const parsed = CreateOrderSchema.safeParse(sanitizedPayload);
+
   if (!parsed.success) {
     const msg = parsed.error.issues[0]?.message ?? 'Invalid order payload';
     console.error('[createOrderAction] Validation failed:', msg);

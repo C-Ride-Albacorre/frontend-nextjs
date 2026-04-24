@@ -28,7 +28,7 @@ export const CreateOrderSchema = z.object({
     city: z.string().min(1),
     state: z.string().min(1),
     country: z.string().min(1),
-    postalCode: z.string().optional(),
+    postalCode: z.string().optional().default(''),
   }),
   recipientName: z.string().min(1, 'Recipient name is required'),
   recipientPhone: z.string().min(1, 'Recipient phone is required'),
