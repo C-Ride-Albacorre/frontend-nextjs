@@ -10,6 +10,7 @@ import {
 } from '@/features/user/delivery/action';
 import LocationChips from '@/features/user/delivery/components/location-chips';
 import StoreGrid from '@/features/user/delivery/components/store-grid';
+import StoreSearch from '@/features/user/delivery/components/store-search';
 import { Store } from 'lucide-react';
 
 export default async function StoresPage({
@@ -87,6 +88,8 @@ export default async function StoresPage({
               : 'Select a category to view stores'}
           </p>
         </div>
+
+        <StoreSearch categoryId={id} />
 
         {/* Categories */}
         {isCategoryError ? (

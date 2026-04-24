@@ -12,7 +12,11 @@ type StoreSuggestion = {
   storeAddress: string;
 };
 
-export default function StoreSearch({ categoryId }: { categoryId: string }) {
+export default function StoreSearch({
+  categoryId,
+}: {
+  categoryId: string | undefined;
+}) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();

@@ -47,8 +47,7 @@ export default function HeroSearch() {
       const params = new URLSearchParams();
 
       if (coords?.lat !== undefined) params.set('latitude', String(coords.lat));
-      if (coords?.lng !== undefined)
-        params.set('longitude', String(coords.lng));
+      if (coords?.lng !== undefined) params.set('longitude', String(coords.lng));
       if (query.trim()) params.set('search', query.trim());
 
       router.push(`/stores?${params.toString()}`);
@@ -108,6 +107,7 @@ export default function HeroSearch() {
       className="flex w-full items-center justify-center"
     >
       <div className="relative flex flex-col md:flex-row w-full max-w-3xl items-center gap-4 rounded-2xl p-3 mx-4 md:mx-0 md:border md:border-border">
+        
         {/* ADDRESS INPUT */}
         <div className="relative w-full">
           <Input
