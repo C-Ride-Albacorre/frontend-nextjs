@@ -87,28 +87,50 @@ export async function VerifyCodeAction(
     await setAuthCookies(data.accessToken, data.refreshToken);
 
     // -------------------------
-    // CLEANUP TEMP COOKIES
-    // -------------------------
-    await clearVerificationCookies();
-
-    // -------------------------
     // ROUTING LOGIC (BACKEND-DRIVEN)
     // -------------------------
     let redirectTo = '/';
 
+    // if (data.user.role === 'CUSTOMER') {
+    //   redirectTo = data.user.isNewUser
+    //     ? '/user/delivery?newUser=true'
+    //     : '/user/dashboard';
+    // }
+
     if (data.user.role === 'CUSTOMER') {
-      redirectTo = data.user.isNewUser
-        ? '/user/delivery?newUser=true'
-        : '/user/dashboard';
+      if (data.user.isNewUser) {
+        return {
+          status: 'success',
+          message: 'Verification successful! Redirecting to delivery setup...',
+          redirectTo: '/user/delivery?newUser=true',
+        };
+      } else {
+        redirectTo = '/user/dashboard';
+
+        // -------------------------
+        // CLEANUP TEMP COOKIES
+        // -------------------------
+        await clearVerificationCookies();
+      }
     }
 
     if (data.user.role === 'VENDOR') {
       // (future-proof if reused)
       redirectTo = '/vendor/store';
+
+      // -------------------------
+      // CLEANUP TEMP COOKIES
+      // -------------------------
+      await clearVerificationCookies();
     }
 
     if (data.user.role === 'ADMIN') {
       redirectTo = '/admin/dashboard';
+
+      // -------------------------
+      // CLEANUP TEMP COOKIES
+      // -------------------------
+      await clearVerificationCookies();
     }
 
     // -------------------------
