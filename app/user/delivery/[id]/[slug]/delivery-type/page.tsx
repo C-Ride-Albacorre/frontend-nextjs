@@ -14,7 +14,7 @@ const FALLBACK_OPTIONS = [
     label: 'Standard Delivery',
     badge: 'Fast',
     description: 'Delivered within 60 – 90 mins',
-    price: '₦ 2,000',
+    price: '₦ 500',
     duration: '60–90 mins',
   },
   {
@@ -22,7 +22,7 @@ const FALLBACK_OPTIONS = [
     label: 'Express Delivery',
     badge: 'Urgent',
     description: 'Delivered within 30 – 45 mins',
-    price: '₦ 4,000',
+    price: '₦ 500',
     duration: '30–45 mins',
   },
 ];
