@@ -60,7 +60,7 @@ export async function fetchCategoryStoresAction(
 
   return {
     stores: result.data.data ?? [],
-    total: result.data.total ?? 0,
+    total: result.data.meta?.total ?? 0,
   };
 }
 

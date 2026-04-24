@@ -71,6 +71,7 @@ export async function fetchCategoryStoresService(
   radiusKm?: number,
 ) {
   const params = new URLSearchParams();
+  if (categoryId) params.set('categoryId', categoryId);
   if (lat !== undefined) params.set('lat', String(lat));
   if (lng !== undefined) params.set('lng', String(lng));
   if (subcategoryId) params.set('subcategoryId', subcategoryId);
@@ -79,8 +80,10 @@ export async function fetchCategoryStoresService(
   if (search) params.set('search', search);
   if (radiusKm) params.set('radiusKm', String(radiusKm));
 
-  const qs = params.toString();
-  const url = `${BASE_URL}/customer/stores/category/${categoryId}${qs ? `?${qs}` : ''}`;
+  // const qs = params.toString();
+  // const url = `${BASE_URL}/customer/stores/category/${categoryId}${qs ? `?${qs}` : ''}`;
+
+  const url = `${BASE_URL}/customer/stores?${params.toString()}`;
 
   return request('FetchCategoryStores', url);
 }

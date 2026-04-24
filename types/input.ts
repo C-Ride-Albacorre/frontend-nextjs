@@ -16,8 +16,7 @@ export type InputProps = {
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
   disabled?: boolean;
-  props?: React.InputHTMLAttributes<HTMLInputElement>;
-};
+} & React.InputHTMLAttributes<HTMLInputElement>;
 
 export type TextareaProps = {
   id: string;
