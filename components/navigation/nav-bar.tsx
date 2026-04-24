@@ -9,6 +9,7 @@ import { Button } from '../ui/buttons/button';
 import { IconButton } from '../ui/buttons/icon-button';
 import Image from 'next/image';
 import { div } from 'framer-motion/client';
+import { usePathname } from 'next/navigation';
 
 type NavBarProps = {
   isLoggedIn: boolean;
@@ -46,6 +47,10 @@ const NavBar = ({ isLoggedIn, role }: NavBarProps) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+
+  const pathname = usePathname()
+
+
   return (
     <>
       <nav
@@ -54,6 +59,10 @@ const NavBar = ({ isLoggedIn, role }: NavBarProps) => {
             isAtTop
               ? 'bg-transparent md:backdrop-blur-none'
               : 'bg-white md:bg-black/30 md:backdrop-blur-sm shadow-sm'
+          }
+
+          ${
+            [pathname === "/stores" && 'bg-white md:bg-primary-text-100 md:backdrop-blur-sm shadow-sm']
           }
         `}
       >

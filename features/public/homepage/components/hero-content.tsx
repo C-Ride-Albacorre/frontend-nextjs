@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 
 import Image from 'next/image';
 
@@ -50,7 +50,11 @@ export default function Hero() {
         <HeroHeadline active={active} />
 
         {/* ================= SEARCH BAR ================= */}
-        <HeroSearch />
+        <Suspense
+          fallback={<div className="text-sm text-gray-400">Loading...</div>}
+        >
+          <HeroSearch />
+        </Suspense>
 
         {/* ================= MOBILE IMAGE  ================= */}
         <div className="my-12 w-full md:hidden">

@@ -22,6 +22,8 @@ export default async function StoreVendorsPage({
 
   const store = await fetchStoreDetailsAction(slug);
 
+  console.log('Store details:', store);
+
   const storeSlug = store.storeName
     .toLowerCase()
     .trim()
@@ -36,7 +38,7 @@ export default async function StoreVendorsPage({
           <div className="lg:flex items-center flex-1 gap-6 space-y-6 lg:space-y-0 mb-0">
             <div>
               <Image
-                src={store?.image || '/assets/image/nigerian.jpg'}
+                src={store?.category?.image || '/assets/image/nigerian.jpg'}
                 alt={store?.storeName || 'Store Image'}
                 width={100}
                 height={100}

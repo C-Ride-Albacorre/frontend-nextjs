@@ -1,11 +1,10 @@
 import DashboardHeader from '@/components/ui/headers/user-dashboard-header';
-import CategoryIcons from '@/features/user/delivery/components/category-icons';
 import LocationChips from '@/features/user/delivery/components/location-chips';
 import StoreGrid from '@/features/user/delivery/components/store-grid';
 import Location from '@/features/public/homepage/components/location';
 import {
   fetchCategoryStoresAction,
-  fetchSubcategoriesAction,
+  // fetchSubcategoriesAction,
 } from '@/features/user/delivery/action';
 import { Store } from 'lucide-react';
 import Card from '@/components/layout/card';
@@ -36,9 +35,9 @@ export default async function CategoryDeliveryPage({
 
   let stores: any[] = [];
   let total = 0;
-  let subCategory = [];
+  // let subCategory = [];
   let isStoreError = false;
-  let isSubCategoryError = false;
+  // let isSubCategoryError = false;
 
   const pageNum = page ? parseInt(page) : 1;
   const limitNum = limit ? parseInt(limit) : 10;
@@ -64,11 +63,7 @@ export default async function CategoryDeliveryPage({
     isStoreError = true;
   }
 
-  try {
-    subCategory = await fetchSubcategoriesAction(id);
-  } catch (error) {
-    isSubCategoryError = true;
-  }
+
 
   const title =
     stores?.length > 0 ? `${stores[0].storeName} / Stores` : 'Stores';
@@ -89,7 +84,7 @@ export default async function CategoryDeliveryPage({
 
         <StoreSearch categoryId={id} />
 
-        {subCategory.length === 0 && !isSubCategoryError ? (
+        {/* {subCategory.length === 0 && !isSubCategoryError ? (
           <p className="text-neutral-500 text-center">
             No subcategories available.
           </p>
@@ -103,7 +98,7 @@ export default async function CategoryDeliveryPage({
           </div>
         ) : (
           <CategoryIcons subcategories={subCategory} />
-        )}
+        )} */}
 
         {/* <Filters /> */}
 

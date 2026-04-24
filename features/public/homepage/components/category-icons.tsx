@@ -1,8 +1,8 @@
 'use client';
 
-import { Donut, Drumstick, IceCreamCone, Pizza, Tag } from 'lucide-react';
+import { Tag } from 'lucide-react';
 import { IconButton } from '@/components/ui/buttons/icon-button';
-import { use, useState } from 'react';
+import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 type Category = {
@@ -15,29 +15,32 @@ type Category = {
 
 export default function CategoryIcons({
   categories,
-  onCategorySelect,
 }: {
   categories: Category[] | undefined | null;
-  onCategorySelect?: (id: string) => void;
 }) {
   const safeCategories = Array.isArray(categories) ? categories : [];
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
   const handleCategorySelect = (id: string) => {
     setSelectedId(id);
-    if (onCategorySelect) {
-      onCategorySelect(id);
-    }
+
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('id', id);
+
+    router.push(`/stores?${params.toString()}`);
   };
 
   return (
     <section>
       <div
-        className={`flex flex-wrap   ${
+        className={`flex flex-wrap ${
           safeCategories.length < 3
-            ? ' gap-8 md:gap-14'
-            : 'justify-center md:justify-between items-center gap-8 md:gap-12'
-        }  `}
+            ? 'gap-12 md:gap-14'
+            : 'justify-center md:justify-between items-center gap-12 md:gap-14'
+        }`}
       >
         {safeCategories.map((cat: Category) => (
           <div

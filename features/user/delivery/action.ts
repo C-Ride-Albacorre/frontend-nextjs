@@ -15,7 +15,7 @@ import {
   fetchCategoriesService,
   fetchCategoryStoresService,
   fetchStoreDetailsService,
-  fetchSubcategoriesService,
+  // fetchSubcategoriesService,
   fetchVendorAddressService,
   getCartService,
   getDeliveryOptionsService,
@@ -64,20 +64,20 @@ export async function fetchCategoryStoresAction(
   };
 }
 
-export async function fetchSubcategoriesAction(categoryId: string) {
-  try {
-    const result = await fetchSubcategoriesService(categoryId);
-    return result.data ?? [];
-  } catch (error) {
-    return {
-      status: 'error',
-      message:
-        error instanceof Error
-          ? error.message
-          : 'Failed to fetch subcategories',
-    };
-  }
-}
+// export async function fetchSubcategoriesAction(categoryId: string) {
+//   try {
+//     const result = await fetchSubcategoriesService(categoryId);
+//     return result.data ?? [];
+//   } catch (error) {
+//     return {
+//       status: 'error',
+//       message:
+//         error instanceof Error
+//           ? error.message
+//           : 'Failed to fetch subcategories',
+//     };
+//   }
+// }
 
 export async function fetchStoreDetailsAction(storeId: string) {
   try {
