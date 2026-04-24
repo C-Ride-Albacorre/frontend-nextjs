@@ -61,10 +61,10 @@ export default function SavedAddresses() {
           </Card>
         ))
       ) : (
-        <p className="flex flex-col justify-center items-center text-center text-sm py-20 text-neutral-500 gap-3">
+        <div className="flex flex-col justify-center items-center text-center text-sm py-20 text-neutral-500 gap-3">
           <MapPinHouse size={24} className="text-neutral-500" />
           <p>No saved addresses found</p>
-        </p>
+        </div>
       )}
     </div>
   );

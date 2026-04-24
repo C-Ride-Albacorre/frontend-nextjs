@@ -5,7 +5,6 @@ import { useState } from 'react';
 import { Loader2, MapPin, MapPinHouse, MapPinned, Plus } from 'lucide-react';
 import AddressModal from '@/features/user/address/components/address-modal';
 import { Button } from '@/components/ui/buttons/button';
-import { useQueryClient } from '@tanstack/react-query';
 import { useAddresses } from '../../address/fetch';
 import Card from '@/components/layout/card';
 

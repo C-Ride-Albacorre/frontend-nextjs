@@ -1,5 +1,6 @@
 'use server';
 
+import { revalidatePath } from 'next/cache';
 import { LocationSchema, LocationState } from './schema';
 import { fetchSavedAddressesService, saveAddressService } from './service';
 
@@ -47,6 +48,8 @@ export async function saveLocationAction(
         message: result?.data?.message || 'Failed to save location.',
       };
     }
+
+  
 
     return {
       status: 'success',
