@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -176,6 +175,80 @@ export default function ViewVendorModal({
                   </p>
                 </div>
               </>
+            )}
+          </div>
+
+          {/* Documents */}
+          <div className="space-y-3">
+            <p className="text-sm font-semibold">Documents</p>
+
+            {vendor.documents && vendor.documents.length > 0 ? (
+              <ul className="space-y-2">
+                {vendor.documents.map((document) => {
+                  const url = document.documentUrl;
+                  const isImage = /\.(jpg|jpeg|png|webp|avif|gif)(\?|$)/i.test(
+                    url,
+                  );
+                  const isPdf = /\.pdf(\?|$)/i.test(url);
+
+                  return (
+                    <li
+                      key={document.id}
+                      className="rounded-xl border border-neutral-100 overflow-hidden"
+                    >
+                      {/* Header row */}
+                      <div className="p-3 bg-neutral-50 flex justify-between items-center">
+                        <p className="text-sm font-medium text-neutral-800">
+                          {document.documentType.replace(/_/g, ' ')}
+                        </p>
+                        <div className="flex items-center gap-2">
+                          <a
+                            href={url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xs text-primary font-medium hover:underline"
+                          >
+                            Open
+                          </a>
+
+                          <a
+                            href={url}
+                            download
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xs text-neutral-500 hover:text-neutral-700 font-medium hover:underline"
+                          >
+                            Download
+                          </a>
+                        </div>
+                      </div>
+
+                      {/* Preview — images only */}
+                      {isImage && (
+                        <div className="relative w-full h-40 bg-neutral-100">
+                          <Image
+                            src={url}
+                            alt={document.documentType}
+                            fill
+                            className="object-contain"
+                            unoptimized
+                          />
+                        </div>
+                      )}
+
+                      {/* PDF indicator */}
+                      {isPdf && (
+                        <div className="px-3 py-2 bg-white flex items-center gap-2 text-xs text-neutral-400">
+                          <span>📄</span>
+                          <span>PDF document — click Open to view</span>
+                        </div>
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
+            ) : (
+              <p className="text-sm text-neutral-400">No documents yet</p>
             )}
           </div>
 

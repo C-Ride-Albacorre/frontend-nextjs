@@ -54,6 +54,13 @@ export interface Vendor {
   storeCount: number;
 }
 
+export interface VendorDocument {
+  id: string;
+  documentType: string;
+  documentUrl: string;
+  createdAt: string;
+}
+
 export interface VendorDetail extends Vendor {
   profilePicture: string | null;
   role: string;
@@ -71,6 +78,7 @@ export interface VendorDetail extends Vendor {
   approvedBy: string | null;
   rejectionReason: string | null;
   updatedAt: string;
+  documents: VendorDocument[];
 }
 
 export type ViewVendorModalProps = {

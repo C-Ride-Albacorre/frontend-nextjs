@@ -8,5 +8,9 @@ export default async function VendorLayout({
 }) {
   const store = await getStoreAction();
 
+  console.log('Store data in layout:', store);
+
+  
+
   return <VendorLayoutClient store={store}>{children}</VendorLayoutClient>;
 }
