@@ -2,7 +2,7 @@
 
 import { motion, useMotionValue } from 'framer-motion';
 import { useEffect, useRef } from 'react';
-import Categories from './categories';
+import Categories from '../../stores/components/categories';
 import { Category } from '../../type';
 
 export default function FoodMarquee({

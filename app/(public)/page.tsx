@@ -19,9 +19,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
     <main className="w-full bg-white">
       <Hero />
 
-      <Suspense fallback={<FoodMarqueeSkeleton />}>
-        <FoodMarqueeWrapper />
-      </Suspense>
+      <FoodMarqueeWrapper />
 
       <Location />
       <FulfillmentPartner />
