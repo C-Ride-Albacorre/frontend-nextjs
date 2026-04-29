@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter, useSearchParams, usePathname } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Search, Loader2 } from 'lucide-react';
 import clsx from 'clsx';
@@ -13,22 +13,32 @@ type StoreSuggestion = {
   storeCategory: string;
 };
 
-export default function StoreSearch() {
+interface StoreSearchProps {
+  initialSearch?: string;
+}
+
+export default function StoreSearch({ initialSearch = '' }: StoreSearchProps) {
   const router = useRouter();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
 
-  const [query, setQuery] = useState(searchParams.get('search') ?? '');
+  const [query, setQuery] = useState(initialSearch);
   const [suggestions, setSuggestions] = useState<StoreSuggestion[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
-  // ✅ Added: geolocation coords like HeroSearch
-  const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(
+    null,
+  );
 
   const wrapperRef = useRef<HTMLDivElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // ✅ Added: detect geolocation on mount (mirrors HeroSearch)
+  // ✅ Get current URL params (client-safe)
+  const getCurrentParams = () => {
+    if (typeof window === 'undefined') return new URLSearchParams();
+    return new URLSearchParams(window.location.search);
+  };
+
+  // ✅ Geolocation
   useEffect(() => {
     if (!navigator.geolocation) return;
     navigator.geolocation.getCurrentPosition(
@@ -42,27 +52,39 @@ export default function StoreSearch() {
     );
   }, []);
 
-  // Build a clean URL — keeps location params, drops category id and old search
+  // ✅ Build URL
   const buildCleanSearchUrl = useCallback(
     (search: string) => {
+      const currentParams = getCurrentParams();
       const params = new URLSearchParams();
 
-      // Prefer live coords; fall back to URL params
-      const lat = coords?.lat ?? (searchParams.get('latitude') ? parseFloat(searchParams.get('latitude')!) : undefined);
-      const lng = coords?.lng ?? (searchParams.get('longitude') ? parseFloat(searchParams.get('longitude')!) : undefined);
-      const radiusKm = searchParams.get('radiusKm');
+      const lat =
+        coords?.lat ??
+        (currentParams.get('latitude')
+          ? parseFloat(currentParams.get('latitude')!)
+          : undefined);
+
+      const lng =
+        coords?.lng ??
+        (currentParams.get('longitude')
+          ? parseFloat(currentParams.get('longitude')!)
+          : undefined);
+
+      const radiusKm = currentParams.get('radiusKm');
 
       if (lat !== undefined) params.set('latitude', String(lat));
       if (lng !== undefined) params.set('longitude', String(lng));
       if (radiusKm) params.set('radiusKm', radiusKm);
       if (search.trim()) params.set('search', search.trim());
+
       params.set('page', '1');
 
       return `${pathname}?${params.toString()}`;
     },
-    [pathname, searchParams, coords],
+    [pathname, coords],
   );
 
+  // ✅ Fetch suggestions
   const fetchSuggestions = useCallback(
     async (term: string) => {
       if (!term.trim()) {
@@ -72,15 +94,27 @@ export default function StoreSearch() {
       }
 
       setIsLoading(true);
+
       try {
+        const currentParams = getCurrentParams();
         const params = new URLSearchParams();
+
         params.set('search', term.trim());
         params.set('limit', '6');
 
-        // ✅ Use live coords first (like HeroSearch), fallback to URL params
-        const lat = coords?.lat ?? (searchParams.get('latitude') ? parseFloat(searchParams.get('latitude')!) : undefined);
-        const lng = coords?.lng ?? (searchParams.get('longitude') ? parseFloat(searchParams.get('longitude')!) : undefined);
-        const radiusKm = searchParams.get('radiusKm');
+        const lat =
+          coords?.lat ??
+          (currentParams.get('latitude')
+            ? parseFloat(currentParams.get('latitude')!)
+            : undefined);
+
+        const lng =
+          coords?.lng ??
+          (currentParams.get('longitude')
+            ? parseFloat(currentParams.get('longitude')!)
+            : undefined);
+
+        const radiusKm = currentParams.get('radiusKm');
 
         if (lat !== undefined) params.set('lat', String(lat));
         if (lng !== undefined) params.set('lng', String(lng));
@@ -88,7 +122,9 @@ export default function StoreSearch() {
 
         const res = await fetch(`/api/stores/nearby?${params.toString()}`);
         const data = await res.json();
+
         const stores: StoreSuggestion[] = data?.data?.data ?? [];
+
         setSuggestions(stores);
         setShowDropdown(stores.length > 0);
       } catch {
@@ -97,12 +133,13 @@ export default function StoreSearch() {
         setIsLoading(false);
       }
     },
-    [searchParams, coords],
+    [coords],
   );
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setQuery(value);
+
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => fetchSuggestions(value), 350);
   };
@@ -113,7 +150,6 @@ export default function StoreSearch() {
     router.replace(buildCleanSearchUrl(query));
   };
 
-  // ✅ Click suggestion → navigate immediately (same as HeroSearch)
   const handleSuggestionClick = (store: StoreSuggestion) => {
     setQuery(store.storeName);
     setShowDropdown(false);
@@ -127,21 +163,28 @@ export default function StoreSearch() {
     router.replace(buildCleanSearchUrl(''));
   };
 
-  // Sync input when URL search param changes externally (e.g. browser back)
+  // ✅ Sync with browser navigation (back/forward)
   useEffect(() => {
-    setQuery(searchParams.get('search') ?? '');
-  }, [searchParams]);
+    const params = getCurrentParams();
+    setQuery(params.get('search') ?? '');
+  }, [pathname]);
 
+  // Click outside
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(e.target as Node)
+      ) {
         setShowDropdown(false);
       }
     };
+
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // Cleanup debounce
   useEffect(() => {
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
@@ -156,12 +199,11 @@ export default function StoreSearch() {
 
           <input
             type="text"
-            aria-label="Search stores or products"
             placeholder="Search stores, dishes or products..."
             value={query}
             onChange={handleChange}
             onFocus={() => suggestions.length > 0 && setShowDropdown(true)}
-            className="w-full bg-transparent outline-none text-base md:text-sm placeholder:text-sm placeholder:text-neutral-400 focus:outline-none py-3"
+            className="w-full bg-transparent outline-none text-base md:text-sm placeholder:text-sm placeholder:text-neutral-400 py-3"
           />
 
           {isLoading && (
@@ -169,7 +211,12 @@ export default function StoreSearch() {
           )}
 
           {query && !isLoading && (
-            <Button type="button" variant="default-inverted" onClick={handleClear} size="xs">
+            <Button
+              type="button"
+              variant="default-inverted"
+              onClick={handleClear}
+              size="xs"
+            >
               Clear
             </Button>
           )}
