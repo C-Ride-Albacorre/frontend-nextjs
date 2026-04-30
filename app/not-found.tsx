@@ -8,7 +8,6 @@ export default function Error() {
   return (
     <>
       <div className="flex flex-col items-center justify-center min-h-[90vh] px-4 text-center">
-        {/* 404 Section */}
         <div className="flex items-center gap-1 sm:gap-2">
           <h1 className="text-6xl sm:text-7xl md:text-8xl font-bold text-neutral-800">
             4
@@ -27,7 +26,6 @@ export default function Error() {
           </h1>
         </div>
 
-        {/* Text Section */}
         <div className="mt-8 space-y-4 max-w-md sm:max-w-lg">
           <h2 className="text-lg  md:text-xl font-semibold text-neutral-700">
             Oops! The page you are looking for cannot be found.
