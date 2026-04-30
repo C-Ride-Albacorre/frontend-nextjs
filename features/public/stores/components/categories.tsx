@@ -1,5 +1,3 @@
-// 'use client'
-
 import Image from 'next/image';
 import { Category } from '../../type';
 import { Store } from 'lucide-react';

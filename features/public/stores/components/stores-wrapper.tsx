@@ -35,6 +35,9 @@ export default async function StoresWrapper({ searchParams }: StoresPageProps) {
   const lng = longitude ? parseFloat(longitude) : undefined;
   const radius = radiusKm ? parseFloat(radiusKm) : undefined;
 
+  let stores = [];
+  let totalPages = 1;
+
   try {
     const result = await fetchCategoryStoresAction(
       id,
@@ -47,27 +50,33 @@ export default async function StoresWrapper({ searchParams }: StoresPageProps) {
       radius,
     );
 
-    const { stores, total } = result;
-    const totalPages = Math.max(1, Math.ceil(total / limitNum));
+    stores = result.stores;
+    const total = result.total;
 
-    if (!stores.length) {
-      return (
-        <Card gap='md' border='none' spacing='lg' className="flex flex-col items-center py-12">
-          <Store size={48} className="text-neutral-400" />
-          <p>No stores found.</p>
-          <Button href="/stores">Browse all stores</Button>
-        </Card>
-      );
-    }
-
-    return (
-      <>
-        <StoreGrid stores={stores} />
-        <PaginationControls currentPage={pageNum} totalPages={totalPages} />
-      </>
-    );
+    totalPages = Math.max(1, Math.ceil(total / limitNum));
   } catch (err) {
     console.error(err);
-    return <RetryButton />;
   }
+
+  if (!stores.length) {
+    return (
+      <Card
+        gap="md"
+        border="none"
+        spacing="lg"
+        className="flex flex-col items-center py-12"
+      >
+        <Store size={48} className="text-neutral-400" />
+        <p>No stores found.</p>
+        <Button href="/stores">Browse all stores</Button>
+      </Card>
+    );
+  }
+
+  return (
+    <>
+      <StoreGrid stores={stores} />
+      <PaginationControls currentPage={pageNum} totalPages={totalPages} />
+    </>
+  );
 }
