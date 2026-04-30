@@ -39,10 +39,10 @@ export default function CategoryIcons({
   return (
     <section>
       <div
-        className={`flex p-14 overflow-scroll  ${
+        className={`flex p-4 overflow-scroll  ${
           safeCategories.length < 3
-            ? 'gap-12 md:gap-14'
-            : 'justify-center md:justify-between items-center gap-12 md:gap-14'
+            ? 'gap-8 md:gap-14'
+            : 'justify-center md:justify-between items-center gap-8 md:gap-14'
         }`}
       >
         {safeCategories.map((cat: Category, index: number) => {
@@ -71,16 +71,16 @@ export default function CategoryIcons({
                 className="rounded-full"
               >
                 <IconButton
-                  className={`shrink-0 aspect-square overflow-hidden transition-all duration-300 ${
+                  className={`shrink-0 aspect-square overflow-hidden transition-all duration-300 bg-linear-to-t from-primary-hover to-primary ${
                     isActive
                       ? 'ring-2 ring-offset-2 ring-primary'
                       : 'hover:shadow-[0_10px_30px_rgba(var(--primary),0.35)] hover:scale-105'
                   }`}
                   onClick={() => handleCategorySelect(cat.id)}
-                  variant="primary"
+               
                   size="md"
                 >
-                  <div className="relative w-12 h-12">
+                  <div className="relative w-8 h-8 md:w-12 md:h-12">
                     {cat.icon ? (
                       <Image
                         src={cat.icon}
