@@ -7,45 +7,53 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 
-type Category = {
+type SubCategory = {
   id: string;
+  categoryId: string;
   name: string;
   description?: string;
   icon?: string;
   image?: string;
 };
 
-export default function CategoryIcons({
-  categories,
+export default function SubCategoryIcons({
+  subCategories,
 }: {
-  categories: Category[] | undefined | null;
+  subCategories: SubCategory[] | undefined | null;
 }) {
-  const safeCategories = Array.isArray(categories) ? categories : [];
+  const safeCategories = Array.isArray(subCategories) ? subCategories : [];
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
+
+  console.log('safeCategories', safeCategories);
 
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const handleCategorySelect = (id: string) => {
-    setSelectedId(id);
+  const handleCategorySelect = (subcategoryId: string) => {
+    setSelectedId(subcategoryId);
 
     const params = new URLSearchParams(searchParams.toString());
-    params.set('id', id);
+    params.set('subcategoryId', subcategoryId);
 
     router.push(`/stores?${params.toString()}`);
   };
 
+  if (!safeCategories.length) {
+
+    return <div className="text-center text-sm text-neutral-500">No Subcategory Available</div>
+  }
+
   return (
     <section>
       <div
-        className={`flex p-4 overflow-scroll  ${
+        className={`flex md:p-4 overflow-scroll  ${
           safeCategories.length < 3
             ? 'gap-8 md:gap-14'
-            : 'justify-center md:justify-between items-center gap-8 md:gap-14'
+            : 'md:justify-between items-start gap-8 md:gap-14'
         }`}
       >
-        {safeCategories.map((cat: Category, index: number) => {
+        {safeCategories.map((cat: SubCategory, index: number) => {
           const isActive = selectedId === cat.id;
 
           const isFirst = index === 0;
@@ -54,7 +62,7 @@ export default function CategoryIcons({
           return (
             <div
               key={cat.id}
-              className="relative flex flex-col items-center group"
+              className="relative flex flex-col items-center text-center justify-center group"
               onMouseEnter={() => setHoveredId(cat.id)}
               onMouseLeave={() => setHoveredId(null)}
             >
@@ -77,10 +85,9 @@ export default function CategoryIcons({
                       : 'hover:shadow-[0_10px_30px_rgba(var(--primary),0.35)] hover:scale-105'
                   }`}
                   onClick={() => handleCategorySelect(cat.id)}
-               
                   size="md"
                 >
-                  <div className="relative w-8 h-8 md:w-12 md:h-12">
+                  <div className="relative w-8 h-8 md:w-12 md:h-12 justify-center items-center flex">
                     {cat.icon ? (
                       <Image
                         src={cat.icon}
@@ -97,7 +104,7 @@ export default function CategoryIcons({
               </motion.div>
 
               {/* TEXT */}
-              <p className="mt-3 text-xs md:text-sm text-primary-text-100 group-hover:text-primary transition-colors duration-300 cursor-default text-center">
+              <p className="mt-3 text-xs text-primary-text-100 group-hover:text-primary transition-colors duration-300 cursor-default text-center">
                 {cat.name}
               </p>
 

@@ -4,9 +4,9 @@ import StoreSearch from '@/features/public/stores/components/store-search';
 import LocationChips from '@/features/user/delivery/components/location-chips';
 import { Suspense } from 'react';
 import StoresWrapper from '@/features/public/stores/components/stores-wrapper';
-import CategoriesWrapper from '@/features/public/stores/components/categories-wrapper';
 import FoodMarqueeSkeleton from '@/features/public/homepage/components/food-marquee-skeleton';
 import CategoryIconsSkeleton from '@/features/user/delivery/components/category-icon-skeleton';
+import SubCategoriesWrapper from '@/features/public/stores/components/subcategories-wrapper';
 
 interface StoresPageProps {
   searchParams: {
@@ -21,8 +21,12 @@ interface StoresPageProps {
   };
 }
 
-export default function StoresPage({ searchParams }: StoresPageProps) {
-  const { id, name, search } = searchParams;
+export default async function StoresPage({
+  searchParams,
+}: {
+  searchParams: Promise<StoresPageProps['searchParams']>;
+}) {
+  const { id, name, search } = await searchParams;
 
   const title =
     id && search
@@ -53,13 +57,13 @@ export default function StoresPage({ searchParams }: StoresPageProps) {
         <StoreSearch initialSearch={search ?? ''} />
 
         <Suspense fallback={<CategoryIconsSkeleton />}>
-          <CategoriesWrapper />
+          <SubCategoriesWrapper id={id} />
         </Suspense>
 
         <LocationChips />
 
         <Suspense fallback={<FoodMarqueeSkeleton />}>
-          <StoresWrapper searchParams={searchParams} />
+          <StoresWrapper searchParams={{ id, name, search }} />
         </Suspense>
       </div>
 

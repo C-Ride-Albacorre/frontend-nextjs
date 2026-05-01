@@ -121,12 +121,12 @@ export async function fetchCategoryStoresService(
   return request('FetchCategoryStores', url);
 }
 
-// export async function fetchSubcategoriesService(categoryId: string) {
-//   return request(
-//     'FetchSubcategories',
-//     `${BASE_URL}/customer/subcategories/category/${categoryId}`,
-//   );
-// }
+export async function fetchSubcategoriesService(categoryId: string) {
+  return request(
+    'FetchSubcategories',
+    `${BASE_URL}/customer/subcategories/category/${categoryId}`,
+  );
+}
 
 export async function fetchStoreDetailsService(storeId: string) {
   return authRequest('FetchStoreDetails', `${BASE_URL}/customer/stores/${storeId}`);

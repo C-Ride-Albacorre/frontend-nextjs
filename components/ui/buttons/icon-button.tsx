@@ -1,4 +1,5 @@
 'use client';
+import { useRef } from 'react';
 
 import clsx from 'clsx';
 import { usePathname } from 'next/navigation';
@@ -18,13 +19,26 @@ export function IconButton({
   const pathname = usePathname();
   const [isAtTop, setIsAtTop] = useState(true);
 
+  const isAtTopRef = useRef(true);
+
   // Track scroll position
   useEffect(() => {
+    let ticking = false;
+
     const handleScroll = () => {
-      setIsAtTop(window.scrollY === 0);
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const atTop = window.scrollY === 0;
+          setIsAtTop((prev) => (prev !== atTop ? atTop : prev));
+          ticking = false;
+        });
+
+        ticking = true;
+      }
     };
 
-    handleScroll(); // run once on mount
+    handleScroll();
+
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     return () => window.removeEventListener('scroll', handleScroll);
@@ -64,7 +78,8 @@ export function IconButton({
           'bg-primary border-primary hover:bg-primary-hover':
             variant === 'primary',
 
-          'border-primary hover:bg-primary-hover/10': variant === 'primary-outline',
+          'border-primary hover:bg-primary-hover/10':
+            variant === 'primary-outline',
 
           'border-transparent hover:bg-neutral-100': variant === 'ghost',
 

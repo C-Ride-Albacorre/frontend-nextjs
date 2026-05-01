@@ -25,6 +25,7 @@ import {
   removeFromCartService,
   updateCartQuantityService,
   getPaymentStatusService,
+  fetchSubcategoriesService,
 } from './service';
 import { AddToCartPayload, ActionResult, CreateOrderPayload } from './types';
 
@@ -33,8 +34,16 @@ import { AddToCartPayload, ActionResult, CreateOrderPayload } from './types';
 // ═══════════════════════════════════════
 
 export async function fetchCategoriesAction() {
-  const result = await fetchCategoriesService();
-  return result.data;
+  try {
+    const result = await fetchCategoriesService();
+    return result.data;
+  } catch (error) {
+    return {
+      status: 'error',
+      message:
+        error instanceof Error ? error.message : 'Failed to fetch categories',
+    };
+  }
 }
 
 export async function fetchCategoryStoresAction(
@@ -64,20 +73,20 @@ export async function fetchCategoryStoresAction(
   };
 }
 
-// export async function fetchSubcategoriesAction(categoryId: string) {
-//   try {
-//     const result = await fetchSubcategoriesService(categoryId);
-//     return result.data ?? [];
-//   } catch (error) {
-//     return {
-//       status: 'error',
-//       message:
-//         error instanceof Error
-//           ? error.message
-//           : 'Failed to fetch subcategories',
-//     };
-//   }
-// }
+export async function fetchSubcategoriesAction(categoryId: string) {
+  try {
+    const result = await fetchSubcategoriesService(categoryId);
+    return result.data ?? [];
+  } catch (error) {
+    return {
+      status: 'error',
+      message:
+        error instanceof Error
+          ? error.message
+          : 'Failed to fetch subcategories',
+    };
+  }
+}
 
 export async function fetchStoreDetailsAction(storeId: string) {
   try {
