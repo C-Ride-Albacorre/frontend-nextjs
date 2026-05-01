@@ -17,6 +17,7 @@ interface HomePageProps {
 export default async function HomePage({ searchParams }: HomePageProps) {
   return (
     <main className="w-full bg-white">
+     
       <Hero />
 
       <FoodMarqueeWrapper />

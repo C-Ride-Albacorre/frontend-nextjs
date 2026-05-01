@@ -1,8 +1,15 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useLayoutEffect,
+} from 'react';
+import { createPortal } from 'react-dom';
 import { useRouter } from 'next/navigation';
-import { MapPin, Search, Loader2 } from 'lucide-react';
+import { MapPin, Search, Loader2, Store, Locate } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Input from '@/components/ui/inputs/input';
 import { Button } from '@/components/ui/buttons/button';
@@ -14,69 +21,118 @@ type StoreSuggestion = {
   storeCategory: string;
 };
 
+type AddressSuggestion = {
+  display_name: string;
+  lat: string;
+  lon: string;
+};
+
+const DEFAULT_COORDS = {
+  lat: 6.5244,
+  lng: 3.3792,
+};
+
 export default function HeroSearch() {
   const router = useRouter();
 
   const [address, setAddress] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
-  const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(
-    null,
-  );
+  const [coords, setCoords] = useState(DEFAULT_COORDS);
   const [suggestions, setSuggestions] = useState<StoreSuggestion[]>([]);
+  const [addressSuggestions, setAddressSuggestions] = useState<
+    AddressSuggestion[]
+  >([]);
+
+  const [showStoreDropdown, setShowStoreDropdown] = useState(false);
+  const [showAddressDropdown, setShowAddressDropdown] = useState(false);
   const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
-  const [showDropdown, setShowDropdown] = useState(false);
 
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const wrapperRef = useRef<HTMLDivElement>(null);
+  const debounceStoreRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const debounceAddressRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Get geolocation on mount
+  const addressRef = useRef<HTMLDivElement>(null);
+  const storeRef = useRef<HTMLDivElement>(null);
+
+  const [mounted, setMounted] = useState(false);
+  const [addressPos, setAddressPos] = useState({ top: 0, left: 0, width: 0 });
+  const [storePos, setStorePos] = useState({ top: 0, left: 0, width: 0 });
+
+  useEffect(() => setMounted(true), []);
+
   useEffect(() => {
     if (!navigator.geolocation) return;
     navigator.geolocation.getCurrentPosition(
-      (position) => {
-        setCoords({
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        });
+      (pos) => {
+        setCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude });
       },
-      (err) => console.warn('Geolocation error:', err.message),
+      () => {
+        setCoords(DEFAULT_COORDS);
+      },
+      { timeout: 8000 },
     );
   }, []);
 
-  // Close dropdown on outside click
   useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (
-        wrapperRef.current &&
-        !wrapperRef.current.contains(e.target as Node)
-      ) {
-        setShowDropdown(false);
-      }
+    const fetchAddress = async () => {
+      try {
+        const res = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${coords.lat}&lon=${coords.lng}`,
+        );
+        const data = await res.json();
+        if (data?.display_name) setAddress(data.display_name);
+      } catch {}
     };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    fetchAddress();
+  }, [coords]);
+
+  const updatePositions = useCallback(() => {
+    if (addressRef.current) {
+      const r = addressRef.current.getBoundingClientRect();
+      setAddressPos({ top: r.bottom + 8, left: r.left, width: r.width });
+    }
+    if (storeRef.current) {
+      const r = storeRef.current.getBoundingClientRect();
+      setStorePos({ top: r.bottom + 8, left: r.left, width: r.width });
+    }
   }, []);
 
-  const fetchSuggestions = useCallback(
+  useLayoutEffect(() => {
+    updatePositions();
+  }, [
+    showAddressDropdown,
+    showStoreDropdown,
+    addressSuggestions,
+    suggestions,
+    updatePositions,
+  ]);
+
+  useEffect(() => {
+    window.addEventListener('scroll', updatePositions);
+    window.addEventListener('resize', updatePositions);
+    return () => {
+      window.removeEventListener('scroll', updatePositions);
+      window.removeEventListener('resize', updatePositions);
+    };
+  }, [updatePositions]);
+
+  const fetchStores = useCallback(
     async (term: string) => {
       if (!term.trim()) {
         setSuggestions([]);
-        setShowDropdown(false);
+        setShowStoreDropdown(false);
         return;
       }
-
       setIsLoadingSuggestions(true);
       try {
         const params = new URLSearchParams();
-        params.set('search', term.trim());
-        if (coords?.lat) params.set('lat', String(coords.lat));
-        if (coords?.lng) params.set('lng', String(coords.lng));
-
-        const res = await fetch(`/api/stores/nearby?${params.toString()}`);
+        params.set('search', term);
+        params.set('lat', String(coords.lat));
+        params.set('lng', String(coords.lng));
+        const res = await fetch(`/api/stores/nearby?${params}`);
         const data = await res.json();
-        const stores: StoreSuggestion[] = data?.data?.data ?? [];
+        const stores = data?.data?.data ?? [];
         setSuggestions(stores.slice(0, 6));
-        setShowDropdown(stores.length > 0);
+        setShowStoreDropdown(stores.length > 0);
       } catch {
         setSuggestions([]);
       } finally {
@@ -86,128 +142,214 @@ export default function HeroSearch() {
     [coords],
   );
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setSearchQuery(value);
+  const fetchAddresses = useCallback(
+    async (term: string) => {
+      if (!term.trim()) {
+        setAddressSuggestions([]);
+        setShowAddressDropdown(false);
+        return;
+      }
+      try {
+        const delta = 0.5;
+        const viewbox = [
+          coords.lng - delta,
+          coords.lat + delta,
+          coords.lng + delta,
+          coords.lat - delta,
+        ].join(',');
 
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(() => {
-      fetchSuggestions(value);
-    }, 400);
-  };
+        const params = new URLSearchParams({
+          format: 'json',
+          q: term,
+          countrycodes: 'ng',
+          viewbox,
+          bounded: '0',
+          limit: '6',
+          addressdetails: '1',
+        });
 
-  const buildAndPush = useCallback(
-    (query: string) => {
-      const params = new URLSearchParams();
-      if (coords?.lat !== undefined) params.set('latitude', String(coords.lat));
-      if (coords?.lng !== undefined)
-        params.set('longitude', String(coords.lng));
-      if (query.trim()) params.set('search', query.trim());
-      router.push(`/stores?${params.toString()}`);
+        const res = await fetch(
+          `https://nominatim.openstreetmap.org/search?${params}`,
+        );
+        const data = await res.json();
+
+        const mapped: AddressSuggestion[] = data.slice(0, 6).map((d: any) => ({
+          display_name: d.display_name,
+          lat: d.lat,
+          lon: d.lon,
+        }));
+
+        setAddressSuggestions(mapped);
+        setShowAddressDropdown(mapped.length > 0);
+      } catch {
+        setAddressSuggestions([]);
+      }
     },
-    [coords, router],
+    [coords],
   );
 
-  const handleSuggestionClick = (store: StoreSuggestion) => {
-    setSearchQuery(store.storeName);
-    setShowDropdown(false);
-    buildAndPush(store.storeName);
+  const handleStoreChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const v = e.target.value;
+    setSearchQuery(v);
+    if (debounceStoreRef.current) clearTimeout(debounceStoreRef.current);
+    debounceStoreRef.current = setTimeout(() => fetchStores(v), 400);
   };
 
-  const handleButtonClick = () => {
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-    setShowDropdown(false);
+  const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const v = e.target.value;
+    setAddress(v);
+    if (debounceAddressRef.current) clearTimeout(debounceAddressRef.current);
+    debounceAddressRef.current = setTimeout(() => fetchAddresses(v), 400);
+  };
+
+  const buildAndPush = (
+    query: string,
+    overrideCoords?: { lat: number; lng: number },
+  ) => {
+    const c = overrideCoords ?? coords;
+    const params = new URLSearchParams();
+    params.set('latitude', String(c.lat));
+    params.set('longitude', String(c.lng));
+    if (address) params.set('address', address);
+    if (query) params.set('search', query);
+    router.push(`/stores?${params}`);
+  };
+
+  const handleSearch = () => {
+    setShowStoreDropdown(false);
+    setShowAddressDropdown(false);
     buildAndPush(searchQuery);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      handleButtonClick();
-    }
+  const selectStore = (store: StoreSuggestion) => {
+    setSearchQuery(store.storeName);
+    setShowStoreDropdown(false);
+    buildAndPush(store.storeName);
+  };
+
+  const selectAddress = (suggestion: AddressSuggestion) => {
+    const newCoords = {
+      lat: parseFloat(suggestion.lat),
+      lng: parseFloat(suggestion.lon),
+    };
+    setAddress(suggestion.display_name);
+    setCoords(newCoords);
+    setShowAddressDropdown(false);
+    buildAndPush(searchQuery, newCoords);
   };
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 28 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.7, delay: 0.25, ease: 'easeOut' }}
-      className="flex w-full items-center justify-center"
+      className="flex w-full justify-center relative"
     >
-      <div
-        ref={wrapperRef}
-        className="relative flex flex-col md:flex-row w-full max-w-3xl items-center gap-4 rounded-2xl p-3 mx-4 md:mx-0 md:border md:border-border"
-      >
-        {/* ADDRESS INPUT */}
-
-        <div className='w-full md:w-auto'>
+      <div className="relative flex flex-col md:flex-row w-full max-w-3xl items-center gap-4 rounded-2xl p-3 mx-4 md:mx-0 md:border md:border-border">
+        {/* ADDRESS */}
+        <div ref={addressRef} className="relative w-full md:w-auto">
           <Input
-            aria-label="Delivery address"
-            variant="fill"
             leftIcon={<MapPin className="h-5 w-5 text-neutral-500" />}
-            spacing="none"
-            placeholder={
-              coords ? 'Location detected ✓' : 'Enter delivery address'
-            }
-            className="flex-1 py-4 mt-0"
+            placeholder="Enter delivery address"
             value={address}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setAddress(e.target.value)
-            }
+            onChange={handleAddressChange}
+            spacing="none"
           />
         </div>
 
-        {/* SEARCH INPUT + DROPDOWN */}
-        <div className="relative flex-1 w-full md:w-auto">
+        {/* STORE */}
+        <div ref={storeRef} className="relative flex-1">
           <Input
-            ariaLabel="Search items"
-            variant="fill"
             leftIcon={
               isLoadingSuggestions ? (
-                <Loader2 className="h-5 w-5 text-neutral-400 animate-spin" />
+                <Loader2 className="animate-spin h-5 w-5 text-primary" />
               ) : (
                 <Search className="h-5 w-5 text-neutral-500" />
               )
             }
-            spacing="none"
             placeholder="What can we get you"
-            className="w-full py-4 mt-0"
             value={searchQuery}
-            onChange={handleSearchChange}
-            onKeyDown={handleKeyDown}
+            onChange={handleStoreChange}
+            spacing="none"
           />
+        </div>
 
-          {/* Suggestions dropdown */}
-          {showDropdown && suggestions.length > 0 && (
-            <ul className="absolute z-50 top-full mt-2 w-full bg-white border border-border rounded-xl shadow-lg overflow-hidden">
-              {suggestions.map((store) => (
-                <li key={store.id}>
+        <Button onClick={handleSearch}>Search</Button>
+
+        {/* ADDRESS DROPDOWN PORTAL */}
+        {mounted &&
+          showAddressDropdown &&
+          addressSuggestions.length > 0 &&
+          createPortal(
+            <ul
+              className="fixed z-9999 bg-white border border-border rounded-2xl shadow-2xl overflow-y-auto"
+              style={{
+                top: addressPos.top,
+                left: addressPos.left,
+                width: addressPos.width,
+                maxHeight: 220,
+              }}
+            >
+              {addressSuggestions.map((a, i) => (
+                <li
+                  key={i}
+                  className="border-b border-neutral-100 last:border-b-0"
+                >
                   <button
-                    type="button"
-                    onClick={() => handleSuggestionClick(store)}
-                    className="w-full text-left px-4 py-3 hover:bg-neutral-100 transition cursor-pointer flex flex-col gap-0.5"
+                    onClick={() => selectAddress(a)}
+                    className="w-full px-4 py-3 text-left hover:bg-neutral-50 grid grid-cols-[16px_1fr] gap-2 items-start cursor-pointer"
                   >
-                    <span className="text-sm font-medium text-neutral-800">
-                      {store.storeName}
-                    </span>
-                    <span className="text-xs text-neutral-500">
-                      {store.storeCategory} · {store.storeAddress}
+                    <Locate
+                      size={16}
+                      className="text-primary mt-0.5 shrink-0"
+                    />
+                    <span className="text-xs text-neutral-800 wrap-break-word">
+                      {a.display_name}
                     </span>
                   </button>
                 </li>
               ))}
-            </ul>
+            </ul>,
+            document.body,
           )}
-        </div>
 
-        {/* SEARCH BUTTON */}
-        <Button
-          size="md"
-          variant="primary"
-          className="shadow-sm mt-4 md:mt-0 px-12 md:px-8"
-          onClick={handleButtonClick}
-        >
-          Search
-        </Button>
+        {/* STORE DROPDOWN PORTAL */}
+        {mounted &&
+          showStoreDropdown &&
+          suggestions.length > 0 &&
+          createPortal(
+            <ul
+              className="fixed z-9999 bg-white border border-border rounded-2xl shadow-2xl overflow-y-auto"
+              style={{
+                top: storePos.top,
+                left: storePos.left,
+                width: storePos.width,
+                maxHeight: 220,
+              }}
+            >
+              {suggestions.map((s) => (
+                <li
+                  key={s.id}
+                  className="border-b border-neutral-100 last:border-b-0"
+                >
+                  <button
+                    onClick={() => selectStore(s)}
+                    className="w-full px-4 py-3 text-left hover:bg-neutral-50 cursor-pointer"
+                  >
+                    <div className="flex gap-2 items-center">
+                      <Store size={16} className="text-primary shrink-0" />
+                      <span className="text-sm font-medium text-neutral-800">
+                        {s.storeName}
+                      </span>
+                    </div>
+                    <span className="text-xs text-neutral-500 ml-6 block mt-0.5">
+                      {s.storeCategory} · {s.storeAddress}
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ul>,
+            document.body,
+          )}
       </div>
     </motion.div>
   );

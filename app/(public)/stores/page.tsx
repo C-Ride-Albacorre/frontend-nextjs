@@ -4,9 +4,9 @@ import StoreSearch from '@/features/public/stores/components/store-search';
 import LocationChips from '@/features/user/delivery/components/location-chips';
 import { Suspense } from 'react';
 import StoresWrapper from '@/features/public/stores/components/stores-wrapper';
-import FoodMarqueeSkeleton from '@/features/public/homepage/components/food-marquee-skeleton';
 import CategoryIconsSkeleton from '@/features/user/delivery/components/category-icon-skeleton';
 import SubCategoriesWrapper from '@/features/public/stores/components/subcategories-wrapper';
+import StoreSkeleton from '@/features/public/stores/components/stores-skeleton';
 
 interface StoresPageProps {
   searchParams: {
@@ -62,7 +62,7 @@ export default async function StoresPage({
 
         <LocationChips />
 
-        <Suspense fallback={<FoodMarqueeSkeleton />}>
+        <Suspense fallback={<StoreSkeleton />}>
           <StoresWrapper searchParams={{ id, name, search }} />
         </Suspense>
       </div>

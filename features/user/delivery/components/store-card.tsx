@@ -36,7 +36,7 @@ export default function StoreCard({
         />
 
         {tag && (
-          <span className="absolute top-3 left-3 bg-primary px-3 py-1 rounded-full text-xs shadow text-primary-text-100 font-medium">
+          <span className="absolute top-3 left-3 bg-white px-3 py-1 rounded-full text-xs shadow text-primary-text-100">
             {tag}
           </span>
         )}
@@ -71,7 +71,7 @@ export default function StoreCard({
 
         <div className="grid grid-cols-6 mt-3 gap-2">
           <div className="flex items-start gap-1 text-xs text-neutral-500 col-span-5">
-            <MapPin size={14} className="text-primary" />
+            <MapPin size={14} className="text-green-100" />
             <span className="wrap-break-word">{location}</span>
           </div>
 

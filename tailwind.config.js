@@ -27,6 +27,7 @@ export default {
       },
       animation: {
         ride: 'ride 1s linear infinite',
+        
       },
     },
   },

@@ -41,9 +41,11 @@ export default function Input({
 
   return (
     <div className="space-y-2 w-full">
-      <label htmlFor={id} className="text-sm font-medium">
-        {label}
-      </label>
+      {label && (
+        <label htmlFor={id} className="text-sm font-medium">
+          {label}
+        </label>
+      )}
 
       <div className={wrapperClasses}>
         {leftIcon}
