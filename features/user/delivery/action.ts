@@ -47,7 +47,7 @@ export async function fetchCategoriesAction() {
 }
 
 export async function fetchCategoryStoresAction(
-  categoryId: string,
+  categoryId?: string,
   lat?: number,
   lng?: number,
   subcategoryId?: string,

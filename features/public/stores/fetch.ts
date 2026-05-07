@@ -1,8 +1,21 @@
+import { fetchCategoryStoresAction } from '@/features/user/delivery/action';
+import { fetchSubcategories, fetchStores } from './service';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
-import { fetchStores } from './service';
+
+// export function useSubcategoriesQuery(categoryId?: string) {
+//   return useQuery({
+//     queryKey: ['subcategories', categoryId],
+//     queryFn: () => {
+//       if (!categoryId) return Promise.resolve({ subcategories: [] });
+//       return fetchSubcategories(categoryId);
+//     },
+//     enabled: !!categoryId,
+//     staleTime: 1000 * 60,
+//   });
+// }
 
 export function useStoresQuery(params: {
-  id?: string;
+  categoryId?: string;
   latitude?: string;
   longitude?: string;
   page?: string;
@@ -13,7 +26,17 @@ export function useStoresQuery(params: {
 }) {
   return useQuery({
     queryKey: ['stores', params],
-    queryFn: () => fetchStores(params),
+    queryFn: () =>
+      fetchCategoryStoresAction(
+        params.categoryId,
+        params.latitude ? parseFloat(params.latitude) : undefined,
+        params.longitude ? parseFloat(params.longitude) : undefined,
+        params.subcategoryId,
+        params.page ? parseInt(params.page) : undefined,
+        params.limit ? parseInt(params.limit) : undefined,
+        params.search,
+        params.radiusKm ? parseFloat(params.radiusKm) : undefined,
+      ),
     placeholderData: keepPreviousData,
     staleTime: 1000 * 60,
   });

@@ -11,7 +11,7 @@ import StoreSkeleton from './stores-skeleton';
 
 interface StoresPageProps {
   searchParams: {
-    id: string;
+    categoryId?: string;
     name?: string;
     latitude?: string;
     longitude?: string;
@@ -25,7 +25,7 @@ interface StoresPageProps {
 
 export default function StoresWrapper({ searchParams }: StoresPageProps) {
   const {
-    id,
+    categoryId,
     latitude,
     longitude,
     page,
@@ -33,7 +33,7 @@ export default function StoresWrapper({ searchParams }: StoresPageProps) {
     search,
     radiusKm,
     subcategoryId,
-  } = searchParams;
+  } =  searchParams;
 
   const pageNum = page ? parseInt(page) : 1;
   const limitNum = limit ? parseInt(limit) : 10;
@@ -42,7 +42,7 @@ export default function StoresWrapper({ searchParams }: StoresPageProps) {
   let totalPages: number = 1;
 
   const { data, isLoading, isError, refetch } = useStoresQuery({
-    id,
+    categoryId,
     latitude,
     longitude,
     page: String(pageNum),
@@ -56,15 +56,28 @@ export default function StoresWrapper({ searchParams }: StoresPageProps) {
   const total = data?.total || 0;
   totalPages = Math.max(1, Math.ceil(total / limitNum));
 
+  console.log('Stores:', stores);
+
   if (isLoading) {
     return <StoreSkeleton />;
   }
 
   if (isError) {
     return (
-      <Card className="flex flex-col items-center py-12">
+      <Card
+        gap="md"
+        border="none"
+        spacing="lg"
+        className="flex flex-col items-center py-12"
+      >
         <Store size={48} className="text-neutral-400" />
-        <p>Failed to load stores.</p>
+        <div className="space-y-2 text-center">
+          <h2 className="text-xl font-semibold">Failed to load stores.</h2>
+          <p className="text-center text-sm text-neutral-500">
+            Please try again later.
+          </p>
+        </div>
+
         <RetryButton />
       </Card>
     );
@@ -79,7 +92,13 @@ export default function StoresWrapper({ searchParams }: StoresPageProps) {
         className="flex flex-col items-center py-12"
       >
         <Store size={48} className="text-neutral-400" />
-        <p>No stores found.</p>
+
+        <div className="space-y-2 text-center">
+          <h2 className="text-xl font-semibold">No stores found.</h2>
+          <p className="text-center text-sm text-neutral-500">
+            Try adjusting your search or browse all stores.
+          </p>
+        </div>
         <Button href="/stores">Browse all stores</Button>
       </Card>
     );

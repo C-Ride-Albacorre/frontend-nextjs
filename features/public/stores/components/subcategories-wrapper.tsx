@@ -4,13 +4,19 @@ import {
 } from '@/features/user/delivery/action';
 import SubCategoryIcons from './subcategory-icons';
 
-export default async function SubCategoriesWrapper({ id }: { id: string }) {
+export default async function SubCategoriesWrapper({
+  categoryId,
+}: {
+  categoryId?: string;
+}) {
   let subCategories: any[] = [];
 
-  console.log('category id in SubCategoriesWrapper:', id);
+  console.log('category id in SubCategoriesWrapper:', categoryId);
 
-  if (id) {
-    subCategories = await fetchSubcategoriesAction(id);
+
+
+  if (categoryId) {
+    subCategories = await fetchSubcategoriesAction(categoryId);
   } else {
     const categories = await fetchCategoriesAction();
     subCategories = categories.flatMap((cat: any) => cat.subcategories || []);

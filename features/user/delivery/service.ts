@@ -94,7 +94,7 @@ export async function fetchCategoriesService() {
 }
 
 export async function fetchCategoryStoresService(
-  categoryId: string,
+  categoryId?: string,
   lat?: number,
   lng?: number,
   subcategoryId?: string,

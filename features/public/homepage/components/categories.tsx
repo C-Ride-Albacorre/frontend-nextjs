@@ -23,7 +23,7 @@ export default function Categories({ categories }: { categories: Category[] }) {
 
         return (
           <Link
-            href={`/stores?id=${item.id}&name=${encodeURIComponent(item.name)}`}
+            href={`/stores?categoryId=${item.id}&name=${encodeURIComponent(item.name)}`}
             key={`${item.id}-${index}`}
             className="relative h-60 min-w-56 overflow-hidden rounded-2xl"
           >

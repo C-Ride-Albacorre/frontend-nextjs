@@ -13,15 +13,15 @@ export interface Store {
   // ...other fields
 }
 
-export interface NearbyStoresResponse {
-  data: Store[];
-  meta: {
-    total: number;
-    page: number;
-    limit: number;
-    totalPages: number;
-  };
-}
+// export interface NearbyStoresResponse {
+//   data: Store[];
+//   meta: {
+//     total: number;
+//     page: number;
+//     limit: number;
+//     totalPages: number;
+//   };
+// }
 
 export interface Category {
   id: string;
@@ -31,4 +31,13 @@ export interface Category {
   _count?: {
     stores: number;
   };
+}
+
+export interface Subcategory {
+  id: string;
+  name: string;
+}
+
+export interface SubcategoriesResponse {
+  subcategories: Subcategory[];
 }

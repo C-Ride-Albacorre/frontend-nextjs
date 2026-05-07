@@ -2,10 +2,10 @@ export default function StoreSkeleton() {
   return (
     <section className="py-14">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 px-6 max-w-6xl mx-auto">
-        {Array.from({ length: 6 }).map((_, i) => (
+        {Array.from({ length: 3 }).map((_, i) => (
           <div
             key={i}
-            className="rounded-2xl overflow-hidden border border-border bg-neutral-50"
+            className="rounded-2xl overflow-hidden bg-neutral-50"
           >
             {/* Image */}
             <div className="h-52 bg-linear-to-r from-neutral-100 via-neutral-200 to-neutral-100 animate-shimmer" />

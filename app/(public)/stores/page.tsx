@@ -3,7 +3,6 @@ import StoreSearch from '@/features/public/stores/components/store-search';
 
 import LocationChips from '@/features/user/delivery/components/location-chips';
 import { Suspense } from 'react';
-import dynamic from 'next/dynamic';
 import CategoryIconsSkeleton from '@/features/user/delivery/components/category-icon-skeleton';
 import SubCategoriesWrapper from '@/features/public/stores/components/subcategories-wrapper';
 import StoreSkeleton from '@/features/public/stores/components/stores-skeleton';
@@ -11,7 +10,7 @@ import StoresWrapper from '@/features/public/stores/components/stores-wrapper-cl
 
 interface StoresPageProps {
   searchParams: {
-    id: string;
+    categoryId?: string;
     name?: string;
     latitude?: string;
     longitude?: string;
@@ -27,23 +26,23 @@ export default async function StoresPage({
 }: {
   searchParams: Promise<StoresPageProps['searchParams']>;
 }) {
-  const { id, name, search } = await searchParams;
+  const { categoryId, name, search } = await searchParams;
 
   const title =
-    id && search
+    categoryId && search
       ? `${name || 'Stores'} - "${search}"`
       : search
         ? `Results for "${search}"`
-        : id
+        : categoryId
           ? name || 'Stores'
           : 'All Stores';
 
   const subtitle =
-    id && search
+    categoryId && search
       ? `Searching in ${name || 'category'} and nearby`
       : search
         ? 'Showing stores matching your search'
-        : id
+        : categoryId
           ? `Browse stores in ${name || 'this category'}`
           : 'Stores available near you';
 
@@ -58,14 +57,13 @@ export default async function StoresPage({
         <StoreSearch initialSearch={search ?? ''} />
 
         <Suspense fallback={<CategoryIconsSkeleton />}>
-          <SubCategoriesWrapper id={id} />
+          <SubCategoriesWrapper categoryId={categoryId} />
         </Suspense>
 
         <LocationChips />
 
-        {/* Use dynamic import to load the client-side React Query wrapper */}
         <Suspense fallback={<StoreSkeleton />}>
-       <StoresWrapper searchParams={{ id, name, search }} />
+          <StoresWrapper searchParams={await searchParams} />
         </Suspense>
       </div>
 
