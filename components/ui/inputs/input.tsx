@@ -19,6 +19,7 @@ export default function Input({
   leftIcon,
   rightIcon,
   disabled,
+  required,
   ...props
 }: InputProps) {
   const wrapperClasses = clsx(
@@ -44,6 +45,8 @@ export default function Input({
       {label && (
         <label htmlFor={id} className="text-sm font-medium">
           {label}
+
+          {required && <span className="text-red-500">*</span>}
         </label>
       )}
 

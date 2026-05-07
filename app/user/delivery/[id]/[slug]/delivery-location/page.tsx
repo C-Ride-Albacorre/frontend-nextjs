@@ -154,6 +154,7 @@ export default function DeliveryLocation() {
             placeholder="Joseph Adebayo"
             spacing="sm"
             value={name}
+            required
             onChange={(e) => setName(e.target.value)}
           />
           <Input
@@ -162,6 +163,7 @@ export default function DeliveryLocation() {
             placeholder="+234 800 000 0000"
             spacing="sm"
             value={phone}
+            required
             onChange={(e) => setPhone(e.target.value)}
           />
         </div>

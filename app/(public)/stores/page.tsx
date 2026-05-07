@@ -3,10 +3,11 @@ import StoreSearch from '@/features/public/stores/components/store-search';
 
 import LocationChips from '@/features/user/delivery/components/location-chips';
 import { Suspense } from 'react';
-import StoresWrapper from '@/features/public/stores/components/stores-wrapper';
+import dynamic from 'next/dynamic';
 import CategoryIconsSkeleton from '@/features/user/delivery/components/category-icon-skeleton';
 import SubCategoriesWrapper from '@/features/public/stores/components/subcategories-wrapper';
 import StoreSkeleton from '@/features/public/stores/components/stores-skeleton';
+import StoresWrapper from '@/features/public/stores/components/stores-wrapper-client';
 
 interface StoresPageProps {
   searchParams: {
@@ -62,8 +63,9 @@ export default async function StoresPage({
 
         <LocationChips />
 
+        {/* Use dynamic import to load the client-side React Query wrapper */}
         <Suspense fallback={<StoreSkeleton />}>
-          <StoresWrapper searchParams={{ id, name, search }} />
+       <StoresWrapper searchParams={{ id, name, search }} />
         </Suspense>
       </div>
 
