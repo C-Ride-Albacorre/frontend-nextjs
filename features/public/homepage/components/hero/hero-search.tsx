@@ -13,6 +13,7 @@ import { MapPin, Search, Loader2, Store, Locate } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Input from '@/components/ui/inputs/input';
 import { Button } from '@/components/ui/buttons/button';
+import { BASE_URL } from '@/config/api';
 
 type StoreSuggestion = {
   id: string;
@@ -128,7 +129,7 @@ export default function HeroSearch() {
         params.set('search', term);
         params.set('lat', String(coords.lat));
         params.set('lng', String(coords.lng));
-        const res = await fetch(`/api/stores/nearby?${params}`);
+        const res = await fetch(`${BASE_URL}/customer/stores?${params}`);
         const data = await res.json();
         const stores = data?.data?.data ?? [];
         setSuggestions(stores.slice(0, 6));

@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Search, Loader2 } from 'lucide-react';
 import clsx from 'clsx';
 import { Button } from '@/components/ui/buttons/button';
+import { BASE_URL } from '@/config/api';
 
 type StoreSuggestion = {
   id: string;
@@ -120,7 +121,7 @@ export default function StoreSearch({ initialSearch = '' }: StoreSearchProps) {
         if (lng !== undefined) params.set('lng', String(lng));
         if (radiusKm) params.set('radiusKm', radiusKm);
 
-        const res = await fetch(`/api/stores/nearby?${params.toString()}`);
+        const res = await fetch(`${BASE_URL}/customer/stores?${params.toString()}`);
         const data = await res.json();
 
         const stores: StoreSuggestion[] = data?.data?.data ?? [];
