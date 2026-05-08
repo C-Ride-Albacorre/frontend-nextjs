@@ -63,12 +63,12 @@ export default async function CategoryDeliveryPage({
     isStoreError = true;
   }
 
-
-
   const title =
     stores?.length > 0 ? `${stores[0].storeName} / Stores` : 'Stores';
 
   const totalPages = Math.ceil(total / limitNum);
+
+  let pathName: string = '/user/delivery';
 
   return (
     <section>
@@ -106,7 +106,12 @@ export default async function CategoryDeliveryPage({
         {!isStoreError && stores.length === 0 ? (
           <Card gap="md" spacing="lg" className="flex  flex-col  items-center">
             <Store size={48} className="text-neutral-400" />
-            <p className="text-neutral-500 text-center">No stores available.</p>
+            <div className="space-y-2 text-center">
+              <h2 className="text-xl font-semibold">No stores found.</h2>
+              <p className="text-center text-sm text-neutral-500">
+                Try adjusting your search or browse all stores.
+              </p>
+            </div>
 
             <Button variant="primary" size="icon" href="/user/delivery">
               Go to Categories
@@ -118,7 +123,12 @@ export default async function CategoryDeliveryPage({
             spacing="lg"
             className="flex  flex-col gap-4 items-center"
           >
-            <p className="text-red-500 text-center">Failed to load stores.</p>
+            <div className="space-y-2 text-center">
+              <h2 className="text-xl font-semibold">Failed to load stores.</h2>
+              <p className="text-center text-sm text-neutral-500">
+                Please try again later.
+              </p>
+            </div>
 
             <RetryButton />
           </Card>

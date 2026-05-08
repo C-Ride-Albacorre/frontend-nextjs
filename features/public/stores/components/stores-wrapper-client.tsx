@@ -1,6 +1,6 @@
 'use client';
 
-import StoreGrid from '@/features/user/delivery/components/store-grid';
+
 import RetryButton from '@/components/ui/buttons/retry-button';
 import Card from '@/components/layout/card';
 import { Button } from '@/components/ui/buttons/button';
@@ -8,6 +8,7 @@ import { Store } from 'lucide-react';
 import PaginationControls from '@/components/ui/buttons/pagination-control';
 import { useStoresQuery } from '../fetch';
 import StoreSkeleton from './stores-skeleton';
+import StoreGrid from './store-grid';
 
 interface StoresPageProps {
   searchParams: {
@@ -33,7 +34,7 @@ export default function StoresWrapper({ searchParams }: StoresPageProps) {
     search,
     radiusKm,
     subcategoryId,
-  } =  searchParams;
+  } = searchParams;
 
   const pageNum = page ? parseInt(page) : 1;
   const limitNum = limit ? parseInt(limit) : 10;

@@ -10,6 +10,7 @@ import { IconButton } from '../ui/buttons/icon-button';
 import Image from 'next/image';
 import { div } from 'framer-motion/client';
 import { usePathname } from 'next/navigation';
+import StoreHeader from '@/features/public/stores/components/store-header';
 
 type NavBarProps = {
   isLoggedIn: boolean;
@@ -47,9 +48,7 @@ const NavBar = ({ isLoggedIn, role }: NavBarProps) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-
-  const pathname = usePathname()
-
+  const pathname = usePathname();
 
   return (
     <>
@@ -62,11 +61,12 @@ const NavBar = ({ isLoggedIn, role }: NavBarProps) => {
           }
 
           ${
-            [pathname === "/stores" && 'bg-white md:bg-primary-text-100 md:backdrop-blur-sm shadow-sm']
+            pathname.includes('/stores') &&
+            'bg-white md:bg-primary-text-100 md:backdrop-blur-sm shadow-sm'
           }
         `}
       >
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 md:py-3">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 xl:px-0 md:py-3">
           <div className=" flex-1">
             <Link href="/">
               <Image
@@ -80,8 +80,8 @@ const NavBar = ({ isLoggedIn, role }: NavBarProps) => {
             </Link>
           </div>
 
-          <div className="hidden md:flex gap-12  justify-between items-center">
-            <ul className="flex items-center gap-6 text-sm font-body  text-white">
+          <div className="hidden lg:flex md:gap-6 xl:gap-12  justify-between items-center">
+            <ul className="flex items-center gap-0 xl:gap-6 text-sm font-body  text-white">
               <li>
                 <Button href="/vendor" size="sm" variant="white-nav-link">
                   Vendor
@@ -122,6 +122,8 @@ const NavBar = ({ isLoggedIn, role }: NavBarProps) => {
             </div> */}
 
             <div className="flex items-center gap-3">
+              <StoreHeader />
+
               {isLoggedIn ? (
                 <Button
                   href={getDashboardLink(role)}
@@ -147,14 +149,19 @@ const NavBar = ({ isLoggedIn, role }: NavBarProps) => {
           </div>
 
           {/* MOBILE MENU BUTTON */}
-          <IconButton
-            onClick={toggleMenu}
-            ariaLabel="Open menu"
-            className="md:hidden text-primary-text-100"
-            highlightOnRoutes={['/vendor', '/fulfillment-partner']}
-          >
-            <Menu size={20} />
-          </IconButton>
+
+          <div className="flex items-center gap-3 lg:hidden">
+            <StoreHeader />
+
+            <IconButton
+              onClick={toggleMenu}
+              ariaLabel="Open menu"
+              className=" text-primary-text-100 md:text-white"
+              highlightOnRoutes={['/vendor', '/fulfillment-partner']}
+            >
+              <Menu size={20} />
+            </IconButton>
+          </div>
         </div>
       </nav>
 
@@ -200,7 +207,7 @@ const NavBar = ({ isLoggedIn, role }: NavBarProps) => {
                   <IconButton
                     onClick={toggleMenu}
                     aria-label="Close menu"
-                    className="md:hidden"
+                    className="lg:hidden"
                   >
                     <X size={20} />
                   </IconButton>

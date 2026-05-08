@@ -1,4 +1,4 @@
-import Location from '@/features/public/homepage/components/location';
+
 import StoreSearch from '@/features/public/stores/components/store-search';
 
 import LocationChips from '@/features/user/delivery/components/location-chips';
@@ -48,7 +48,7 @@ export default async function StoresPage({
 
   return (
     <section>
-      <div className="px-4 xl:px-0 py-24 md:py-28 mx-auto max-w-6xl space-y-4 md:space-y-10">
+      <div className="  space-y-4 md:space-y-10">
         <div className="space-y-4">
           <h2 className="text-2xl font-semibold">{title}</h2>
           <p className="text-sm text-neutral-500">{subtitle}</p>
@@ -67,7 +67,7 @@ export default async function StoresPage({
         </Suspense>
       </div>
 
-      <Location />
+    
     </section>
   );
 }

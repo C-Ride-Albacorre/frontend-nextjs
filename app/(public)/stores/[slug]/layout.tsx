@@ -1,14 +1,15 @@
 import { CartInitializer } from "@/helpers/cart-initializer";
 
-export default function DeliveryLayout({
+export default async function StoreLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <>
-      <CartInitializer />
-      {children}
-    </>
+    <div>
+     
+
+      <div className="container">{children}</div>
+    </div>
   );
 }
