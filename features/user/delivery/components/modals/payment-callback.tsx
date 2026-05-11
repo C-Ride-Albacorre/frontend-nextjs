@@ -4,7 +4,7 @@ import { useEffect, useRef, useCallback } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
 import { getPaymentStatusAction } from '@/features/user/delivery/action';
-import { useOrderStore } from '@/features/user/delivery/order-store';
+import { useOrderStore } from '@/features/user/delivery/hooks/order-store';
 
 const POLL_INTERVAL = 3000;
 const MAX_POLLS = 20;

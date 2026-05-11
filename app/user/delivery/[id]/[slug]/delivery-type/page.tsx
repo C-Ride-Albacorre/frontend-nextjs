@@ -4,7 +4,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { ChevronRight, Clock, Loader2 } from 'lucide-react';
-import { useOrderStore } from '@/features/user/delivery/order-store';
+import { useOrderStore } from '@/features/user/delivery/hooks/order-store';
 import { getDeliveryOptionsAction } from '@/features/user/delivery/action';
 
 // 🔁 Swap these out once backend seeds real delivery options
@@ -45,7 +45,9 @@ function normalizeOption(opt: DeliveryOption, index: number) {
     label: opt.label ?? opt.name ?? `Option ${index + 1}`,
     badge: opt.badge ?? (index === 0 ? 'Fast' : 'Urgent'),
     description: opt.description ?? 'Delivered to your doorstep',
-    price: opt.price ?? (opt.basePrice ? `₦ ${opt.basePrice.toLocaleString()}` : '₦ —'),
+    price:
+      opt.price ??
+      (opt.basePrice ? `₦ ${opt.basePrice.toLocaleString()}` : '₦ —'),
     duration: opt.duration ?? opt.estimatedTime ?? '—',
   };
 }

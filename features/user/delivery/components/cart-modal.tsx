@@ -2,7 +2,7 @@
 
 import { ChevronRight, Loader2, Minus, Plus, Trash2 } from 'lucide-react';
 import Modal from '@/components/layout/modal';
-import { useCartStore } from '../store';
+import { useCartStore } from '../hooks/store';
 import { Button } from '@/components/ui/buttons/button';
 import { IconButton } from '@/components/ui/buttons/icon-button';
 import Image from 'next/image';

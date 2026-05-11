@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import Stepper from '@/components/navigation/stepper';
 import { STEPS } from '@/features/user/delivery/data';
-import { useCartStore } from '../store';
+import { useCartStore } from '../hooks/store';
 import { Button } from '@/components/ui/buttons/button';
 import CartModal from './cart-modal';
 import OrdersModal from './modals/orders-modal';

@@ -1,12 +1,15 @@
 import { cookies } from 'next/headers';
 import { getTokenExpiry } from './jwt';
 
+import { randomUUID } from 'crypto';
+
 const isProd = process.env.NODE_ENV === 'production';
 
 // Cookie names as constants
 export const COOKIE_KEYS = {
   ACCESS_TOKEN: 'accessToken',
   REFRESH_TOKEN: 'refreshToken',
+  GUEST_SESSION_ID: 'guestSessionId',
   USER_ROLE: 'userRole',
   VERIFICATION_TOKEN: 'verificationToken',
   VERIFY_IDENTIFIER: 'verify_identifier',
@@ -158,6 +161,30 @@ export async function setVendorVerificationCookies({
     maxAge,
   });
 }
+
+
+
+export async function getOrCreateGuestSessionId() {
+  const cookieStore = await cookies();
+
+  const existingSessionId = cookieStore.get(
+    COOKIE_KEYS.GUEST_SESSION_ID,
+  )?.value;
+
+  if (existingSessionId) {
+    return existingSessionId;
+  }
+
+  const newSessionId = randomUUID();
+
+  cookieStore.set(COOKIE_KEYS.GUEST_SESSION_ID, newSessionId, {
+    ...defaultOptions,
+    maxAge: 60 * 60 * 24 * 30, // 30 days
+  });
+
+  return newSessionId;
+}
+
 // Set auth cookies (access + refresh tokens)
 export async function setAuthCookies(
   accessToken: string,

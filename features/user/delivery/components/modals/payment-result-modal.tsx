@@ -6,7 +6,7 @@ import { CheckCircle2, XCircle, Loader2 } from 'lucide-react';
 import Card from '@/components/layout/card';
 import Modal from '@/components/layout/modal';
 import { Button } from '@/components/ui/buttons/button';
-import { useOrderStore } from '@/features/user/delivery/order-store';
+import { useOrderStore } from '@/features/user/delivery/hooks/order-store';
 import { getPaymentStatusAction } from '@/features/user/delivery/action';
 
 type Status = 'loading' | 'success' | 'error';

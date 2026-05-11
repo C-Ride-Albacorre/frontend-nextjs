@@ -15,8 +15,8 @@ import {
   Loader2,
 } from 'lucide-react';
 import OrderDetailModal from '@/features/user/delivery/components/modals/order-detail-modal';
-import { useOrderStore } from '@/features/user/delivery/order-store';
-import { useCartStore } from '@/features/user/delivery/store';
+import { useOrderStore } from '@/features/user/delivery/hooks/order-store';
+import { useCartStore } from '@/features/user/delivery/hooks/store';
 import { createOrderAction } from '@/features/user/delivery/action';
 import { toast } from 'sonner';
 import Card from '@/components/layout/card';

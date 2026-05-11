@@ -1,7 +1,7 @@
 // features/user/delivery/order-store.ts
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import { DropoffLocation } from './types';
+import { DropoffLocation } from '../types';
 
 interface OrderState {
   deliveryOptionId: string;

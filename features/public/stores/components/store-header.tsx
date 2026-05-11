@@ -4,7 +4,7 @@ import { ClipboardList, Loader2, ShoppingCart } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { Button } from '@/components/ui/buttons/button';
-import { useCartStore } from '@/features/user/delivery/store';
+import { useCartStore } from '@/features/user/delivery/hooks/store';
 import CartModal from '@/features/user/delivery/components/cart-modal';
 import OrdersModal from '@/features/user/delivery/components/modals/orders-modal';
 

@@ -6,6 +6,7 @@ import {
   CreateOrderPayload,
   InitializePaymentPayload,
 } from './types';
+import { getAuthTokens, getOrCreateGuestSessionId } from '@/utils/cookies';
 
 // ─── Logging helper ───
 
@@ -59,7 +60,7 @@ async function authRequest(
 ) {
   const method = options.method ?? 'GET';
 
-  console.log(`[${tag}] REQUEST ${method} ${url}`);
+  // console.log(`[${tag}] REQUEST ${method} ${url}`);
 
   const res = await authFetch(url, {
     ...options,
@@ -85,6 +86,65 @@ async function authRequest(
   return data;
 }
 
+async function cartRequest(
+  tag: string,
+  url: string,
+  options: RequestInit = {},
+) {
+  // const method = options.method ?? 'GET';
+
+  const { accessToken, refreshToken } = await getAuthTokens();
+
+  // AUTHENTICATED USER
+  if (accessToken || refreshToken) {
+    const res = await authFetch(url, {
+      ...options,
+      headers: {
+        'Content-Type': 'application/json',
+        ...options.headers,
+      },
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      const err = new ApiError(
+        data?.message || `${tag} failed`,
+        data?.statusCode ?? res.status,
+      );
+      console.error(`[${tag}] ERROR`, err);
+      throw err;
+    }
+
+    return data;
+  } else {
+    // GUEST USER
+
+    const guestSessionId = await getOrCreateGuestSessionId();
+
+    const res = await fetch(url, {
+      ...options,
+      headers: {
+        'Content-Type': 'application/json',
+        'x-session-id': guestSessionId,
+        ...options.headers,
+      },
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      const err = new ApiError(
+        data?.message || `${tag} failed`,
+        data?.statusCode ?? res.status,
+      );
+      console.error(`[${tag}] ERROR`, err);
+      throw err;
+    }
+
+    return data;
+  }
+}
 // ═══════════════════════════════════════
 // CATEGORIES & STORES
 // ═══════════════════════════════════════
@@ -129,7 +189,10 @@ export async function fetchSubcategoriesService(categoryId: string) {
 }
 
 export async function fetchStoreDetailsService(storeId: string) {
-  return authRequest('FetchStoreDetails', `${BASE_URL}/customer/stores/${storeId}`);
+  return authRequest(
+    'FetchStoreDetails',
+    `${BASE_URL}/customer/stores/${storeId}`,
+  );
 }
 
 export async function fetchVendorAddressService(storeId: string) {
@@ -144,11 +207,13 @@ export async function fetchVendorAddressService(storeId: string) {
 // ═══════════════════════════════════════
 
 export async function getCartService() {
-  return authRequest('GetCart', `${BASE_URL}/customer/cart`);
+  return cartRequest('GetCart', `${BASE_URL}/cart`);
 }
 
 export async function addToCartService(payload: AddToCartPayload) {
-  return authRequest('AddToCart', `${BASE_URL}/customer/cart/add`, {
+console.log('addToCartService payload', payload);
+
+  return cartRequest('AddToCart', `${BASE_URL}/cart/add`, {
     method: 'POST',
     body: JSON.stringify(payload),
   });
@@ -158,9 +223,9 @@ export async function updateCartQuantityService(
   itemId: string,
   quantity: number,
 ) {
-  return authRequest(
+  return cartRequest(
     'UpdateCartQuantity',
-    `${BASE_URL}/customer/cart/item/${itemId}/quantity`,
+    `${BASE_URL}/cart/item/${itemId}/quantity`,
     {
       method: 'POST',
       body: JSON.stringify({ quantity }),
@@ -169,15 +234,15 @@ export async function updateCartQuantityService(
 }
 
 export async function removeFromCartService(itemId: string) {
-  return authRequest(
+  return cartRequest(
     'RemoveFromCart',
-    `${BASE_URL}/customer/cart/item/${itemId}/remove`,
+    `${BASE_URL}/cart/item/${itemId}/remove`,
     { method: 'POST' },
   );
 }
 
 export async function clearCartService() {
-  return authRequest('ClearCart', `${BASE_URL}/customer/cart/clear`, {
+  return cartRequest('ClearCart', `${BASE_URL}/cart/clear`, {
     method: 'POST',
   });
 }
@@ -198,7 +263,10 @@ export async function getOrdersService() {
 }
 
 export async function getOrderDetailsService(orderId: string) {
-  return authRequest('GetOrderDetails', `${BASE_URL}/customer/orders/${orderId}`);
+  return authRequest(
+    'GetOrderDetails',
+    `${BASE_URL}/customer/orders/${orderId}`,
+  );
 }
 
 export async function cancelOrderService(orderId: string) {
@@ -239,5 +307,8 @@ export async function getPaymentStatusService(transactionReference: string) {
 // ═══════════════════════════════════════
 
 export async function getDeliveryOptionsService() {
-  return authRequest('GetDeliveryOptions', `${BASE_URL}/customer/delivery-options`);
+  return authRequest(
+    'GetDeliveryOptions',
+    `${BASE_URL}/customer/delivery-options`,
+  );
 }

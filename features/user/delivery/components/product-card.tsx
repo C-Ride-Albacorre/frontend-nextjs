@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/buttons/button';
 import { Product } from '@/features/vendor/products/type';
 import { Minus, Plus } from 'lucide-react';
 import Image from 'next/image';
-import { useCartStore } from '../store';
+import { useCartStore } from '../hooks/store';
 import { IconButton } from '@/components/ui/buttons/icon-button';
 
 export default function ProductCard({ item }: { item: Product }) {

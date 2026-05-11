@@ -1,7 +1,7 @@
 'use client';
 
 import { Loader2, Trash, Trash2, X } from 'lucide-react';
-import { useCartStore } from '../../store';
+import { useCartStore } from '../../hooks/store';
 import { Suspense } from 'react';
 import Card from '@/components/layout/card';
 import { IconButton } from '@/components/ui/buttons/icon-button';

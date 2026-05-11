@@ -15,7 +15,7 @@ import Modal from '@/components/layout/modal';
 import { Button } from '@/components/ui/buttons/button';
 import Card from '@/components/layout/card';
 import { initializePaymentAction } from '../../action';
-import { useOrderStore } from '../../order-store';
+import { useOrderStore } from '../../hooks/order-store';
 import {
   useOrders,
   useOrderDetails,

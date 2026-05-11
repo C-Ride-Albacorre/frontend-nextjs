@@ -6,8 +6,8 @@ import { CheckCircle2 } from 'lucide-react';
 import Card from '@/components/layout/card';
 import Modal from '@/components/layout/modal';
 import { Button } from '@/components/ui/buttons/button';
-import { useOrderStore } from '@/features/user/delivery/order-store';
-import { useCartStore } from '@/features/user/delivery/store';
+import { useOrderStore } from '@/features/user/delivery/hooks/order-store';
+import { useCartStore } from '@/features/user/delivery/hooks/store';
 
 export default function PaymentSuccessModal({
   isModalOpen,

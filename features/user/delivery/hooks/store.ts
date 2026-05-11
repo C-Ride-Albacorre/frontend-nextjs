@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import { Cart, CartItem } from './types';
+import { Cart, CartItem } from '../types';
 import { toast } from 'sonner';
 import {
   addToCartAction,
@@ -8,7 +8,7 @@ import {
   getCartAction,
   removeFromCartAction,
   updateCartQuantityAction,
-} from './action';
+} from '../action';
 
 // ─── Types ───
 
