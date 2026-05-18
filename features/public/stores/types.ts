@@ -10,6 +10,7 @@ export type StoreCardProps = {
   location: string;
   delivery: string;
   time: string;
+  returnUrl: string;
 };
 
 // ─── Cart ───

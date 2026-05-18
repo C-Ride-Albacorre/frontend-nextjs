@@ -14,7 +14,13 @@ type ApiStore = {
   distance: number;
 };
 
-export default function StoreGrid({ stores }: { stores: ApiStore[] }) {
+export default function StoreGrid({
+  stores,
+  returnUrl,
+}: {
+  stores: ApiStore[];
+  returnUrl: string;
+}) {
   return (
     <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
       {stores.map((store) => (
@@ -29,6 +35,7 @@ export default function StoreGrid({ stores }: { stores: ApiStore[] }) {
           location={store.storeAddress}
           delivery={`${Math.round(store.distance)} km`}
           time={`${store.preparationTime} mins`}
+          returnUrl={returnUrl}
         />
       ))}
     </div>

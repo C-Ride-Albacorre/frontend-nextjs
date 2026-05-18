@@ -27,6 +27,7 @@ interface StoresPageProps {
     limit?: string;
     search?: string;
     radiusKm?: string;
+    returnUrl?: string;
   };
 }
 
@@ -40,6 +41,10 @@ export default async function StoreVendorsPage({
   searchParams: Promise<StoresPageProps['searchParams']>;
 }) {
   const { slug } = await params;
+
+  const resolvedSearchParams = await searchParams;
+
+  const returnUrl = resolvedSearchParams.returnUrl || '/stores';
 
   // const {  store } = await searchParams;
 
@@ -64,10 +69,8 @@ export default async function StoreVendorsPage({
     {
       'bg-green-100/40 text-green-700':
         store?.status?.toLowerCase() === 'active',
-      'bg-red-100 text-red-800':
-        store?.status?.toLowerCase() === 'pending',
-      'bg-yellow-100 text-yellow-800':
-        store?.status?.toLowerCase() === 'busy',
+      'bg-red-100 text-red-800': store?.status?.toLowerCase() === 'pending',
+      'bg-yellow-100 text-yellow-800': store?.status?.toLowerCase() === 'busy',
     },
   );
 
@@ -100,7 +103,9 @@ export default async function StoreVendorsPage({
                 <p className="font-medium flex-wrap">
                   {store?.storeName || 'Store Name'}
                 </p>
-                <span className={storeStatus}>{store?.status?.toLowerCase() ?? 'N/A'}</span>
+                <span className={storeStatus}>
+                  {store?.status?.toLowerCase() ?? 'N/A'}
+                </span>
               </div>
 
               <p className="text-xs text-neutral-700">
@@ -146,11 +151,7 @@ export default async function StoreVendorsPage({
             </div>
           </div>
 
-          <Button
-            href={`/user/delivery/${store.categoryId}`}
-            variant="white"
-            size="icon"
-          >
+          <Button href={returnUrl} variant="white" size="icon">
             Change Store
           </Button>
         </Card>

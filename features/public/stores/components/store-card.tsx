@@ -13,6 +13,7 @@ export default function StoreCard({
   location,
   delivery,
   time,
+  returnUrl,
 }: StoreCardProps) {
   const store = name
     .toLowerCase()
@@ -22,7 +23,8 @@ export default function StoreCard({
 
   return (
     <Link
-      href={`/stores/${id}?store=${store}`}
+      // href={`/stores/${id}?store=${store}`}
+      href={`/stores/${id}?store=${store}&returnUrl=${encodeURIComponent(returnUrl)}`}
       className="group bg-white rounded-2xl overflow-hidden border border-border shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
     >
       {/* Image section */}

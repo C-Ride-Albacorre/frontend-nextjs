@@ -245,9 +245,9 @@ export default function HeroSearch() {
       animate={{ opacity: 1, y: 0 }}
       className="flex w-full justify-center relative"
     >
-      <div className="relative flex flex-col md:flex-row w-full max-w-2xl items-center gap-4 rounded-2xl p-3 mx-4 md:mx-0 md:border md:border-border">
+      <div className="relative flex flex-col md:flex-row w-full max-w-2xl lg:max-w-3xl xl:max-w-4xl items-center gap-4 rounded-2xl p-3 mx-4 md:mx-0 md:border md:border-border">
         {/* ADDRESS */}
-        <div ref={addressRef} className="relative w-full md:w-auto">
+        <div ref={addressRef} className="relative flex-1 w-full md:w-auto">
           <Input
             leftIcon={<MapPin className="h-5 w-5 text-neutral-500" />}
             placeholder="Enter delivery address"
@@ -258,7 +258,7 @@ export default function HeroSearch() {
         </div>
 
         {/* STORE */}
-        <div ref={storeRef} className="relative w-full md:w-auto">
+        <div ref={storeRef} className="relative flex-1 w-full md:w-auto">
           <Input
             leftIcon={
               isLoadingSuggestions ? (

@@ -1,6 +1,5 @@
 'use client';
 
-
 import RetryButton from '@/components/ui/buttons/retry-button';
 import Card from '@/components/layout/card';
 import { Button } from '@/components/ui/buttons/button';
@@ -22,9 +21,14 @@ interface StoresPageProps {
     radiusKm?: string;
     subcategoryId?: string;
   };
+
+  returnUrl: string;
 }
 
-export default function StoresWrapper({ searchParams }: StoresPageProps) {
+export default function StoresWrapper({
+  searchParams,
+  returnUrl,
+}: StoresPageProps) {
   const {
     categoryId,
     latitude,
@@ -107,7 +111,7 @@ export default function StoresWrapper({ searchParams }: StoresPageProps) {
 
   return (
     <>
-      <StoreGrid stores={stores} />
+      <StoreGrid stores={stores} returnUrl={returnUrl} />
       <PaginationControls currentPage={pageNum} totalPages={totalPages} />
     </>
   );

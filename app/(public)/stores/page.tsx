@@ -1,4 +1,3 @@
-
 import StoreSearch from '@/features/public/stores/components/store-search';
 
 import LocationChips from '@/features/user/delivery/components/location-chips';
@@ -27,6 +26,14 @@ export default async function StoresPage({
   searchParams: Promise<StoresPageProps['searchParams']>;
 }) {
   const { categoryId, name, search } = await searchParams;
+
+  const resolvedSearchParams = await searchParams;
+
+  const query = new URLSearchParams(
+    resolvedSearchParams as Record<string, string>,
+  ).toString();
+
+  const currentUrl = query ? `/stores?${query}` : '/stores';
 
   const title =
     categoryId && search
@@ -63,11 +70,12 @@ export default async function StoresPage({
         <LocationChips />
 
         <Suspense fallback={<StoreSkeleton />}>
-          <StoresWrapper searchParams={await searchParams} />
+          <StoresWrapper
+            searchParams={resolvedSearchParams}
+            returnUrl={currentUrl}
+          />
         </Suspense>
       </div>
-
-    
     </section>
   );
 }
