@@ -34,6 +34,8 @@ interface StoresPageProps {
 export default async function StoreVendorsPage({
   params,
   searchParams,
+
+  
 }: {
   params: Promise<{
     slug: string;
