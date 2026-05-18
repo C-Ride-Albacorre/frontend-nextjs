@@ -16,7 +16,6 @@ export default async function Categories({
 }: {
   categories: Category[];
 }) {
- 
   if (!Array.isArray(categories) || !categories.length) {
     return (
       <Card className="mt-6  bg-white text-sm text-neutral-500 flex flex-col items-center gap-2 h-48 justify-center">
@@ -34,7 +33,7 @@ export default async function Categories({
           <Link
             href={`/user/delivery/${item.id}?name=${encodeURIComponent(item.name)}`}
             key={item.id}
-            className="relative flex  items-center justify-between rounded-2xl bg-primary px-6 py-4  text-left transition hover:opacity-95 cursor-pointer"
+            className="relative flex  items-center justify-between rounded-2xl bg-linear-to-r from-primary to-primary-hover shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300   px-6 py-4  text-left hover:opacity-95 cursor-pointer"
           >
             {/* Left */}
             <div className="flex flex-col justify-around h-full py-2">

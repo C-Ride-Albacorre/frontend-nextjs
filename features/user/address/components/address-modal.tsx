@@ -38,7 +38,7 @@ export default function AddressModal({
         <AddressTabs active={active} setActive={setActive} />
 
         {active === 'saved' && <SavedAddresses />}
-        {active === 'map' && <MapLocations />}
+        {active === 'map' && <MapLocations onSuccess={onSuccess} />}
         {active === 'manual' && (
           <ManualAddressForm
             isDefault={shouldShowModal}

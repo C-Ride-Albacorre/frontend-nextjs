@@ -245,7 +245,7 @@ export default function HeroSearch() {
       animate={{ opacity: 1, y: 0 }}
       className="flex w-full justify-center relative"
     >
-      <div className="relative flex flex-col md:flex-row w-full max-w-3xl items-center gap-4 rounded-2xl p-3 mx-4 md:mx-0 md:border md:border-border">
+      <div className="relative flex flex-col md:flex-row w-full max-w-2xl items-center gap-4 rounded-2xl p-3 mx-4 md:mx-0 md:border md:border-border">
         {/* ADDRESS */}
         <div ref={addressRef} className="relative w-full md:w-auto">
           <Input
@@ -258,7 +258,7 @@ export default function HeroSearch() {
         </div>
 
         {/* STORE */}
-        <div ref={storeRef} className="relative flex-1">
+        <div ref={storeRef} className="relative w-full md:w-auto">
           <Input
             leftIcon={
               isLoadingSuggestions ? (
@@ -274,7 +274,9 @@ export default function HeroSearch() {
           />
         </div>
 
-        <Button onClick={handleSearch}>Search</Button>
+        <Button size="lg" onClick={handleSearch}>
+          Search
+        </Button>
 
         {/* ADDRESS DROPDOWN PORTAL */}
         {mounted &&
