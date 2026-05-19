@@ -27,6 +27,7 @@ export interface CartItem {
   specialInstructions?: string;
   productName: string;
   productImage?: string;
+  imageUrl?: string;
   basePrice: number;
   unitPrice: number;
   totalPrice: number;

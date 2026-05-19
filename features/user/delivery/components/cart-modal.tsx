@@ -73,10 +73,10 @@ export default function CartModal() {
             <li key={item.id} className="flex flex-col gap-4 py-4">
               <div className="flex items-center gap-3">
                 {/* Image */}
-                {item.productImage && (
+                {item.imageUrl && (
                   <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-lg">
                     <Image
-                      src={item.productImage}
+                      src={item.imageUrl}
                       alt={item.productName}
                       fill
                       className="object-cover"
@@ -162,7 +162,8 @@ export default function CartModal() {
               className="w-full"
               rightIcon={<ChevronRight size={16} />}
               onClick={handleProceed}
-              disabled={isLoading || !storeId || !storeSlug}
+              // disabled={isLoading || !storeId || !storeSlug}
+              disabled={isLoading}
             >
               Proceed to Checkout
             </Button>
