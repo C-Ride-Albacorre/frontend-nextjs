@@ -31,7 +31,7 @@ export default function CartModal() {
   const handleProceed = () => {
     closeCart();
 
-    
+
     router.push(`/user/delivery/${storeId}/${storeSlug}/delivery-type`);
   };
 
@@ -72,7 +72,7 @@ export default function CartModal() {
         {/* Items */}
         <ul className="divide-y divide-border">
           {items.map((item) => (
-            <li key={item.id} className="flex flex-col gap-4 py-4">
+            <li key={item.id} className="flex justify-between gap-4 py-4">
               <div className="flex items-center gap-3">
                 {/* Image */}
                 {item.imageUrl && (
@@ -87,7 +87,7 @@ export default function CartModal() {
                 )}
 
                 {/* Info */}
-                <div className="flex justify-between flex-1">
+                <div className="flex flex-col gap-2 justify-between">
                   <p className="text-sm font-medium capitalize">
                     {item.productName}
                   </p>
