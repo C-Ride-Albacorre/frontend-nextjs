@@ -30,6 +30,8 @@ export default function CartModal() {
 
   const handleProceed = () => {
     closeCart();
+
+    
     router.push(`/user/delivery/${storeId}/${storeSlug}/delivery-type`);
   };
 

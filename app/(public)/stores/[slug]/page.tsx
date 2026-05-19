@@ -35,7 +35,7 @@ export default async function StoreVendorsPage({
   params,
   searchParams,
 
-  
+
 }: {
   params: Promise<{
     slug: string;
@@ -43,6 +43,9 @@ export default async function StoreVendorsPage({
   searchParams: Promise<StoresPageProps['searchParams']>;
 }) {
   const { slug } = await params;
+
+
+  
 
   const resolvedSearchParams = await searchParams;
 
