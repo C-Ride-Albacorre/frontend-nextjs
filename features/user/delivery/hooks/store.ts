@@ -218,15 +218,23 @@ export const useCartStore = create<CartStore>()(
       removeItem: async (itemId) => {
         const prevCart = get().cart;
 
+        const cartItem = get().cart?.items.find((i) => i.id === itemId);
+
+        if (!cartItem) return;
+
+        const itemKey = cartItem.productId ?? cartItem.id;
+
+        if (!itemKey) return;
+
         console.log('[CartStore] Removing item:', itemId);
 
         // Prevent duplicate requests
-        if (get().updatingItems.includes(itemId)) {
+        if (get().updatingItems.includes(itemKey)) {
           return;
         }
 
-        // Lock this item
-        get().setUpdatingItem(itemId, true);
+        // Lock this product
+        get().setUpdatingItem(itemKey, true);
 
         // Optimistic update
         set((state) => {
@@ -237,9 +245,7 @@ export const useCartStore = create<CartStore>()(
           return {
             cart: {
               ...state.cart,
-
               items: updatedItems,
-
               ...computeTotals(updatedItems),
             },
           };
@@ -247,8 +253,8 @@ export const useCartStore = create<CartStore>()(
 
         const result = await removeFromCartAction(itemId);
 
-        // Unlock item
-        get().setUpdatingItem(itemId, false);
+        // Unlock product
+        get().setUpdatingItem(itemKey, false);
 
         if (!result.success) {
           console.error('[CartStore] Remove item failed:', result.error);
@@ -278,70 +284,64 @@ export const useCartStore = create<CartStore>()(
 
         const prevCart = get().cart;
 
-        console.log('[CartStore] Updating quantity:', {
-          itemId,
-          quantity,
-        });
+        const cartItem = get().cart?.items.find((i) => i.id === itemId);
 
-        // Prevent duplicate requests
-        if (get().updatingItems.includes(itemId)) {
+        if (!cartItem) return;
+
+        const itemKey = cartItem.productId ?? cartItem.id;
+
+        if (!itemKey) return;
+
+        // prevent duplicate requests
+        if (get().updatingItems.includes(itemKey)) {
           return;
         }
 
-        // Lock item
-        get().setUpdatingItem(itemId, true);
+        // lock
+        get().setUpdatingItem(itemKey, true);
 
-        // Optimistic update
-        set((state) => {
-          if (!state.cart) return state;
+        try {
+          // optimistic update
+          set((state) => {
+            if (!state.cart) return state;
 
-          const updatedItems = state.cart.items.map((i) =>
-            i.id === itemId
-              ? {
-                  ...i,
+            const updatedItems = state.cart.items.map((i) =>
+              i.id === itemId
+                ? {
+                    ...i,
+                    quantity,
+                    totalPrice: i.basePrice * quantity,
+                  }
+                : i,
+            );
 
-                  quantity,
+            return {
+              cart: {
+                ...state.cart,
+                items: updatedItems,
+                ...computeTotals(updatedItems),
+              },
+            };
+          });
 
-                  totalPrice: i.basePrice * quantity,
-                }
-              : i,
-          );
+          const result = await updateCartQuantityAction(itemId, quantity);
 
-          return {
-            cart: {
-              ...state.cart,
+          if (!result.success) {
+            set({ cart: prevCart });
 
-              items: updatedItems,
+            toast.error(result.error || 'Failed to update quantity');
 
-              ...computeTotals(updatedItems),
-            },
-          };
-        });
+            return;
+          }
 
-        const result = await updateCartQuantityAction(itemId, quantity);
-
-        console.log(' [CartStore] Update quantity result:', result);
-
-        // Unlock item
-        get().setUpdatingItem(itemId, false);
-
-        if (!result.success) {
-          console.error('[CartStore] Update quantity failed:', result.error);
-
-          set({ cart: prevCart });
-
-          toast.error(result.error || 'Failed to update quantity');
-
-          return;
+          set({
+            cart: normalizeCart(result.data),
+          });
+        } finally {
+          // unlock
+          get().setUpdatingItem(itemKey, false);
         }
-
-        const normalized = normalizeCart(result.data);
-
-        console.log('[CartStore] Update quantity synced:', normalized);
-
-        set({ cart: normalized });
       },
-
       // ── Clear cart ──
       clearCart: async () => {
         const prevCart = get().cart;

@@ -13,6 +13,7 @@ import { IconButton } from '@/components/ui/buttons/icon-button';
 import Image from 'next/image';
 
 import { usePathname, useRouter } from 'next/navigation';
+import { is } from 'zod/v4/locales';
 
 export default function CartModal() {
   const {
@@ -26,7 +27,6 @@ export default function CartModal() {
     updatingItems,
   } = useCartStore();
 
-  
   const pathname = usePathname();
   const router = useRouter();
 
@@ -82,8 +82,9 @@ export default function CartModal() {
         {/* Items */}
         <ul className="divide-y divide-border">
           {items.map((item) => {
-            const isUpdating = updatingItems.includes(item.id);
+            const itemKey = item.id ?? item.productId;
 
+            const isUpdating = updatingItems.includes(itemKey);
             return (
               <li key={item.id} className="flex justify-between gap-4 py-4">
                 <div className="flex items-center gap-3">

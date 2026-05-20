@@ -179,6 +179,13 @@ export async function updateCartQuantityAction(
     return { success: false, error: msg };
   }
 
+  console.log(
+    '[updateCartQuantityAction] Item ID:',
+    itemId,
+    'Quantity:',
+    quantity,
+  );
+
   try {
     const response = await updateCartQuantityService(
       itemId,

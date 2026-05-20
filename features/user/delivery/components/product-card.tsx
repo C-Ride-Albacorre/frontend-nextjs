@@ -12,34 +12,60 @@ export default function ProductCard({ item }: { item: Product }) {
   const { cart, addItem, updateQuantity, removeItem, updatingItems } =
     useCartStore();
 
-    console.log('[ProductCard] Rendering:', cart, item);
+  console.log('[ProductCard] Rendering:', cart, item);
 
   const cartItem = cart?.items?.find((i) => i.productId === item.id);
+
   const quantity = cartItem?.quantity ?? 0;
 
-  const isUpdating = updatingItems.includes(cartItem?.id || item.id);
+  const itemKey = item.id;
 
-  const handleAdd = () => {
+  const isUpdating = updatingItems.includes(itemKey);
+
+  const handleAdd = async () => {
+    // Prevent duplicate requests
+    if (isUpdating) return;
+
+    // First add
     if (!cartItem) {
-      addItem(
+      await addItem(
         {
           ...item,
           variantId: item.variants?.[0]?.id,
         },
         1,
       );
-    } else {
-      updateQuantity(cartItem.id, quantity + 1);
+
+      return;
     }
+
+    // Don't update temp items
+    if (cartItem.id.startsWith('temp-')) {
+      return;
+    }
+
+    await updateQuantity(cartItem.id, quantity + 1);
+
+    console.log(
+      '[ProductCard] Add item:',
+      item.id,
+      'New quantity:',
+      quantity + 1,
+    );
   };
 
-  const handleMinus = () => {
-    if (!cartItem) return;
+  const handleMinus = async () => {
+    if (!cartItem || isUpdating) return;
+
+    // Don't mutate temp items
+    if (cartItem.id.startsWith('temp-')) {
+      return;
+    }
 
     if (quantity <= 1) {
-      removeItem(cartItem.id);
+      await removeItem(cartItem.id);
     } else {
-      updateQuantity(cartItem.id, quantity - 1);
+      await updateQuantity(cartItem.id, quantity - 1);
     }
   };
 
@@ -71,7 +97,6 @@ export default function ProductCard({ item }: { item: Product }) {
           </p>
 
           <div className="flex justify-between">
-      
             <p className="font-medium text-primary text-sm">
               ₦{item.basePrice.toLocaleString()}
             </p>
