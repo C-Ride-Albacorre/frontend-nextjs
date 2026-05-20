@@ -43,11 +43,13 @@ export default function SavedAddress() {
 
   const { data, isLoading, error } = useAddresses();
 
+  console.log(' [SavedAddress] Addresses data:', data);
+
   return (
     <>
       <Card gap="lg">
         <div className="flex justify-between items-center">
-          <p className="text-sm font-medium">Saved Address</p>
+          <h2 className="text-sm font-semibold">Your Address</h2>
 
           <Button
             onClick={() => setAddLocation(true)}
@@ -77,7 +79,11 @@ export default function SavedAddress() {
                 >
                   <div className="flex flex-col md:flex-row md:items-start gap-4 md:gap-6">
                     <div className="bg-primary/10 w-12 h-12 rounded-full flex justify-center items-center">
-                      {option.icon}
+                      {option.isDefault ? (
+                        <MapPinHouse size={20} className="text-primary" />
+                      ) : (
+                        <MapPin size={20} className="text-primary" />
+                      )}
                     </div>
 
                     <div className="space-y-3 text-sm">
@@ -98,7 +104,7 @@ export default function SavedAddress() {
                   </div>
 
                   <div className="flex gap-4 items-center">
-                    {!option.default && (
+                    {!option.isDefault && (
                       <Button
                         variant="green-outline"
                         className="text-xs"
