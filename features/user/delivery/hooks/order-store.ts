@@ -9,6 +9,7 @@ interface OrderState {
   recipientName: string;
   recipientPhone: string;
   deliveryInstructions: string;
+  vendorDeliveryLocation: string;
 
   // Post-order creation
   orderId: string | null;
@@ -19,6 +20,8 @@ interface OrderState {
 
   // Cached checkout URLs keyed by orderId (Monnify won't re-initialize)
   checkoutUrls: Record<string, string>;
+
+  setVendorDeliveryLocation: (location: string) => void;
 
   setDeliveryOption: (id: string) => void;
   setDropoffLocation: (loc: DropoffLocation) => void;
@@ -43,6 +46,7 @@ const HARDCODED_DELIVERY_OPTION_ID = '00000000-0000-0000-0000-000000000000';
 const initialState = {
   deliveryOptionId: HARDCODED_DELIVERY_OPTION_ID,
   dropoffLocation: null,
+  vendorDeliveryLocation: '',
   recipientName: '',
   recipientPhone: '',
   deliveryInstructions: '',
@@ -58,6 +62,9 @@ export const useOrderStore = create<OrderState>()(
   persist(
     (set) => ({
       ...initialState,
+      
+      setVendorDeliveryLocation: (location) =>
+        set({ vendorDeliveryLocation: location }),
 
       setDeliveryOption: (id) => set({ deliveryOptionId: id }),
       setDropoffLocation: (loc) => set({ dropoffLocation: loc }),
@@ -65,6 +72,7 @@ export const useOrderStore = create<OrderState>()(
       setRecipientPhone: (phone) => set({ recipientPhone: phone }),
       setDeliveryInstructions: (val) => set({ deliveryInstructions: val }),
       setOrderId: (id) => set({ orderId: id }),
+
       setPaymentData: (data) =>
         set({
           paymentReference: data.reference,

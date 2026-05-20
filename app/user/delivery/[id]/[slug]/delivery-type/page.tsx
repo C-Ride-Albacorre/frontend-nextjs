@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { ChevronRight, Clock, Loader2 } from 'lucide-react';
+import { ChevronRight, Clock, Loader } from 'lucide-react';
 import { useOrderStore } from '@/features/user/delivery/hooks/order-store';
 import { getDeliveryOptionsAction } from '@/features/user/delivery/action';
 
@@ -79,7 +79,7 @@ export default function DeliveryTypePage() {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center py-24">
-        <Loader2 size={32} className="animate-spin text-primary" />
+        <Loader size={32} className="animate-spin text-primary" />
       </div>
     );
   }

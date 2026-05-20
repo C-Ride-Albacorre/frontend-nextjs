@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Search, Loader2 } from 'lucide-react';
+import { Search, Loader } from 'lucide-react';
 import clsx from 'clsx';
 import { Button } from '@/components/ui/buttons/button';
 
@@ -154,7 +154,7 @@ export default function StoreSearch({
           />
 
           {isLoading && (
-            <Loader2 className="h-5 w-5 text-neutral-400 animate-spin shrink-0" />
+            <Loader className="h-5 w-5 text-neutral-400 animate-spin shrink-0" />
           )}
 
           {query && !isLoading && (

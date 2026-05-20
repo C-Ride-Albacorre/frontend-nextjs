@@ -3,7 +3,11 @@
 import { redirect } from 'next/navigation';
 import { LoginFormSchema, LoginFormState } from '../libs/user-login.schema';
 import { LoginPayload, loginUser } from '../services/user-login';
-import { setAuthCookies, setVerificationCookies } from '@/utils/cookies';
+import {
+  clearGuestCookies,
+  setAuthCookies,
+  setVerificationCookies,
+} from '@/utils/cookies';
 
 export async function userLoginAction(
   _state: LoginFormState,
@@ -40,8 +44,7 @@ export async function userLoginAction(
 
   // ✅ Send as separate fields matching your API contract
   const payload: LoginPayload = isPhone
-    ? { phoneNumber: rawIdentifier, password, 
-     }
+    ? { phoneNumber: rawIdentifier, password }
     : { email: rawIdentifier, password };
 
   let redirectTo: string | null = null;
@@ -77,6 +80,8 @@ export async function userLoginAction(
 
       await setAuthCookies(accessToken, refreshToken);
 
+      await clearGuestCookies();
+
       console.log('User login successful:', result);
 
       redirectTo = safeCallback;
@@ -99,5 +104,3 @@ export async function userLoginAction(
   if (redirectTo) redirect(redirectTo);
   return { status: 'success' };
 }
-
-

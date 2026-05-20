@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import {
   CreditCard,
-  Loader2,
+  Loader,
   MapPin,
   Phone,
   ShoppingBag,
@@ -108,7 +108,7 @@ export default function OrderDetailModal({
         {/* Loading */}
         {isLoading && (
           <div className="flex justify-center py-12">
-            <Loader2 size={24} className="animate-spin text-primary" />
+            <Loader size={24} className="animate-spin text-primary" />
           </div>
         )}
 
@@ -283,7 +283,7 @@ export default function OrderDetailModal({
               className="w-full"
               leftIcon={
                 isInitiatingPayment ? (
-                  <Loader2 size={16} className="animate-spin" />
+                  <Loader size={16} className="animate-spin" />
                 ) : (
                   <CreditCard size={16} />
                 )

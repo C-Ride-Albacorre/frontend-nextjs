@@ -162,8 +162,6 @@ export async function setVendorVerificationCookies({
   });
 }
 
-
-
 export async function getOrCreateGuestSessionId() {
   const cookieStore = await cookies();
 
@@ -246,6 +244,11 @@ export async function clearVerificationCookies() {
   cookieStore.delete(COOKIE_KEYS.REGISTRATION_METHOD);
   cookieStore.delete(COOKIE_KEYS.VENDOR_PHONE_NUMBER);
   cookieStore.delete(COOKIE_KEYS.VENDOR_EMAIL);
+}
+
+export async function clearGuestCookies() {
+  const cookieStore = await cookies();
+  cookieStore.delete(COOKIE_KEYS.GUEST_SESSION_ID);
 }
 
 // Check if user is authenticated (has valid access token)

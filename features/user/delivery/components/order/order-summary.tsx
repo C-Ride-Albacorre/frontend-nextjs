@@ -1,6 +1,6 @@
 'use client';
 
-import { Loader2, Trash, Trash2, X } from 'lucide-react';
+import { Loader, Trash, Trash2, X } from 'lucide-react';
 import { useCartStore } from '../../hooks/store';
 import { Suspense } from 'react';
 import Card from '@/components/layout/card';
@@ -18,7 +18,7 @@ export default function OrderSummary() {
   return (
     <Suspense
       fallback={
-        <Loader2 size={24} className="animate-spin text-primary mx-auto" />
+        <Loader size={24} className="animate-spin text-primary mx-auto" />
       }
     >
       <Card gap="lg" className="bg-foreground-200">
@@ -33,7 +33,7 @@ export default function OrderSummary() {
 
               <div className="flex items-center gap-2  md:gap-8">
                 {isLoading ? (
-                  <Loader2 size={16} className="animate-spin text-primary" />
+                  <Loader size={16} className="animate-spin text-primary" />
                 ) : (
                   <span>₦ {item.totalPrice.toLocaleString()}</span>
                 )}
@@ -52,7 +52,7 @@ export default function OrderSummary() {
         <div className="border-t border-border pt-8 flex justify-between">
           <span>Sub Total</span>
           {isLoading ? (
-            <Loader2 size={16} className="animate-spin text-primary" />
+            <Loader size={16} className="animate-spin text-primary" />
           ) : (
             <span>₦ {(cart?.subTotal ?? 0).toLocaleString()}</span>
           )}

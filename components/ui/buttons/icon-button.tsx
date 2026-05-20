@@ -11,6 +11,7 @@ export function IconButton({
   size = 'md',
   variant = 'default',
   rounded = 'full',
+  disabled = false,
   className,
   ariaLabel,
   highlightOnRoutes,
@@ -53,6 +54,7 @@ export function IconButton({
     <button
       {...props}
       aria-label={ariaLabel}
+      disabled={disabled}
       className={clsx(
         'inline-flex items-center justify-center border transition-all duration-200 cursor-pointer z-10 focus:outline-none',
         {
@@ -90,6 +92,9 @@ export function IconButton({
             variant === 'gray',
 
           'text-white border-border/10 hover:bg-white/10': shouldHighlight,
+
+          // disabled
+          'disabled:opacity-50 disabled:cursor-not-allowed': true,
         },
         className,
       )}

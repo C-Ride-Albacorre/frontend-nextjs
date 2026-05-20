@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useTransition } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
-import { Loader2, RefreshCcw, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Loader, RefreshCcw, ChevronLeft, ChevronRight } from 'lucide-react';
 import { toast } from 'sonner';
 import VendorsTable from './vendors-table';
 import ViewVendorModal from './view-vendor-modal';
@@ -151,7 +151,7 @@ export default function VendorPageSection({
         <div className="relative">
           {isPending && (
             <div className="absolute inset-0 bg-white/60 flex justify-center pt-20 z-10">
-              <Loader2 className="animate-spin text-primary" size={32} />
+              <Loader className="animate-spin text-primary" size={32} />
             </div>
           )}
 

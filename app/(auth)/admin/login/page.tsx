@@ -1,6 +1,6 @@
 import ErrorMessage from '@/components/layout/error-message';
 import AdminLoginForm from '@/features/auth/components/admin/login';
-import { Loader2 } from 'lucide-react';
+import { Loader } from 'lucide-react';
 import { Suspense } from 'react';
 
 interface SearchParams {
@@ -30,7 +30,7 @@ export default async function AdminLoginPage({
   return (
     <Suspense
       fallback={
-        <Loader2 size={24} className="animate-spin text-primary mx-auto" />
+        <Loader size={24} className="animate-spin text-primary mx-auto" />
       }
     >
       {expired === 'true' && (
@@ -44,7 +44,6 @@ export default async function AdminLoginPage({
         </div>
       )}
       <AdminLoginForm />
-
     </Suspense>
   );
 }

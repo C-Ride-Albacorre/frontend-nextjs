@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { Button } from '@/components/ui/buttons/button';
 import Input from '@/components/ui/inputs/input';
@@ -12,7 +12,7 @@ import {
   Stars,
   ChevronLeft,
   ChevronRight,
-  Loader2,
+  Loader,
 } from 'lucide-react';
 import OrderDetailModal from '@/features/user/delivery/components/modals/order-detail-modal';
 import { useOrderStore } from '@/features/user/delivery/hooks/order-store';
@@ -28,7 +28,7 @@ export default function DeliveryConfirmationPage() {
   const [isCreatingOrder, setIsCreatingOrder] = useState(false);
 
   const {
-    // deliveryOptionId,
+    vendorDeliveryLocation,
     dropoffLocation,
     recipientName,
     recipientPhone,
@@ -46,6 +46,16 @@ export default function DeliveryConfirmationPage() {
   const subTotal = cart?.subTotal ?? 0;
   const total = subTotal;
 
+  // Retrieve vendor address details from sessionStorage if present
+  const [vendorAddressDetails, setVendorAddressDetails] = useState<any>(null);
+
+  useEffect(() => {
+    const stored = window.sessionStorage.getItem('vendorAddressDetails');
+    if (stored) {
+      setVendorAddressDetails(JSON.parse(stored));
+    }
+  }, []);
+
   const handleContinue = async () => {
     if (!cart?.id) {
       toast.error('Your cart is empty');
@@ -57,10 +67,8 @@ export default function DeliveryConfirmationPage() {
     }
 
     setIsCreatingOrder(true);
-
-    const payload = {
+    const payload: any = {
       cartId: cart.id,
-      // deliveryOptionId,
       dropoffLocation: {
         address: dropoffLocation.address,
         city: dropoffLocation.city || 'N/A',
@@ -68,31 +76,55 @@ export default function DeliveryConfirmationPage() {
         country: dropoffLocation.country || 'Nigeria',
         postalCode: dropoffLocation.postalCode,
       },
+      pickupLocation: {
+        address: vendorDeliveryLocation,
+      },
       recipientName,
       recipientPhone,
       deliveryInstructions,
     };
-
+    // Attach vendor address details to payload
+    // if (vendorAddressDetails) {
+    //   payload.vendorAddress = vendorAddressDetails;
+    // }
     console.log('[DeliveryConfirmationPage] Create order payload:', payload);
 
     const result = await createOrderAction(payload);
 
+    console.log('[DeliveryConfirmationPage] Create order result:', result);
+
     setIsCreatingOrder(false);
+
+    console.log(
+      '[DeliveryConfirmationPage] Create order payload:',
+      payload,
+      '[DeliveryConfirmationPage] Create order result:',
+      result,
+    );
 
     if (!result.success) {
       toast.error(result.error || 'Failed to create order. Please try again.');
       return;
     }
 
-    const newOrderId = result.data.id ?? result.data.orderId;
+    const newOrderId = result.data.orderId;
     if (!newOrderId) {
       toast.error('Order created but ID is missing. Please contact support.');
       return;
     }
 
     setOrderId(newOrderId);
-    clearCart();
+
     setIsOrderDetailModalOpen(true);
+
+    console.log(
+      ' [DeliveryConfirmationPage] Order created with ID:',
+      newOrderId,
+      'isOrderDetailModalOpen:',
+      isOrderDetailModalOpen,
+    );
+
+    clearCart();
   };
 
   return (
@@ -186,7 +218,7 @@ export default function DeliveryConfirmationPage() {
         </span>
       </div>
 
-      <div className="mt-12 flex flex-col md:flex-row items-center justify-around gap-4 md:gap-8">
+      <div className="mt-12 flex flex-col md:flex-row items-center justify-between gap-4 md:gap-8">
         <Button
           href={`/user/delivery/${id}/${slug}/delivery-location`}
           variant="outline"
@@ -207,7 +239,7 @@ export default function DeliveryConfirmationPage() {
         >
           {isCreatingOrder ? (
             <span className="flex items-center gap-2">
-              <Loader2 size={16} className="animate-spin" /> Creating Order...
+              <Loader size={16} className="animate-spin" /> Creating Order...
             </span>
           ) : (
             'Create Order'

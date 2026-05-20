@@ -91,6 +91,8 @@ export async function fetchSubcategoriesAction(categoryId: string) {
 export async function fetchStoreDetailsAction(storeId: string) {
   try {
     const result = await fetchStoreDetailsService(storeId);
+
+    console.log('[fetchStoreDetailsAction] Result:', result);
     return result.data ?? [];
   } catch (error) {
     return {
@@ -123,6 +125,14 @@ export async function fetchVendorAddressAction(
 export async function getCartAction(): Promise<ActionResult> {
   try {
     const response = await getCartService();
+
+    if (response.status !== 'success') {
+      return {
+        success: false,
+        error: response.data?.message || 'Failed to fetch cart',
+      };
+    }
+
     return { success: true, data: response.data };
   } catch (error: any) {
     return { success: false, error: error.message || 'Failed to fetch cart' };
@@ -141,6 +151,14 @@ export async function addToCartAction(
 
   try {
     const response = await addToCartService(parsed.data);
+
+    if (response.status !== 'success') {
+      return {
+        success: false,
+        error: response.data?.message || 'Failed to add item to cart',
+      };
+    }
+
     return { success: true, data: response.data };
   } catch (error: any) {
     return {
@@ -166,6 +184,15 @@ export async function updateCartQuantityAction(
       itemId,
       parsed.data.quantity,
     );
+
+    console.log('[updateCartQuantityAction] Service response:', response);
+
+    if (response.status !== 'success') {
+      return {
+        success: false,
+        error: response.data?.message || 'Failed to update quantity',
+      };
+    }
     return { success: true, data: response.data };
   } catch (error: any) {
     return {
@@ -187,6 +214,14 @@ export async function removeFromCartAction(
 
   try {
     const response = await removeFromCartService(parsed.data.itemId);
+
+    if (response.status !== 'success') {
+      return {
+        success: false,
+        error: response.data?.message || 'Failed to remove item from cart',
+      };
+    }
+
     return { success: true, data: response.data };
   } catch (error: any) {
     return {
@@ -199,6 +234,14 @@ export async function removeFromCartAction(
 export async function clearCartAction(): Promise<ActionResult> {
   try {
     const response = await clearCartService();
+
+    if (response.status !== 'success') {
+      return {
+        success: false,
+        error: response.data?.message || 'Failed to clear cart',
+      };
+    }
+
     return { success: true, data: response.data };
   } catch (error: any) {
     return { success: false, error: error.message || 'Failed to clear cart' };
@@ -213,20 +256,20 @@ export async function createOrderAction(
   payload: CreateOrderPayload,
 ): Promise<ActionResult<{ id: string; orderId?: string }>> {
   // Preprocess: convert null postalCode to undefined
-  const sanitizedPayload = {
-    ...payload,
-    dropoffLocation: {
-      ...payload.dropoffLocation,
-      postalCode:
-        payload.dropoffLocation?.postalCode === null
-          ? undefined
-          : payload.dropoffLocation?.postalCode,
-    },
-  };
+  // const sanitizedPayload = {
+  //   ...payload,
+  //   dropoffLocation: {
+  //     ...payload.dropoffLocation,
+  //     postalCode:
+  //       payload.dropoffLocation?.postalCode === null
+  //         ? undefined
+  //         : payload.dropoffLocation?.postalCode,
+  //   },
+  // };
 
-  console.log('Order payload validated:', sanitizedPayload);
+  console.log('Order payload validated:', payload);
 
-  const parsed = CreateOrderSchema.safeParse(sanitizedPayload);
+  const parsed = CreateOrderSchema.safeParse(payload);
 
   if (!parsed.success) {
     const msg = parsed.error.issues[0]?.message ?? 'Invalid order payload';

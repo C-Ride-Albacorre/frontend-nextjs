@@ -28,6 +28,9 @@ interface CartStore {
   isLoading: boolean;
   isCartOpen: boolean;
   error: string | null;
+  updatingItems: string[];
+
+  setUpdatingItem: (id: string, updating: boolean) => void;
 
   setCart: (cart: Cart | null) => void;
   openCart: () => void;
@@ -76,6 +79,13 @@ export const useCartStore = create<CartStore>()(
       isLoading: false,
       isCartOpen: false,
       error: null,
+      updatingItems: [],
+      setUpdatingItem: (id, updating) =>
+        set((state) => ({
+          updatingItems: updating
+            ? [...state.updatingItems, id]
+            : state.updatingItems.filter((itemId) => itemId !== id),
+        })),
 
       setCart: (cart) => set({ cart }),
       openCart: () => set({ isCartOpen: true }),
@@ -103,18 +113,23 @@ export const useCartStore = create<CartStore>()(
       addItem: async (product, quantity = 1) => {
         const prevCart = get().cart;
 
-        console.log('[CartStore] Adding item:', {
-          productId: product.id,
-          variantId: product.variantId,
-          quantity,
-        });
+        const itemKey = product.id;
+
+        // Prevent duplicate clicks
+        if (get().updatingItems.includes(itemKey)) {
+          return;
+        }
+
+        get().setUpdatingItem(itemKey, true);
 
         // Optimistic update
         set((state) => {
           const currentItems = state.cart?.items ?? [];
+
           const existing = currentItems.find((i) => i.productId === product.id);
 
           let updatedItems: CartItem[];
+
           if (existing) {
             updatedItems = currentItems.map((i) =>
               i.productId === product.id
@@ -128,88 +143,128 @@ export const useCartStore = create<CartStore>()(
           } else {
             const newItem: CartItem = {
               id: `temp-${Date.now()}`,
+
               itemType: 'PRODUCT',
+
               productId: product.id,
+
               variantId: product.variantId,
+
               packageId: product.packageId,
+
               addonIds: product.addonIds,
+
               specialInstructions: product.specialInstructions,
+
               quantity,
+
               productName: product.productName,
+
               productImage: product.productImages?.[0]?.imageUrl,
+
               unitPrice: product.basePrice,
 
               basePrice: product.basePrice,
+
               totalPrice: product.basePrice * quantity,
             };
+
             updatedItems = [...currentItems, newItem];
           }
 
           return {
             cart: {
               id: state.cart?.id || 'temp-cart',
+
               items: updatedItems,
+
               ...computeTotals(updatedItems),
             },
           };
         });
 
         // Server sync
-        set({ isLoading: true });
         const result = await addToCartAction({
           itemType: 'PRODUCT',
+
           productId: product.id,
+
           variantId: product.variantId,
+
           packageId: product.packageId,
+
           addonIds: product.addonIds,
+
           quantity,
+
           specialInstructions: product.specialInstructions,
         });
-        set({ isLoading: false });
+
+        get().setUpdatingItem(itemKey, false);
 
         if (!result.success) {
-          console.error('[CartStore] Add item failed:', result.error);
           set({ cart: prevCart });
+
           toast.error(result.error || 'Failed to add item');
+
           return;
         }
 
-        const normalized = normalizeCart(result.data);
-        console.log('[CartStore] Add item synced:', normalized);
-        set({ cart: normalized });
+        set({
+          cart: normalizeCart(result.data),
+        });
       },
-
       // ── Remove item ──
       removeItem: async (itemId) => {
         const prevCart = get().cart;
+
         console.log('[CartStore] Removing item:', itemId);
 
-        // Optimistic
+        // Prevent duplicate requests
+        if (get().updatingItems.includes(itemId)) {
+          return;
+        }
+
+        // Lock this item
+        get().setUpdatingItem(itemId, true);
+
+        // Optimistic update
         set((state) => {
           if (!state.cart) return state;
+
           const updatedItems = state.cart.items.filter((i) => i.id !== itemId);
+
           return {
             cart: {
               ...state.cart,
+
               items: updatedItems,
+
               ...computeTotals(updatedItems),
             },
           };
         });
 
-        set({ isLoading: true });
         const result = await removeFromCartAction(itemId);
-        set({ isLoading: false });
+
+        // Unlock item
+        get().setUpdatingItem(itemId, false);
 
         if (!result.success) {
           console.error('[CartStore] Remove item failed:', result.error);
+
+          // Rollback
           set({ cart: prevCart });
+
           toast.error(result.error || 'Failed to remove item');
+
           return;
         }
 
         const normalized = normalizeCart(result.data);
+
         console.log('[CartStore] Remove item synced:', normalized);
+
         set({ cart: normalized });
       },
 
@@ -217,42 +272,73 @@ export const useCartStore = create<CartStore>()(
       updateQuantity: async (itemId, quantity) => {
         if (quantity < 1) {
           await get().removeItem(itemId);
+
           return;
         }
 
         const prevCart = get().cart;
-        console.log('[CartStore] Updating quantity:', { itemId, quantity });
 
-        // Optimistic
+        console.log('[CartStore] Updating quantity:', {
+          itemId,
+          quantity,
+        });
+
+        // Prevent duplicate requests
+        if (get().updatingItems.includes(itemId)) {
+          return;
+        }
+
+        // Lock item
+        get().setUpdatingItem(itemId, true);
+
+        // Optimistic update
         set((state) => {
           if (!state.cart) return state;
+
           const updatedItems = state.cart.items.map((i) =>
             i.id === itemId
-              ? { ...i, quantity, totalPrice: i.basePrice * quantity }
+              ? {
+                  ...i,
+
+                  quantity,
+
+                  totalPrice: i.basePrice * quantity,
+                }
               : i,
           );
+
           return {
             cart: {
               ...state.cart,
+
               items: updatedItems,
+
               ...computeTotals(updatedItems),
             },
           };
         });
 
-        set({ isLoading: true });
         const result = await updateCartQuantityAction(itemId, quantity);
-        set({ isLoading: false });
+
+        console.log(' [CartStore] Update quantity result:', result);
+
+        // Unlock item
+        get().setUpdatingItem(itemId, false);
 
         if (!result.success) {
           console.error('[CartStore] Update quantity failed:', result.error);
+
           set({ cart: prevCart });
+
           toast.error(result.error || 'Failed to update quantity');
+
           return;
         }
 
         const normalized = normalizeCart(result.data);
+
         console.log('[CartStore] Update quantity synced:', normalized);
+
         set({ cart: normalized });
       },
 

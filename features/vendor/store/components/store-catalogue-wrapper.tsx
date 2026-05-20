@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Loader2, Store, Trash2 } from 'lucide-react';
+import { Loader, Store, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/buttons/button';
 import Card from '@/components/layout/card';
 import VendorToolbar from '@/components/layout/vendor-tool-bar';
@@ -124,7 +124,7 @@ export default function StoreCatalogueWrapper({
       {isLoading ? (
         <Card>
           <div className="flex items-center justify-center py-12">
-            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+            <Loader className="w-8 h-8 animate-spin text-primary" />
           </div>
         </Card>
       ) : stores.length === 0 ? (

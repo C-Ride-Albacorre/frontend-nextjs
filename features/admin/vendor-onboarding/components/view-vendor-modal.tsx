@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Modal from '@/components/layout/modal';
 import { Button } from '@/components/ui/buttons/button';
-import { Store, Loader2 } from 'lucide-react';
+import { Store, Loader } from 'lucide-react';
 import Image from 'next/image';
 import clsx from 'clsx';
 import { VendorDetail, ViewVendorModalProps } from '../types';
@@ -63,7 +63,7 @@ export default function ViewVendorModal({
     <Modal isModalOpen={isModalOpen} onClose={handleClose}>
       {isLoading ? (
         <div className="flex justify-center py-20">
-          <Loader2 className="animate-spin text-primary" size={32} />
+          <Loader className="animate-spin text-primary" size={32} />
         </div>
       ) : vendor ? (
         <div className="space-y-6 py-4">

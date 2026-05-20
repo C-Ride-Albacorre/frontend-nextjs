@@ -8,7 +8,6 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Button } from '../ui/buttons/button';
 import { IconButton } from '../ui/buttons/icon-button';
 import Image from 'next/image';
-import { div } from 'framer-motion/client';
 import { usePathname } from 'next/navigation';
 import StoreHeader from '@/features/public/stores/components/store-header';
 
@@ -122,7 +121,7 @@ const NavBar = ({ isLoggedIn, role }: NavBarProps) => {
             </div> */}
 
             <div className="flex items-center gap-3">
-              <StoreHeader />
+              <StoreHeader isLoggedIn={isLoggedIn} />
 
               {isLoggedIn ? (
                 <Button
@@ -151,7 +150,7 @@ const NavBar = ({ isLoggedIn, role }: NavBarProps) => {
           {/* MOBILE MENU BUTTON */}
 
           <div className="flex items-center gap-3 lg:hidden">
-            <StoreHeader />
+            <StoreHeader isLoggedIn={isLoggedIn} />
 
             <IconButton
               onClick={toggleMenu}

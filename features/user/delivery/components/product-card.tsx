@@ -3,16 +3,21 @@
 import Card from '@/components/layout/card';
 import { Button } from '@/components/ui/buttons/button';
 import { Product } from '@/features/vendor/products/type';
-import { Minus, Plus } from 'lucide-react';
+import { Loader, Minus, Plus, RotateCcw } from 'lucide-react';
 import Image from 'next/image';
 import { useCartStore } from '../hooks/store';
 import { IconButton } from '@/components/ui/buttons/icon-button';
 
 export default function ProductCard({ item }: { item: Product }) {
-  const { cart, addItem, updateQuantity, removeItem } = useCartStore();
+  const { cart, addItem, updateQuantity, removeItem, updatingItems } =
+    useCartStore();
+
+    console.log('[ProductCard] Rendering:', cart, item);
 
   const cartItem = cart?.items?.find((i) => i.productId === item.id);
   const quantity = cartItem?.quantity ?? 0;
+
+  const isUpdating = updatingItems.includes(cartItem?.id || item.id);
 
   const handleAdd = () => {
     if (!cartItem) {
@@ -66,9 +71,7 @@ export default function ProductCard({ item }: { item: Product }) {
           </p>
 
           <div className="flex justify-between">
-            <p className="text-xs text-neutral-500">
-              {item.name || 'No category'}
-            </p>
+      
             <p className="font-medium text-primary text-sm">
               ₦{item.basePrice.toLocaleString()}
             </p>
@@ -78,7 +81,7 @@ export default function ProductCard({ item }: { item: Product }) {
         <div className="flex justify-between items-center">
           <IconButton
             onClick={handleMinus}
-            disabled={!cartItem}
+            disabled={!cartItem || isUpdating}
             variant="primary-outline"
             size="icon"
             rounded="md"
@@ -93,6 +96,7 @@ export default function ProductCard({ item }: { item: Product }) {
             variant="primary"
             size="icon"
             rounded="md"
+            disabled={isUpdating}
           >
             <Plus size={14} />
           </IconButton>
@@ -102,8 +106,15 @@ export default function ProductCard({ item }: { item: Product }) {
           type="button"
           variant={quantity > 0 ? 'primary' : 'white'}
           onClick={handleAdd}
+          disabled={isUpdating}
         >
-          {quantity > 0 ? `In Cart (${quantity})` : 'Add to Order'}
+          {isUpdating ? (
+            <Loader size={16} className="animate-spin text-primary-text-100" />
+          ) : quantity > 0 ? (
+            `In Cart (${quantity})`
+          ) : (
+            'Add to Order'
+          )}
         </Button>
       </div>
     </Card>

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-import { Loader2, MapPin, MapPinHouse, MapPinned, Plus } from 'lucide-react';
+import { Loader, MapPin, MapPinHouse, MapPinned, Plus } from 'lucide-react';
 import AddressModal from '@/features/user/address/components/address-modal';
 import { Button } from '@/components/ui/buttons/button';
 import { useAddresses } from '../../address/fetch';
@@ -11,7 +11,7 @@ import Card from '@/components/layout/card';
 export default function Address() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const { data , isLoading, error } = useAddresses();
+  const { data, isLoading, error } = useAddresses();
 
   console.log('Address Data:', data);
 
@@ -34,12 +34,12 @@ export default function Address() {
 
         {isLoading ? (
           <div className="flex justify-center py-20">
-            <Loader2 className="animate-spin text-primary" size={32} />
+            <Loader className="animate-spin text-primary" size={32} />
           </div>
         ) : error ? (
           <p className="flex flex-col justify-center items-center text-center text-sm py-20 text-red-500 gap-3">
             <MapPinHouse size={24} className="text-red-500" />
-           <p>{error.message || 'Failed to load addresses'}</p> 
+            <p>{error.message || 'Failed to load addresses'}</p>
           </p>
         ) : data ? (
           <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-72 overflow-y-scroll">

@@ -2,7 +2,7 @@
 
 import { useRouter, usePathname } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Search, Loader2 } from 'lucide-react';
+import { Search, Loader } from 'lucide-react';
 import clsx from 'clsx';
 import { Button } from '@/components/ui/buttons/button';
 import { BASE_URL } from '@/config/api';
@@ -121,7 +121,9 @@ export default function StoreSearch({ initialSearch = '' }: StoreSearchProps) {
         if (lng !== undefined) params.set('lng', String(lng));
         if (radiusKm) params.set('radiusKm', radiusKm);
 
-        const res = await fetch(`${BASE_URL}/customer/stores?${params.toString()}`);
+        const res = await fetch(
+          `${BASE_URL}/customer/stores?${params.toString()}`,
+        );
         const data = await res.json();
 
         const stores: StoreSuggestion[] = data?.data?.data ?? [];
@@ -208,7 +210,7 @@ export default function StoreSearch({ initialSearch = '' }: StoreSearchProps) {
           />
 
           {isLoading && (
-            <Loader2 className="h-5 w-5 text-neutral-400 animate-spin shrink-0" />
+            <Loader className="h-5 w-5 text-neutral-400 animate-spin shrink-0" />
           )}
 
           {query && !isLoading && (

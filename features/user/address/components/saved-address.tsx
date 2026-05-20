@@ -1,12 +1,10 @@
 import Input from '@/components/ui/inputs/input';
-import { Loader2, MapPinHouse, MapPinned, Search } from 'lucide-react';
+import { Loader, MapPinHouse, MapPinned, Search } from 'lucide-react';
 import { useAddresses } from '../fetch';
 import Card from '@/components/layout/card';
 
-
-
 export default function SavedAddresses() {
-  const { data , isLoading, error } = useAddresses();
+  const { data, isLoading, error } = useAddresses();
 
   return (
     <div className="space-y-4">
@@ -19,7 +17,7 @@ export default function SavedAddresses() {
 
       {isLoading ? (
         <div className="flex justify-center py-20">
-          <Loader2 className="animate-spin text-primary" size={32} />
+          <Loader className="animate-spin text-primary" size={32} />
         </div>
       ) : error ? (
         <p className="flex flex-col justify-center items-center text-center text-sm py-20 text-red-500 gap-3">
@@ -43,7 +41,9 @@ export default function SavedAddresses() {
                   {item.label.toLocaleLowerCase()}
                 </p>
                 <p className="text-xs text-neutral-500 capitalize">
-                  {item.address ? item.address.toLocaleLowerCase() : 'No address provided'}
+                  {item.address
+                    ? item.address.toLocaleLowerCase()
+                    : 'No address provided'}
                 </p>
 
                 <div className="flex gap-2 text-neutral-500  text-xs">

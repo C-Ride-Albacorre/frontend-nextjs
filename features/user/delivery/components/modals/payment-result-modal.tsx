@@ -2,7 +2,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { CheckCircle2, XCircle, Loader2 } from 'lucide-react';
+import { CheckCircle2, XCircle, Loader } from 'lucide-react';
 import Card from '@/components/layout/card';
 import Modal from '@/components/layout/modal';
 import { Button } from '@/components/ui/buttons/button';
@@ -77,7 +77,7 @@ export default function PaymentResultModal({
     >
       {status === 'loading' && (
         <div className="flex flex-col items-center justify-center py-16 gap-4">
-          <Loader2 size={48} className="animate-spin text-primary" />
+          <Loader size={48} className="animate-spin text-primary" />
           <p className="text-neutral-500">Verifying your payment...</p>
         </div>
       )}

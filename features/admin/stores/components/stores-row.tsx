@@ -1,10 +1,9 @@
-
 'use client';
 
 import { useState } from 'react';
-import { Store as StoreIcon, Loader2 } from 'lucide-react';
+import { Store as StoreIcon, Loader } from 'lucide-react';
 import clsx from 'clsx';
-import {  StoreRowProps } from '../types';
+import { StoreRowProps } from '../types';
 import { Button } from '@/components/ui/buttons/button';
 import { statusStyles } from '../data';
 import { formatStatus } from '../helpers';
@@ -72,7 +71,7 @@ export default function StoreRow({ store, onView, onAction }: StoreRowProps) {
         <div className="flex justify-end gap-1.5">
           {isPending &&
             (isSubmitting ? (
-              <Loader2 size={18} className="animate-spin text-neutral-400" />
+              <Loader size={18} className="animate-spin text-neutral-400" />
             ) : (
               <>
                 <Button

@@ -8,7 +8,7 @@ import {
   Briefcase,
   Edit,
   Home,
-  Loader2,
+  Loader,
   MapPin,
   MapPinHouse,
   Trash2,
@@ -60,7 +60,7 @@ export default function SavedAddress() {
         </div>
         {isLoading ? (
           <div className="flex justify-center py-20">
-            <Loader2 className="animate-spin text-primary" size={32} />
+            <Loader className="animate-spin text-primary" size={32} />
           </div>
         ) : error ? (
           <p className="flex flex-col justify-center items-center text-center text-sm py-20 text-red-500 gap-3">

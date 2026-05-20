@@ -1,13 +1,13 @@
 'use client';
 
-import { ClipboardList, Loader2, ShoppingCart } from 'lucide-react';
+import { ClipboardList, Loader, ShoppingCart } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import Stepper from '@/components/navigation/stepper';
 import { STEPS } from '@/features/user/delivery/data';
 import { useCartStore } from '../hooks/store';
 import { Button } from '@/components/ui/buttons/button';
-import CartModal from './cart-modal';
+import CartModal from './modals/cart-modal';
 import OrdersModal from './modals/orders-modal';
 
 export default function DeliveryHeader() {
@@ -70,14 +70,14 @@ export default function DeliveryHeader() {
             <span className="flex items-center gap-2 text-xs">
               <ShoppingCart size={16} />
               {isLoading ? (
-                <Loader2 size={16} className="animate-spin text-primary" />
+                <Loader size={16} className="animate-spin text-primary" />
               ) : (
                 `${itemCount} ${itemCount === 1 ? 'item' : 'items'}`
               )}
             </span>
             <div className="rounded-md border border-border bg-foreground-100 px-2 py-1 text-xs font-medium">
               {isLoading ? (
-                <Loader2 size={16} className="animate-spin text-primary" />
+                <Loader size={16} className="animate-spin text-primary" />
               ) : (
                 `₦ ${subTotal.toLocaleString()}`
               )}

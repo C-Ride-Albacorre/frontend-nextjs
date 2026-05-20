@@ -1,6 +1,6 @@
 'use client';
 
-import { Loader2 } from 'lucide-react';
+import { Loader } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
@@ -183,7 +183,7 @@ export default function GoogleOAuthCallback() {
   return (
     <div className="flex min-h-screen items-center justify-center">
       <div className="flex items-center gap-2 text-sm text-muted-foreground text-primary">
-        <Loader2 className="animate-spin text-primary" />
+        <Loader className="animate-spin text-primary" />
         Signing you in...
       </div>
     </div>

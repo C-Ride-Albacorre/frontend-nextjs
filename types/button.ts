@@ -72,6 +72,7 @@ export type IconButtonProps = {
   className?: string;
   ariaLabel?: string;
   highlightOnRoutes?: string[];
+  disabled?: boolean;
 } & React.ButtonHTMLAttributes<HTMLButtonElement>;
 
 export type LogoProps = {

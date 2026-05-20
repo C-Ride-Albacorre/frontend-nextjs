@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useCallback } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { Loader2 } from 'lucide-react';
+import { Loader } from 'lucide-react';
 import { getPaymentStatusAction } from '@/features/user/delivery/action';
 import { useOrderStore } from '@/features/user/delivery/hooks/order-store';
 
@@ -95,7 +95,7 @@ export default function PaymentCallbackContent() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-      <Loader2 size={48} className="animate-spin text-primary" />
+      <Loader size={48} className="animate-spin text-primary" />
       <p className="text-neutral-500">Checking your payment status...</p>
     </div>
   );
