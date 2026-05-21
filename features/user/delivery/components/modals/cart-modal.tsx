@@ -47,6 +47,8 @@ export default function CartModal() {
 
   const items = cart?.items ?? [];
 
+  const isUpdatingCart = updatingItems.length > 0;
+
   console.log('[CartModal] Items:', items);
 
   return (
@@ -82,9 +84,10 @@ export default function CartModal() {
         {/* Items */}
         <ul className="divide-y divide-border">
           {items.map((item) => {
-            const itemKey = item.id ?? item.productId;
+            const itemKey = item.productId ?? item.id;
 
             const isUpdating = updatingItems.includes(itemKey);
+
             return (
               <li key={item.id} className="flex justify-between gap-4 py-4">
                 <div className="flex items-center gap-3">
@@ -163,7 +166,7 @@ export default function CartModal() {
                     <IconButton
                       variant="red"
                       rounded="md"
-                      disabled={isLoading || isUpdating}
+                      disabled={isLoading || isUpdating || isUpdatingCart}
                       onClick={() => removeItem(item.id)}
                     >
                       <Trash2 size={14} />
@@ -181,7 +184,7 @@ export default function CartModal() {
             <div className="flex items-center justify-between text-base font-semibold">
               <span>Subtotal</span>
 
-              {isLoading ? (
+              {isLoading || isUpdatingCart ? (
                 <Loader size={16} className="animate-spin text-primary" />
               ) : (
                 <span>₦{(cart?.subTotal ?? 0).toLocaleString()}</span>
@@ -194,7 +197,7 @@ export default function CartModal() {
               className="w-full"
               rightIcon={<ChevronRight size={16} />}
               onClick={handleProceed}
-              disabled={isLoading}
+              disabled={isLoading || isUpdatingCart}
             >
               Proceed to Checkout
             </Button>

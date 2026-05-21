@@ -7,13 +7,15 @@ import Card from '@/components/layout/card';
 import { IconButton } from '@/components/ui/buttons/icon-button';
 
 export default function OrderSummary() {
-  const { cart, removeItem, isLoading } = useCartStore();
+  const { cart, removeItem, isLoading, updatingItems } = useCartStore();
 
   const items = cart?.items ?? [];
 
   if (items.length === 0) {
     return <p className="text-center text-neutral-500">Cart is empty</p>;
   }
+
+  const isUpdatingCart = updatingItems.length > 0;
 
   return (
     <Suspense
@@ -32,7 +34,7 @@ export default function OrderSummary() {
               </p>
 
               <div className="flex items-center gap-2  md:gap-8">
-                {isLoading ? (
+                {isLoading || isUpdatingCart ? (
                   <Loader size={16} className="animate-spin text-primary" />
                 ) : (
                   <span>₦ {item.totalPrice.toLocaleString()}</span>
@@ -40,6 +42,7 @@ export default function OrderSummary() {
                 <IconButton
                   variant="red"
                   rounded="md"
+                  disabled={isLoading || isUpdatingCart}
                   onClick={() => removeItem(item.id)}
                 >
                   <X size={14} />
@@ -51,7 +54,7 @@ export default function OrderSummary() {
 
         <div className="border-t border-border pt-8 flex justify-between">
           <span>Sub Total</span>
-          {isLoading ? (
+          {isLoading || isUpdatingCart ? (
             <Loader size={16} className="animate-spin text-primary" />
           ) : (
             <span>₦ {(cart?.subTotal ?? 0).toLocaleString()}</span>

@@ -15,8 +15,6 @@ export async function saveLocationAction(
     city: formData.get('city') || undefined,
     state: formData.get('state') || undefined,
     country: formData.get('country') || undefined,
-    latitude: formData.get('latitude'),
-    longitude: formData.get('longitude'),
     isDefault: formData.get('isDefault') === 'true',
   };
 
@@ -31,13 +29,11 @@ export async function saveLocationAction(
 
   const data = validated.data;
 
-  // ✅ Ensure at least coordinates exist
-  if (!data.latitude || !data.longitude) {
-    return {
-      status: 'error',
-      message: 'Location coordinates are required.',
-    };
-  }
+
+
+
+
+
 
   try {
     const result = await saveAddressService(data);

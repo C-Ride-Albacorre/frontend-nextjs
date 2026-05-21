@@ -66,6 +66,12 @@ export default function MapLocations({
         const lat = position.coords.latitude;
         const lng = position.coords.longitude;
 
+        if (!lat || !lng) {
+          setError('Unable to retrieve your location');
+          setIsLoading(false);
+          return;
+        }
+
         setLocation({ latitude: lat, longitude: lng });
 
         // ✅ reverse geocode
@@ -106,11 +112,11 @@ export default function MapLocations({
 
   return (
     <div className=" space-y-6">
-      {state?.status === 'error' && (
-        <ErrorMessage
-          message={state?.message || error || 'An error occurred'}
-        />
-      )}
+      {state?.status === 'error' ? (
+        <ErrorMessage message={state?.message || 'An error occurred'} />
+      ) : error ? (
+        <ErrorMessage message={error || 'An error occurred'} />
+      ) : null}
 
       <Card gap="sm" className="bg-foreground-200 flex flex-col">
         <span className="text-neutral-500 text-xs ">

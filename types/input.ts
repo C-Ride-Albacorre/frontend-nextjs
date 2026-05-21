@@ -62,6 +62,8 @@ export interface SelectProps {
   placeholder?: string;
   onChange: (value: string) => void;
 
+  searchable?: boolean;
+
   variant?: 'default' | 'fill';
   spacing?: 'none' | 'sm' | 'md' | 'lg';
 

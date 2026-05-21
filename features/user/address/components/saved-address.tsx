@@ -38,7 +38,7 @@ export default function SavedAddresses() {
 
               <div className="space-y-1.5">
                 <p className="font-medium text-sm capitalize">
-                  {item.label.toLocaleLowerCase()}
+                  {item?.label?.toLocaleLowerCase()}
                 </p>
                 <p className="text-xs text-neutral-500 capitalize">
                   {item.address

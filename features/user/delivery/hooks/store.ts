@@ -80,10 +80,17 @@ export const useCartStore = create<CartStore>()(
       isCartOpen: false,
       error: null,
       updatingItems: [],
+      // setUpdatingItem: (id, updating) =>
+      //   set((state) => ({
+      //     updatingItems: updating
+      //       ? [...state.updatingItems, id]
+      //       : state.updatingItems.filter((itemId) => itemId !== id),
+      //   })),
+
       setUpdatingItem: (id, updating) =>
         set((state) => ({
           updatingItems: updating
-            ? [...state.updatingItems, id]
+            ? Array.from(new Set([...state.updatingItems, id]))
             : state.updatingItems.filter((itemId) => itemId !== id),
         })),
 
