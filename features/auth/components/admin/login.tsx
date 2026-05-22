@@ -32,55 +32,55 @@ export default function AdminLoginForm() {
   }, [state]);
 
   return (
-    <form className="space-y-5" action={action}>
-     
-
-      <Input
-        name="email"
-        type="email"
-        label="Email Address"
-        errorMessage={isError ? state.errors?.email?.[0] : undefined}
-        defaultValue={
-          state?.status === 'error' ? state.fields?.email : undefined
-        }
-      />
-
-      <div>
-        <Input
-          name="password"
-          type={showPassword ? 'text' : 'password'}
-          label="Password"
-          errorMessage={isError ? state.errors?.password?.[0] : undefined}
-          rightIcon={
-            <IconButton
-              type="button"
-              rounded="none"
-              variant="gray"
-              size="none"
-              ariaLabel="Toggle password visibility"
-              onClick={() => setShowPassword((v) => !v)}
-              className="text-neutral-500 cursor-pointer"
-            >
-              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-            </IconButton>
-          }
-        />
-
-        <Link
-          href="/reset"
-          className="mt-4 text-sm text-right block text-primary"
-        >
-          Forgot Password?
-        </Link>
-      </div>
-
-      <Button type="submit" size="full" loading={pending} disabled={pending}>
-        {pending ? 'Signing In...' : 'Sign In'}
-      </Button>
-
+    <section className='space-y-4'>
       {isError && (
         <ErrorMessage message={state.message || 'An error occurred'} />
       )}
-    </form>
+
+      <form className="space-y-5" action={action}>
+        <Input
+          name="email"
+          type="email"
+          label="Email Address"
+          errorMessage={isError ? state.errors?.email?.[0] : undefined}
+          defaultValue={
+            state?.status === 'error' ? state.fields?.email : undefined
+          }
+        />
+
+        <div>
+          <Input
+            name="password"
+            type={showPassword ? 'text' : 'password'}
+            label="Password"
+            errorMessage={isError ? state.errors?.password?.[0] : undefined}
+            rightIcon={
+              <IconButton
+                type="button"
+                rounded="none"
+                variant="gray"
+                size="none"
+                ariaLabel="Toggle password visibility"
+                onClick={() => setShowPassword((v) => !v)}
+                className="text-neutral-500 cursor-pointer"
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </IconButton>
+            }
+          />
+
+          <Link
+            href="/reset"
+            className="mt-4 text-sm text-right block text-primary"
+          >
+            Forgot Password?
+          </Link>
+        </div>
+
+        <Button type="submit" size="full" loading={pending} disabled={pending}>
+          {pending ? 'Signing In...' : 'Sign In'}
+        </Button>
+      </form>
+    </section>
   );
 }

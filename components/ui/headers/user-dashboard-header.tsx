@@ -21,6 +21,8 @@ export default async function DashboardHeader() {
 
   const firstName = data.firstName.toLowerCase();
 
+  const lastName = data.lastName.toLowerCase();
+
   return (
     <section className=" bg-linear-to-r from-primary to-primary/95  px-6 py-10">
       <div className="mx-auto max-w-6xl">
@@ -37,7 +39,10 @@ export default async function DashboardHeader() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-xl lg:text-[2rem] font-semibold text-primary-text-100">
-              Welcome back, <span className="capitalize">{firstName}</span>
+              Welcome back,{' '}
+              <span className="capitalize truncate max-w-30 sm:max-w-45 lg:max-w-62.5 inline-block align-bottom">
+                {firstName} {lastName}
+              </span>
             </h1>
             <p className="mt-1 text-sm text-primary-text-100/80">
               How may we serve you today?

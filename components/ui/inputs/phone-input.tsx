@@ -194,15 +194,15 @@ export default function PhoneInput({
 
         {/* Visible input — number only */}
         <input
-          type="tel"
+          type="number"
           id={id}
           placeholder={placeholder}
           value={value}
           onChange={onChange}
           className={`min-w-0 w-full rounded-r-xl border px-4 py-3 text-base md:text-sm outline-none placeholder:text-sm
-            focus:ring 
-            ${errorMessage ? 'border-red-500 focus-within:ring-red-500' : 'border-border focus:ring-primary'}
-          `}
+    focus:ring [appearance:textfield]
+    ${errorMessage ? 'border-red-500 focus-within:ring-red-500' : 'border-border focus:ring-primary'}
+  `}
         />
       </div>
 

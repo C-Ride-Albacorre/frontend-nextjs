@@ -21,6 +21,7 @@ const getDashboardLink = (role?: string | null) => {
     case 'VENDOR':
       return '/vendor/store';
     case 'ADMIN':
+      return '/admin/dashboard';
     case 'SUPER_ADMIN':
       return '/admin/dashboard';
     case 'CUSTOMER':

@@ -7,7 +7,7 @@ import StatCard from '@/components/layout/stat-card';
 import { Clock, MapPin, Package, Truck } from 'lucide-react';
 import SectionLayout from '@/components/layout/section-layout';
 import MainLayout from '@/components/layout/main-layout';
-import VendorToolbar from '@/components/layout/vendor-tool-bar';
+import VendorToolbar from '@/components/layout/tool-bar';
 import ActiveDeliveriesCard from '@/features/vendor/active-deliveries/components/active-cards';
 import { activeOrders } from '@/features/vendor/active-deliveries/data';
 

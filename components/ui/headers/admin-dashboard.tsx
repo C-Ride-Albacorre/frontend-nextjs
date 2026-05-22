@@ -13,6 +13,7 @@ export default function AdminDashboardHeader() {
     'Vendor Management': pathName === '/admin/vendor-onboarding',
     'Store Management': pathName === '/admin/stores',
     'Category Management': pathName === '/admin/category',
+    'Driver Onboarding': pathName === '/admin/driver-onboarding',
   });
 
   const pageDescription = clsx({
@@ -21,6 +22,7 @@ export default function AdminDashboardHeader() {
       pathName === '/admin/vendor-onboarding',
     'Manage store details and performance': pathName === '/admin/stores',
     'Manage product categories': pathName === '/admin/category',
+    'Onboard and manage drivers': pathName === '/admin/driver-onboarding',
   });
 
   return (

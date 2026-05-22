@@ -33,11 +33,11 @@ export default function OrderSummary() {
                 {item.productName} x {item.quantity}
               </p>
 
-              <div className="flex items-center gap-2  md:gap-8">
+              <div className="flex items-center gap-4  md:gap-8">
                 {isLoading || isUpdatingCart ? (
                   <Loader size={16} className="animate-spin text-primary" />
                 ) : (
-                  <span>₦ {item.totalPrice.toLocaleString()}</span>
+                  <span>₦ {item?.totalPrice?.toLocaleString()}</span>
                 )}
                 <IconButton
                   variant="red"
@@ -53,11 +53,11 @@ export default function OrderSummary() {
         </ul>
 
         <div className="border-t border-border pt-8 flex justify-between">
-          <span>Sub Total</span>
+          <span className='font-bold text-lg'>Sub Total</span>
           {isLoading || isUpdatingCart ? (
             <Loader size={16} className="animate-spin text-primary" />
           ) : (
-            <span>₦ {(cart?.subTotal ?? 0).toLocaleString()}</span>
+            <span className='font-bold text-lg'>₦ {(cart?.subTotal ?? 0).toLocaleString()}</span>
           )}
         </div>
       </Card>

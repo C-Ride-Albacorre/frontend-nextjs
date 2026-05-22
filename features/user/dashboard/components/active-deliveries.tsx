@@ -36,10 +36,10 @@ export default function ActiveDeliveries() {
           <Bike size={48} className="text-neutral-400" />
           <div className="space-y-2 text-center">
             <h2 className="text-xl">
-              You have no active deliveries at the moment.
+              You have no active orders at the moment.
             </h2>
             <p className="text-sm text-neutral-500">
-              Your current deliveries will appear here for easy tracking and
+              Your current orders will appear here for easy tracking and
               management.
             </p>
           </div>

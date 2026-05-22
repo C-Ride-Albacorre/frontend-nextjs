@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Loader, Store, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/buttons/button';
 import Card from '@/components/layout/card';
-import VendorToolbar from '@/components/layout/vendor-tool-bar';
+import VendorToolbar from '@/components/layout/tool-bar';
 import StoreCatalogue from './store-catalogue';
 import ViewStoreModal from './view-store-modal';
 import DeleteStoreModal from './delete-store-modal';

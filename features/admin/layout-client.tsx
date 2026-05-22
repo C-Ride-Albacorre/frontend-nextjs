@@ -15,6 +15,7 @@ type Props = {
   user: {
     id: string;
     email: string;
+    type: string;
     role: 'SUPER_ADMIN' | 'ADMIN' | 'VENDOR' | 'CUSTOMER';
   } | null;
 };

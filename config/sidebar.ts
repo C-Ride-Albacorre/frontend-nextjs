@@ -28,6 +28,7 @@ import {
   User2,
   Users2,
   ScanBarcode,
+  Car,
 } from 'lucide-react';
 
 export type NavItemProps = {
@@ -161,18 +162,16 @@ const ADMIN_SIDEBAR_SECTIONS: SidebarSection[] = [
         icon: ScanBarcode,
         href: '/admin/category',
       },
-
-    
     ],
   },
   {
     title: 'User Management',
     items: [
-      // {
-      //   label: 'Driver Onboarding',
-      //   icon: TruckIcon,
-      //   href: '/admin/driver-onboarding',
-      // },
+      {
+        label: 'Driver Onboarding',
+        icon: Car,
+        href: '/admin/driver-onboarding',
+      },
       {
         label: 'Vendor Onboarding',
         icon: Users2,

@@ -55,7 +55,7 @@ export default async function StoresPage({
 
   return (
     <section>
-      <div className="  space-y-4 md:space-y-10">
+      <div className="space-y-4 md:space-y-10">
         <div className="space-y-4">
           <h2 className="text-2xl font-semibold">{title}</h2>
           <p className="text-sm text-neutral-500">{subtitle}</p>

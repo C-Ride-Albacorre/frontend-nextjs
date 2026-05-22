@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/buttons/button';
 import { IconButton } from '@/components/ui/buttons/icon-button';
 import UnderReviewModal from '@/features/auth/components/vendor/under-review-modal';
 import { useSearchParams } from 'next/navigation';
+import ErrorMessage from '@/components/layout/error-message';
 
 type FieldValues = {
   email: string;
@@ -67,6 +68,12 @@ export default function VendorLoginForm({
         title="Login to your account"
         subtitle="Please enter your credentials below."
       />
+
+      {isError && (
+        <div className="mb-2">
+          <ErrorMessage message={state.message || 'An error occurred'} />
+        </div>
+      )}
 
       <form className="space-y-5" action={action}>
         {finalCallbackUrl && (

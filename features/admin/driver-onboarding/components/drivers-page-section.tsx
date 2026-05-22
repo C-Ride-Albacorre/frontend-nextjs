@@ -4,41 +4,24 @@ import { useState, useEffect, useTransition } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { Loader, RefreshCcw, ChevronLeft, ChevronRight } from 'lucide-react';
 import { toast } from 'sonner';
-import StoresTable from './stores-table';
-import ViewStoreModal from './view-store-modal';
+import DriversTable from './drivers-table';
 
-import { approveStoreAction } from '../action';
-import { Store, StoresMeta } from '../types';
 import ErrorMessage from '@/components/layout/error-message';
 import { Button } from '@/components/ui/buttons/button';
-import VendorToolbar from '@/components/layout/tool-bar';
+import ViewDriverModal from './view-driver-modal';
+import { DriverPageSectionProps, Driver, DriverDetail } from '../types';
+import { approveDriverAction, getDriverByIdAction } from '../action';
+import Toolbar from '@/components/layout/tool-bar';
+import { DRIVER_STATUS_OPTIONS } from '../data';
 
-const STATUS_OPTIONS = [
-  { label: 'All Stores', value: '' },
-  { label: 'Active', value: 'ACTIVE' },
-  { label: 'Inactive', value: 'INACTIVE' },
-  { label: 'Pending Approval', value: 'PENDING_APPROVAL' },
-  { label: 'Suspended', value: 'SUSPENDED' },
-  { label: 'Rejected', value: 'REJECTED' },
-];
-
-type Props = {
-  stores: Store[];
-  meta: StoresMeta;
-  currentPage: number;
-  currentStatus: string;
-  currentSearch: string;
-  error: string | null;
-};
-
-export default function StoresPageSection({
-  stores,
+export default function DriverPageSection({
+  drivers,
   meta,
   currentPage,
   currentStatus,
   currentSearch,
   error,
-}: Props) {
+}: DriverPageSectionProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -46,10 +29,13 @@ export default function StoresPageSection({
 
   const [search, setSearch] = useState(currentSearch);
   const [statusFilter, setStatusFilter] = useState(currentStatus);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedStore, setSelectedStore] = useState<Store | null>(null);
 
-  // Sync local state with URL params on external navigation (e.g. back/forward)
+  // Modal state
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [driverDetail, setDriverDetail] = useState<DriverDetail | null>(null);
+  const [isLoadingDetail, setIsLoadingDetail] = useState(false);
+
+  // Sync local state with URL params on external navigation
   useEffect(() => {
     setSearch(currentSearch);
   }, [currentSearch]);
@@ -78,10 +64,12 @@ export default function StoresPageSection({
     for (const [key, value] of Object.entries(updates)) {
       if (value) params.set(key, value);
       else params.delete(key);
+      setSearch(currentSearch);
+      startTransition(() => {
+        router.push(`${pathname}?${params.toString()}`);
+      });
+      setStatusFilter(currentStatus);
     }
-    startTransition(() => {
-      router.push(`${pathname}?${params.toString()}`);
-    });
   };
 
   const handleStatusChange = (value: string) => {
@@ -93,27 +81,38 @@ export default function StoresPageSection({
     updateParams({ page: String(newPage) });
   };
 
-  const handleViewStore = (store: Store) => {
-    setSelectedStore(store);
+  const handleViewDriver = async (driver: Driver) => {
     setIsModalOpen(true);
+    setIsLoadingDetail(true);
+    setDriverDetail(null);
+
+    try {
+      const detail = await getDriverByIdAction(driver.id);
+      setDriverDetail(detail);
+    } catch {
+      setDriverDetail(null);
+      toast.error('Failed to load driver');
+    } finally {
+      setIsLoadingDetail(false);
+    }
   };
 
-  const handleStoreAction = async (
-    storeId: string,
-    action: 'ACTIVE' | 'REJECTED',
+  const handleDriverAction = async (
+    driverId: string,
+    action: 'APPROVED' | 'REJECTED',
     rejectionReason?: string,
   ) => {
     const payload = rejectionReason ? { action, rejectionReason } : { action };
-    const result = await approveStoreAction(storeId, payload);
+    const result = await approveDriverAction(driverId, payload);
 
     if (result.success) {
       toast.success(
-        action === 'ACTIVE'
-          ? 'Store approved successfully'
-          : 'Store declined successfully',
+        action === 'APPROVED'
+          ? 'Driver approved successfully'
+          : 'Driver declined successfully',
       );
       setIsModalOpen(false);
-      setSelectedStore(null);
+      setDriverDetail(null);
       router.refresh();
     } else {
       toast.error(result.message);
@@ -124,18 +123,18 @@ export default function StoresPageSection({
 
   return (
     <div className="space-y-6">
-      <VendorToolbar
-        searchPlaceholder="Search stores..."
+      <Toolbar
+        searchPlaceholder="Search drivers..."
         search={search}
         onSearchChange={setSearch}
         filter={statusFilter}
         onFilterChange={handleStatusChange}
-        filterOptions={STATUS_OPTIONS}
+        filterOptions={DRIVER_STATUS_OPTIONS}
         filterPlaceholder="Filter by status"
       />
 
       {error ? (
-        <div className="flex justify-between items-center gap-2">
+        <div className="flex justify-between items-center">
           <ErrorMessage message={error} />
           <Button
             variant="white"
@@ -154,10 +153,10 @@ export default function StoresPageSection({
             </div>
           )}
 
-          <StoresTable
-            stores={stores}
-            onView={handleViewStore}
-            onAction={handleStoreAction}
+          <DriversTable
+            drivers={drivers}
+            onView={handleViewDriver}
+            onAction={handleDriverAction}
           />
 
           {meta.totalPages > 1 && (
@@ -192,11 +191,12 @@ export default function StoresPageSection({
         </div>
       )}
 
-      <ViewStoreModal
+      <ViewDriverModal
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
-        store={selectedStore}
-        onAction={handleStoreAction}
+        driver={driverDetail}
+        isLoading={isLoadingDetail}
+        onAction={handleDriverAction}
       />
     </div>
   );

@@ -79,7 +79,7 @@ body {
   background: var(--background);
   color: var(--foreground);
   height: 100%;
-  color: var(--text-100)
+  color: var(--text-100);
 }
 
 input,
@@ -122,4 +122,11 @@ h6 {
   --color-white-hover-100: var(--white-hover-100-color);
   --color-white-hover-400: var(--white-hover-400-color);
   --color-green-100: var(--green-100);
+}
+
+/* Remove number input arrows */
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }

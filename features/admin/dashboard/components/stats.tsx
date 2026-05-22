@@ -9,10 +9,10 @@ import {
   Users,
 } from 'lucide-react';
 import StatCard from '@/components/layout/stat-card';
-import { Button } from '@/components/ui/buttons/button';
 import ErrorMessage from '@/components/layout/error-message';
 import { useRouter } from 'next/navigation';
 import type { DashboardStats } from '../service';
+import RetryButton from '@/components/ui/buttons/retry-button';
 
 type Props = {
   data: DashboardStats | null;
@@ -28,14 +28,7 @@ export default function DashboardStats({ data, error }: Props) {
         <div className="space-y-4 flex justify-between items-center">
           <ErrorMessage message={error} />
 
-          <Button
-            variant="white"
-            leftIcon={<RefreshCcw size={14} />}
-            size="icon"
-            onClick={() => router.refresh()}
-          >
-            Retry
-          </Button>
+          <RetryButton />
         </div>
       )}
 

@@ -2,7 +2,7 @@
 
 import MainLayout from '@/components/layout/main-layout';
 import SectionLayout from '@/components/layout/section-layout';
-import VendorToolbar from '@/components/layout/vendor-tool-bar';
+import VendorToolbar from '@/components/layout/tool-bar';
 import VendorDashboardHeader from '@/components/ui/headers/vendor-header';
 import OrderCard from '@/features/vendor/orders/components/order-card';
 import StatCard from '@/components/layout/stat-card';
@@ -10,7 +10,7 @@ import { Clock, ShoppingBag, Star, TrendingUp } from 'lucide-react';
 import { useState } from 'react';
 
 const CATEGORIES = [
- { label: 'All', value: 'All' },
+  { label: 'All', value: 'All' },
   { label: 'Nigerian', value: 'Nigerian' },
   { label: 'Chinese', value: 'Chinese' },
   { label: 'Indian', value: 'Indian' },
@@ -67,7 +67,7 @@ export default function OrderManagementPage() {
             title="Incoming Orders"
             searchPlaceholder="Search orders..."
             filter={sort}
-           onFilterChange={setSort}
+            onFilterChange={setSort}
             filterOptions={CATEGORIES}
           />
 

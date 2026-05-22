@@ -24,7 +24,7 @@ type Props = {
   updatedAt?: string;
 };
 
-export default function VendorToolbar({
+export default function Toolbar({
   title,
   searchPlaceholder = 'Search...',
   filterPlaceholder = 'Filter by status',

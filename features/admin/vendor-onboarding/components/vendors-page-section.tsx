@@ -15,8 +15,9 @@ import {
 } from '../types';
 import ErrorMessage from '@/components/layout/error-message';
 import { Button } from '@/components/ui/buttons/button';
-import VendorToolbar from '@/components/layout/vendor-tool-bar';
+
 import { VENDOR_STATUS_OPTIONS } from '../data';
+import Toolbar from '@/components/layout/tool-bar';
 
 export default function VendorPageSection({
   vendors,
@@ -125,7 +126,7 @@ export default function VendorPageSection({
 
   return (
     <div className="space-y-6">
-      <VendorToolbar
+      <Toolbar
         searchPlaceholder="Search vendors..."
         search={search}
         onSearchChange={setSearch}

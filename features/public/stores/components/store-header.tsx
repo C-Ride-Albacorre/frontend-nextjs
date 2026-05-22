@@ -26,7 +26,7 @@ export default function StoreHeader({ isLoggedIn }: { isLoggedIn: boolean }) {
 
       <>
         {/* Cart & Orders */}
-        <div className="flex justify-end gap-3 text-primary-text-100 lg:text-white">
+        {/* <div className="flex justify-end gap-3 text-primary-text-100 lg:text-white">
           {isLoggedIn && (
             <button
               onClick={() => setIsOrdersOpen(true)}
@@ -51,15 +51,9 @@ export default function StoreHeader({ isLoggedIn }: { isLoggedIn: boolean }) {
                 `${itemCount} ${itemCount === 1 ? 'item' : 'items'}`
               )}
             </span>
-            {/* <div className="rounded-xl border border-border bg-foreground-100 px-2 py-1 text-xs font-medium text-primary-text-100">
-              {isLoading ? (
-                <Loader size={16} className="animate-spin text-primary" />
-              ) : (
-                `₦ ${subTotal.toLocaleString()}`
-              )}
-            </div> */}
+         
           </button>
-        </div>
+        </div> */}
       </>
 
       {/* Cart Modal */}

@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Button } from '@/components/ui/buttons/button';
-import { RefreshCcw } from 'lucide-react';
+import { Loader, RefreshCcw } from 'lucide-react';
 
 export default function RetryButton() {
   const router = useRouter();
@@ -24,14 +24,9 @@ export default function RetryButton() {
       variant="outline"
       size="icon"
       disabled={loading}
-      leftIcon={
-        <RefreshCcw
-          size={16}
-          className={`transition-transform ${loading ? 'animate-spin' : ''}`}
-        />
-      }
+    
     >
-      {loading ? 'Retrying...' : 'Retry'}
+      {loading ? `${<Loader size={16} className="animate-spin" />} Retrying...` : 'Retry'}
     </Button>
   );
 }
