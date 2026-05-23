@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "extra": {
+      "eas": {
+        "projectId": "5843afd9-172d-43d5-a06d-2229d264b716"
+      }
+    },
+    "android": {
+      "package": "com.benayo.cride"
+    }
+  }
+}

@@ -26,7 +26,7 @@ export default function StoreHeader({ isLoggedIn }: { isLoggedIn: boolean }) {
 
       <>
         {/* Cart & Orders */}
-        {/* <div className="flex justify-end gap-3 text-primary-text-100 lg:text-white">
+        <div className="flex justify-end gap-3 text-primary-text-100 lg:text-white">
           {isLoggedIn && (
             <button
               onClick={() => setIsOrdersOpen(true)}
@@ -53,7 +53,7 @@ export default function StoreHeader({ isLoggedIn }: { isLoggedIn: boolean }) {
             </span>
          
           </button>
-        </div> */}
+        </div>
       </>
 
       {/* Cart Modal */}
