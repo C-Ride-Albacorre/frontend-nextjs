@@ -20,7 +20,7 @@ export type InputProps = {
 } & React.InputHTMLAttributes<HTMLInputElement>;
 
 export type TextareaProps = {
-  id: string;
+  id?: string;
   name?: string;
   label?: string;
   placeholder?: string;

@@ -34,8 +34,6 @@ interface StoresPageProps {
 export default async function StoreVendorsPage({
   params,
   searchParams,
-
-
 }: {
   params: Promise<{
     slug: string;
@@ -43,9 +41,6 @@ export default async function StoreVendorsPage({
   searchParams: Promise<StoresPageProps['searchParams']>;
 }) {
   const { slug } = await params;
-
-
-  
 
   const resolvedSearchParams = await searchParams;
 
@@ -149,7 +144,7 @@ export default async function StoreVendorsPage({
                       ),
                     )}
                   <span className="text-green-100">
-                    Min Order: {store?.minimumOrder ?? 'N/A'}
+                    Min Order: {store?.dailyOrderLimit ?? 'N/A'}
                   </span>
                 </p>
               </div>

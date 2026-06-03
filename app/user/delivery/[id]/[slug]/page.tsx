@@ -1,12 +1,7 @@
 import { Button } from '@/components/ui/buttons/button';
 
 import Image from 'next/image';
-import {
-  Dot,
-  Clock,
-  ChevronRight,
-  Package,
-} from 'lucide-react';
+import { Dot, Clock, ChevronRight, Package } from 'lucide-react';
 
 import { fetchStoreDetailsAction } from '@/features/user/delivery/action';
 import Card from '@/components/layout/card';
@@ -68,7 +63,7 @@ export default async function StoreVendorsPage({
                     </span>
                   ))}
                 <span className="text-green-100">
-                  Min Order: {store?.minimumOrder ?? 'N/A'}
+                  Min Order: {store?.dailyOrderLimit ?? 'N/A'}
                 </span>
               </p>
 

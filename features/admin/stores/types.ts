@@ -111,7 +111,7 @@ export interface StoreDetail {
   storeAddress: string;
   phoneNumber: string;
   email: string;
-  minimumOrder: number;
+  dailyOrderLimit: number;
   preparationTime: number;
   deliveryFee: number;
   storeLogo: string | null;

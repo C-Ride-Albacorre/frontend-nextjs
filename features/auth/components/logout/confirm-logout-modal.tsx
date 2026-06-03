@@ -16,7 +16,7 @@ export default function ConfirmLogoutModal({
       <Modal
         isModalOpen={confirmLogout}
         onClose={() => setConfirmLogout(false)}
-        wrapperClassName="max-w-md"
+        wrapperClassName="max-w-sm"
       >
         <div className="flex flex-col justify-center items-center space-y-4">
           <div className="flex flex-col justify-center items-center space-y-4">

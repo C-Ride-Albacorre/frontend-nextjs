@@ -4,7 +4,7 @@ import { useState, useTransition } from 'react';
 import { Button } from '@/components/ui/buttons/button';
 import { logoutAction } from '@/features/auth/actions/logout';
 import ConfirmLogoutModal from './confirm-logout-modal';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { LogOut } from 'lucide-react';
 
 export default function Logout({ onClose }: { onClose?: () => void }) {
@@ -13,23 +13,25 @@ export default function Logout({ onClose }: { onClose?: () => void }) {
 
   const pathName = usePathname();
 
+  const router = useRouter();
+
   // function getLoginPath() {
   //   if (pathName.startsWith('/admin')) return '/admin/login';
   //   if (pathName.startsWith('/vendor')) return '/vendor/login';
   //   return '/user/login';
   // }
 
-function handleLogout() {
-  startTransition(async () => {
-    const res = await logoutAction();
+  function handleLogout() {
+    startTransition(async () => {
+      const res = await logoutAction();
 
-    onClose?.();
+      onClose?.();
 
-    if (res?.redirectTo) {
-      window.location.href = res.redirectTo;
-    }
-  });
-}
+      if (res?.redirectTo) {
+        router.push(res.redirectTo);
+      }
+    });
+  }
 
   return (
     <>

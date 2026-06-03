@@ -27,7 +27,7 @@ export interface CreateStoreData {
   storeAddress: string;
   phoneNumber: string;
   email: string;
-  minimumOrder?: number;
+  dailyOrderLimit?: number;
   preparationTime?: number;
   operatingHours: OperatingHour[];
   logo?: File;
@@ -41,7 +41,7 @@ export interface StoreData {
   storeAddress: string;
   phoneNumber: string;
   email: string;
-  minimumOrder?: number;
+  dailyOrderLimit?: number;
   deliveryFee?: number;
   preparationTime?: number;
   operatingHours: OperatingHour[];
@@ -62,7 +62,7 @@ export interface StoreResponse {
   storeAddress: string;
   phoneNumber: string;
   email: string;
-  minimumOrder?: number;
+  dailyOrderLimit?: number;
   deliveryFee?: number;
   preparationTime?: number;
   operatingHours: OperatingHour[];

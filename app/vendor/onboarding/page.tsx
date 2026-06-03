@@ -143,7 +143,7 @@ export default function VendorOnboardingDashboard() {
           >
             <InfoGrid>
               <InfoRow label="Operating Hours" value="09:00 AM – 10:00 PM" />
-              <InfoRow label="Minimum Order" value="₦2,500" />
+              <InfoRow label="Daily Order Limit" value="₦2,500" />
               <InfoRow label="Delivery Radius" value="5km" />
               <InfoRow label="Delivery Fee Range" value="₦1,500 – ₦3,000" />
               <InfoRow label="Preparation Time" value="30–45 minutes" />

@@ -4,6 +4,7 @@ import Modal from '@/components/layout/modal';
 import { Button } from '@/components/ui/buttons/button';
 import { CheckCircle, ChevronRight } from 'lucide-react';
 import { completeVerificationAction } from '../../actions/complete-verify-session';
+import { useRouter } from 'next/navigation';
 
 type VerificationSuccessModalProps = {
   isOpen: boolean;
@@ -16,13 +17,15 @@ export default function VerificationSuccessModal({
   onClose,
   redirectTo,
 }: VerificationSuccessModalProps) {
+  const router = useRouter();
+
   const handleContinue = async () => {
     await completeVerificationAction();
-    window.location.href = redirectTo;
+    router.push(redirectTo);
   };
 
   return (
-    <Modal isModalOpen={isOpen} wrapperClassName='max-w-xl'>
+    <Modal isModalOpen={isOpen} wrapperClassName="max-w-xl">
       <div className="flex flex-col items-center text-center py-4 space-y-8">
         {/* Success Icon */}
         <div className="mb-6 flex items-center justify-center w-16 h-16 bg-[#10B981] rounded-full">

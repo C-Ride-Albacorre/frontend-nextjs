@@ -23,7 +23,7 @@ const emptyValues: StoreFormValues = {
   phoneNumber: '',
   email: '',
   storeDescription: '',
-  minimumOrder: '',
+  dailyOrderLimit: '',
   preparationTime: '',
   operatingHours: {},
 };
@@ -57,7 +57,7 @@ export default function StoreForm({ initialData }: StoreFormProps) {
       phoneNumber: initialData.phoneNumber || '',
       email: initialData.email || '',
       storeDescription: initialData.storeDescription || '',
-      minimumOrder: initialData.minimumOrder?.toString() || '',
+      dailyOrderLimit: initialData.dailyOrderLimit?.toString() || '',
       preparationTime: initialData.preparationTime?.toString() || '',
       operatingHours,
     };

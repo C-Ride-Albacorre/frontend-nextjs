@@ -65,11 +65,11 @@ export const VENDOR_SIDEBAR: SidebarSection[] = [
   {
     title: 'Main Menu',
     items: [
-      // {
-      //   label: 'Orders',
-      //   icon: ShoppingBag,
-      //   href: '/vendor/orders',
-      // },
+      {
+        label: 'Orders',
+        icon: ShoppingBag,
+        href: '/vendor/orders',
+      },
       {
         label: 'Products',
         icon: Package,

@@ -33,7 +33,7 @@ export default function ViewStoreModal({
     phoneNumber,
     email,
     storeDescription,
-    minimumOrder,
+    dailyOrderLimit,
     deliveryFee,
     preparationTime,
     operatingHours,
@@ -171,7 +171,7 @@ export default function ViewStoreModal({
               <ShoppingBag size={16} className="text-neutral-500" />
               <p className="text-xs text-neutral-500">Min. Order</p>
             </div>
-            <p className="font-medium text-primary ">{minimumOrder}</p>
+            <p className="font-medium text-primary ">{dailyOrderLimit}</p>
           </Card>
 
           <Card gap="md" border="none" className=" bg-neutral-50">

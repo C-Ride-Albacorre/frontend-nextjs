@@ -23,6 +23,7 @@ import {
 } from '../../hooks/use-orders';
 import { toast } from 'sonner';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 interface OrderItem {
   id: string;
@@ -78,6 +79,9 @@ export default function OrdersModal({
 
   const { setOrderId } = useOrderStore();
 
+
+  const router = useRouter();
+
   // React Query hooks
   const {
     data: orders = [],
@@ -130,7 +134,7 @@ export default function OrdersModal({
         '[OrdersModal] Verifying existing monnifyReference:',
         order.monnifyReference,
       );
-      window.location.href = `/payment/callback?paymentReference=${encodeURIComponent(order.monnifyReference)}`;
+      router.push(`/payment/callback?paymentReference=${encodeURIComponent(order.monnifyReference)}`);
       return;
     }
 
@@ -156,7 +160,7 @@ export default function OrdersModal({
       data?.checkoutUrl ?? data?.responseBody?.checkoutUrl ?? null;
 
     if (checkoutUrl) {
-      window.location.href = checkoutUrl;
+      router.push(checkoutUrl);
       return;
     }
 

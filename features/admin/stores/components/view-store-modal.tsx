@@ -190,7 +190,7 @@ export default function ViewStoreModal({
             <div className="p-4 bg-neutral-50 rounded-xl">
               <p className="text-xs text-neutral-500 mb-1">Min. Order</p>
               <p className="font-medium text-neutral-900 text-sm md:text-base">
-                {storeDetail.minimumOrder}
+                {storeDetail.dailyOrderLimit}
               </p>
             </div>
 

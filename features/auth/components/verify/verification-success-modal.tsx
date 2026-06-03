@@ -4,6 +4,7 @@ import Modal from '@/components/layout/modal';
 import { Button } from '@/components/ui/buttons/button';
 import { CheckCircle, ChevronRight } from 'lucide-react';
 import { completeVerificationAction } from '../../actions/complete-verify-session';
+import { useRouter } from 'next/navigation';
 
 type VerificationSuccessModalProps = {
   isOpen: boolean;
@@ -17,8 +18,10 @@ export default function VerificationSuccessModal({
   redirectTo,
 }: VerificationSuccessModalProps) {
   const handleContinue = async () => {
-    await completeVerificationAction(); // clear now, just before leaving
-    window.location.href = redirectTo; // hard nav to avoid middleware cache issues
+    const router = useRouter();
+
+    await completeVerificationAction();
+    router.push(redirectTo);
   };
 
   return (

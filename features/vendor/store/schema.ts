@@ -1,10 +1,7 @@
 import { z } from 'zod';
 
 export const StoreSchema = z.object({
-  storeName: z
-    .string()
-    .trim()
-    .min(2, { message: 'Store name is required.' }),
+  storeName: z.string().trim().min(2, { message: 'Store name is required.' }),
   categoryId: z
     .string()
     .trim()
@@ -24,13 +21,21 @@ export const StoreSchema = z.object({
     .trim()
     .email({ message: 'Please enter a valid email address.' }),
   storeDescription: z.string().trim().optional(),
-  minimumOrder: z.preprocess(
-    (val) => (val === '' || val === undefined || val === null ? undefined : val),
-    z.coerce.number().nonnegative({ message: 'Must be 0 or greater.' }).optional(),
+  dailyOrderLimit: z.preprocess(
+    (val) =>
+      val === '' || val === undefined || val === null ? undefined : val,
+    z.coerce
+      .number()
+      .nonnegative({ message: 'Must be 0 or greater.' })
+      .optional(),
   ),
   preparationTime: z.preprocess(
-    (val) => (val === '' || val === undefined || val === null ? undefined : val),
-    z.coerce.number().nonnegative({ message: 'Must be 0 or greater.' }).optional(),
+    (val) =>
+      val === '' || val === undefined || val === null ? undefined : val,
+    z.coerce
+      .number()
+      .nonnegative({ message: 'Must be 0 or greater.' })
+      .optional(),
   ),
 });
 
@@ -41,7 +46,7 @@ export type StoreFormErrors = {
   phoneNumber?: string[];
   email?: string[];
   storeDescription?: string[];
-  minimumOrder?: string[]; 
+  dailyOrderLimit?: string[];
   preparationTime?: string[];
   operatingHours?: string[];
 };

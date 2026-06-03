@@ -116,7 +116,7 @@ export async function createStoreAction(
     phoneNumber: formData.get('phoneNumber') as string,
     email: formData.get('email') as string,
     storeDescription: formData.get('storeDescription') as string,
-    minimumOrder: formData.get('minimumOrder') as string,
+    dailyOrderLimit: formData.get('dailyOrderLimit') as string,
     preparationTime: formData.get('preparationTime') as string,
   };
 
@@ -183,10 +183,10 @@ export async function createStoreAction(
   }
 
   if (
-    result.data.minimumOrder &&
-    typeof result.data.minimumOrder === 'number'
+    result.data.dailyOrderLimit &&
+    typeof result.data.dailyOrderLimit === 'number'
   ) {
-    apiFormData.append('minimumOrder', String(result.data.minimumOrder));
+    apiFormData.append('dailyOrderLimit', String(result.data.dailyOrderLimit));
   }
 
   if (
@@ -272,7 +272,7 @@ export async function updateStoreAction(
     phoneNumber: formData.get('phoneNumber') as string,
     email: formData.get('email') as string,
     storeDescription: formData.get('storeDescription') as string,
-    minimumOrder: formData.get('minimumOrder') as string,
+    dailyOrderLimit: formData.get('dailyOrderLimit') as string,
 
     preparationTime: formData.get('preparationTime') as string,
   };
@@ -336,10 +336,10 @@ export async function updateStoreAction(
   }
 
   if (
-    result.data.minimumOrder &&
-    typeof result.data.minimumOrder === 'number'
+    result.data.dailyOrderLimit &&
+    typeof result.data.dailyOrderLimit === 'number'
   ) {
-    apiFormData.append('minimumOrder', String(result.data.minimumOrder));
+    apiFormData.append('dailyOrderLimit', String(result.data.dailyOrderLimit));
   }
 
   if (

@@ -53,6 +53,7 @@ function normalizeOption(opt: DeliveryOption, index: number) {
 }
 
 export default function DeliveryTypePage() {
+
   const { id, slug } = useParams<{ id: string; slug: string }>();
   const router = useRouter();
   const setDeliveryOption = useOrderStore((s) => s.setDeliveryOption);
@@ -63,10 +64,8 @@ export default function DeliveryTypePage() {
   useEffect(() => {
     getDeliveryOptionsAction().then((result) => {
       if (result.success && result.data.length > 0) {
-        // Real options exist — use them
         setOptions(result.data.map(normalizeOption));
       }
-      // If empty, FALLBACK_OPTIONS stays in state — no UI change
       setIsLoading(false);
     });
   }, []);

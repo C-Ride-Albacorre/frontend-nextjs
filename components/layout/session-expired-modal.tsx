@@ -3,6 +3,7 @@
 import { createPortal } from 'react-dom';
 import { LogIn } from 'lucide-react';
 import { Button } from '@/components/ui/buttons/button';
+import { useRouter } from 'next/navigation';
 
 interface SessionExpiredModalProps {
   isOpen: boolean;
@@ -14,6 +15,8 @@ export default function SessionExpiredModal({
   redirectPath,
 }: SessionExpiredModalProps) {
   if (!isOpen) return null;
+
+  const router = useRouter();
 
   // Determine persona from redirectPath
   let persona = 'admin';
@@ -49,7 +52,7 @@ export default function SessionExpiredModal({
             variant="primary"
             size="full"
             onClick={() => {
-              window.location.href = loginUrl;
+              router.push(loginUrl);
             }}
           >
             Proceed to Login

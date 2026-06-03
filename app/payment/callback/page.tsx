@@ -15,7 +15,7 @@ export default function PaymentCallbackPage() {
         fallback={
           <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
             <Loader size={48} className="animate-spin text-primary" />
-            <p className="text-neutral-500">Loading...</p>
+            <p className="text-primary">Confirming Payment...</p>
           </div>
         }
       >

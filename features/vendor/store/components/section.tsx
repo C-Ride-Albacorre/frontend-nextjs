@@ -14,7 +14,7 @@ export interface StoreFormValues {
   phoneNumber: string;
   email: string;
   storeDescription: string;
-  minimumOrder: string;
+  dailyOrderLimit: string;
   preparationTime: string;
   operatingHours: Record<string, { open: string; close: string }>;
 }
@@ -271,13 +271,13 @@ export function StoreDetails({
           />
 
           <Input
-            name="minimumOrder"
-            label="Minimum Order/per day"
+            name="dailyOrderLimit"
+            label="Daily Order Limit/per day"
             type="number"
             placeholder="5000"
-            value={values.minimumOrder}
-            onChange={(e) => onChange('minimumOrder', e.target.value)}
-            errorMessage={errors?.minimumOrder?.[0]}
+            value={values.dailyOrderLimit}
+            onChange={(e) => onChange('dailyOrderLimit', e.target.value)}
+            errorMessage={errors?.dailyOrderLimit?.[0]}
             disabled={disabled}
           />
 

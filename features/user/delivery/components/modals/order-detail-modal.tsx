@@ -17,6 +17,7 @@ import { useOrderDetails } from '../../hooks/use-orders';
 import { initializePaymentAction } from '../../action';
 import { toast } from 'sonner';
 import type { CartItem } from '../../types';
+import { useRouter } from 'next/navigation';
 
 interface OrderDetailModalProps {
   isModalOpen: boolean;
@@ -32,6 +33,8 @@ export default function OrderDetailModal({
   cartItems = [],
 }: OrderDetailModalProps) {
   const [isInitiatingPayment, setIsInitiatingPayment] = useState(false);
+
+  const router = useRouter();
 
   const {
     data: order,
@@ -73,7 +76,7 @@ export default function OrderDetailModal({
       data?.checkoutUrl ?? data?.responseBody?.checkoutUrl ?? null;
 
     if (checkoutUrl) {
-      window.location.href = checkoutUrl;
+      router.push(checkoutUrl);
       return;
     }
 
