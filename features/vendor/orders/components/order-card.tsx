@@ -3,8 +3,7 @@
 import Card from '@/components/layout/card';
 import { Button } from '@/components/ui/buttons/button';
 import clsx from 'clsx';
-import { CheckCircle, Eye, XCircle } from 'lucide-react';
-import AcceptOrderModal from './order-action-modal';
+import { CheckCircle, XCircle } from 'lucide-react';
 import { useState } from 'react';
 import OrderActionModal from './order-action-modal';
 
@@ -26,7 +25,6 @@ interface OrderCardProps {
   items: Item[];
   totalPrice?: number;
   subtotal: number;
-  action?: string;
   phoneNumber?: string;
 }
 
@@ -42,7 +40,6 @@ export default function OrderCard({
   customer,
   items,
   subtotal,
-  action,
 }: OrderCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -54,11 +51,11 @@ export default function OrderCard({
   };
 
   const handleRejectAction = () => {
-
-    
     setActionStatus('REJECT');
     setIsModalOpen(true);
   };
+
+
   return (
     <>
       <Card
@@ -191,6 +188,7 @@ export default function OrderCard({
         orderId={id}
         customer={customer}
         actionStatus={actionStatus}
+       
       />
     </>
   );

@@ -55,14 +55,27 @@ type ApiResponse = {
         subtotal: number;
       };
     };
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
   };
 };
 
-export async function getVendorOrdersService(): Promise<ApiResponse> {
-  const res = await authFetch(`${BASE_URL}/vendor/orders`, {
-    method: 'GET',
-    cache: 'no-store',
-  });
+export async function getVendorOrdersService({
+  page,
+  limit,
+}: {
+  page: number;
+  limit: number;
+}): Promise<ApiResponse> {
+  const res = await authFetch(
+    `${BASE_URL}/vendor/orders?page=${page}&limit=${limit}`,
+    {
+      method: 'GET',
+      cache: 'no-store',
+    },
+  );
 
   const result = await res.json();
 
@@ -75,8 +88,6 @@ export async function getVendorOrdersService(): Promise<ApiResponse> {
 
   return result as ApiResponse;
 }
-
-
 
 export async function vendorOrderActionService({
   orderId,
