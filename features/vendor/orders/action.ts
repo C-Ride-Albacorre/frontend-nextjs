@@ -42,11 +42,16 @@ export async function vendorOrderAction({
   orderId,
   payload,
 }: VendorOrderActionPayload) {
+
+  console.log(' Performing vendor order action with payload:', { orderId, payload });
+
   try {
     const response = await vendorOrderActionService({
       orderId,
       payload,
     });
+
+    console.log(' Vendor order action response:', response);
 
     revalidatePath('/vendor/orders');
     return {

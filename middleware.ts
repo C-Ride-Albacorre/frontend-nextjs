@@ -30,6 +30,7 @@ const ADMIN_PROTECTED_ROUTES = [
   '/admin/dashboard',
   '/admin/analytics',
   '/admin/vendor-onboarding',
+   '/admin/driver-onboarding',
   '/admin/create-admin',
   '/admin/stores',
   '/admin/category',

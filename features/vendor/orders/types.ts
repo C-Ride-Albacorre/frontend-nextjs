@@ -1,7 +1,7 @@
 export type VendorOrderActionPayload = {
   orderId: string;
   payload: {
-    action: 'ACCEPT' | 'REJECT';
+    action: 'ACCEPT' | 'DECLINE';
     reason?: string;
   };
 };

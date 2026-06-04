@@ -8,14 +8,23 @@ import { Button } from '@/components/ui/buttons/button';
 import Textarea from '@/components/ui/inputs/textarea';
 
 import { vendorOrderAction } from '../action';
+import { Loader } from 'lucide-react';
 
 interface OrderActionModalProps {
   isModalOpen: boolean;
   onClose: () => void;
   orderId: string;
   customer: string;
-  actionStatus: 'ACCEPT' | 'REJECT';
+  actionStatus: 'ACCEPT' | 'DECLINE';
 }
+
+const DECLINE_REASONS = [
+  'Out of stock',
+  'Unable to fulfill order at this time',
+  'Item no longer available',
+  'Delivery constraints',
+  'Other',
+];
 
 export default function OrderActionModal({
   orderId,
@@ -24,44 +33,50 @@ export default function OrderActionModal({
   onClose,
   actionStatus,
 }: OrderActionModalProps) {
-  const [reason, setReason] = useState('');
+  const [selectedReason, setSelectedReason] = useState('');
+  const [customReason, setCustomReason] = useState('');
   const [error, setError] = useState('');
   const [isPending, startTransition] = useTransition();
 
-  const isReject = actionStatus === 'REJECT';
+  const handleClose = () => {
+    setSelectedReason('');
+    setCustomReason('');
+    setError('');
+    onClose();
+  };
+
+  const isDecline = actionStatus === 'DECLINE';
 
   const handleAction = () => {
-    const actionReason = isReject
-      ? reason.trim()
-      : 'Vendor accepted order';
+    let actionReason = 'Vendor accepted order';
 
-    if (isReject && !actionReason) {
-      toast.error('Please provide a reason for rejection');
+    if (isDecline) {
+      if (!selectedReason) {
+        toast.error('Please select a reason');
+        return;
+      }
 
-      setError('Reason is required for rejecting an order');
-      return;
+      actionReason =
+        selectedReason === 'Other'
+          ? customReason.trim() || 'Other'
+          : selectedReason;
     }
 
     startTransition(async () => {
       const result = await vendorOrderAction({
         orderId,
-
         payload: {
           action: actionStatus,
           reason: actionReason,
         },
       });
 
-
-      console.log('Action Result:', result);
-
       if (result.success) {
         toast.success(result.message);
 
-        setReason('');
-
-        onClose();
-
+        setSelectedReason('');
+        setCustomReason('');
+        handleClose();
       } else {
         toast.error(result.message);
       }
@@ -71,19 +86,19 @@ export default function OrderActionModal({
   return (
     <Modal
       isModalOpen={isModalOpen}
-      onClose={onClose}
-      wrapperClassName={isReject ? 'max-w-md' : 'max-w-sm'}
+      onClose={handleClose}
+      wrapperClassName={isDecline ? 'max-w-md' : 'max-w-sm'}
     >
-      <div className="flex flex-col items-center space-y-5">
+      <div className="flex flex-col items-center space-y-6">
         <div className="space-y-3 text-center">
           <h4 className="text-lg font-semibold">
-            {isReject ? 'Reject Order' : 'Accept Order'}
+            {isDecline ? 'Decline Order' : 'Accept Order'}
           </h4>
 
           <p className="text-sm leading-6 text-neutral-500">
             Are you sure you want to{' '}
             <span className="font-medium">
-              {isReject ? 'reject' : 'accept'}
+              {isDecline ? 'decline' : 'accept'}
             </span>{' '}
             the order from{' '}
             <span className="font-medium text-neutral-800 capitalize">
@@ -93,15 +108,47 @@ export default function OrderActionModal({
           </p>
         </div>
 
-        {isReject && (
-          <div className="w-full">
-            <Textarea
-              name="reason"
-              placeholder="Reason for rejection"
-              value={reason}
-              onChange={(e) => setReason(e.target.value)}
-              errorMessage={error}
-            />
+        {isDecline && (
+          <div className="w-full space-y-4">
+            <div className='space-y-2'>
+              <p className="mb-3 text-sm font-medium text-neutral-700">
+                Why are you declining this order?
+              </p>
+
+              <div className="space-y-2">
+                {DECLINE_REASONS.map((item) => (
+                  <button
+                    key={item}
+                    type="button"
+                    onClick={() => {
+                      setSelectedReason(item);
+                      setError('');
+                    }}
+                    className={`
+              w-full rounded-lg border px-4 py-3 text-left text-sm transition
+              ${
+                selectedReason === item
+                  ? 'border-red-500 bg-red-50 text-red-700'
+                  : 'border-border hover:border-red-200'
+              }
+            `}
+                  >
+                    {item}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {selectedReason === 'Other' && (
+              <Textarea
+                name="customReason"
+                placeholder="Additional details (optional)"
+                value={customReason}
+                onChange={(e) => setCustomReason(e.target.value)}
+
+                errorMessage={error}
+              />
+            )}
           </div>
         )}
 
@@ -109,20 +156,20 @@ export default function OrderActionModal({
           <Button
             variant="outline"
             size="full"
-            onClick={onClose}
+            onClick={handleClose}
             disabled={isPending}
           >
             Cancel
           </Button>
 
           <Button
-            variant={isReject ? 'red' : 'green'}
+            variant={isDecline ? 'red' : 'green'}
             size="full"
             onClick={handleAction}
             loading={isPending}
             disabled={isPending}
           >
-            {isReject ? 'Reject Order' : 'Accept Order'}
+            {isPending ? <div className="flex items-center justify-center gap-2"><Loader  size={18} className="animate-spin" /> <span>{isDecline ? 'Declining...' : 'Accepting...'}</span></div> : isDecline ? 'Decline Order' : 'Accept Order'}
           </Button>
         </div>
       </div>

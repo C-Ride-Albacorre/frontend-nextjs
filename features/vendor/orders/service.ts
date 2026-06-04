@@ -93,12 +93,19 @@ export async function vendorOrderActionService({
   orderId,
   payload,
 }: VendorOrderActionPayload) {
+  console.log(' Performing vendor order action service with payload:', {
+    orderId,
+    payload,
+  });
+
   const res = await authFetch(`${BASE_URL}/vendor/orders/${orderId}/action`, {
     method: 'POST',
     body: JSON.stringify(payload),
   });
 
   const result = await res.json();
+
+  console.log(' Vendor order action service response:', result);
 
   if (!res.ok) {
     throw new ApiError(

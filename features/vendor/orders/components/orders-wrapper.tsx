@@ -19,7 +19,7 @@ export default async function OrdersWrapper({
   const { page, limit } = searchParams;
 
   const pageNum = page ? parseInt(page) : 1;
-  const limitNum = limit ? parseInt(limit) : 10;
+  const limitNum = limit ? parseInt(limit) : 5;
 
   const response = await getVendorOrderAction({
     page: pageNum,
@@ -80,20 +80,22 @@ export default async function OrdersWrapper({
             </div>
           </Card>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {Orders.map((order) => {
               const customer = `${order.user?.firstName ?? ''} ${order.user?.lastName ?? ''}`;
 
               const items =
                 order.items?.map(
                   (item: {
-                    product?: { productName?: string; basePrice: number };
+                    product?: { productName?: string; image: string };
                     quantity: number;
+                    totalPrice: number;
                   }) => ({
                     name: item.product?.productName ?? 'Unknown Product',
                     quantity: item.quantity,
 
-                    basePrice: item.product?.basePrice ?? 0,
+                    totalPrice: item?.totalPrice ?? 0,
+                    image: item.product?.image ?? '',
                   }),
                 ) ?? [];
 
@@ -106,6 +108,7 @@ export default async function OrdersWrapper({
                   orderStatus={order.orderStatus}
                   paymentStatus={order.paymentStatus}
                   createdAt={order.createdAt}
+                  profilePicture={order.user?.profilePicture ?? ''}
                   customer={customer}
                   email={order.user?.email ?? 'N/A'}
                   phoneNumber={order.user?.phoneNumber}

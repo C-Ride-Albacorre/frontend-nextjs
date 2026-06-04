@@ -6,16 +6,20 @@ import clsx from 'clsx';
 import { CheckCircle, XCircle } from 'lucide-react';
 import { useState } from 'react';
 import OrderActionModal from './order-action-modal';
+import Image from 'next/image';
+import Avatar from '@/components/ui/avatar';
 
 type Item = {
   name: string;
   quantity: number;
-  basePrice: number;
+  totalPrice: number;
+  image: string;
 };
 
 interface OrderCardProps {
   id: string;
   orderCode: string;
+  profilePicture: string;
   orderNumber: string;
   orderStatus: string;
   paymentStatus: string;
@@ -32,6 +36,7 @@ export default function OrderCard({
   id,
   orderCode,
   orderNumber,
+  profilePicture,
   orderStatus,
   paymentStatus,
   email,
@@ -43,7 +48,9 @@ export default function OrderCard({
 }: OrderCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const [actionStatus, setActionStatus] = useState<'ACCEPT' | 'REJECT' >('ACCEPT');
+  const [actionStatus, setActionStatus] = useState<'ACCEPT' | 'DECLINE'>(
+    'ACCEPT',
+  );
 
   const handleAcceptAction = () => {
     setActionStatus('ACCEPT');
@@ -51,7 +58,7 @@ export default function OrderCard({
   };
 
   const handleRejectAction = () => {
-    setActionStatus('REJECT');
+    setActionStatus('DECLINE');
     setIsModalOpen(true);
   };
 
@@ -105,17 +112,32 @@ export default function OrderCard({
             Customer
           </p>
 
-          <p className="font-medium">{customer}</p>
+          <div>
+            <div className="flex gap-3">
+              <Avatar
+                src={profilePicture}
+                alt="Customer Image"
+                name={customer}
+                size={52}
+              />
 
-          <p className="text-sm text-neutral-600">{email || 'N/A'}</p>
+              <div className="flex justify-between flex-1">
+                <div className=" space-y-1">
+                  <p className="font-medium">{customer}</p>
 
-          {phoneNumber && (
-            <p className="text-sm text-neutral-600">{phoneNumber}</p>
-          )}
+                  <p className="text-xs text-neutral-500">{email || 'N/A'}</p>
 
-          <p className="mt-2 text-xs text-neutral-500">
-            {new Date(createdAt).toLocaleString()}
-          </p>
+                  {phoneNumber && (
+                    <p className="text-xs text-neutral-500">{phoneNumber}</p>
+                  )}
+                </div>
+
+                <p className="mt-2 text-xs text-neutral-500">
+                  {new Date(createdAt).toLocaleString()}
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Items */}
@@ -124,24 +146,25 @@ export default function OrderCard({
             Order Items
           </p>
 
-          <div className="space-y-2">
+          <div className="space-y-4">
             {items.map((item) => (
               <div
                 key={`${item.name}-${item.quantity}`}
                 className="flex items-center justify-between"
               >
-                <p className="text-sm text-neutral-700">
-                  {item.name}
-                  <span className="ml-1 text-neutral-400">
-                    × {item.quantity}
-                  </span>
-                </p>
+                <div className="flex items-center gap-3 ">
+                  <div className="h-12 w-12 overflow-hidden rounded-sm relative">
+                    <Image src={item.image} alt={item.name} fill />
+                  </div>
+
+                  <p className="text-sm text-neutral-700 space-x-1">
+                    <span className="flex-wrap">{item.name}</span>
+                    <span className="text-neutral-400">× {item.quantity}</span>
+                  </p>
+                </div>
 
                 <p className="text-sm font-medium">
-                  ₦
-                  {(
-                    (item.basePrice ?? 0) * (item.quantity ?? 0)
-                  ).toLocaleString()}
+                  ₦ {item.totalPrice.toLocaleString()}
                 </p>
               </div>
             ))}
@@ -188,7 +211,6 @@ export default function OrderCard({
         orderId={id}
         customer={customer}
         actionStatus={actionStatus}
-       
       />
     </>
   );

@@ -3,26 +3,26 @@
 import Image from 'next/image';
 import { useState, useMemo } from 'react';
 
-const PRIMARY_COLORS = [
-  '#2563EB', // blue-600
-  '#DC2626', // red-600
-  '#16A34A', // green-600
-  '#7C3AED', // violet-600
-  '#EA580C', // orange-600
-  '#DB2777', // pink-600
-  '#0891B2', // cyan-600
-  '#4F46E5', // indigo-600
+const GRADIENTS = [
+  ['#2563EB', '#60A5FA'], // blue
+  ['#DC2626', '#F87171'], // red
+  ['#16A34A', '#4ADE80'], // green
+  ['#7C3AED', '#A78BFA'], // violet
+  ['#EA580C', '#FB923C'], // orange
+  ['#DB2777', '#F472B6'], // pink
+  ['#0891B2', '#22D3EE'], // cyan
+  ['#4F46E5', '#818CF8'], // indigo
 ];
 
-function getColorFromName(name?: string) {
-  if (!name) return PRIMARY_COLORS[0];
+function getGradientFromName(name?: string) {
+  if (!name) return GRADIENTS[0];
 
   let hash = 0;
   for (let i = 0; i < name.length; i++) {
     hash = name.charCodeAt(i) + ((hash << 5) - hash);
   }
 
-  return PRIMARY_COLORS[Math.abs(hash) % PRIMARY_COLORS.length];
+  return GRADIENTS[Math.abs(hash) % GRADIENTS.length];
 }
 
 const Avatar = ({
@@ -45,7 +45,7 @@ const Avatar = ({
     .slice(0, 2)
     .toUpperCase();
 
-  const backgroundColor = useMemo(() => getColorFromName(name), [name]);
+  const gradient = useMemo(() => getGradientFromName(name), [name]);
 
   return (
     <div
@@ -53,7 +53,7 @@ const Avatar = ({
       style={{
         width: size,
         height: size,
-        backgroundColor,
+        backgroundImage: `linear-gradient(135deg, ${gradient[0]}, ${gradient[1]})`,
       }}
     >
       {src && !error ? (
@@ -66,7 +66,10 @@ const Avatar = ({
           onError={() => setError(true)}
         />
       ) : (
-        <span className="select-none" style={{ fontSize: size * 0.4 }}>
+        <span
+          className="select-none font-medium"
+          style={{ fontSize: size * 0.4 }}
+        >
           {initials || '?'}
         </span>
       )}
