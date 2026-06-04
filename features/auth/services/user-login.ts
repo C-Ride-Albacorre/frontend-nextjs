@@ -35,7 +35,6 @@ export async function loginUser(
     'Content-Type': 'application/json',
   };
 
-
   if (guestSessionId) {
     headers['x-session-id'] = guestSessionId;
   }

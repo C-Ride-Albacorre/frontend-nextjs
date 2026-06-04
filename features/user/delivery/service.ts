@@ -211,8 +211,6 @@ export async function getCartService() {
 }
 
 export async function addToCartService(payload: AddToCartPayload) {
-console.log('addToCartService payload', payload);
-
   return cartRequest('AddToCart', `${BASE_URL}/cart/add`, {
     method: 'POST',
     body: JSON.stringify(payload),
