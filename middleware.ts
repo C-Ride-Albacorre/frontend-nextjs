@@ -30,7 +30,7 @@ const ADMIN_PROTECTED_ROUTES = [
   '/admin/dashboard',
   '/admin/analytics',
   '/admin/vendor-onboarding',
-   '/admin/driver-onboarding',
+  '/admin/driver-onboarding',
   '/admin/create-admin',
   '/admin/stores',
   '/admin/category',
@@ -93,7 +93,6 @@ type RefreshApiResponse = {
 
 async function refreshAccessToken(
   refreshToken: string,
-  previousAccessToken: string,
 ): Promise<RefreshApiResponse | null> {
   const refreshUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/refresh`;
 
@@ -101,17 +100,13 @@ async function refreshAccessToken(
     url: refreshUrl,
     hasRefreshToken: !!refreshToken,
     refreshTokenPrefix: refreshToken.slice(0, 20) + '...',
-    hasPreviousAccessToken: !!previousAccessToken,
   });
 
   try {
     const res = await fetch(refreshUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        refreshToken,
-        ...(previousAccessToken && { previousAccessToken }),
-      }),
+      body: JSON.stringify({ refreshToken }),
       cache: 'no-store',
     });
 
@@ -205,7 +200,7 @@ export async function middleware(request: NextRequest) {
         : '[⏰ Middleware] No access token found — attempting refresh with refresh token',
     );
 
-    const refreshed = await refreshAccessToken(refreshToken, accessToken ?? '');
+    const refreshed = await refreshAccessToken(refreshToken);
 
     if (refreshed?.data?.accessToken) {
       // Explicitly rebuild the Cookie header so downstream server components
@@ -323,35 +318,34 @@ export async function middleware(request: NextRequest) {
 
   const isFullyAuthenticated = hasAccessToken && hasRefreshToken;
 
-const VERIFICATION_FALLBACKS: Record<string, string> = {
-  '/verify/user': '/user/login',
-  '/verify/vendor-phone': '/vendor/login',
-  '/verify/vendor-email': '/vendor/login',
-  '/verify/add-google-phone': '/vendor/login',
-  '/verify/admin': '/admin/login',
-};
+  const VERIFICATION_FALLBACKS: Record<string, string> = {
+    '/verify/user': '/user/login',
+    '/verify/vendor-phone': '/vendor/login',
+    '/verify/vendor-email': '/vendor/login',
+    '/verify/add-google-phone': '/vendor/login',
+    '/verify/admin': '/admin/login',
+  };
 
-if (VERIFICATION_ROUTES.some((r) => pathname.startsWith(r))) {
-  const verificationToken = request.cookies.get('verificationToken')?.value;
+  if (VERIFICATION_ROUTES.some((r) => pathname.startsWith(r))) {
+    const verificationToken = request.cookies.get('verificationToken')?.value;
 
-  if (!verificationToken) {
-    const matchedRoute = Object.keys(VERIFICATION_FALLBACKS).find((route) =>
-      pathname.startsWith(route),
-    );
+    if (!verificationToken) {
+      const matchedRoute = Object.keys(VERIFICATION_FALLBACKS).find((route) =>
+        pathname.startsWith(route),
+      );
 
-    const fallback =
-      (matchedRoute && VERIFICATION_FALLBACKS[matchedRoute]) ||
-      '/user/login';
+      const fallback =
+        (matchedRoute && VERIFICATION_FALLBACKS[matchedRoute]) || '/user/login';
 
-    const url = new URL(fallback, request.url);
+      const url = new URL(fallback, request.url);
 
-    url.searchParams.set('expired', 'true');
-    url.searchParams.set('reason', 'verification_expired');
-    url.searchParams.set('callbackUrl', pathname);
+      url.searchParams.set('expired', 'true');
+      url.searchParams.set('reason', 'verification_expired');
+      url.searchParams.set('callbackUrl', pathname);
 
-    return NextResponse.redirect(url);
+      return NextResponse.redirect(url);
+    }
   }
-}
   // -------------------------
   // UNAUTHENTICATED ACCESS
   // -------------------------
