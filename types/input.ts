@@ -60,7 +60,7 @@ export interface SelectProps {
   options?: SelectOption[];
   value?: string;
   placeholder?: string;
-  onChange: (value: string) => void;
+  onChange?: (value: string) => void;
 
   searchable?: boolean;
 

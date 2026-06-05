@@ -81,12 +81,34 @@ export async function getVendorOrdersService({
 
   if (!res.ok) {
     throw new ApiError(
-      result?.message || 'Failed to fetch store',
+      result?.message || 'Failed to fetch orders',
       result?.statusCode ?? res.status,
     );
   }
 
   return result as ApiResponse;
+}
+
+export async function getVendorOrderIdService({
+  orderId,
+}: {
+  orderId: string;
+}) {
+  const res = await authFetch(`${BASE_URL}/vendor/orders/${orderId}`, {
+    method: 'GET',
+    cache: 'no-store',
+  });
+
+  const result = await res.json();
+
+  if (!res.ok) {
+    throw new ApiError(
+      result?.message || 'Failed to fetch order details',
+      result?.statusCode ?? res.status,
+    );
+  }
+
+  return result;
 }
 
 export async function vendorOrderActionService({
@@ -100,6 +122,9 @@ export async function vendorOrderActionService({
 
   const res = await authFetch(`${BASE_URL}/vendor/orders/${orderId}/action`, {
     method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
     body: JSON.stringify(payload),
   });
 

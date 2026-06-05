@@ -18,15 +18,15 @@ type Props = {
   search?: string;
   onSearchChange?: (value: string) => void;
   // filter/status
-  filter: string;
-  onFilterChange: (value: string) => void;
+  filter?: string;
+  onFilterChange?: (value: string) => void;
   filterOptions?: Option[];
   updatedAt?: string;
 };
 
 export default function Toolbar({
   title,
-  searchPlaceholder = 'Search...',
+  searchPlaceholder,
   filterPlaceholder = 'Filter by status',
   search,
   onSearchChange,
@@ -52,7 +52,7 @@ export default function Toolbar({
             ${hasTitle ? 'md:w-auto' : 'md:flex-1'}`}
         >
           {/* Search */}
-          <div className={`flex-1 min-w-0 ${hasTitle ? 'md:w-64' : ''}`}>
+        {searchPlaceholder &&   <div className={`flex-1 min-w-0 ${hasTitle ? 'md:w-64' : ''}`}>
             <Input
               leftIcon={<Search size={16} className="text-neutral-400" />}
               placeholder={searchPlaceholder}
@@ -61,11 +61,11 @@ export default function Toolbar({
               value={search}
               onChange={(e) => onSearchChange?.(e.target.value)}
             />
-          </div>
+          </div>}
 
           {/* Filter */}
           {filterOptions.length > 0 && (
-            <div className="w-44 shrink-0">
+            <div className="w-44 shrink-0 justify-end">
               <Select
                 id="filter"
                 value={filter}

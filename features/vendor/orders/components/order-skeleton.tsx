@@ -1,10 +1,10 @@
 import Card from '@/components/layout/card';
 
-let count = 3;
+let count = 2;
 
 export default function OrderSkeleton() {
   return (
-   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+   <div className="grid grid-cols-1 md:grid-cols-2  gap-6">
       {Array.from({ length: count }).map((_, index) => (
         <Card border='none' className="flex h-full flex-col bg-neutral-50"   key={index}>
           <div className="animate-pulse flex flex-col justify-between gap-5">

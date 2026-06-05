@@ -6,6 +6,15 @@ import VendorDashboardHeader from '@/components/ui/headers/vendor-header';
 import OrdersWrapper from '@/features/vendor/orders/components/orders-wrapper';
 import OrderSkeleton from '@/features/vendor/orders/components/order-skeleton';
 import { Suspense } from 'react';
+import Toolbar from '@/components/layout/tool-bar';
+
+
+const CATEGORIES = [
+  { label: 'All', value: 'ALL' },
+  { label: 'Pending', value: 'PENDING' },
+  { label: 'Accepted', value: 'ACCEPTED' },
+  { label: 'Declined', value: 'DECLINED' },
+];
 
 export default async function OrderManagementPage({
   searchParams,
@@ -23,6 +32,14 @@ export default async function OrderManagementPage({
         <VendorDashboardHeader />
 
         <SectionLayout>
+          {/* <Toolbar
+                  title="Orders"
+                  searchPlaceholder="Search orders..."
+                  filter={ CATEGORIES[1] }
+                  onFilterChange={() => {}}
+                  filterOptions={CATEGORIES}
+                /> */}
+
           <Suspense
             key={`${params.page}-${params.limit}`}
             fallback={<OrderSkeleton />}

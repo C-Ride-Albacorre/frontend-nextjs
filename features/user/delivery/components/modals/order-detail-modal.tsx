@@ -8,12 +8,13 @@ import {
   Phone,
   ShoppingBag,
   User,
+  X,
 } from 'lucide-react';
 import Image from 'next/image';
 import Modal from '@/components/layout/modal';
 import { Button } from '@/components/ui/buttons/button';
 import Card from '@/components/layout/card';
-import { useOrderDetails } from '../../hooks/use-orders';
+import { useOrderDetails, useCancelOrder } from '../../hooks/use-orders';
 import { initializePaymentAction } from '../../action';
 import { toast } from 'sonner';
 import type { CartItem } from '../../types';
@@ -35,6 +36,27 @@ export default function OrderDetailModal({
   const [isInitiatingPayment, setIsInitiatingPayment] = useState(false);
 
   const router = useRouter();
+  const cancelMutation = useCancelOrder();
+
+  const handleCancel = () => {
+    if (!orderId) return;
+    cancelMutation.mutate(orderId, {
+      onSuccess: onClose,
+    });
+  };
+
+  const isCancellable = (status?: string) => {
+    if (!status) return true;
+    const s = status.toUpperCase();
+    const nonCancellable = [
+      'DELIVERED',
+      'CANCELLED',
+      'IN_TRANSIT',
+      'COMPLETED',
+      'CONFIRMED',
+    ];
+    return !nonCancellable.includes(s);
+  };
 
   const {
     data: order,
@@ -279,25 +301,46 @@ export default function OrderDetailModal({
               Placed {formatDate(order.createdAt)}
             </p>
 
-            {/* Proceed to payment */}
-            <Button
-              variant="primary"
-              size="lg"
-              className="w-full"
-              leftIcon={
-                isInitiatingPayment ? (
-                  <Loader size={16} className="animate-spin" />
-                ) : (
-                  <CreditCard size={16} />
-                )
-              }
-              onClick={handleProceedToPayment}
-              disabled={isInitiatingPayment}
-            >
-              {isInitiatingPayment
-                ? 'Initializing Payment...'
-                : `Proceed to Payment — ₦${(order.totalAmount ?? 0).toLocaleString()}`}
-            </Button>
+            {/* Actions */}
+            <div className="flex flex-col md:flex-row gap-3">
+              {isCancellable(order.paymentStatus ?? order.orderStatus) && (
+                <Button
+                  variant="red-secondary"
+                  size="lg"
+                  className="flex-1"
+                  leftIcon={
+                    cancelMutation.isPending ? (
+                      <Loader size={16} className="animate-spin" />
+                    ) : (
+                      <X size={16} />
+                    )
+                  }
+                  onClick={handleCancel}
+                  disabled={cancelMutation.isPending || isInitiatingPayment}
+                >
+                  {cancelMutation.isPending ? 'Cancelling...' : 'Cancel Order'}
+                </Button>
+              )}
+
+              <Button
+                variant="primary"
+                size="lg"
+                className="flex-1"
+                leftIcon={
+                  isInitiatingPayment ? (
+                    <Loader size={16} className="animate-spin" />
+                  ) : (
+                    <CreditCard size={16} />
+                  )
+                }
+                onClick={handleProceedToPayment}
+                disabled={isInitiatingPayment || cancelMutation.isPending}
+              >
+                {isInitiatingPayment
+                  ? 'Initializing Payment...'
+                  : `Proceed to Payment — ₦${(order.totalAmount ?? 0).toLocaleString()}`}
+              </Button>
+            </div>
           </>
         )}
       </div>

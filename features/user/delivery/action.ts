@@ -1,5 +1,6 @@
 'use server';
 
+import { revalidatePath } from 'next/cache';
 import {
   AddToCartSchema,
   CreateOrderSchema,
@@ -368,6 +369,8 @@ export async function getPaymentStatusAction(
 ): Promise<ActionResult<any>> {
   try {
     const res = await getPaymentStatusService(transactionReference);
+
+
     return { success: true, data: res.data };
   } catch (e: any) {
     return {

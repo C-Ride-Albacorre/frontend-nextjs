@@ -3,11 +3,14 @@
 import Card from '@/components/layout/card';
 import { Button } from '@/components/ui/buttons/button';
 import clsx from 'clsx';
-import { CheckCircle, XCircle } from 'lucide-react';
+import { CheckCircle, Eye, XCircle } from 'lucide-react';
 import { useState } from 'react';
 import OrderActionModal from './order-action-modal';
 import Image from 'next/image';
 import Avatar from '@/components/ui/avatar';
+import { set } from 'zod';
+import OrderDetailsModal from './order-details-modal';
+import { getVendorOrderIdAction } from '../action';
 
 type Item = {
   name: string;
@@ -47,6 +50,8 @@ export default function OrderCard({
   subtotal,
 }: OrderCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+  const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
 
   const [actionStatus, setActionStatus] = useState<'ACCEPT' | 'DECLINE'>(
     'ACCEPT',
@@ -62,6 +67,10 @@ export default function OrderCard({
     setIsModalOpen(true);
   };
 
+  const handleViewAction = (orderId: string) => {
+    setSelectedOrderId(orderId);
+    setIsDetailsModalOpen(true);
+  };
 
   return (
     <>
@@ -154,7 +163,7 @@ export default function OrderCard({
               >
                 <div className="flex items-center gap-3 ">
                   <div className="h-12 w-12 overflow-hidden rounded-sm relative">
-                    <Image src={item.image} alt={item.name} fill />
+                    <Image src={item.image} alt={item.name} fill priority />
                   </div>
 
                   <p className="text-sm text-neutral-700 space-x-1">
@@ -181,9 +190,19 @@ export default function OrderCard({
             </p>
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex flex-col md:flex-row gap-2">
             <Button
-              size="sm"
+              size="icon"
+              variant="outline"
+              className="flex-1"
+              leftIcon={<Eye size={16} />}
+              onClick={() => handleViewAction(id)}
+            >
+              View Details
+            </Button>
+
+            <Button
+              size="icon"
               variant="red-secondary"
               className="flex-1"
               leftIcon={<XCircle size={16} />}
@@ -193,7 +212,7 @@ export default function OrderCard({
             </Button>
 
             <Button
-              size="sm"
+              size="icon"
               variant="green"
               className="flex-1"
               leftIcon={<CheckCircle size={16} />}
@@ -212,6 +231,16 @@ export default function OrderCard({
         customer={customer}
         actionStatus={actionStatus}
       />
+
+      {selectedOrderId && (
+        <OrderDetailsModal
+          isModalOpen={isDetailsModalOpen}
+          onClose={() => setIsDetailsModalOpen(false)}
+          orderId={selectedOrderId}
+          onAccept={handleAcceptAction}
+          onDecline={handleRejectAction}
+        />
+      )}
     </>
   );
 }

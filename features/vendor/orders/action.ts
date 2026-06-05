@@ -1,7 +1,7 @@
 'use server';
 
 import { success } from 'zod';
-import { getVendorOrdersService, vendorOrderActionService } from './service';
+import { getVendorOrderIdService, getVendorOrdersService, vendorOrderActionService } from './service';
 import { VendorOrderActionPayload } from './types';
 import { revalidatePath } from 'next/cache';
 
@@ -38,12 +38,37 @@ export async function getVendorOrderAction({
   }
 }
 
+export async function getVendorOrderIdAction({ orderId }: { orderId: string }) {
+  try {
+    const response = await getVendorOrderIdService({
+      orderId,
+    });
+
+    console.log(' Get vendor order details response:', response);
+
+    const orderDetails = response?.data ;
+
+    return {
+      success: true,
+      message: 'Order details fetched successfully',
+      orderDetails: orderDetails,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: 'Failed to fetch order details',
+    };
+  }
+}
+
 export async function vendorOrderAction({
   orderId,
   payload,
 }: VendorOrderActionPayload) {
-
-  console.log(' Performing vendor order action with payload:', { orderId, payload });
+  console.log(' Performing vendor order action with payload:', {
+    orderId,
+    payload,
+  });
 
   try {
     const response = await vendorOrderActionService({

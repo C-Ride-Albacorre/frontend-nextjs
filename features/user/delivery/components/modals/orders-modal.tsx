@@ -79,7 +79,6 @@ export default function OrdersModal({
 
   const { setOrderId } = useOrderStore();
 
-
   const router = useRouter();
 
   // React Query hooks
@@ -134,7 +133,9 @@ export default function OrdersModal({
         '[OrdersModal] Verifying existing monnifyReference:',
         order.monnifyReference,
       );
-      router.push(`/payment/callback?paymentReference=${encodeURIComponent(order.monnifyReference)}`);
+      router.push(
+        `/payment/callback?paymentReference=${encodeURIComponent(order.monnifyReference)}`,
+      );
       return;
     }
 
@@ -458,8 +459,8 @@ export default function OrdersModal({
             {/* Actions */}
             <div className="flex flex-col md:flex-row gap-3">
               {isPayable(
-                selectedOrder.orderStatus ??
-                  selectedOrder.paymentStatus ??
+                selectedOrder.paymentStatus ??
+                  selectedOrder.orderStatus ??
                   selectedOrder.status,
               ) && (
                 <Button

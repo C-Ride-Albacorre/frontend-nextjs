@@ -7,6 +7,14 @@ import { Package } from 'lucide-react';
 import RetryButton from '@/components/ui/buttons/retry-button';
 import { Suspense } from 'react';
 import OrderSkeleton from './order-skeleton';
+import Toolbar from '@/components/layout/tool-bar';
+
+const CATEGORIES = [
+  { label: 'All', value: 'ALL' },
+  { label: 'Pending', value: 'PENDING' },
+  { label: 'Accepted', value: 'ACCEPTED' },
+  { label: 'Declined', value: 'DECLINED' },
+];
 
 export default async function OrdersWrapper({
   searchParams,
@@ -55,71 +63,63 @@ export default async function OrdersWrapper({
 
   return (
     <>
-      {/* <Toolbar
-        title="Incoming Orders"
-        searchPlaceholder="Search orders..."
-        filter={}
-        onFilterChange={}
-        filterOptions={CATEGORIES}
-      /> */}
+   
 
-      <Suspense fallback={<OrderSkeleton />}>
-        {!Orders.length ? (
-          <Card
-            gap="md"
-            spacing="lg"
-            className=" flex  flex-col  items-center min-h-[75vh] justify-center"
-          >
-            <Package size={48} className="text-neutral-400" />
-            <div className="space-y-2 text-center">
-              <h2 className="text-xl font-semibold">No Orders Available</h2>
-              <p className="text-center text-sm text-neutral-500 max-w-2xl mx-auto">
-                You currently have no incoming orders. Once customers place
-                orders, they will appear here for you to manage and fulfill.
-              </p>
-            </div>
-          </Card>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {Orders.map((order) => {
-              const customer = `${order.user?.firstName ?? ''} ${order.user?.lastName ?? ''}`;
-
-              const items =
-                order.items?.map(
-                  (item: {
-                    product?: { productName?: string; image: string };
-                    quantity: number;
-                    totalPrice: number;
-                  }) => ({
-                    name: item.product?.productName ?? 'Unknown Product',
-                    quantity: item.quantity,
-
-                    totalPrice: item?.totalPrice ?? 0,
-                    image: item.product?.image ?? '',
-                  }),
-                ) ?? [];
-
-              return (
-                <OrderCard
-                  id={order.id}
-                  key={order.id}
-                  orderCode={order.orderCode}
-                  orderNumber={order.orderNumber}
-                  orderStatus={order.orderStatus}
-                  paymentStatus={order.paymentStatus}
-                  createdAt={order.createdAt}
-                  profilePicture={order.user?.profilePicture ?? ''}
-                  customer={customer}
-                  email={order.user?.email ?? 'N/A'}
-                  phoneNumber={order.user?.phoneNumber}
-                  items={items}
-                  subtotal={order.vendorSummary?.subtotal ?? 0}
-                />
-              );
-            })}
+      {!Orders.length ? (
+        <Card
+          gap="md"
+          spacing="lg"
+          className=" flex  flex-col  items-center min-h-[75vh] justify-center"
+        >
+          <Package size={48} className="text-neutral-400" />
+          <div className="space-y-2 text-center">
+            <h2 className="text-xl font-semibold">No Orders Available</h2>
+            <p className="text-center text-sm text-neutral-500 max-w-2xl mx-auto">
+              You currently have no incoming orders. Once customers place
+              orders, they will appear here for you to manage and fulfill.
+            </p>
           </div>
-        )}
-      </Suspense>
+        </Card>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {Orders.map((order) => {
+            const customer = `${order.user?.firstName ?? ''} ${order.user?.lastName ?? ''}`;
+
+            const items =
+              order.items?.map(
+                (item: {
+                  product?: { productName?: string; image: string };
+                  quantity: number;
+                  totalPrice: number;
+                }) => ({
+                  name: item.product?.productName ?? 'Unknown Product',
+                  quantity: item.quantity,
+
+                  totalPrice: item?.totalPrice ?? 0,
+                  image: item.product?.image ?? '',
+                }),
+              ) ?? [];
+
+            return (
+              <OrderCard
+                id={order.id}
+                key={order.id}
+                orderCode={order.orderCode}
+                orderNumber={order.orderNumber}
+                orderStatus={order.orderStatus}
+                paymentStatus={order.paymentStatus}
+                createdAt={order.createdAt}
+                profilePicture={order.user?.profilePicture ?? ''}
+                customer={customer}
+                email={order.user?.email ?? 'N/A'}
+                phoneNumber={order.user?.phoneNumber}
+                items={items}
+                subtotal={order.vendorSummary?.subtotal ?? 0}
+              />
+            );
+          })}
+        </div>
+      )}
 
       {totalPages > 1 && (
         <PaginationControls currentPage={pageNum} totalPages={totalPages} />
