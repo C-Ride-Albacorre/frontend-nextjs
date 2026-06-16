@@ -17,6 +17,7 @@ import {
 import Image from 'next/image';
 import { ViewStoreModalProps } from '../types';
 import Card from '@/components/layout/card';
+import { formatDate } from '@/helpers/date-formatter';
 
 export default function ViewStoreModal({
   isModalOpen,
@@ -54,15 +55,15 @@ export default function ViewStoreModal({
           : (status?.toLowerCase() ?? 'Active');
 
   // Format dates
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-NG', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  };
+  // const formatDate = (dateString: string) => {
+  //   return new Date(dateString).toLocaleDateString('en-NG', {
+  //     year: 'numeric',
+  //     month: 'short',
+  //     day: 'numeric',
+  //     hour: '2-digit',
+  //     minute: '2-digit',
+  //   });
+  // };
 
   // Format currency
   const formatCurrency = (amount?: number) =>

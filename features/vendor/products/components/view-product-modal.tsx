@@ -6,6 +6,7 @@ import clsx from 'clsx';
 import { Edit } from 'lucide-react';
 import Image from 'next/image';
 import { ViewProductModalProps } from '../type';
+import { formatDate } from '@/helpers/date-formatter';
 
 export default function ViewProductModal({
   isModalOpen,
@@ -42,15 +43,15 @@ export default function ViewProductModal({
   const formattedPrice = basePrice ? `₦${basePrice.toLocaleString()}` : 'N/A';
 
   // Format dates
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-NG', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  };
+  // const formatDate = (dateString: string) => {
+  //   return new Date(dateString).toLocaleDateString('en-NG', {
+  //     year: 'numeric',
+  //     month: 'short',
+  //     day: 'numeric',
+  //     hour: '2-digit',
+  //     minute: '2-digit',
+  //   });
+  // };
 
   const handleEdit = () => {
     setIsModalOpen(false);

@@ -68,7 +68,7 @@ export default function PaymentResultContent() {
           href="/user/order-history"
           className="w-full"
         >
-          View Orders
+          View Order History
         </Button>
       </div>
     </div>

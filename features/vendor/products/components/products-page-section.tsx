@@ -12,6 +12,7 @@ import { Product } from '../type';
 import { useRouter } from 'next/navigation';
 import { StoreData } from '@/features/vendor/store/types';
 import Image from 'next/image';
+import { formatDate } from '@/helpers/date-formatter';
 
 type Props = {
   stores: StoreData[];
@@ -163,7 +164,7 @@ export default function ProductsPageSection({
                         <div className="space-y-1">
                           <p className="text-xs text-neutral-500">Created on</p>
                           <p className="text-sm">
-                            {new Date(store.createdAt).toDateString()}
+                            {formatDate(store.createdAt)}
                           </p>
                         </div>
                       </div>

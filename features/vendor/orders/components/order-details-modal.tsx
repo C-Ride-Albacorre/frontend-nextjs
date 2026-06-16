@@ -22,6 +22,7 @@ import { useEffect, useState } from 'react';
 import Card from '@/components/layout/card';
 import { Button } from '@/components/ui/buttons/button';
 import InfoCard from './info-card';
+import { formatDate } from '@/helpers/date-formatter';
 
 interface OrderDetailsModalProps {
   orderId: string;
@@ -323,7 +324,7 @@ export default function OrderDetailsModal({
             <div className="flex items-center gap-2 text-sm text-neutral-400">
               <Calendar size={14} />
 
-              <span className='text-sm'>Created {new Date(order.createdAt).toLocaleString()}</span>
+              <span className='text-sm'>Created {formatDate(order.createdAt)}</span>
             </div>
           </div>
 

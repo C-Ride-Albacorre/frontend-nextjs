@@ -19,6 +19,7 @@ import { initializePaymentAction } from '../../action';
 import { toast } from 'sonner';
 import type { CartItem } from '../../types';
 import { useRouter } from 'next/navigation';
+import { formatDate } from '@/helpers/date-formatter';
 
 interface OrderDetailModalProps {
   isModalOpen: boolean;
@@ -116,16 +117,16 @@ export default function OrderDetailModal({
     return 'bg-primary-text-100 text-primary';
   };
 
-  const formatDate = (d?: string) => {
-    if (!d) return '—';
-    return new Date(d).toLocaleDateString('en-NG', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  };
+  // const formatDate = (d?: string) => {
+  //   if (!d) return '—';
+  //   return new Date(d).toLocaleDateString('en-NG', {
+  //     day: 'numeric',
+  //     month: 'short',
+  //     year: 'numeric',
+  //     hour: '2-digit',
+  //     minute: '2-digit',
+  //   });
+  // };
 
   return (
     <Modal isModalOpen={isModalOpen} onClose={onClose}>

@@ -24,6 +24,7 @@ import {
 import { toast } from 'sonner';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { formatDate } from '@/helpers/date-formatter';
 
 interface OrderItem {
   id: string;
@@ -191,16 +192,16 @@ export default function OrdersModal({
     return 'bg-primary-text-100 text-primary';
   };
 
-  const formatDate = (d?: string) => {
-    if (!d) return '—';
-    return new Date(d).toLocaleDateString('en-NG', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  };
+  // const formatDate = (d?: string) => {
+  //   if (!d) return '—';
+  //   return new Date(d).toLocaleDateString('en-NG', {
+  //     day: 'numeric',
+  //     month: 'short',
+  //     year: 'numeric',
+  //     hour: '2-digit',
+  //     minute: '2-digit',
+  //   });
+  // };
 
   return (
     <Modal

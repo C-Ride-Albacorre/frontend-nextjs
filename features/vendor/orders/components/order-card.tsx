@@ -11,6 +11,7 @@ import Avatar from '@/components/ui/avatar';
 import { set } from 'zod';
 import OrderDetailsModal from './order-details-modal';
 import { getVendorOrderIdAction } from '../action';
+import { formatDate } from '@/helpers/date-formatter';
 
 type Item = {
   name: string;
@@ -142,7 +143,7 @@ export default function OrderCard({
                 </div>
 
                 <p className="mt-2 text-xs text-neutral-500">
-                  {new Date(createdAt).toLocaleString()}
+                  {formatDate(createdAt)}
                 </p>
               </div>
             </div>

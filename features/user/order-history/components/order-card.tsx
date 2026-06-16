@@ -1,132 +1,201 @@
-'úse client';
+'use client';
 
 import { useState } from 'react';
 
 import Card from '@/components/layout/card';
-import {
-  Ban,
-  Calendar,
-  CheckCircle2,
-  Clock,
-  Download,
-  RefreshCcw,
-  Star,
-} from 'lucide-react';
-import { RouteItem } from '../../track-order/components/section';
-import Avatar from '@/components/ui/avatar';
+import Modal from '@/components/layout/modal';
 import { Button } from '@/components/ui/buttons/button';
-import { orders } from '../data';
-import ReorderConfirmation from './reorder-confirmation';
+import { Order } from '../types';
+import { formatDate } from '@/helpers/date-formatter';
+import { MapPinHouse, Package, User } from 'lucide-react';
+import OrderDetailsModal from './order-details-modal';
 
-export default function OrderCard({ order }: { order: (typeof orders)[0] }) {
+export const getStatusColor = (status: string) => {
+  switch (status) {
+    case 'CONFIRMED':
+      return 'bg-green-100/10 text-green-700';
 
-  const [openReorderModal, setOpenReorderModal] = useState(false);
+    case 'PENDING':
+      return 'bg-yellow-100 text-yellow-700';
+
+    case 'DELIVERED':
+      return 'bg-blue-100 text-blue-700';
+
+    case 'CANCELLED':
+      return 'bg-red-100 text-red-700';
+
+    case 'PAID':
+      return 'bg-green-100/10 text-green-700';
+
+    case 'AWAITING_PAYMENT':
+      return 'bg-yellow-100 text-yellow-700';
+
+    case 'FAILED':
+      return 'bg-red-100 text-red-700';
+
+    default:
+      return 'bg-gray-100 text-gray-700';
+  }
+};
+
+export default function OrderCard({ order }: { order: Order }) {
+  const [isOrderDetailsModal, setIsOrderDetailsModalOpen] =
+    useState<boolean>(false);
+  const [selectedOrder, setSelectedOrder] = useState<string>();
+
+  const orderStatus = order.orderStatus?.toLowerCase().replaceAll('_', ' ');
+
+  const paymentStatus = order.paymentStatus?.toLowerCase().replaceAll('_', ' ');
+
+  const handleViewDetails = () => {
+    setSelectedOrder(order.id);
+    setIsOrderDetailsModalOpen(true);
+  };
+
   return (
     <>
-      <Card key={order.id} gap="md" className="bg-foreground-200 h-full">
-        <div>
-          <div className="flex items-center gap-4">
-            <span
-              className="flex items-center justify-center p-2 text-xs text-white rounded-full w-max gap-1"
-              style={{ backgroundColor: order.statusColor }}
-            >
-              {order.status === 'confirmed' ? (
-                <CheckCircle2 size={12} />
-              ) : (
-                <Ban size={12} />
-              )}
-              {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
-            </span>
+      <Card
+        spacing="none"
+        gap="md"
+        className="bg-white border rounded-xl shadow-md p-2 h-full flex flex-col"
+      >
+        {/* Header */}
+        <div className="flex justify-between items-start px-2 py-4 border-b border-border">
+          <div className="flex justify-between items-center gap-4 w-full">
+            <div className="flex items-center gap-2 mb-1">
+              <p className="font-medium text-primary-text-100 text-sm">
+                Order #{order.orderCode}
+              </p>
 
-            <p className="text-sm text-neutral-500">{order.id}</p>
-          </div>
+              <span
+                className={`px-3 py-1 rounded-full text-[10px] font-medium capitalize ${getStatusColor(
+                  order.orderStatus,
+                )}`}
+              >
+                {orderStatus}
+              </span>
+            </div>
 
-          <div className="flex items-end justify-between">
-            <p className="font-medium text-sm">{order.service}</p>
+            {/* <p className="text-xs text-neutral-500">{order.orderNumber}</p> */}
 
-            <div className="text-right space-y-4">
-              <div className="flex items-center gap-2 text-sm text-neutral-500">
-                <Calendar size={14} />
-                <p>{order.date}</p>
-              </div>
-
-              <div className="flex items-center gap-2 text-sm text-neutral-500">
-                <Clock size={14} />
-                <p>{order.time}</p>
-              </div>
+            {/* Date */}
+            <div className="text-xs text-neutral-500">
+              {formatDate(order.createdAt)}
             </div>
           </div>
         </div>
 
-        <Card border="none" spacing="none" gap="md">
-          <div className="flex flex-col md:flex-row gap-8">
-            <RouteItem
-              title="Pickup"
-              address={order.pickup.address}
-              time={order.pickup.time}
-            />
-
-            <RouteItem
-              title="Drop-off"
-              address={order.dropoff.address}
-              time={order.dropoff.time}
-              highlight
-            />
+        {/* Items */}
+        <div className="pb-4 px-2 space-y-2">
+          <div className="text-xs text-neutral-500 flex items-center gap-1">
+            <Package size={14} /> <span>Items</span>
           </div>
-        </Card>
 
-        <div className="border-t border-border pt-8 space-y-6">
-          <p className="font-medium text-sm">Your Driver</p>
+          <div className="space-y-2 ">
+            {order.items.slice(0, 3).map((item) => (
+              <div key={item.id} className="flex justify-between gap-2 text-sm">
+                <span className="truncate">
+                  {item.product.productName} × {item.quantity}
+                </span>
 
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 ">
-            <div className="flex items-center gap-4">
-              <Avatar
-                src={order.driver.avatar}
-                alt="driver"
-                name={order.driver.name}
-                size={54}
-              />
-
-              <div className="text-sm space-y-3">
-                <p className="font-medium">{order.driver.name}</p>
-                <p className="text-xs flex items-center gap-1">
-                  <Star size={14} fill="#D4AF37" stroke="0" />
-                  {order.driver.rating}{' '}
-                  <span className="text-neutral-400">
-                    ({order.driver.trips} trips)
-                  </span>
-                </p>
+                <span className="shrink-0">
+                  ₦{item.totalPrice.toLocaleString()}
+                </span>
               </div>
-            </div>
+            ))}
 
-            <p className="text-sm font-medium">{order.amount}</p>
-
-            <div className="flex gap-3">
-              <Button
-                leftIcon={<RefreshCcw size={16} />}
-                onClick={() => setOpenReorderModal(true)}
-                variant="primary"
-                size="sm"
-                className="shadow"
-              >
-                Re-order
-              </Button>
-              <Button
-                variant="secondary"
-                size="sm"
-                leftIcon={<Download size={16} />}
-                className="shadow"
-              >
-                Receipt
-              </Button>
-            </div>
+            {order.items.length > 3 && (
+              <p className="text-xs text-neutral-500">
+                +{order.items.length - 3} more items
+              </p>
+            )}
           </div>
+        </div>
+
+        {/* Delivery Address */}
+        <div className="pb-4 px-2 space-y-2">
+          <div className="text-xs text-neutral-500 flex items-center gap-1">
+            <MapPinHouse size={14} /> <span>Delivery Address</span>
+          </div>
+
+          <div className="space-y-1">
+            <p className="text-sm line-clamp-2">
+              {order.dropoffLocation.address}
+            </p>
+
+            <p className="text-sm">
+              {order.dropoffLocation.city}, {order.dropoffLocation.state}
+            </p>
+
+            <p className="text-sm">
+              {order.dropoffLocation.country},{' '}
+              {order.dropoffLocation.postalCode}
+            </p>
+          </div>
+        </div>
+
+        <div className="pb-4 px-2 space-y-2">
+          <div className="text-xs text-neutral-500 flex items-center gap-1">
+            <User size={14} /> <span>Recipient Details</span>
+          </div>
+
+          <div className="space-y-1">
+            <p className="text-sm ">{order.recipientName}</p>
+
+            <p className="text-sm ">{order.recipientPhone}</p>
+          </div>
+        </div>
+
+        <div className="mt-auto space-y-4">
+          {/* Payment */}
+          <div className="flex justify-between text-sm px-2 pb-4 border-b border-border">
+            <span>Payment</span>
+
+            <span
+              className={`px-3 py-1 rounded-full text-[10px] font-medium capitalize ${getStatusColor(
+                order.paymentStatus,
+              )}`}
+            >
+              {paymentStatus}
+            </span>
+          </div>
+
+          {/* Total */}
+          <div className="flex justify-between items-center px-2">
+            <span className="font-medium">Total</span>
+
+            <span className="font-bold">
+              ₦{order.totalAmount.toLocaleString()}
+            </span>
+          </div>
+
+          {/* Action */}
+          <Button
+            variant="primary-inverted"
+            size="icon"
+            className="w-full"
+            onClick={handleViewDetails}
+          >
+            View Details
+          </Button>
         </div>
       </Card>
 
       {/* Reorder Confirmation Modal */}
-      {openReorderModal && <ReorderConfirmation isModalOpen={openReorderModal} onClose={() => setOpenReorderModal(false)} order={order} />}
+      {/* {openReorderModal && (
+        <ReorderConfirmation
+          isModalOpen={openReorderModal}
+          onClose={() => setOpenReorderModal(false)}
+          order={order}
+        />
+      )} */}
 
+      <Modal
+        isModalOpen={isOrderDetailsModal}
+        onClose={() => setIsOrderDetailsModalOpen(false)}
+      >
+        <OrderDetailsModal selectedOrder={selectedOrder ?? null} />
+      </Modal>
     </>
   );
 }
