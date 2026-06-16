@@ -27,6 +27,7 @@ export type TextareaProps = {
   defaultValue?: string;
   value?: string;
   rows?: number;
+  required?: boolean;
   onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   className?: string;
   wrapperClassName?: string;
@@ -61,6 +62,7 @@ export interface SelectProps {
   value?: string;
   placeholder?: string;
   onChange?: (value: string) => void;
+  required?: boolean;
 
   searchable?: boolean;
 
@@ -81,6 +83,7 @@ export type FileInputProps = {
   description: string;
   verified?: boolean;
   mode?: 'upload' | 'dashboard';
+  required?: boolean;
 
   onFileSelect?: (file: File) => void;
   uploadStatus?: 'idle' | 'uploading' | 'done' | 'error';

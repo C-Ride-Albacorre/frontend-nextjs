@@ -70,19 +70,26 @@ export default function BusinessBankForm() {
           value={bankInfo.bankName}
           onChange={(e) => setBankInfo({ bankName: e.target.value })}
           errorMessage={isError ? state?.errors?.bankName?.[0] : undefined}
+          required
+          inputMode="text"
         />
 
         <Input
           id="accountNumber"
           name="accountNumber"
           label="Business Account Number"
-          type="number"
+       
+          type="numeric"
           placeholder="Enter your business account number"
           value={bankInfo.accountNumber}
           onChange={(e) =>
             setBankInfo({ accountNumber: e.target.value.replace(/\s/g, '') })
           }
           errorMessage={isError ? state?.errors?.accountNumber?.[0] : undefined}
+          required
+          maxLength={10}
+          inputMode="numeric"
+          pattern="[0-9]+"
         />
 
         <Input
@@ -95,6 +102,8 @@ export default function BusinessBankForm() {
           value={bankInfo.accountName}
           onChange={(e) => setBankInfo({ accountName: e.target.value })}
           errorMessage={isError ? state?.errors?.accountName?.[0] : undefined}
+          required
+          inputMode="text"
         />
 
         <div className="mt-12  flex items-center justify-between lg:justify-around">

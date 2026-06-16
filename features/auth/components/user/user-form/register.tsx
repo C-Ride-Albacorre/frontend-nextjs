@@ -42,9 +42,20 @@ export default function UserRegisterForm() {
   );
 
   const changeHandler =
-    (field: keyof FieldValues) => (e: React.ChangeEvent<HTMLInputElement>) => {
-      setFormValues((prev) => ({ ...prev, [field]: e.target.value }));
+    (field: keyof typeof formValues) =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      let value = e.target.value;
+
+      if (field === 'firstName' || field === 'lastName') {
+        value = value.replace(/[^A-Za-z\s'-]/g, '');
+      }
+
+      setFormValues((prev) => ({
+        ...prev,
+        [field]: value,
+      }));
     };
+
   const isError = state?.status === 'error';
 
   useEffect(() => {
@@ -77,11 +88,15 @@ export default function UserRegisterForm() {
             value={formValues.phoneNumber}
             onChange={changeHandler('phoneNumber')}
             errorMessage={isError ? state.errors?.phoneNumber?.[0] : undefined}
+            inputMode="tel"
+            pattern="[0-9]+"
+            maxLength={11}
           />
         ) : (
           <Input
             name="email"
             type="email"
+            inputMode="email"
             label="Email Address"
             value={formValues.email}
             onChange={changeHandler('email')}
@@ -96,6 +111,9 @@ export default function UserRegisterForm() {
             value={formValues.firstName}
             onChange={changeHandler('firstName')}
             errorMessage={isError ? state.errors?.firstName?.[0] : undefined}
+            inputMode="text"
+            pattern="^[A-Za-z\s'-]+$"
+            maxLength={50}
           />
           <Input
             name="lastName"
@@ -103,6 +121,9 @@ export default function UserRegisterForm() {
             value={formValues.lastName}
             onChange={changeHandler('lastName')}
             errorMessage={isError ? state.errors?.lastName?.[0] : undefined}
+            inputMode="text"
+            pattern="^[A-Za-z\s'-]+$"
+            maxLength={50}
           />
         </div>
 
@@ -149,6 +170,9 @@ export default function UserRegisterForm() {
           label="Referral Code (Optional)"
           spacing="sm"
           placeholder="Enter code"
+          inputMode="text"
+          pattern="^[A-Za-z\s'-]+$"
+          maxLength={5}
         />
 
         <label className="flex gap-3 text-sm">

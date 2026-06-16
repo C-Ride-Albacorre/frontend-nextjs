@@ -20,29 +20,7 @@ type DocumentSlot = {
   status: UploadStatus;
 };
 
-// const DOCUMENT_SLOTS: DocumentSlot[] = [
-//   {
-//     documentType: 'CAC',
-//     description: 'CAC certificate',
-//     label: 'CAC Certificate',
-//     file: null,
-//     status: 'idle',
-//   },
-//   {
-//     documentType: 'BUSINESS_PERMIT',
-//     description: 'Operating license',
-//     label: 'Business Permit',
-//     file: null,
-//     status: 'idle',
-//   },
-//   {
-//     documentType: 'ID_PROOF',
-//     description: "Owner's government-issued ID",
-//     label: 'Valid ID',
-//     file: null,
-//     status: 'idle',
-//   },
-// ];
+
 
 export default function BusinessDocumentForm() {
   const [isPending, startTransition] = useTransition();
@@ -139,6 +117,7 @@ export default function BusinessDocumentForm() {
             description={doc.description}
             uploadStatus={doc.status}
             onFileSelect={(file) => handleFileSelect(index, file)}
+            required
           />
         ))}
 

@@ -20,6 +20,9 @@ export default function Input({
   rightIcon,
   disabled,
   required,
+  pattern,
+  maxLength,
+  inputMode,
   ...props
 }: InputProps) {
   const wrapperClasses = clsx(
@@ -64,6 +67,9 @@ export default function Input({
           aria-invalid={!!errorMessage}
           placeholder={placeholder}
           disabled={disabled}
+          pattern={pattern}
+          maxLength={maxLength}
+          inputMode={inputMode}
           className=" w-full bg-transparent 
     text-base md:text-sm 
     outline-none  placeholder:font-normal

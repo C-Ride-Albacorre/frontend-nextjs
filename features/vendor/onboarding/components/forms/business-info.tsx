@@ -81,6 +81,11 @@ export default function BusinessInfoForm() {
           value={businessInfo.businessName}
           onChange={(e) => setBusinessInfo({ businessName: e.target.value })}
           errorMessage={isError ? state.errors?.businessName?.[0] : undefined}
+            inputMode="text"
+            pattern="^[A-Za-z\s'-]+$"
+            required
+
+    
         />
 
         <Select
@@ -95,6 +100,8 @@ export default function BusinessInfoForm() {
               : options
           }
           errorMessage={isError ? state.errors?.businessType?.[0] : undefined}
+          required
+         
         />
 
         <Input
@@ -110,6 +117,8 @@ export default function BusinessInfoForm() {
           errorMessage={
             isError ? state.errors?.registrationNumber?.[0] : undefined
           }
+          inputMode="numeric"
+          required
         />
 
         <Input
@@ -121,6 +130,8 @@ export default function BusinessInfoForm() {
           value={businessInfo.taxId}
           onChange={(e) => setBusinessInfo({ taxId: e.target.value })}
           errorMessage={isError ? state.errors?.taxId?.[0] : undefined}
+          inputMode="text"
+          required
         />
 
         <Textarea
@@ -131,6 +142,7 @@ export default function BusinessInfoForm() {
           value={businessInfo.description}
           onChange={(e) => setBusinessInfo({ description: e.target.value })}
           errorMessage={isError ? state.errors?.description?.[0] : undefined}
+          required
         />
 
         <div className="mt-12 flex items-center justify-between lg:justify-around">

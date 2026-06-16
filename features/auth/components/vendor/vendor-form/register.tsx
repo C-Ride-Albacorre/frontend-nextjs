@@ -1,11 +1,7 @@
 'use client';
 
 import { useActionState, useEffect, useState } from 'react';
-import {
-  CheckCircle,
-  Eye,
-  EyeOff,
-} from 'lucide-react';
+import { CheckCircle, Eye, EyeOff } from 'lucide-react';
 import PhoneInput from '@/components/ui/inputs/phone-input';
 import FormHeader from '@/components/ui/headers/form-header';
 import Input from '@/components/ui/inputs/input';
@@ -43,10 +39,19 @@ export default function VendorRegisterForm() {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const changeHandler =
-    (field: keyof FieldValues) => (e: React.ChangeEvent<HTMLInputElement>) => {
-      setFormValues((prev) => ({ ...prev, [field]: e.target.value }));
-    };
+    (field: keyof typeof formValues) =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      let value = e.target.value;
 
+      if (field === 'firstName' || field === 'lastName') {
+        value = value.replace(/[^A-Za-z\s'-]/g, '');
+      }
+
+      setFormValues((prev) => ({
+        ...prev,
+        [field]: value,
+      }));
+    };
   const [state, action, pending] = useActionState(
     vendorRegisterAction,
     undefined,
@@ -74,7 +79,7 @@ export default function VendorRegisterForm() {
   }, [state]);
 
   return (
-    <section className='space-y-8'>
+    <section className="space-y-8">
       <FormHeader
         title="Create an Account"
         subtitle="Please enter your credentials below."
@@ -94,6 +99,9 @@ export default function VendorRegisterForm() {
             spacing="sm"
             placeholder="First name"
             errorMessage={isError ? state.errors?.firstName?.[0] : undefined}
+            inputMode="text"
+            pattern="^[A-Za-z\s'-]+$"
+            maxLength={15}
           />
           <Input
             id="lastName"
@@ -105,6 +113,9 @@ export default function VendorRegisterForm() {
             spacing="sm"
             placeholder="Last name"
             errorMessage={isError ? state.errors?.lastName?.[0] : undefined}
+            inputMode="text"
+            pattern="^[A-Za-z\s'-]+$"
+            maxLength={15}
           />
         </div>
 
@@ -118,6 +129,7 @@ export default function VendorRegisterForm() {
           spacing="sm"
           placeholder="Enter your email"
           errorMessage={isError ? state.errors?.email?.[0] : undefined}
+          inputMode="email"
         />
 
         {/* PHONE */}
@@ -128,6 +140,9 @@ export default function VendorRegisterForm() {
           value={formValues.phoneNumber}
           onChange={changeHandler('phoneNumber')}
           errorMessage={isError ? state.errors?.phoneNumber?.[0] : undefined}
+          inputMode="tel"
+          pattern="[0-9]+"
+          maxLength={11}
         />
 
         {/* PASSWORD */}
@@ -155,8 +170,6 @@ export default function VendorRegisterForm() {
           }
           errorMessage={isError ? state.errors?.password?.[0] : undefined}
         />
-
-       
 
         {/* TERMS CHECKBOX */}
         <div className="space-y-2">

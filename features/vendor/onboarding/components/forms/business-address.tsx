@@ -68,6 +68,8 @@ export default function BusinessAddressForm() {
           value={addressInfo.address}
           onChange={(e) => setAddressInfo({ address: e.target.value })}
           errorMessage={isError ? state?.errors?.address?.[0] : undefined}
+          inputMode='text'
+          required
         />
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -80,6 +82,8 @@ export default function BusinessAddressForm() {
             value={addressInfo.city}
             onChange={(e) => setAddressInfo({ city: e.target.value })}
             errorMessage={isError ? state?.errors?.city?.[0] : undefined}
+            inputMode="text"
+            required
           />
 
           <Input
@@ -90,7 +94,9 @@ export default function BusinessAddressForm() {
             placeholder="Lagos"
             value={addressInfo.state}
             onChange={(e) => setAddressInfo({ state: e.target.value })}
+            required
             errorMessage={isError ? state?.errors?.state?.[0] : undefined}
+            inputMode="text"
           />
         </div>
 

@@ -10,6 +10,7 @@ type FileDropzoneProps = {
   accept?: string;
   maxSizeMB?: number;
   value?: File | null;
+  required?: boolean;
   onChange: (file: File | null) => void;
   className?: string;
   existingImageUrl?: string | null;
@@ -22,6 +23,7 @@ export default function FileDropzone({
   accept = 'image/png, image/jpeg',
   maxSizeMB = 10,
   value,
+  required,
   onChange,
   className,
   existingImageUrl,
@@ -49,7 +51,13 @@ export default function FileDropzone({
 
   return (
     <div className={className}>
-      {label && <p className="text-sm font-medium">{label}</p>}
+     {label && (
+        <label  className="text-sm font-medium">
+          {label}
+
+          {required && <span className="text-red-500">*</span>}
+        </label>
+      )}
 
       <div
         onClick={() => inputRef.current?.click()}

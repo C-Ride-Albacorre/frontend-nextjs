@@ -13,13 +13,18 @@ export default function Textarea({
   wrapperClassName,
   errorMessage,
   disabled,
+  required,
   ...props
 }: TextareaProps) {
   return (
     <div className={wrapperClassName}>
-      <label htmlFor={id} className="font-medium text-sm">
-        {label}
-      </label>
+      {label && (
+        <label htmlFor={id} className="text-sm font-medium">
+          {label}
+
+          {required && <span className="text-red-500">*</span>}
+        </label>
+      )}
 
       <textarea
         id={id}
@@ -31,6 +36,7 @@ export default function Textarea({
         onChange={onChange}
         placeholder={placeholder}
         disabled={disabled}
+        
         className={`mt-2 w-full rounded-xl border border-border px-4 py-3 text-base md:text-sm outline-none focus:ring placeholder:text-sm placeholder:text-neutral-400 placeholder:font-normal disabled:opacity-60 disabled:cursor-not-allowed disabled:bg-gray-50 ${errorMessage ? 'border-red-500 focus-within:ring-red-500' : 'focus:ring-primary   '} ${className}`}
       />
 

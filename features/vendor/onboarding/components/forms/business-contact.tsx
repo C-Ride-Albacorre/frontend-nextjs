@@ -68,6 +68,8 @@ export default function BusinessContactInfoForm() {
           value={contactInfo.businessEmail}
           onChange={(e) => setContactInfo({ businessEmail: e.target.value })}
           errorMessage={isError ? state?.errors?.businessEmail?.[0] : undefined}
+          required
+          inputMode="email"
         />
 
         <Input
@@ -82,6 +84,11 @@ export default function BusinessContactInfoForm() {
             setContactInfo({ businessPhone: e.target.value.replace(/\s/g, '') })
           }
           errorMessage={isError ? state?.errors?.businessPhone?.[0] : undefined}
+          inputMode="tel"
+          pattern="[0-9]+"
+          maxLength={11}
+          required
+          
         />
 
         <div className="mt-12  flex items-center justify-between lg:justify-around">

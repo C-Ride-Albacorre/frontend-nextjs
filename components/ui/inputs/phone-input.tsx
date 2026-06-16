@@ -22,6 +22,9 @@ interface PhoneInputProps {
   value?: string;
   errorMessage?: string | React.ReactNode;
   inputInfo?: string;
+  pattern?: string;
+  maxLength?: number;
+  inputMode?: React.HTMLAttributes<HTMLInputElement>['inputMode'];
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -33,6 +36,9 @@ export default function PhoneInput({
   errorMessage,
   inputInfo,
   onChange,
+  pattern,
+  maxLength,
+  inputMode,
 }: PhoneInputProps) {
   const [countries, setCountries] = useState<Country[]>([]);
   const [selected, setSelected] = useState<Country>(DEFAULT_COUNTRY);
@@ -194,11 +200,14 @@ export default function PhoneInput({
 
         {/* Visible input — number only */}
         <input
-          type="number"
+          type="tel"
           id={id}
           placeholder={placeholder}
           value={value}
           onChange={onChange}
+          pattern={pattern}
+          maxLength={maxLength}
+          inputMode={inputMode}
           className={`min-w-0 w-full rounded-r-xl border px-4 py-3 text-base md:text-sm outline-none placeholder:text-sm
     focus:ring [appearance:textfield]
     ${errorMessage ? 'border-red-500 focus-within:ring-red-500' : 'border-border focus:ring-primary'}
