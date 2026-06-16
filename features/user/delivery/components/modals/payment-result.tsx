@@ -4,6 +4,7 @@ import { useSearchParams } from 'next/navigation';
 import { CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/buttons/button';
 import Card from '@/components/layout/card';
+import OrderDetail from '../order/order-detail';
 
 export default function PaymentResultContent() {
   const searchParams = useSearchParams();
@@ -40,6 +41,8 @@ export default function PaymentResultContent() {
             </span>
           </li>
         </ul>
+
+        <OrderDetail orderId={orderId} />
       </Card>
 
       <Card

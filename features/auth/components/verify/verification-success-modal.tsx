@@ -14,12 +14,11 @@ type VerificationSuccessModalProps = {
 
 export default function VerificationSuccessModal({
   isOpen,
-  onClose,
   redirectTo,
 }: VerificationSuccessModalProps) {
-  const handleContinue = async () => {
-    const router = useRouter();
+  const router = useRouter();
 
+  const handleContinue = async () => {
     await completeVerificationAction();
     router.push(redirectTo);
   };

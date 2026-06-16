@@ -198,7 +198,7 @@ export function Select({
                     onClick={(e) => {
                       e.stopPropagation();
 
-                      onChange(item.value);
+                      onChange?.(item?.value);
 
                       setOpen(false);
                       setSearchTerm('');
