@@ -11,7 +11,7 @@ export default function UnderReviewModal({
   email,
 }: {
   isModalOpen: boolean;
-  onClose: () => void;
+  onClose?: () => void;
   email?: string;
 }) {
   return (
@@ -50,23 +50,15 @@ export default function UnderReviewModal({
         <div className="flex flex-col md:flex-row items-center justify-center gap-4">
           <Button
             href="mailto:support@c-ride.com"
-            variant="outline"
-            size="lg"
+            variant="primary"
+            size="icon"
             leftIcon={<Phone size={16} />}
             className="w-full md:w-auto"
           >
             Contact Support
           </Button>
 
-          <Button
-            href="/vendor/store"
-            variant="primary"
-            size="lg"
-            leftIcon={<Store size={16} />}
-            className="w-full md:w-auto"
-          >
-            Setup Store-front
-          </Button>
+      
         </div>
       </div>
     </Modal>

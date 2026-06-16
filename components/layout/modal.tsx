@@ -43,17 +43,19 @@ export default function Modal({
       >
         {/* CLOSE BUTTON (STICKY) */}
 
-        <IconButton
-          onClick={onClose}
-          variant="fill"
-          className="
+        {onClose && (
+          <IconButton
+            onClick={onClose}
+            variant="fill"
+            className="
             absolute
             top-4
             right-4
           "
-        >
-          <X size={20} />
-        </IconButton>
+          >
+            <X size={20} />
+          </IconButton>
+        )}
 
         {/* SCROLLABLE CONTENT */}
         <div className="overflow-y-auto p-6 md:p-8">{children}</div>

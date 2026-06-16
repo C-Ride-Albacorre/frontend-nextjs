@@ -9,6 +9,7 @@ import SuccessModal from '../success-modal';
 import { Button } from '@/components/ui/buttons/button';
 import { submitOnboardingService } from '../../service/upload-submit';
 import { useOnboardingStore, useOnboardingHydrated } from '../../store';
+import UnderReviewModal from '@/features/auth/components/vendor/under-review-modal';
 
 type UploadStatus = 'idle' | 'done';
 
@@ -20,12 +21,12 @@ type DocumentSlot = {
   status: UploadStatus;
 };
 
-
-
 export default function BusinessDocumentForm() {
   const [isPending, startTransition] = useTransition();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const hydrated = useOnboardingHydrated();
+
+  const { contactInfo } = useOnboardingStore();
 
   const { documents, setDocuments, resetAll } = useOnboardingStore();
 
@@ -153,9 +154,14 @@ export default function BusinessDocumentForm() {
         </div>
       </div>
 
-      <SuccessModal
+      {/* <SuccessModal
         isModalOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
+      /> */}
+
+      <UnderReviewModal
+        isModalOpen={isModalOpen}
+        email={contactInfo.businessEmail ?? undefined}
       />
     </section>
   );
