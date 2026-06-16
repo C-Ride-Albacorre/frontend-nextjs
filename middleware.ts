@@ -302,7 +302,8 @@ export async function middleware(request: NextRequest) {
 
   // const isAuthenticated = !!userRole;
 
-  const hasAccessToken = !!accessToken && !isTokenExpired(accessToken);
+  const hasAccessToken =
+    (!!accessToken && !isTokenExpired(accessToken)) || !!refreshedResponse;
   const hasRefreshToken = !!refreshToken;
 
   console.log('[🔐 Middleware] Auth state', {
