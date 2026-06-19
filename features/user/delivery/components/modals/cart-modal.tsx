@@ -1,5 +1,3 @@
-'use client';
-
 import { ChevronRight, Loader, Minus, Plus, Trash2 } from 'lucide-react';
 
 import Modal from '@/components/layout/modal';
@@ -13,7 +11,7 @@ import { IconButton } from '@/components/ui/buttons/icon-button';
 import Image from 'next/image';
 
 import { usePathname, useRouter } from 'next/navigation';
-import { is } from 'zod/v4/locales';
+import { fetchStoreDetailsAction } from '../../action';
 
 export default function CartModal() {
   const {
@@ -30,14 +28,42 @@ export default function CartModal() {
   const pathname = usePathname();
   const router = useRouter();
 
+  console.log(
+    ' Cart Modal Rendered. Cart:',
+    cart,
+    'isCartOpen:',
+    isCartOpen,
+    'pathname:',
+    pathname,
+  );
+
   // Extract store route params
-  const segments = pathname.split('/').filter(Boolean);
+  // const segments = pathname.split('/').filter(Boolean);
 
-  const deliveryIdx = segments.indexOf('delivery');
+  // const deliveryIdx = segments.indexOf('delivery');
 
-  const storeId = segments[deliveryIdx + 1] ?? '';
+  const storeId = cart?.storeId;
 
-  const storeSlug = segments[deliveryIdx + 2] ?? '';
+  const storeName = cart?.storeName;
+
+  // const store = fetchStoreDetailsAction(storeId);
+
+  // console.log('Store details:', store);
+
+  const storeSlug = storeName
+    ?.toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/\s+/g, '-');
+
+  // const storeSlug = segments[deliveryIdx + 2] ?? '';
+
+  console.log(
+    ' Cart Modal Rendered. Store ID:',
+    storeId,
+    'Store Name:',
+    storeName,
+  );
 
   const handleProceed = () => {
     closeCart();
@@ -53,9 +79,9 @@ export default function CartModal() {
 
   return (
     <Modal isModalOpen={isCartOpen} onClose={closeCart}>
-      <div className="space-y-6">
+    <div className="max-h-[80vh] overflow-y-auto space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
+     <div className="flex  gap-3 pt-8 items-center  justify-between md:pt-6">
           <h2 className="text-xl font-semibold">
             Your Cart ({cart?.itemCount ?? 0})
           </h2>
@@ -89,21 +115,22 @@ export default function CartModal() {
             const isUpdating = updatingItems.includes(itemKey);
 
             return (
-              <li key={item.id} className="flex justify-between gap-4 py-4">
-                <div className="flex items-center gap-3">
+              <li key={item.id}   className="flex flex-col gap-4 py-4 sm:flex-row sm:items-center sm:justify-between">
+<div className="flex min-w-0 items-center gap-3">
                   {item.imageUrl && (
-                    <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-lg">
+                <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg sm:h-16 sm:w-16">
                       <Image
                         src={item.imageUrl}
                         alt={item.productName}
                         fill
+                      priority
                         className="object-cover"
                       />
                     </div>
                   )}
 
                   <div className="flex flex-col gap-2 justify-between">
-                    <p className="text-sm font-medium capitalize">
+           <p className="truncate text-sm font-medium capitalize">
                       {item.productName}
                     </p>
 
@@ -128,14 +155,13 @@ export default function CartModal() {
                     </p>
                   </div>
                 </div>
-
-                <div className="grid grid-cols-3 gap-4 items-center">
-                  <p className="text-xs text-neutral-500">
+<div className="flex flex-wrap items-center justify-between gap-3 sm:grid sm:grid-cols-3 sm:gap-4">
+              <p className="w-full text-xs text-neutral-500 sm:w-auto">
                     ₦{item.unitPrice?.toLocaleString()} x {item.quantity}
                   </p>
 
                   {/* Quantity */}
-                  <div className="flex items-center gap-2">
+               <div className="flex items-center gap-1 sm:gap-2">
                     <IconButton
                       variant="primary-outline"
                       size="icon"
@@ -181,7 +207,7 @@ export default function CartModal() {
         {/* Footer */}
         {items.length > 0 && (
           <div className="space-y-4 border-t border-border pt-4">
-            <div className="flex items-center justify-between text-base font-semibold">
+        <div className="flex flex-wrap items-center justify-between gap-2 text-base font-semibold">
               <span>Subtotal</span>
 
               {isLoading || isUpdatingCart ? (

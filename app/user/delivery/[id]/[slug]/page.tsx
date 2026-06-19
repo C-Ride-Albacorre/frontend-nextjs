@@ -19,8 +19,7 @@ export default async function StoreVendorsPage({
 
   console.log('Store details:', store);
 
-  const storeSlug = store.storeName
-    .toLowerCase()
+  const storeSlug = store.storeName?.toLowerCase()
     .trim()
     .replace(/[^\w\s-]/g, '')
     .replace(/\s+/g, '-');

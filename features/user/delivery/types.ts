@@ -35,6 +35,8 @@ export interface CartItem {
 
 export interface Cart {
   id: string;
+  storeId: string;
+  storeName: string;
   items: CartItem[];
   subTotal: number;
   itemCount: number;

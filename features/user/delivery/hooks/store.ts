@@ -63,6 +63,8 @@ function normalizeCart(serverData: any): Cart | null {
   return {
     id: serverData.cartId || serverData.id || 'temp-cart',
     items,
+    storeId: serverData.storeId,
+    storeName: serverData.storeName,
     subTotal: serverData.subtotal ?? serverData.subTotal ?? 0,
     itemCount:
       serverData.itemCount ??
@@ -80,12 +82,6 @@ export const useCartStore = create<CartStore>()(
       isCartOpen: false,
       error: null,
       updatingItems: [],
-      // setUpdatingItem: (id, updating) =>
-      //   set((state) => ({
-      //     updatingItems: updating
-      //       ? [...state.updatingItems, id]
-      //       : state.updatingItems.filter((itemId) => itemId !== id),
-      //   })),
 
       setUpdatingItem: (id, updating) =>
         set((state) => ({
@@ -182,6 +178,10 @@ export const useCartStore = create<CartStore>()(
           return {
             cart: {
               id: state.cart?.id || 'temp-cart',
+
+              storeId: state.cart?.storeId || '',
+
+              storeName: state.cart?.storeName || '',
 
               items: updatedItems,
 
