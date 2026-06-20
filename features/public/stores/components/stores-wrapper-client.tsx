@@ -67,6 +67,9 @@ export default function StoresWrapper({
     return <StoreSkeleton />;
   }
 
+
+  
+
   if (isError) {
     return (
       <Card
