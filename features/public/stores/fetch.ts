@@ -2,17 +2,6 @@ import { fetchCategoryStoresAction } from '@/features/user/delivery/action';
 import { fetchSubcategories, fetchStores } from './service';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 
-// export function useSubcategoriesQuery(categoryId?: string) {
-//   return useQuery({
-//     queryKey: ['subcategories', categoryId],
-//     queryFn: () => {
-//       if (!categoryId) return Promise.resolve({ subcategories: [] });
-//       return fetchSubcategories(categoryId);
-//     },
-//     enabled: !!categoryId,
-//     staleTime: 1000 * 60,
-//   });
-// }
 
 export function useStoresQuery(params: {
   categoryId?: string;

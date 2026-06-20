@@ -1,6 +1,6 @@
 export default function FoodMarqueeSkeleton() {
   return (
-    <section className="mt-6">
+    <section className="my-6">
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4 overflow-x-auto px-2">
         {Array.from({ length: 5 }).map((_, i) => (
           <div

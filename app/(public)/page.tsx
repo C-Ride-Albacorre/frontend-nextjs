@@ -1,8 +1,6 @@
 import Hero from '@/features/public/homepage/components/hero-content';
 import Location from '@/features/public/homepage/components/location';
 import FulfillmentPartner from '@/features/public/homepage/components/fulfillment-partner';
-import { Suspense } from 'react';
-import FoodMarqueeSkeleton from '@/features/public/homepage/components/food-marquee-skeleton';
 import FoodMarqueeWrapper from '@/features/public/homepage/components/food-marquee-wrapper';
 
 interface HomePageProps {

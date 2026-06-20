@@ -7,23 +7,9 @@ import {
   InitializePaymentPayload,
 } from './types';
 import { getAuthTokens, getOrCreateGuestSessionId } from '@/utils/cookies';
-
-// ─── Logging helper ───
-
-function logRequest(tag: string, method: string, url: string, body?: unknown) {
-  console.log(`[${tag}] REQUEST ${method} ${url}`, body ?? '');
-}
-
-function logResponse(tag: string, status: number, data: unknown) {
-  console.log(`[${tag}] RESPONSE ${status}`, data);
-}
-
-function logError(tag: string, error: unknown) {
-  console.error(`[${tag}] ERROR`, error);
-}
+// import { request } from '@/libs/api/request';
 
 // ─── Helper ───
-
 async function request(tag: string, url: string, options: RequestInit = {}) {
   const method = options.method ?? 'GET';
 
@@ -153,6 +139,12 @@ export async function fetchCategoriesService() {
   return request('FetchCategories', `${BASE_URL}/customer/categories`);
 }
 
+// export async function fetchCategoriesService() {
+//   return request<any[]>(`${BASE_URL}/customer/categories`, {
+//     cacheStrategy: { revalidate: 3600 },
+//   });
+// }
+
 export async function fetchCategoryStoresService(
   categoryId?: string,
   lat?: number,
@@ -173,13 +165,35 @@ export async function fetchCategoryStoresService(
   if (search) params.set('search', search);
   if (radiusKm) params.set('radiusKm', String(radiusKm));
 
-  // const qs = params.toString();
-  // const url = `${BASE_URL}/customer/stores/category/${categoryId}${qs ? `?${qs}` : ''}`;
-
   const url = `${BASE_URL}/customer/stores?${params.toString()}`;
 
   return request('FetchCategoryStores', url);
 }
+
+// export async function fetchCategoryStoresService(
+//   categoryId?: string,
+//   lat?: number,
+//   lng?: number,
+//   subcategoryId?: string,
+//   page?: number,
+//   limit?: number,
+//   search?: string,
+//   radiusKm?: number,
+// ) {
+//   const params = new URLSearchParams();
+//   if (categoryId) params.set('categoryId', categoryId);
+//   if (lat !== undefined) params.set('lat', String(lat));
+//   if (lng !== undefined) params.set('lng', String(lng));
+//   if (subcategoryId) params.set('subcategoryId', subcategoryId);
+//   if (page) params.set('page', String(page));
+//   if (limit) params.set('limit', String(limit));
+//   if (search) params.set('search', search);
+//   if (radiusKm) params.set('radiusKm', String(radiusKm));
+
+//   return request(`${BASE_URL}/customer/stores?${params.toString()}`, {
+//     cacheStrategy: { revalidate: 3600 },
+//   });
+// }
 
 export async function fetchSubcategoriesService(categoryId: string) {
   return request(
@@ -187,6 +201,12 @@ export async function fetchSubcategoriesService(categoryId: string) {
     `${BASE_URL}/customer/subcategories/category/${categoryId}`,
   );
 }
+
+// export async function fetchSubcategoriesService(categoryId: string) {
+//   return request<any[]>(`${BASE_URL}/customer/subcategories/category/${categoryId}`, {
+//     cacheStrategy: { revalidate: 3600 },
+//   });
+// }
 
 export async function fetchStoreDetailsService(storeId: string) {
   return authRequest(

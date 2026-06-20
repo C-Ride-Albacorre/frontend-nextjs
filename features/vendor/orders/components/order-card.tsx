@@ -156,7 +156,7 @@ export default function OrderCard({
             Order Items
           </p>
 
-          <div className="space-y-4">
+          <div className="space-y-4 h-32 overflow-y-auto">
             {items.map((item) => (
               <div
                 key={`${item.name}-${item.quantity}`}

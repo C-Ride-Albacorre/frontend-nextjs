@@ -46,7 +46,7 @@ export default function StoresWrapper({
   let stores: any[] = [];
   let totalPages: number = 1;
 
-  const { data, isLoading, isError, refetch } = useStoresQuery({
+  const { data, isLoading, isError } = useStoresQuery({
     categoryId,
     latitude,
     longitude,

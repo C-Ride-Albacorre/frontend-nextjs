@@ -25,9 +25,10 @@ export default async function StoresPage({
 }: {
   searchParams: Promise<StoresPageProps['searchParams']>;
 }) {
-  const { categoryId, name, search } = await searchParams;
 
   const resolvedSearchParams = await searchParams;
+
+  const { categoryId, name, search } = resolvedSearchParams;
 
   const query = new URLSearchParams(
     resolvedSearchParams as Record<string, string>,

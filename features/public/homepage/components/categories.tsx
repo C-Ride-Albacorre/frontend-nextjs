@@ -4,9 +4,10 @@ import { Store } from 'lucide-react';
 import Link from 'next/link';
 
 export default function Categories({ categories }: { categories: Category[] }) {
+  console.log(' Categories component rendered with categories:', categories);
   if (!Array.isArray(categories) || !categories.length) {
     return (
-      <div className="mt-6  bg-white text-sm text-neutral-500 flex flex-col items-center gap-2 h-48 justify-center">
+      <div className="my-6  bg-white text-sm text-neutral-500 flex flex-col items-center gap-2 h-48 justify-center">
         <Store size={24} className="text-neutral-400" />
 
         <p>No categories found.</p>
@@ -23,7 +24,10 @@ export default function Categories({ categories }: { categories: Category[] }) {
 
         return (
           <Link
-            href={`/stores?categoryId=${item.id}&name=${encodeURIComponent(item.name)}`}
+            // href={`/stores?categoryId=${item.id}&name=${encodeURIComponent(item.name)}`}
+
+            href={`/stores?categoryId=${item.id}`}
+            prefetch={false}
             key={`${item.id}-${index}`}
             className="relative h-60 min-w-56 overflow-hidden rounded-2xl"
           >
@@ -31,7 +35,7 @@ export default function Categories({ categories }: { categories: Category[] }) {
               src={image}
               alt={title}
               fill
-              priority
+              priority={index < 5}
               className="object-cover"
             />
 
@@ -56,9 +60,9 @@ export default function Categories({ categories }: { categories: Category[] }) {
             {/* Text */}
             <div className="absolute bottom-4 left-4 text-white">
               <h2 className="text-lg">{title}</h2>
-              <p className="text-sm opacity-80">
+              {/* <p className="text-sm opacity-80">
                 {item._count?.stores ?? 0} stores
-              </p>
+              </p> */}
             </div>
           </Link>
         );
