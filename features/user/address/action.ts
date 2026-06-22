@@ -1,8 +1,7 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
 import { LocationSchema, LocationState } from './schema';
-import { fetchSavedAddressesService, saveAddressService } from './service';
+import { saveAddressService } from './service';
 
 export async function saveLocationAction(
   _state: LocationState,
@@ -29,27 +28,21 @@ export async function saveLocationAction(
 
   const data = validated.data;
 
-
-
-
-
-
-
   try {
     const result = await saveAddressService(data);
 
-    if (!result?.data?.success) {
+    console.log(' [saveLocationAction] result:', result);
+
+    if (!result?.success) {
       return {
         status: 'error',
-        message: result?.data?.message || 'Failed to save location.',
+        message: result?.message || 'Failed to save location.',
       };
     }
 
-  
-
     return {
       status: 'success',
-      message: result?.data?.message || 'Location saved successfully.',
+      message: result?.message || 'Location saved successfully.',
     };
   } catch (error) {
     return {
@@ -58,10 +51,4 @@ export async function saveLocationAction(
         error instanceof Error ? error.message : 'Failed to save location.',
     };
   }
-}
-
-export async function fetchSavedAddressesAction() {
-  const result = await fetchSavedAddressesService();
-
-  return result.data;
 }

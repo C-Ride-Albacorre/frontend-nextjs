@@ -1,31 +1,39 @@
 import { parseResponse } from './http';
 
-type CacheStrategy = 'default' | 'no-store' | { revalidate: number };
+type CacheStrategy = 'no-store' | { revalidate: number };
+
+interface RequestOptions extends RequestInit {
+  cacheStrategy?: CacheStrategy;
+  nextTags?: string[];
+}
 
 export async function request<T>(
   url: string,
-  options: RequestInit & {
-    cacheStrategy?: CacheStrategy;
-  } = {},
+  options: RequestOptions = {},
 ): Promise<T> {
-  const { cacheStrategy = 'default', ...rest } = options;
+  const { cacheStrategy = 'no-store', nextTags, ...rest } = options;
 
-  let nextConfig: any = undefined;
+  const fetchConfig: RequestInit = {
+    ...rest,
+  };
 
+  // NO STORE
   if (cacheStrategy === 'no-store') {
-    nextConfig = { cache: 'no-store' };
+
+    (fetchConfig as any).cache = 'no-store';
+    
   }
 
+  // REVALIDATE
   if (typeof cacheStrategy === 'object' && 'revalidate' in cacheStrategy) {
-    nextConfig = {
-      next: { revalidate: cacheStrategy.revalidate },
+    (fetchConfig as any).next = {
+      revalidate: cacheStrategy.revalidate,
+      tags: nextTags,
     };
   }
 
-  const res = await fetch(url, {
-    ...rest,
-    ...nextConfig,
-  });
+  const res = await fetch(url, fetchConfig);
 
   return parseResponse<T>(res);
 }
+// lib/api/auth-re

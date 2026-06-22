@@ -2,16 +2,17 @@ import Image from 'next/image';
 import { Category } from '../../type';
 import { Store } from 'lucide-react';
 import Link from 'next/link';
+import EmptyState from '@/components/layout/empty-state';
 
 export default function Categories({ categories }: { categories: Category[] }) {
   console.log(' Categories component rendered with categories:', categories);
   if (!Array.isArray(categories) || !categories.length) {
     return (
-      <div className="my-6  bg-white text-sm text-neutral-500 flex flex-col items-center gap-2 h-48 justify-center">
-        <Store size={24} className="text-neutral-400" />
-
-        <p>No categories found.</p>
-      </div>
+      <EmptyState
+        icon={<Store size={36} className="text-neutral-400" />}
+        title="No categories found"
+        message="Please try again later."
+      />
     );
   }
 

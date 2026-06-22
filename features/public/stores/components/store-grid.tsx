@@ -5,13 +5,18 @@ import Card from '@/components/layout/card';
 type ApiStore = {
   id: string;
   storeName: string;
-  storeLogo: string | null;
   categoryId: string;
   storeCategory: string;
-  storeAddress: string;
   storeDescription: string;
+  storeAddress: string;
+  phoneNumber: string;
+  dailyOrderLimit: number | null;
   preparationTime: number;
-  distance: number;
+  storeLogo: string | null;
+  isOpen: boolean;
+  distance: number | null;
+  subcategories: string[];
+  products: any[];
 };
 
 export default function StoreGrid({
@@ -22,7 +27,7 @@ export default function StoreGrid({
   returnUrl: string;
 }) {
   return (
-    <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+    <div className="my-12 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
       {stores.map((store) => (
         <StoreCard
           key={store.id}
@@ -33,7 +38,7 @@ export default function StoreGrid({
           cuisine={store.storeDescription}
           rating={0}
           location={store.storeAddress}
-          delivery={`${Math.round(store.distance)} km`}
+          delivery={`${Math.round(store.distance ?? 0)} km`}
           time={`${store.preparationTime} mins`}
           returnUrl={returnUrl}
         />

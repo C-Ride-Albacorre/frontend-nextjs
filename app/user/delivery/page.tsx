@@ -1,10 +1,10 @@
 import DeliveryHeader from '@/features/user/delivery/components/delivery-header';
-import DeliveryAddressModal from '@/features/user/delivery/components/delivery-address-modal';
+import DeliveryAddressModal from '@/features/user/delivery/components/modals/delivery-address-modal';
 import Categories from '@/features/user/delivery/components/categories';
-import { fetchCategoriesAction } from '@/features/user/delivery/action';
 import { Suspense } from 'react';
 import CategoriesSkeleton from '@/features/user/delivery/components/categories-skeleton';
 import CategoriesError from '@/features/user/delivery/components/error';
+import DeliveryAddressWrapper from '@/features/user/delivery/components/modals/delivery-address-wrapper';
 
 export default async function CreateDeliveryPage({
   searchParams,
@@ -16,18 +16,9 @@ export default async function CreateDeliveryPage({
   const { newUser } = await searchParams;
   const shouldShowModal = newUser === 'true';
 
-  let categories = [];
-  let isError = false;
-
-  try {
-    categories = await fetchCategoriesAction();
-  } catch (e) {
-    isError = true;
-  }
-
   return (
     <>
-      <DeliveryAddressModal shouldShowModal={shouldShowModal} />
+      <DeliveryAddressWrapper shouldShowModal={shouldShowModal} />
 
       <main className="min-h-screen bg-white">
         <div className="mx-auto max-w-6xl px-6 py-10">
@@ -46,13 +37,9 @@ export default async function CreateDeliveryPage({
 
           {/* Categories */}
 
-          {isError ? (
-            <CategoriesError />
-          ) : (
-            <Suspense fallback={<CategoriesSkeleton />}>
-              <Categories categories={categories} />
-            </Suspense>
-          )}
+          <Suspense fallback={<CategoriesSkeleton />}>
+            <Categories />
+          </Suspense>
         </div>
       </main>
     </>

@@ -3,9 +3,10 @@
 import { Tag } from 'lucide-react';
 import { IconButton } from '@/components/ui/buttons/icon-button';
 import { useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
+import EmptyState from '@/components/layout/empty-state';
 
 type SubCategory = {
   id: string;
@@ -30,18 +31,27 @@ export default function SubCategoryIcons({
   const router = useRouter();
   const searchParams = useSearchParams();
 
+  const pathname = usePathname();
+
+  const bathPathname = pathname.includes('/stores') ? '/stores' : pathname;
+
   const handleCategorySelect = (subcategoryId: string) => {
     setSelectedId(subcategoryId);
 
     const params = new URLSearchParams(searchParams.toString());
     params.set('subcategoryId', subcategoryId);
 
-    router.push(`/stores?${params.toString()}`);
+    router.push(`${bathPathname}?${params.toString()}`);
   };
 
   if (!safeCategories.length) {
-
-    return <div className="text-center text-sm text-neutral-500">No Subcategory Available</div>
+    return (
+      <EmptyState
+        icon={<Tag size={36} className="text-neutral-400" />}
+        title="No subcategories found"
+        message="Please try again later."
+      />
+    );
   }
 
   return (

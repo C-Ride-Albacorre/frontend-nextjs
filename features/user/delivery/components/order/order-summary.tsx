@@ -1,10 +1,11 @@
 'use client';
 
-import { Loader, Trash, Trash2, X } from 'lucide-react';
+import { Loader, ShoppingCart, Trash, Trash2, X } from 'lucide-react';
 import { useCartStore } from '../../hooks/store';
 import { Suspense } from 'react';
 import Card from '@/components/layout/card';
 import { IconButton } from '@/components/ui/buttons/icon-button';
+import EmptyState from '@/components/layout/empty-state';
 
 export default function OrderSummary() {
   const { cart, removeItem, isLoading, updatingItems } = useCartStore();
@@ -12,10 +13,18 @@ export default function OrderSummary() {
   const items = cart?.items ?? [];
 
   if (items.length === 0) {
-    return <p className="text-center text-neutral-500">Cart is empty</p>;
+    return (
+      <EmptyState
+        icon={<ShoppingCart size={36} className="text-neutral-400" />}
+        title="Your cart is empty"
+        message="Add some products to your cart to see them here."
+      />
+    );
   }
 
   const isUpdatingCart = updatingItems.length > 0;
+
+  console.log('isUpdatingCart:', isUpdatingCart);
 
   return (
     <Suspense
@@ -23,7 +32,7 @@ export default function OrderSummary() {
         <Loader size={24} className="animate-spin text-primary mx-auto" />
       }
     >
-      <Card gap="lg" className="bg-foreground-200">
+      <Card border="none" gap="lg" className="bg-foreground-200">
         <h2 className="text-lg font-semibold">Your Order Summary</h2>
 
         <ul className="space-y-6">
@@ -53,11 +62,13 @@ export default function OrderSummary() {
         </ul>
 
         <div className="border-t border-border pt-8 flex justify-between">
-          <span className='font-bold text-lg'>Sub Total</span>
+          <span className="font-bold text-lg">Sub Total</span>
           {isLoading || isUpdatingCart ? (
             <Loader size={16} className="animate-spin text-primary" />
           ) : (
-            <span className='font-bold text-lg'>₦ {(cart?.subTotal ?? 0).toLocaleString()}</span>
+            <span className="font-bold text-lg">
+              ₦ {(cart?.subTotal ?? 0).toLocaleString()}
+            </span>
           )}
         </div>
       </Card>

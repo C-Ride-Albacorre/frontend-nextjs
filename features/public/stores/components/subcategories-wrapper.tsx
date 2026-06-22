@@ -1,26 +1,29 @@
 import {
-  fetchCategoriesAction,
-  fetchSubcategoriesAction,
-} from '@/features/user/delivery/action';
+  fetchCategoriesService,
+  fetchSubcategoriesService,
+} from '@/features/user/delivery/service';
 import SubCategoryIcons from './subcategory-icons';
+import ErrorState from '@/components/layout/error-state';
+import { Tag } from 'lucide-react';
 
 export default async function SubCategoriesWrapper({
   categoryId,
 }: {
   categoryId?: string;
 }) {
-  let subCategories: any[] = [];
+  try {
+    const subCategories = categoryId
+      ? (await fetchSubcategoriesService(categoryId))?.data || []
+      : (await fetchCategoriesService()).data.flatMap(
+          (cat: any) => cat.subcategories || [],
+        );
 
-  console.log('category id in SubCategoriesWrapper:', categoryId);
+    return <SubCategoryIcons subCategories={subCategories} />;
+  } catch (error) {
+    console.error('Failed to load subcategories:', error);
 
-
-
-  if (categoryId) {
-    subCategories = await fetchSubcategoriesAction(categoryId);
-  } else {
-    const categories = await fetchCategoriesAction();
-    subCategories = categories.flatMap((cat: any) => cat.subcategories || []);
+    return (
+   <ErrorState icon={<Tag size={36} className="text-orange-500" />}  title="Failed to load subcategories" message="Please try again later." />
+    );
   }
-
-  return <SubCategoryIcons subCategories={subCategories} />;
 }

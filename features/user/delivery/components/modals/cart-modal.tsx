@@ -11,7 +11,6 @@ import { IconButton } from '@/components/ui/buttons/icon-button';
 import Image from 'next/image';
 
 import { usePathname, useRouter } from 'next/navigation';
-import { fetchStoreDetailsAction } from '../../action';
 
 export default function CartModal() {
   const {
@@ -37,18 +36,9 @@ export default function CartModal() {
     pathname,
   );
 
-  // Extract store route params
-  // const segments = pathname.split('/').filter(Boolean);
-
-  // const deliveryIdx = segments.indexOf('delivery');
-
   const storeId = cart?.storeId;
 
   const storeName = cart?.storeName;
-
-  // const store = fetchStoreDetailsAction(storeId);
-
-  // console.log('Store details:', store);
 
   const storeSlug = storeName
     ?.toLowerCase()
@@ -56,7 +46,6 @@ export default function CartModal() {
     .replace(/[^\w\s-]/g, '')
     .replace(/\s+/g, '-');
 
-  // const storeSlug = segments[deliveryIdx + 2] ?? '';
 
   console.log(
     ' Cart Modal Rendered. Store ID:',
@@ -68,7 +57,7 @@ export default function CartModal() {
   const handleProceed = () => {
     closeCart();
 
-    router.push(`/user/delivery/${storeId}/${storeSlug}/delivery-type`);
+    router.push(`/user/delivery/${storeSlug}/${storeId}/delivery-type`);
   };
 
   const items = cart?.items ?? [];

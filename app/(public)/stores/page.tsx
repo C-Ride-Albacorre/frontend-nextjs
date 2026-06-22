@@ -5,7 +5,7 @@ import { Suspense } from 'react';
 import CategoryIconsSkeleton from '@/features/user/delivery/components/category-icon-skeleton';
 import SubCategoriesWrapper from '@/features/public/stores/components/subcategories-wrapper';
 import StoreSkeleton from '@/features/public/stores/components/stores-skeleton';
-import StoresWrapper from '@/features/public/stores/components/stores-wrapper-client';
+import StoresWrapper from '@/features/public/stores/components/stores-wrapper';
 
 interface StoresPageProps {
   searchParams: {
@@ -25,7 +25,6 @@ export default async function StoresPage({
 }: {
   searchParams: Promise<StoresPageProps['searchParams']>;
 }) {
-
   const resolvedSearchParams = await searchParams;
 
   const { categoryId, name, search } = resolvedSearchParams;

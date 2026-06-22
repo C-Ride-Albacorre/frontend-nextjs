@@ -1,32 +1,21 @@
-import { useEffect, useState } from 'react';
-
 import Modal from '@/components/layout/modal';
-import AddressTabs from './address-tabs';
-import SavedAddresses from './saved-address';
-import MapLocations from './map-location';
-import ManualAddressForm from './manual-address';
+import AddressWrapper from './address-wrapper';
+import { Address, AddressItem } from '../service';
 
 export default function AddressModal({
   isModalOpen,
   onClose,
   shouldShowModal,
   onSuccess,
+  savedAddresses,
 }: {
   isModalOpen: boolean;
   onClose: () => void;
   shouldShowModal?: boolean;
   onSuccess?: () => void;
+  savedAddresses: AddressItem[];
 }) {
-  const [active, setActive] = useState<'saved' | 'map' | 'manual'>('saved');
-
-  useEffect(() => {
-    if (shouldShowModal) {
-      setActive('manual');
-    } else {
-      setActive('saved');
-    }
-  }, [shouldShowModal]);
-
+ 
   return (
     <Modal isModalOpen={isModalOpen} onClose={onClose}>
       <div className="py-8">
@@ -35,16 +24,13 @@ export default function AddressModal({
           Choose from saved locations or add a new one
         </p>
 
-        <AddressTabs active={active} setActive={setActive} />
-
-        {active === 'saved' && <SavedAddresses />}
-        {active === 'map' && <MapLocations onSuccess={onSuccess} />}
-        {active === 'manual' && (
-          <ManualAddressForm
-            isDefault={shouldShowModal}
+  
+          <AddressWrapper
+            shouldShowModal={shouldShowModal}
             onSuccess={onSuccess}
+            savedAddresses={savedAddresses}
           />
-        )}
+ 
       </div>
     </Modal>
   );

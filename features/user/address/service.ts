@@ -2,76 +2,102 @@ import { BASE_URL } from '@/config/api';
 import { ApiError } from '@/features/libs/api-error';
 import { authFetch } from '@/features/libs/auth-fetch';
 import { LocationData } from './schema';
+import { authRequest } from '@/libs/api/auth-request';
+import { getErrorMessage } from '@/libs/api/get-error-message';
+import { revalidateTag } from 'next/cache';
 
-
- type SaveAddressResponse = {
-  status: string,
-  statusCode: number,
-  timestamp: string,
-  path: string,
+type SaveAddressResponse = {
+  status: string;
+  statusCode: number;
+  timestamp: string;
+  path: string;
   data: {
-    success: boolean,
-    message: string,
+    success: boolean;
+    message: string;
     location: {
-      id: string,
-      userId: string,
-      address: string,
-      city: string,
-      state: string,
-      country: string,
-      postalCode: string,
-      latitude: number,
-      longitude: number,
-      isDefault: boolean,
-      label: string,
-      createdAt: string,
-      updatedAt: string
-    }
-  }
+      id: string;
+      userId: string;
+      address: string;
+      city: string;
+      state: string;
+      country: string;
+      postalCode: string;
+      latitude: number;
+      longitude: number;
+      isDefault: boolean;
+      label: string;
+      createdAt: string;
+      updatedAt: string;
+    };
+  };
+};
+
+export interface AddressItem {
+  id: string;
+  userId: string;
+  address: string;
+  city: string;
+  state: string;
+  country: string;
+  postalCode: string;
+  latitude: number;
+  longitude: number;
+  isDefault: boolean;
+  label: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
+export interface Address {
+  status: string;
+  statusCode: number;
+  timestamp: string;
+  path: string;
+  data: AddressItem[];
+}
 
+export async function saveAddressService(data: LocationData) {
+  console.log(' [saveAddressService] data:', data);
 
-export async function saveAddressService(payload: LocationData): Promise<SaveAddressResponse> {
-  const res = await authFetch(`${BASE_URL}/customer/location`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(payload),
-  });
+  console.log(
+    '[saveAddressService] payload json:',
+    JSON.stringify(data, null, 2),
+  );
 
-  const data = await res.json();
+  const body = JSON.stringify(data);
 
-  if (!res.ok) {
-    throw new ApiError(
-      data?.message || 'Failed to save address',
-      data?.statusCode ?? res.status,
+  console.log('[saveAddressService] body:', body);
+
+  try {
+    const response = await authRequest<SaveAddressResponse>(
+      `${BASE_URL}/customer/location`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      },
     );
+
+    console.log(' [saveAddressService] response:', response);
+
+    revalidateTag('fetchSavedAddresses', 'max');
+
+    return {
+      success: true,
+      message: response.data.message || 'Location saved successfully',
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: getErrorMessage(error),
+    };
   }
-
-  return data;
 }
-
-
 
 export async function fetchSavedAddressesService() {
-
-    const res = await authFetch(`${BASE_URL}/customer/locations`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-        throw new ApiError(
-            data?.message || 'Failed to fetch saved addresses',
-            data?.statusCode ?? res.status,
-        );
-    }
-
-    return data;
+  return authRequest<Address>(`${BASE_URL}/customer/locations`, {
+    nextTags: ['fetchSavedAddresses'],
+  });
 }

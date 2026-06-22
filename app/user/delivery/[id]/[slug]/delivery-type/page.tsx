@@ -58,30 +58,33 @@ export default function DeliveryTypePage() {
   const router = useRouter();
   const setDeliveryOption = useOrderStore((s) => s.setDeliveryOption);
 
-  const [options, setOptions] = useState(FALLBACK_OPTIONS);
-  const [isLoading, setIsLoading] = useState(true);
+  const options = FALLBACK_OPTIONS;
+  // const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    getDeliveryOptionsAction().then((result) => {
-      if (result.success && result.data.length > 0) {
-        setOptions(result.data.map(normalizeOption));
-      }
-      setIsLoading(false);
-    });
-  }, []);
+  // useEffect(() => {
+  //   getDeliveryOptionsAction().then((result) => {
+  //     if (result.success && result.data.length > 0) {
+  //       setOptions(result.data.map(normalizeOption));
+  //     }
+  //     setIsLoading(false);
+  //   });
+  // }, []);
 
   const handleSelect = (optionId: string) => {
     setDeliveryOption(optionId);
     router.push(`/user/delivery/${id}/${slug}/delivery-location`);
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center py-24">
-        <Loader size={32} className="animate-spin text-primary" />
-      </div>
-    );
-  }
+
+
+
+  // if (isLoading) {
+  //   return (
+  //     <div className="flex justify-center items-center py-24">
+  //       <Loader size={32} className="animate-spin text-primary" />
+  //     </div>
+  //   );
+  // }
 
   return (
     <ul className="space-y-8 text-sm">

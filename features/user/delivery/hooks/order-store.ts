@@ -62,7 +62,7 @@ export const useOrderStore = create<OrderState>()(
   persist(
     (set) => ({
       ...initialState,
-      
+
       setVendorDeliveryLocation: (location) =>
         set({ vendorDeliveryLocation: location }),
 
@@ -88,7 +88,17 @@ export const useOrderStore = create<OrderState>()(
     }),
     {
       name: 'delivery-order-storage',
-      storage: createJSONStorage(() => localStorage),
+      storage: createJSONStorage(() => {
+        if (typeof window === 'undefined') {
+          return {
+            getItem: () => null,
+            setItem: () => {},
+            removeItem: () => {},
+          };
+        }
+
+        return localStorage;
+      }),
     },
   ),
 );

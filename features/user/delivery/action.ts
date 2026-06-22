@@ -1,6 +1,6 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
+import { cancelOrderService, createOrderService, getDeliveryOptionsService, getOrderDetailsService, getOrdersService, getPaymentStatusService, initializePaymentService } from './order-service';
 import {
   AddToCartSchema,
   CreateOrderSchema,
@@ -10,23 +10,18 @@ import {
 } from './schema';
 import {
   addToCartService,
-  cancelOrderService,
-  clearCartService,
-  createOrderService,
   fetchCategoriesService,
   fetchCategoryStoresService,
   fetchStoreDetailsService,
   // fetchSubcategoriesService,
   fetchVendorAddressService,
   getCartService,
-  getDeliveryOptionsService,
-  getOrderDetailsService,
-  getOrdersService,
-  initializePaymentService,
+
   removeFromCartService,
   updateCartQuantityService,
-  getPaymentStatusService,
+
   fetchSubcategoriesService,
+  clearCartService,
 } from './service';
 import { AddToCartPayload, ActionResult, CreateOrderPayload } from './types';
 
@@ -34,90 +29,90 @@ import { AddToCartPayload, ActionResult, CreateOrderPayload } from './types';
 // CATEGORIES & STORES
 // ═══════════════════════════════════════
 
-export async function fetchCategoriesAction() {
-  try {
-    const result = await fetchCategoriesService();
-    return result.data;
-  } catch (error) {
-    return {
-      status: 'error',
-      message:
-        error instanceof Error ? error.message : 'Failed to fetch categories',
-    };
-  }
-}
+// export async function fetchCategoriesAction() {
+//   try {
+//     const result = await fetchCategoriesService();
+//     return result.data;
+//   } catch (error) {
+//     return {
+//       status: 'error',
+//       message:
+//         error instanceof Error ? error.message : 'Failed to fetch categories',
+//     };
+//   }
+// }
 
-export async function fetchCategoryStoresAction(
-  categoryId?: string,
-  lat?: number,
-  lng?: number,
-  subcategoryId?: string,
-  page?: number,
-  limit?: number,
-  search?: string,
-  radiusKm?: number,
-) {
-  const result = await fetchCategoryStoresService(
-    categoryId,
-    lat,
-    lng,
-    subcategoryId,
-    page,
-    limit,
-    search,
-    radiusKm,
-  );
+// export async function fetchCategoryStoresAction(
+//   categoryId?: string,
+//   lat?: number,
+//   lng?: number,
+//   subcategoryId?: string,
+//   page?: number,
+//   limit?: number,
+//   search?: string,
+//   radiusKm?: number,
+// ) {
+//   const result = await fetchCategoryStoresService(
+//     categoryId,
+//     lat,
+//     lng,
+//     subcategoryId,
+//     page,
+//     limit,
+//     search,
+//     radiusKm,
+//   );
 
-  return {
-    stores: result.data.data ?? [],
-    total: result.data.meta?.total ?? 0,
-  };
-}
+//   return {
+//     stores: result.data.data ?? [],
+//     total: result.data.meta?.total ?? 0,
+//   };
+// }
 
-export async function fetchSubcategoriesAction(categoryId: string) {
-  try {
-    const result = await fetchSubcategoriesService(categoryId);
-    return result.data ?? [];
-  } catch (error) {
-    return {
-      status: 'error',
-      message:
-        error instanceof Error
-          ? error.message
-          : 'Failed to fetch subcategories',
-    };
-  }
-}
+// export async function fetchSubcategoriesAction(categoryId: string) {
+//   try {
+//     const result = await fetchSubcategoriesService(categoryId);
+//     return result.data ?? [];
+//   } catch (error) {
+//     return {
+//       status: 'error',
+//       message:
+//         error instanceof Error
+//           ? error.message
+//           : 'Failed to fetch subcategories',
+//     };
+//   }
+// }
 
-export async function fetchStoreDetailsAction(storeId: string) {
-  try {
-    const result = await fetchStoreDetailsService(storeId);
+// export async function fetchStoreDetailsAction(storeId: string) {
+//   try {
+//     const result = await fetchStoreDetailsService(storeId);
 
-    console.log('[fetchStoreDetailsAction] Result:', result);
-    return result.data ?? [];
-  } catch (error) {
-    return {
-      error:
-        error instanceof Error
-          ? error.message
-          : 'Failed to fetch store details',
-    };
-  }
-}
+//     console.log('[fetchStoreDetailsAction] Result:', result);
+//     return result.data ?? [];
+//   } catch (error) {
+//     return {
+//       error:
+//         error instanceof Error
+//           ? error.message
+//           : 'Failed to fetch store details',
+//     };
+//   }
+// }
 
-export async function fetchVendorAddressAction(
-  storeId: string,
-): Promise<ActionResult> {
-  try {
-    const result = await fetchVendorAddressService(storeId);
-    return { success: true, data: result.data };
-  } catch (error: any) {
-    return {
-      success: false,
-      error: error.message || 'Failed to fetch vendor address',
-    };
-  }
-}
+// export async function fetchVendorAddressAction(
+//   storeId: string,
+// ): Promise<ActionResult> {
+//   try {
+//     const result = await fetchVendorAddressService(storeId);
+//     return { success: true, data: result.data };
+//   } catch (error: any) {
+//     return {
+//       success: false,
+//       error: error.message || 'Failed to fetch vendor address',
+//     };
+//   }
+// }
 
 // ═══════════════════════════════════════
 // CART

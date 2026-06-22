@@ -206,23 +206,7 @@ export default function MapLocations({
         </div>
       </form>
 
-      {/* <div className="border border-border rounded-2xl p-4">
-        <h5 className="font-semibold flex items-center gap-2 mb-6 text-primary-text-100">
-          <MapIcon size={20} className="text-primary" /> Popular Lagos Locations
-        </h5>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {locations.map((loc) => (
-            <div
-              key={loc}
-              className="border border-border rounded-xl p-4 text-sm flex flex-col gap-3 text-gray-400 cursor-pointer hover:bg-foreground-200"
-            >
-              <MapPin size={18} />
-              <p className="font-medium text-primary-text-100 text-sm">{loc}</p>
-              <p className="text-xs text-gray-600">6.4281, 3.4219</p>
-            </div>
-          ))}
-        </div>
-      </div> */}
+   
     </div>
   );
 }

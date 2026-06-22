@@ -379,7 +379,17 @@ export const useCartStore = create<CartStore>()(
     }),
     {
       name: 'delivery-cart-storage',
-      storage: createJSONStorage(() => localStorage),
+      storage: createJSONStorage(() => {
+        if (typeof window === 'undefined') {
+          return {
+            getItem: () => null,
+            setItem: () => {},
+            removeItem: () => {},
+          };
+        }
+
+        return localStorage;
+      }),
       partialize: (state) => ({ cart: state.cart }),
     },
   ),

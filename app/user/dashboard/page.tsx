@@ -8,6 +8,7 @@ import {
   CreditCard,
   Gift,
   HelpCircle,
+  Loader,
 } from 'lucide-react';
 
 import {
@@ -18,10 +19,11 @@ import {
 import QuickAction from '@/features/user/dashboard/components/quick-action';
 
 import DeliverySummary from '@/features/user/dashboard/components/delivery-summary';
-import Address from '@/features/user/dashboard/components/address';
 import DashboardHeader from '@/components/ui/headers/user-dashboard-header';
 
 import ActiveDeliveries from '@/features/user/dashboard/components/active-deliveries';
+import { Suspense } from 'react';
+import DashboardAddressWrapper from '@/features/user/dashboard/components/address-wrapper';
 
 export default function DashboardPage() {
   return (
@@ -57,7 +59,17 @@ export default function DashboardPage() {
         {/* LOCATIONS + SUMMARY */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* LOCATIONS */}
-          <Address />
+          {/* <Address /> */}
+
+          <Suspense
+            fallback={
+              <div className="bg-neutral-100 h-72 animate-pulse rounded-2xl justify-center items-center flex">
+                <Loader size={24} className="animate-spin text-primary" />
+              </div>
+            }
+          >
+            <DashboardAddressWrapper />
+          </Suspense>
 
           {/* SUMMARY */}
           <DeliverySummary />

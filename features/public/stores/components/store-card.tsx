@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import { StoreCardProps } from '../types';
-import { Bike, MapPin, Star } from 'lucide-react';
+import { Clock3, MapPin, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
+import clsx from 'clsx';
 
 export default function StoreCard({
   id,
@@ -9,12 +10,11 @@ export default function StoreCard({
   tag,
   name,
   cuisine,
-  rating,
   location,
-  delivery,
   time,
-  returnUrl,
-}: StoreCardProps) {
+  delivery,
+  isOpen,
+}: StoreCardProps & { isOpen?: boolean }) {
   const store = name
     .toLowerCase()
     .trim()
@@ -23,63 +23,111 @@ export default function StoreCard({
 
   return (
     <Link
-      // href={`/stores/${id}?store=${store}`}
-      href={`/stores/${id}?store=${store}&returnUrl=${encodeURIComponent(returnUrl)}`}
-      className="group bg-white rounded-2xl overflow-hidden border border-border shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
+      href={`/stores/${id}`}
+      className="
+        group
+        block
+        overflow-hidden
+        rounded-3xl
+        border
+        border-border/60
+        bg-white
+        transition-all
+        duration-300
+        hover:-translate-y-1
+        hover:border-primary/20
+        hover:shadow-xl
+      "
     >
-      {/* Image section */}
-      <div className="relative h-52 overflow-hidden">
+      {/* Cover */}
+      <div className="relative h-56 overflow-hidden bg-foreground-200">
         <Image
-          alt={name}
-          src={image ? image : '/assets/image/nigerian.jpg'}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-          priority
+          src={image || '/assets/image/store-placeholder.png'}
+          alt={name || 'Store Image'}
           fill
+          loading="lazy"
+          className={`${image ? 'object-cover' : 'object-contain'} transition-transform duration-700 group-hover:scale-105`}
         />
 
+        {/* Gradient Overlay */}
+        {/* <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" /> */}
+
+        {/* Category */}
         {tag && (
-          <span className="absolute top-3 left-3 bg-white px-3 py-1 rounded-full text-xs shadow text-primary-text-100">
-            {tag}
-          </span>
+          <div className="absolute left-4 top-4">
+            <span className="rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-text-100 shadow-md">
+              {tag}
+            </span>
+          </div>
         )}
 
-        {/* Delivery badge */}
-        <span className="flex items-center gap-2 absolute bottom-3 right-3 bg-white px-3 py-1.5 shadow-2xl rounded-xl text-xs transition-all duration-300 group-hover:scale-105">
-          <Bike className="h-4 w-4 text-green-100 transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-0.5" />
-          {time}
-        </span>
+        {/* Open / Closed */}
+        <div className="absolute right-4 top-4">
+          <span
+            className={clsx(
+              'rounded-full px-3 py-1 text-xs font-medium shadow-lg',
+              isOpen ? 'bg-green-500 text-white' : 'bg-red-500 text-white',
+            )}
+          >
+            {isOpen ? 'Open' : 'Closed'}
+          </span>
+        </div>
+
+        {/* Prep Time */}
+        <div className="absolute bottom-4 right-4">
+          <div className="flex items-center gap-2 rounded-full bg-white px-3 py-2 shadow-lg">
+            <Clock3 size={14} className="text-primary" />
+
+            <span className="text-xs font-medium">
+              Ready in {time || 'N/A'}
+            </span>
+          </div>
+        </div>
       </div>
 
       {/* Content */}
-      <div className="px-4 py-6 flex flex-col gap-1">
-        <div className="flex justify-between items-center">
-          <h3 className="font-semibold text-neutral-700 transition-colors duration-300 group-hover:text-primary">
-            {name}
-          </h3>
+      <div className="p-5">
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0 flex-1">
+            <h3 className="line-clamp-1 text-lg font-semibold capitalize text-neutral-900">
+              {name}
+            </h3>
 
-          <span className="text-xs flex items-center gap-1 font-medium text-neutral-600">
-            <Star
-              className="w-4 h-4 text-primary"
-              fill="currentColor"
-              stroke="none"
-            />
-            {rating}
-          </span>
-        </div>
-
-        <div className="mt-2 flex gap-1 items-center">
-          <p className="text-xs text-neutral-600">{cuisine}</p>
-        </div>
-
-        <div className="grid grid-cols-6 mt-3 gap-2">
-          <div className="flex items-start gap-1 text-xs text-neutral-500 col-span-5">
-            <MapPin size={14} className="text-green-100" />
-            <span className="wrap-break-word">{location}</span>
+            <p className="mt-1 line-clamp-1 text-sm text-neutral-500">
+              {cuisine}
+            </p>
           </div>
 
-          <p className="text-green-100 text-xs col-span-1 text-end">
-            {delivery}
-          </p>
+          <ChevronRight
+            size={18}
+            className="mt-1 shrink-0 text-neutral-300 transition-transform duration-300 group-hover:translate-x-1"
+          />
+        </div>
+
+        {/* Marketplace Tags */}
+        <div className="mt-4 flex flex-wrap items-center  justify-between gap-2">
+          <div className="flex items-center gap-2 text-xs font-medium text-green-100">
+            <Image
+              src="/assets/image/Logo/not-found.png"
+              alt="C-Ride"
+              width={14}
+              height={14}
+            />
+            Delivered by C-Ride
+          </div>
+
+          {delivery && (
+            <span className="rounded-full bg-green-50 px-3 py-1 text-[10px] font-medium text-green-700">
+              {delivery}
+            </span>
+          )}
+        </div>
+
+        {/* Address */}
+        <div className="mt-4 flex items-start gap-2 text-sm text-neutral-500">
+          <MapPin size={15} className="mt-0.5 shrink-0 text-primary" />
+
+          <span className="line-clamp-2">{location}</span>
         </div>
       </div>
     </Link>

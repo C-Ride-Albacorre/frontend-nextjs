@@ -79,7 +79,7 @@ export default function OrderDetail({ orderId }: { orderId: string }) {
                 ? JSON.parse(order.dropoffLocation)
                 : order.dropoffLocation;
             return (
-              <Card gap="xs" className="bg-foreground-200 text-sm">
+              <Card border='none' gap="xs" className="bg-foreground-200 text-sm">
                 <p className="font-medium text-xs text-neutral-500">
                   Delivery To
                 </p>

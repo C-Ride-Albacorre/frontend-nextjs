@@ -46,8 +46,9 @@ export default function PaymentResultContent() {
       </Card>
 
       <Card
+        border='none'
         gap="sm"
-        className="w-full max-w-md bg-[#10B981]/10 border border-[#10B981] text-sm"
+        className="w-full max-w-md bg-[#10B981]/10 text-sm"
       >
         <p className="font-medium">Beyond Delivery, It&apos;s Care</p>
         <p className="text-neutral-500">

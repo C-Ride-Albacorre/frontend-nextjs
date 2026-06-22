@@ -16,12 +16,14 @@ export default function PaginationControls({
 
   const pathname = usePathname();
 
-  const updatePage = (newPage: number) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set('page', String(newPage));
+ const updatePage = (newPage: number) => {
+  if (newPage < 1 || newPage > totalPages) return;
 
-    router.push(`${pathname}?${params.toString()}`);
-  };
+  const params = new URLSearchParams(searchParams.toString());
+  params.set('page', String(newPage));
+
+  router.push(`${pathname}?${params.toString()}`);
+};
 
   return (
     <div className="flex justify-center md:justify-end items-center gap-6">

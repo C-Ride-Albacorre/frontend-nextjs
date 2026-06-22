@@ -28,7 +28,6 @@ export default function AddressSelector({
     defaultAddress,
   );
 
-  // Controlled if parent passes `selected`, otherwise use internal state
   const activeSelected = selected ?? internalSelected;
 
   const handleSelect = (addr: Address) => {
@@ -41,15 +40,19 @@ export default function AddressSelector({
   ) as Address[];
 
   return (
-    <div className="flex items-start gap-4">
-      <MapPin size={16} className="text-red-600 mt-1" />
+    <div className="flex flex-col md:flex-row items-start gap-2">
+      <div className="bg-red-100 w-8 h-8 md:w-12 md:h-12 rounded-full shrink-0 flex items-center justify-center ">
+        <MapPin size={20} className="text-red-600 md:animate-bounce" />
+      </div>
 
       <div className="space-y-4">
-        <p className="font-medium text-sm">Drop Address</p>
+        <div>
+          <p className="font-medium text-sm">Drop Address</p>
 
-        <span className="text-sm text-neutral-500">
-          {activeSelected?.address || 'No address selected'}
-        </span>
+          <span className="text-sm text-neutral-500">
+            {activeSelected?.address || 'No address selected'}
+          </span>
+        </div>
 
         <div className="flex items-center gap-3 mt-4 flex-wrap">
           {allAddresses.map((addr) => {

@@ -77,6 +77,7 @@ export default function PaymentSuccessModal({
         </Card>
 
         <Card
+        border='none'
           gap="sm"
           className="bg-[#10B981]/10 border border-[#10B981] p-4 rounded-xl text-sm"
         >

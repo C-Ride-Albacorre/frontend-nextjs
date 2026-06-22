@@ -5,16 +5,15 @@ import { useState } from 'react';
 import { Loader, MapPin, MapPinHouse, MapPinned, Plus } from 'lucide-react';
 import AddressModal from '@/features/user/address/components/address-modal';
 import { Button } from '@/components/ui/buttons/button';
-import { useAddresses } from '../../address/fetch';
 import Card from '@/components/layout/card';
+import { AddressItem } from '../../address/service';
 
-export default function Address() {
+export default function DashboardAddress({
+  savedAddresses,
+}: {
+  savedAddresses: AddressItem[];
+}) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const { data, isLoading, error } = useAddresses();
-
-  console.log('Address Data:', data);
-
   return (
     <>
       <Card className="bg-white ">
@@ -32,18 +31,9 @@ export default function Address() {
           </div>
         </div>
 
-        {isLoading ? (
-          <div className="flex justify-center py-20">
-            <Loader className="animate-spin text-primary" size={32} />
-          </div>
-        ) : error ? (
-          <p className="flex flex-col justify-center items-center text-center text-sm py-20 text-red-500 gap-3">
-            <MapPinHouse size={24} className="text-red-500" />
-            <p>{error.message || 'Failed to load addresses'}</p>
-          </p>
-        ) : data ? (
+        { savedAddresses ? (
           <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-72 overflow-y-scroll">
-            {data?.map((item: any) => (
+            {savedAddresses?.map((item: any) => (
               <li key={item.id}>
                 <Card spacing="sm" className="flex items-start h-full">
                   <div className="flex-1 flex flex-col md:flex-row gap-2 mb-0">
@@ -118,6 +108,7 @@ export default function Address() {
         isModalOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSuccess={() => setIsModalOpen(false)}
+        savedAddresses={savedAddresses}
       />
     </>
   );

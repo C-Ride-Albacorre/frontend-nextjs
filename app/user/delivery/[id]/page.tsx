@@ -1,19 +1,15 @@
 import DashboardHeader from '@/components/ui/headers/user-dashboard-header';
 import LocationChips from '@/features/user/delivery/components/location-chips';
-import StoreGrid from '@/features/user/delivery/components/store-grid';
 import Location from '@/features/public/homepage/components/location';
-import {
-  fetchCategoryStoresAction,
-  // fetchSubcategoriesAction,
-} from '@/features/user/delivery/action';
-import { Store } from 'lucide-react';
-import Card from '@/components/layout/card';
-import RetryButton from '@/components/ui/buttons/retry-button';
-import { Button } from '@/components/ui/buttons/button';
-import PaginationControls from '@/components/ui/buttons/pagination-control';
+('@/features/user/delivery/action');
 import StoreSearch from '@/features/user/delivery/components/store-search';
+import { Suspense } from 'react';
+import CategoryIconsSkeleton from '@/features/user/delivery/components/category-icon-skeleton';
+import SubCategoriesWrapper from '@/features/public/stores/components/subcategories-wrapper';
+import StoreSkeleton from '@/features/public/stores/components/stores-skeleton';
+import StoresPageWrapper from '@/features/user/delivery/components/store-wrapper';
 
-export default async function CategoryDeliveryPage({
+export default async function StoresPage({
   params,
   searchParams,
 }: {
@@ -30,45 +26,9 @@ export default async function CategoryDeliveryPage({
   }>;
 }) {
   const { id } = await params;
-  const { latitude, longitude, subcategoryId, page, limit, search, radiusKm } =
-    await searchParams;
+  const { name } = await searchParams;
 
-  let stores: any[] = [];
-  let total = 0;
-  // let subCategory = [];
-  let isStoreError = false;
-  // let isSubCategoryError = false;
-
-  const pageNum = page ? parseInt(page) : 1;
-  const limitNum = limit ? parseInt(limit) : 10;
-
-  try {
-    const lat = latitude ? parseFloat(latitude) : undefined;
-    const lng = longitude ? parseFloat(longitude) : undefined;
-    const radius = radiusKm ? parseFloat(radiusKm) : undefined;
-
-    const result = await fetchCategoryStoresAction(
-      id,
-      lat,
-      lng,
-      subcategoryId,
-      pageNum,
-      limitNum,
-      search,
-      radius,
-    );
-    stores = result.stores;
-    total = result.total;
-  } catch (error) {
-    isStoreError = true;
-  }
-
-  const title =
-    stores?.length > 0 ? `${stores[0].storeName} / Stores` : 'Stores';
-
-  const totalPages = Math.ceil(total / limitNum);
-
-  let pathName: string = '/user/delivery';
+  const title = name ? `${name} / Stores` : 'Stores';
 
   return (
     <section>
@@ -83,6 +43,10 @@ export default async function CategoryDeliveryPage({
         </div>
 
         <StoreSearch categoryId={id} />
+
+        <Suspense fallback={<CategoryIconsSkeleton />}>
+          <SubCategoriesWrapper categoryId={id} />
+        </Suspense>
 
         {/* {subCategory.length === 0 && !isSubCategoryError ? (
           <p className="text-neutral-500 text-center">
@@ -103,42 +67,10 @@ export default async function CategoryDeliveryPage({
         {/* <Filters /> */}
 
         <LocationChips />
-        {!isStoreError && stores.length === 0 ? (
-          <Card gap="md" spacing="lg" className="flex  flex-col  items-center">
-            <Store size={48} className="text-neutral-400" />
-            <div className="space-y-2 text-center">
-              <h2 className="text-xl font-semibold">No stores found.</h2>
-              <p className="text-center text-sm text-neutral-500">
-                Try adjusting your search or browse all stores.
-              </p>
-            </div>
 
-            <Button variant="primary" size="icon" href="/user/delivery">
-              Go to Categories
-            </Button>
-          </Card>
-        ) : isStoreError ? (
-          <Card
-            gap="md"
-            spacing="lg"
-            className="flex  flex-col gap-4 items-center"
-          >
-            <div className="space-y-2 text-center">
-              <h2 className="text-xl font-semibold">Failed to load stores.</h2>
-              <p className="text-center text-sm text-neutral-500">
-                Please try again later.
-              </p>
-            </div>
-
-            <RetryButton />
-          </Card>
-        ) : (
-          <StoreGrid stores={stores} />
-        )}
-
-        {stores.length > 0 && (
-          <PaginationControls currentPage={pageNum} totalPages={totalPages} />
-        )}
+        <Suspense fallback={<StoreSkeleton />}>
+          <StoresPageWrapper searchParams={searchParams} params={params} />
+        </Suspense>
       </div>
 
       <div>

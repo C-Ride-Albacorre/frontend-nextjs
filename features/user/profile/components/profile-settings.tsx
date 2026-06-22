@@ -13,7 +13,7 @@ export default function ProfileSettings() {
   const [pushNotifications, setPushNotifications] = useState(false);
 
   return (
-    <Card gap="lg">
+    <Card  gap="lg">
       <div className="flex justify-between items-center">
         <p className="text-sm font-medium">Account Settings</p>
 
@@ -28,7 +28,7 @@ export default function ProfileSettings() {
       </div>
 
       <div className="space-y-6">
-        <Card className="bg-foreground-200 flex items-center justify-between gap-4">
+        <Card border='none' className="bg-foreground-200 flex items-center justify-between gap-4">
           <div className="space-y-4 text-sm mb-0">
             <p>Email Notifications</p>
 
@@ -53,7 +53,7 @@ export default function ProfileSettings() {
           </div>
         </Card>
 
-        <Card className="bg-foreground-200 flex items-center justify-between gap-4">
+        <Card border='none' className="bg-foreground-200 flex items-center justify-between gap-4">
           <div className="space-y-4 text-sm mb-0">
             <p>SMS Notifications</p>
 
@@ -78,7 +78,7 @@ export default function ProfileSettings() {
           </div>
         </Card>
 
-        <Card className="bg-foreground-200 flex items-center justify-between gap-4">
+        <Card border='none' className="bg-foreground-200 flex items-center justify-between gap-4">
           <div className="space-y-4 text-sm mb-0">
             <p>Promotional Updates</p>
 

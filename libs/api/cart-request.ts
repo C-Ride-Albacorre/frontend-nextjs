@@ -1,7 +1,6 @@
 import { getAuthTokens, getOrCreateGuestSessionId } from '@/utils/cookies';
 import { parseResponse } from './http';
 import { authFetch } from './auth-fetch';
-
 export async function cartRequest<T>(
   url: string,
   options: RequestInit = {},
@@ -10,9 +9,13 @@ export async function cartRequest<T>(
 
   let res: Response;
 
+  // AUTH USER
+
   if (accessToken || refreshToken) {
-    res = await authFetch(url, options);
+    res = await authFetch(url, { ...options, cacheStrategy: 'no-store' });
   } else {
+    // GUEST USER
+
     const guestSessionId = await getOrCreateGuestSessionId();
 
     res = await fetch(url, {
@@ -22,7 +25,7 @@ export async function cartRequest<T>(
         'Content-Type': 'application/json',
         'x-session-id': guestSessionId,
       },
-      //   cache: 'no-store',
+      cache: 'no-store',
     });
   }
 
