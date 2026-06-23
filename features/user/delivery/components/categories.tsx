@@ -32,7 +32,6 @@ export default async function Categories() {
         <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2">
           {categories?.map((item: any) => (
             <Link
-              prefetch={false}
               href={`/user/delivery/${item.id}?name=${encodeURIComponent(item.name)}`}
               key={item.id}
               className="relative flex  items-center justify-between rounded-2xl bg-linear-to-r from-primary to-primary-hover shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300   px-6 py-4  text-left hover:opacity-95 cursor-pointer"

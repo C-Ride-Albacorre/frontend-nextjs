@@ -28,7 +28,7 @@ export default function Categories({ categories }: { categories: Category[] }) {
             // href={`/stores?categoryId=${item.id}&name=${encodeURIComponent(item.name)}`}
 
             href={`/stores?categoryId=${item.id}`}
-            prefetch={false}
+   
             key={`${item.id}-${index}`}
             className="relative h-60 min-w-56 overflow-hidden rounded-2xl"
           >
