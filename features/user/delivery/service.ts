@@ -262,9 +262,7 @@ export interface StoreDetailsResponse {
   };
 }
 
-
-
-export interface  VendorAddressDetails {
+export interface VendorAddressDetails {
   storeId: string;
   storeName: string;
   vendorId: string;
@@ -284,13 +282,12 @@ export interface  VendorAddressDetails {
   };
 }
 
-
 // types/api.ts
 
-export interface VendorAddressDetailsApiResponse{
+export interface VendorAddressDetailsApiResponse {
   success: boolean;
   message?: string;
-  data: VendorAddressDetails
+  data: VendorAddressDetails;
 }
 
 export async function fetchCategoryStoresService({
@@ -360,6 +357,7 @@ export async function fetchStoreDetailsService(storeId: string) {
   return authRequest<StoreDetailsResponse>(
     `${BASE_URL}/customer/stores/${storeId}`,
     {
+      cacheStrategy: { revalidate: 3600 },
       nextTags: [`store-details-${storeId}`],
     },
   );
@@ -378,6 +376,7 @@ export async function fetchVendorAddressService(storeId: string) {
   return authRequest<VendorAddressDetailsApiResponse>(
     `${BASE_URL}/customer/vendor-address/${storeId}`,
     {
+      cacheStrategy: { revalidate: 3600 },
       nextTags: [`vendor-address-${storeId}`],
     },
   );
