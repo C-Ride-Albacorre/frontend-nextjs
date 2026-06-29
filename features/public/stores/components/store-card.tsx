@@ -127,7 +127,7 @@ export default function StoreCard({
         <div className="mt-4 flex items-start gap-2 text-sm text-neutral-500">
           <MapPin size={15} className="mt-0.5 shrink-0 text-primary" />
 
-          <span className="line-clamp-2">{location}</span>
+          <span className="line-clamp-2 capitalize text-sm">{location}</span>
         </div>
       </div>
     </Link>

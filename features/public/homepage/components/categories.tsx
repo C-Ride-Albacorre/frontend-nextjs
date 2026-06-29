@@ -17,17 +17,18 @@ export default function Categories({ categories }: { categories: Category[] }) {
   }
 
   return (
-    <>
+    <div className="flex justify-center items-center space-x-4 overflow-x-auto">
       {categories?.map((item, index) => {
         const title = item.name?.trim();
         const image = item.image;
         const isActive = item.isActive;
 
         return (
-          <Link
-            // href={`/stores?categoryId=${item.id}&name=${encodeURIComponent(item.name)}`}
+      
+            <Link
+              href={`/stores?categoryId=${item.id}&name=${encodeURIComponent(item.name)}`}
 
-            href={`/stores?categoryId=${item.id}`}
+            // href={`/stores?categoryId=${item.id}`}
    
             key={`${item.id}-${index}`}
             className="relative h-60 min-w-56 overflow-hidden rounded-2xl"
@@ -66,8 +67,12 @@ export default function Categories({ categories }: { categories: Category[] }) {
               </p> */}
             </div>
           </Link>
+          
+          
+
+       
         );
       })}
-    </>
+    </div>
   );
 }

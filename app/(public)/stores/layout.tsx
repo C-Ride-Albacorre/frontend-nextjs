@@ -13,7 +13,7 @@ export default async function StoresLayout({
       <div className="min-h-screen mx-auto max-w-6xl px-4 xl:px-0 py-24 md:py-28">
   
 
-        <div className="container">{children}</div>
+        <div>{children}</div>
       </div>
 
       <Location />

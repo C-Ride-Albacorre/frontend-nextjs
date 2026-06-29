@@ -5,9 +5,6 @@ import Card from '@/components/layout/card';
 import { Package } from 'lucide-react';
 
 import RetryButton from '@/components/ui/buttons/retry-button';
-import { Suspense } from 'react';
-import OrderSkeleton from './order-skeleton';
-import Toolbar from '@/components/layout/tool-bar';
 
 const CATEGORIES = [
   { label: 'All', value: 'ALL' },

@@ -15,7 +15,7 @@ export default function PaymentResultPage() {
           </div>
         }
       >
-        <PaymentResultContent />
+        <PaymentResultContent  />
       </Suspense>
     </main>
   );

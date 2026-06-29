@@ -38,9 +38,13 @@ export default function OrderSummary() {
         <ul className="space-y-6">
           {items.map((item: any) => (
             <li key={item.id} className="flex justify-between items-center">
-              <p className="text-neutral-500 text-sm text-left">
-                {item.productName} x {item.quantity}
+              <div className='flex items-center justify-center gap-3' >
+              <p className=" text-primary-text-100 text-left capitalize">
+                {item.productName}
+              </p>   <p className="text-neutral-500 text-sm text-left capitalize">
+               x {item.quantity}
               </p>
+              </div>
 
               <div className="flex items-center gap-4  md:gap-8">
                 {isLoading || isUpdatingCart ? (

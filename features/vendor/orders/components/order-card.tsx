@@ -94,7 +94,8 @@ export default function OrderCard({
                   'bg-blue-100 text-blue-600': orderStatus === 'CONFIRMED',
                   'bg-amber-100 text-amber-600': orderStatus === 'PENDING',
                   'bg-emerald-100 text-emerald-600':
-                    orderStatus === 'COMPLETED',
+                    orderStatus === 'COMPLETED', 
+                   'bg-emerald-100 text-emerald-700' :  orderStatus === 'ORDER_ASSIGNED' ,
                 },
               )}
             >

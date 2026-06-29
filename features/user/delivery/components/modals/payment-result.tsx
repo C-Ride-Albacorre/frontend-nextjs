@@ -61,7 +61,7 @@ export default function PaymentResultContent() {
         <Button
           variant="primary"
           size="lg"
-          href="/user/track-order"
+          href={`/user/track-order?orderId=${orderId}`}
           className="w-full"
         >
           Track Your Order
