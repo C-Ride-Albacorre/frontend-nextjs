@@ -335,7 +335,7 @@ export default function OrderDetailsModal({
           </Button>
 
 
-          <Button variant='green' leftIcon={<CheckCircle size={16} />} size='icon' onClick={onAccept}>
+          <Button variant='green' size='icon' leftIcon={<CheckCircle size={16}  />} onClick={onAccept}>
             Accept Order
           </Button>
          </div>

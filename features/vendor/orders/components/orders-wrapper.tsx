@@ -33,6 +33,8 @@ export default async function OrdersWrapper({
 
   const Orders = response.orders || [];
 
+
+
   const totalPages = response.totalPages;
 
   console.log(Orders, 'orders baby');
@@ -112,6 +114,7 @@ export default async function OrdersWrapper({
                 phoneNumber={order.user?.phoneNumber}
                 items={items}
                 subtotal={order.vendorSummary?.subtotal ?? 0}
+                
               />
             );
           })}

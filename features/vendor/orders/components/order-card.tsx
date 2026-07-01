@@ -73,6 +73,11 @@ export default function OrderCard({
     setIsDetailsModalOpen(true);
   };
 
+
+  const orderStatusText = orderStatus === 'CONFIRMED' ? 'Confirmed' :  orderStatus === 'PENDING' ? 'Pending' : orderStatus === 'COMPLETED' ? 'Completed' : orderStatus === 'CANCELLED' ? 'Cancelled' : orderStatus === 'REJECTED' ? 'Rejected' : orderStatus === 'FAILED' ? 'Failed' : orderStatus === 'DELIVERED' ? 'Delivered' : orderStatus === 'PICKED_UP' ? 'Picked Up' : orderStatus === 'ORDER_ASSIGNED' ? 'Order Assigned' : orderStatus === 'ORDER_ACCEPTED' ? 'Order Accepted' : orderStatus;
+
+  const paymentStatusText = paymentStatus === 'PAID' ? 'Paid' : paymentStatus === 'PENDING' ? 'Pending' : paymentStatus === 'FAILED' ? 'Failed' : paymentStatus;
+
   return (
     <>
       <Card
@@ -80,13 +85,13 @@ export default function OrderCard({
         spacing="none"
       >
         {/* Header */}
-        <div className="flex items-start justify-between border-b border-border mb-0 px-4 py-3">
+        <div className="flex items-center justify-between border-b border-border mb-0 px-4 py-3">
           <div>
-            <p className="text-xs text-neutral-500">ORDER CODE</p>
-            <p className="font--medium">#{orderCode}</p>
+            <p className="text-xs text-neutral-500">Order Code</p>
+            <h2 className="font-semibold text-xl">{orderCode}</h2>
           </div>
 
-          <div className="flex flex-col items-end gap-1">
+          <div className="flex items-end gap-2">
             <span
               className={clsx(
                 'rounded-full px-2 py-1 text-[10px] font-medium',
@@ -94,12 +99,27 @@ export default function OrderCard({
                   'bg-blue-100 text-blue-600': orderStatus === 'CONFIRMED',
                   'bg-amber-100 text-amber-600': orderStatus === 'PENDING',
                   'bg-emerald-100 text-emerald-600':
-                    orderStatus === 'COMPLETED', 
-                   'bg-emerald-100 text-emerald-700' :  orderStatus === 'ORDER_ASSIGNED' ,
+                    orderStatus === 'COMPLETED',
+                  'bg-emerald-100 text-emerald-700':
+                    orderStatus === 'ORDER_ASSIGNED',
+                  'bg-red-100 text-red-600': orderStatus === 'CANCELLED',
+                  'bg-red-100 text-red-700': orderStatus === 'REJECTED',
+
+                  'bg-neutral-100 text-neutral-600': orderStatus === 'FAILED',
+
+                  'bg-green-100/10 text-green-700': orderStatus === 'DELIVERED',
+
+                  'bg-amber-100 text-amber-700': orderStatus === 'PICKED_UP',
+
+                     'bg-purple-100 text-purple-700': orderStatus === 'ORDER_ACCEPTED',
+
+                  'bg-blue-100 text-blue-700': orderStatus === 'ORDER_ASSIGNED',
+
+
                 },
               )}
             >
-              {orderStatus}
+              {orderStatusText}
             </span>
 
             <span
@@ -112,7 +132,7 @@ export default function OrderCard({
                 },
               )}
             >
-              {paymentStatus}
+              {paymentStatusText}
             </span>
           </div>
         </div>
@@ -187,12 +207,36 @@ export default function OrderCard({
           <div className="mb-4 flex items-center justify-between">
             <p className="text-sm text-neutral-500">Total Amount</p>
 
-            <p className="text-xl font-semibold text-primary">
+            <h2 className="text-xl font-semibold text-primary">
               ₦{subtotal.toLocaleString()}
-            </p>
+            </h2>
           </div>
 
           <div className="flex flex-col md:flex-row gap-2">
+            {orderStatus === 'CONFIRMED' && (
+              <div className="flex gap-2 flex-1">
+                <Button
+                  size="icon"
+                  variant="red-secondary"
+                  className="flex-1"
+                  leftIcon={<XCircle size={16} />}
+                  onClick={handleRejectAction}
+                >
+                  Decline
+                </Button>
+
+                <Button
+                  size="icon"
+                  variant="green"
+                  className="flex-1"
+                  leftIcon={<CheckCircle size={16} />}
+                  onClick={handleAcceptAction}
+                >
+                  Accept
+                </Button>
+              </div>
+            )}
+
             <Button
               size="icon"
               variant="outline"
@@ -201,26 +245,6 @@ export default function OrderCard({
               onClick={() => handleViewAction(id)}
             >
               View Details
-            </Button>
-
-            <Button
-              size="icon"
-              variant="red-secondary"
-              className="flex-1"
-              leftIcon={<XCircle size={16} />}
-              onClick={handleRejectAction}
-            >
-              Decline
-            </Button>
-
-            <Button
-              size="icon"
-              variant="green"
-              className="flex-1"
-              leftIcon={<CheckCircle size={16} />}
-              onClick={handleAcceptAction}
-            >
-              Accept
             </Button>
           </div>
         </div>
