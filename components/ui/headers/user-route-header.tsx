@@ -7,11 +7,7 @@ import { ChevronLeft } from 'lucide-react';
 import clsx from 'clsx';
 import { useCustomerStore } from '@/store/socket';
 
-export default function Header({
-  orderId,
-}: {
-  orderId?: string;
-}) {
+export default function Header({ orderId }: { orderId?: string }) {
   const router = useRouter();
 
   const backHandler = () => {
@@ -20,9 +16,7 @@ export default function Header({
 
   const pathName = usePathname();
 
-
-
-    console.log(' Header Search Params OrderId :', orderId);
+  console.log(' Header Search Params OrderId :', orderId);
 
   const isOnTrackOrderPage = pathName === '/user/track-order';
 
@@ -35,7 +29,15 @@ export default function Header({
     'Payment Confirmation': pathName === '/payment/callback',
   });
 
+  const etaToVendor = useCustomerStore((s) => s.tracking.eta.toVendor);
   const etaToCustomer = useCustomerStore((s) => s.tracking.eta.toCustomer);
+  const orderStatus = useCustomerStore((s) => s.tracking.orderStatus);
+
+  const isOnRoute =
+    etaToVendor != null ||
+    etaToCustomer != null ||
+    orderStatus === 'PICKED_UP' ||
+    orderStatus === 'IN_TRANSIT';
 
   return (
     <>
@@ -47,17 +49,17 @@ export default function Header({
 
           <div className="space-y-2">
             <h1 className=" text-xl md:text-2xl font-medium">{pageTitle}</h1>
-            {isOnTrackOrderPage && orderId && (
+            {/* {isOnTrackOrderPage && orderId && (
               <p className="text-sm text-neutral-500">Order Id: {orderId}</p>
-            )}
+            )} */}
           </div>
         </div>
 
-        {isOnTrackOrderPage && etaToCustomer != null && (
+        {/* {isOnTrackOrderPage && isOnRoute && (
           <span className="rounded-full bg-[#10B981] p-2 text-xs text-white">
             On Route
           </span>
-        )}
+        )} */}
       </header>
     </>
   );

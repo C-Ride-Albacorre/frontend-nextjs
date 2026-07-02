@@ -81,13 +81,13 @@ export default function ReorderConfirmation({
               <RouteItem
                 title="Pickup"
                 address={order.pickup.address}
-                time={order.pickup.time}
+                // time={order.pickup.time}
               />
 
               <RouteItem
                 title="Drop-off"
                 address={order.dropoff.address}
-                time={order.dropoff.time}
+                // time={order.dropoff.time}
                 highlight
               />
             </div>

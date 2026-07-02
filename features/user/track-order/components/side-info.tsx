@@ -10,27 +10,43 @@ import {
   Sparkles,
   Locate,
   Bike,
+  Headset,
 } from 'lucide-react';
 
 import Card from '@/components/layout/card';
 
 import { useCustomerStore } from '@/store/socket';
 import { useMemo } from 'react';
+import Avatar from '@/components/ui/avatar';
+import { formatDate } from '@/helpers/date-formatter';
+import { Button } from '@/components/ui/buttons/button';
 
-export default function SideInfo() {
+export default function SideInfo({ orderData }: { orderData: any }) {
   // const activeOrder = useCustomerStore((s) => s.activeOrder);
 
+  const etaToVendor = useCustomerStore((s) => s.tracking.eta.toVendor);
   const etaToCustomer = useCustomerStore((s) => s.tracking.eta.toCustomer);
+  const orderStatus =
+    useCustomerStore((s) => s.tracking.orderStatus) ?? orderData.order.status;
+
+  const isToCustomer =
+    orderStatus === 'PICKED_UP' ||
+    orderStatus === 'IN_TRANSIT' ||
+    etaToCustomer != null;
+
+  const eta = isToCustomer
+    ? (etaToCustomer ?? etaToVendor)
+    : (etaToVendor ?? etaToCustomer);
 
   const etaText = useMemo(() => {
-    const eta = etaToCustomer;
-
-    if (eta == null) return 'Waiting...';
+    if (eta == null) return;
 
     if (eta < 60) return `${eta} sec`;
 
     return `${Math.ceil(eta / 60)} min`;
-  }, [etaToCustomer]);
+  }, [eta]);
+
+  const driverName = `${orderData.driver?.fullName ?? ''}`;
 
   /**
    * Driver (future: replace with backend driver object)
@@ -42,7 +58,7 @@ export default function SideInfo() {
   // const trips = activeOrder?.driver?.trips ?? 1247;
 
   // const vehicle = activeOrder?.driver?.vehicle ?? 'Vehicle info pending';
-  
+
   // const plate = activeOrder?.driver?.plate ?? '---';
 
   // const orderId = activeOrder?.order_number ?? '—';
@@ -61,51 +77,27 @@ export default function SideInfo() {
         gap="md"
         className="bg-foreground-200 flex items-start gap-4 "
       >
-        <Bike size={24} className="text-primary" />
-           <div className="space-y-2">
-          <h2 className="font-medium">Your Driver Status</h2>
-          <div className="space-y-2 text-sm">
-            {/* <p className="font-medium">{driverName}</p>
+        <div className="flex items-start gap-3 mb-0">
+          <Avatar name={driverName} size={54} />
 
-          <p className="flex items-center gap-1 text-xs">
-            <Star size={14} fill="#D4AF37" strokeWidth={0} />
-            {driverRating}
-            <span className="text-neutral-400">({trips} trips)</span>
-          </p> */}
+          <div className="space-y-2 mb-0">
+            <h2 className="font-medium capitalize">
+              {orderData.driver?.fullName ?? 'Assigned Driver'}
+            </h2>
 
-         
+            <p className="flex items-center gap-1 text-xs">
+              <Star size={14} fill="#D4AF37" strokeWidth={0} />
+              {orderData.driver?.rating}
+              <span className="text-neutral-400">
+                ({orderData.driver?.totalTrips} trips)
+              </span>
+            </p>
 
-           {etaToCustomer != null ? (
-             <p className="font-medium text-primary">
-               {etaText == null 
-                 ? 'Waiting for driver...' 
-                 : 'Driver is on the way to your location'}
-             </p>
-           ) : (
-             <p className="font-medium text-neutral-500">
-               Waiting for driver to be assigned...
-             </p>
-           )}
-   
+            <p className=" text-neutral-600 text-xs">
+              {orderData.driver?.phone}
+            </p>
           </div>
         </div>
-
-        {/* <div className="flex items-center gap-4">
-          <Avatar
-            src="/assets/image/driver.jpg"
-            alt="driver"
-            name={driverName}
-            size={54}
-          />
-
-        
-        </div> */}
-
-        {/* <Card border="none" gap="sm" className="bg-white text-sm">
-          <p className="text-xs text-neutral-500">Vehicle</p>
-          <p className="font-medium">{vehicle}</p>
-          <p className="text-neutral-500">{plate}</p>
-        </Card> */}
 
         <div className="flex gap-3">
           {/* <Button
@@ -133,35 +125,48 @@ export default function SideInfo() {
       </Card>
 
       {/* ORDER DETAILS */}
-      {/* <Card gap="md" className="bg-foreground-200">
+      <Card border="none" gap="md" className="bg-foreground-200">
         <h3 className="font-medium">Order Details</h3>
 
-        <ul className="space-y-6 text-sm">
+        <ul className="space-y-6">
           <li className="flex justify-between">
-            <p className="text-neutral-500">Order ID</p>
-            <p>{orderId}</p>
+            <p className="text-neutral-500 text-sm">Order ID</p>
+            <p className="text-sm truncate w-44">
+              {' '}
+              {orderData.order?.id ?? ''}
+            </p>
           </li>
 
           <li className="flex justify-between">
-            <p className="text-neutral-500">Type</p>
-            <p>Food Delivery</p>
+            <p className="text-neutral-500 text-sm">Order Code</p>
+            <p className="text-sm">{orderData.order?.code ?? ''}</p>
           </li>
 
           <li className="flex justify-between">
-            <p className="text-neutral-500">Delivery Fee</p>
-            <p>₦{deliveryFee.toLocaleString()}</p>
+            <p className="text-neutral-500 text-sm">Created at</p>
+            <p className="text-sm">{formatDate(orderData?.order?.createdAt)}</p>
           </li>
 
           <li className="flex justify-between border-t border-border pt-4">
             <p className="font-medium">Total Paid</p>
-            <p className="font-medium">₦{totalPaid.toLocaleString()}</p>
+            <p className="font-medium">
+              ₦{orderData.order?.totalAmount.toLocaleString()}
+            </p>
           </li>
         </ul>
-      </Card> */}
+      </Card>
 
       {/* SUPPORT */}
-      {/* <Card gap="md" className="bg-foreground-200">
-        <div className="space-y-2">
+      <Card border='none' gap="md" className="bg-foreground-200">
+
+
+        <div className="flex items-start gap-4">
+
+          <Headset size={24} className="text-primary" />
+
+
+<div className='space-y-4'>
+      <div className="space-y-2">
           <h3 className="font-medium">Need Assistance?</h3>
           <p className="text-sm text-neutral-500">
             Our care team is here to help
@@ -170,15 +175,19 @@ export default function SideInfo() {
 
         <Button
           leftIcon={<AlertCircle size={16} />}
-          size="full"
-          variant="red"
+          size="icon"
+          variant="black"
           onClick={() => {
-            console.log('Report issue');
+            window.location.href = 'mailto:support@c-ride.com';
           }}
         >
           Report Issue
         </Button>
-      </Card> */}
+</div>
+
+        </div>
+    
+      </Card>
 
       {/* PREMIUM */}
       <Card border="none" className="flex items-start gap-4 bg-primary/10">

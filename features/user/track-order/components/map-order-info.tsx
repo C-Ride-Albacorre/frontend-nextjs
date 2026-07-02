@@ -8,6 +8,7 @@ import { CheckCircle, Clock, Loader, Smile } from 'lucide-react';
 import {
   GoogleMap,
   Marker,
+  OverlayView,
   Polyline,
   useLoadScript,
 } from '@react-google-maps/api';
@@ -16,124 +17,211 @@ import PolylineUtil from '@mapbox/polyline';
 
 import { RouteItem } from '@/features/user/track-order/components/section';
 import { STEPS } from '@/features/user/track-order/data';
-import { useCustomerStore } from '@/store/socket';
+import { normalizeRouteLeg, useCustomerStore } from '@/store/socket';
 
 const STATUS_TEXT: Record<string, string> = {
-  pending: 'Waiting for driver',
-  accepted: 'Driver accepted',
-  preparing: 'Restaurant is preparing your order',
-  picked_up: 'Driver picked up your order',
-  delivering: 'Driver is on the way',
-  delivered: 'Order delivered',
+  PENDING: 'Waiting for driver',
+  ORDER_ASSIGNED: 'Driver assigned',
+  PREPARING: 'Restaurant is preparing your order',
+  PICKED_UP: 'Driver picked up your order',
+  IN_TRANSIT: 'Driver is on the way',
+  DELIVERED: 'Order delivered',
+  CANCELLED: 'Order cancelled',
 };
 
 const STATUS_STEP: Record<string, number> = {
-  pending: 1,
-  accepted: 2,
-  preparing: 3,
-  picked_up: 4,
-  delivering: 5,
-  delivered: 6,
+  PENDING: 1,
+  ORDER_ASSIGNED: 2,
+  PREPARING: 3, // if your backend ever sends it
+  PICKED_UP: 4,
+  IN_TRANSIT: 5,
+  DELIVERED: 6,
+  CANCELLED: 0,
 };
 
-export default function MapOrderInfo() {
+export default function MapOrderInfo({ orderData }: { orderData: any }) {
   const mapRef = useRef<google.maps.Map | null>(null);
-
-  const activeOrder = useCustomerStore((s) => s.activeOrder);
 
   const driver = useCustomerStore((s) => s.tracking.driverLocation);
 
-  const etaToCustomer = useCustomerStore((s) => s.tracking.eta.toCustomer);
-
   const status = useCustomerStore((s) => s.tracking.orderStatus);
 
-  const encodedPolyline = useCustomerStore(
+  const etaToVendor = useCustomerStore((s) => s.tracking.eta.toVendor);
+
+  const etaToCustomer = useCustomerStore((s) => s.tracking.eta.toCustomer);
+
+  const toVendorPolyline = useCustomerStore(
+    (s) => s.tracking.polylines.toVendor,
+  );
+
+  const toCustomerPolyline = useCustomerStore(
     (s) => s.tracking.polylines.toCustomer,
   );
 
-  const etaText = useMemo(() => {
-    const eta = etaToCustomer;
+  const setActiveOrder = useCustomerStore((s) => s.setActiveOrder);
+  const setOrderStatus = useCustomerStore((s) => s.setOrderStatus);
+  const setDriverLocation = useCustomerStore((s) => s.setDriverLocation);
+  const setEta = useCustomerStore((s) => s.setEta);
+  const setPolyline = useCustomerStore((s) => s.setPolyline);
+  const setHistory = useCustomerStore((s) => s.setHistory);
+  const orderStatus =
+    useCustomerStore((s) => s.tracking.orderStatus) ?? orderData.order.status;
 
-    if (eta == null) return 'Waiting...';
+  const hasHydrated = useRef(false);
 
-    if (eta < 60) return `${eta} sec`;
+  useEffect(() => {
+    hasHydrated.current = false;
+  }, [orderData?.order?.id]);
 
-    return `${Math.ceil(eta / 60)} min`;
-  }, [etaToCustomer]);
+  useEffect(() => {
+    if (!orderData || hasHydrated.current) return;
+
+    setActiveOrder({
+      store_lat: orderData.store.lat,
+      store_lng: orderData.store.lng,
+      pickup_location: orderData.order.pickupLocation,
+      dropoff_location: orderData.order.dropoffLocation,
+    });
+
+    setOrderStatus(orderData.order.status);
+
+    setHistory(orderData.order.statusHistory ?? []);
+
+    if (orderData.tracking?.driverLocation) {
+      setDriverLocation(orderData.tracking.driverLocation);
+    }
+
+    const leg = normalizeRouteLeg(orderData.tracking?.leg);
+
+    if (leg && typeof orderData.tracking?.etaSeconds === 'number') {
+      setEta(leg, orderData.tracking.etaSeconds);
+    }
+
+    if (leg && orderData.tracking?.polyline) {
+      setPolyline(leg, orderData.tracking.polyline);
+    }
+
+    hasHydrated.current = true;
+  }, [
+    orderData,
+    setActiveOrder,
+    setOrderStatus,
+    setHistory,
+    setDriverLocation,
+    setEta,
+    setPolyline,
+  ]);
 
   /**
    * Center fallback
    */
-  const center = useMemo(
-    () => ({
-      lat: driver?.lat ?? activeOrder?.store_lat ?? 6.5244,
-      lng: driver?.lng ?? activeOrder?.store_lng ?? 3.3792,
-    }),
-    [driver, activeOrder],
-  );
+  const center = useMemo(() => {
+    if (!orderData) return;
+
+    return {
+      lat: orderData.store.lat,
+      lng: orderData.store.lng,
+    };
+  }, [orderData]);
 
   /**
    * Decode polyline
    */
-  const route = useMemo(() => {
-    if (!encodedPolyline) return [];
+  const vendorRoute = useMemo(() => {
+    if (!toVendorPolyline) return [];
 
-    return PolylineUtil.decode(encodedPolyline).map(
-      ([lat, lng]: [number, number]) => ({
-        lat,
-        lng,
-      }),
-    );
-  }, [encodedPolyline]);
+    return PolylineUtil.decode(toVendorPolyline).map(([lat, lng]) => ({
+      lat,
+      lng,
+    }));
+  }, [toVendorPolyline]);
 
-  /**
-   * Fit map to route
-   */
-  useEffect(() => {
-    if (!mapRef.current || route.length === 0) return;
+  const customerRoute = useMemo(() => {
+    if (!toCustomerPolyline) return [];
 
-    const bounds = new google.maps.LatLngBounds();
-
-    route.forEach((point: { lat: number; lng: number }) =>
-      bounds.extend(point),
-    );
-
-    mapRef.current.fitBounds(bounds);
-  }, [route]);
-
+    return PolylineUtil.decode(toCustomerPolyline).map(([lat, lng]) => ({
+      lat,
+      lng,
+    }));
+  }, [toCustomerPolyline]);
   /**
    * Follow driver
    */
   useEffect(() => {
     if (!driver || !mapRef.current) return;
 
-    mapRef.current.panTo({
-      lat: driver.lat,
-      lng: driver.lng,
-    });
+    const id = setTimeout(() => {
+      mapRef.current?.panTo({
+        lat: driver.lat,
+        lng: driver.lng,
+      });
+    }, 300);
+
+    return () => clearTimeout(id);
   }, [driver]);
 
-  // const activeStep = STATUS_STEP[status ?? 'pending'] ?? 1;
+  const isToCustomer =
+    orderStatus === 'PICKED_UP' ||
+    orderStatus === 'IN_TRANSIT' ||
+    etaToCustomer != null;
+
+  const isToVendor = !isToCustomer;
+
+  const eta = isToCustomer
+    ? (etaToCustomer ?? etaToVendor)
+    : (etaToVendor ?? etaToCustomer);
+
+  const etaText = useMemo(() => {
+    if (eta == null) return;
+
+    if (eta < 60) return `${eta} sec`;
+
+    return `${Math.ceil(eta / 60)} min`;
+  }, [eta]);
 
   const initialEtaRef = useRef<number | null>(null);
 
   useEffect(() => {
-    if (etaToCustomer == null) return;
+    if (eta == null) return;
 
-    if (initialEtaRef.current == null) {
-      initialEtaRef.current = etaToCustomer;
+    if (initialEtaRef.current == null || eta > initialEtaRef.current) {
+      initialEtaRef.current = eta;
     }
-  }, [etaToCustomer]);
+  }, [eta]);
 
   const progress = useMemo(() => {
     const initial = initialEtaRef.current;
 
-    if (!initial || !etaToCustomer) return 0;
+    if (initial == null || eta == null) return 0;
 
-    const diff = initial - etaToCustomer;
+    const diff = initial - eta;
 
-    return Math.max(0, Math.min(100, (diff / initial) * 100));
-  }, [etaToCustomer]);
+    const value = (diff / initial) * 100;
+
+    return Math.max(0, Math.min(100, value));
+  }, [eta]);
+
+  useEffect(() => {
+    initialEtaRef.current = null;
+  }, [isToCustomer]);
+
+  const smoothProgress = useRef(0);
+
+  const displayedProgress = useMemo(() => {
+    const target = progress;
+
+    smoothProgress.current += (target - smoothProgress.current) * 0.1;
+
+    return smoothProgress.current;
+  }, [progress]);
+
+  const statusText =
+    STATUS_TEXT[orderStatus ?? 'PENDING'] ?? 'Waiting for driver';
+
+  const activeStep =
+    orderStatus === 'CANCELLED'
+      ? 0
+      : (STATUS_STEP[orderStatus ?? 'PENDING'] ?? 1);
 
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!,
@@ -143,7 +231,7 @@ export default function MapOrderInfo() {
     return (
       <Card
         border="none"
-        className="bg-foreground-200 h-20 mx-auto p-6 space-y-8 flex flex-col items-center justify-center gap-4"
+        className="bg-foreground-200 h-105 mx-auto p-6 space-y-8 flex flex-col items-center justify-center gap-4"
       >
         <Loader size={24} className="animate-spin text-primary" />
 
@@ -155,7 +243,7 @@ export default function MapOrderInfo() {
     <div className="space-y-8">
       {/* MAP */}
       <Card border="none" className="bg-foreground-200">
-        <div className="h-105 overflow-hidden rounded-xl border border-border">
+        <div className="h-105 overflow-hidden rounded-xl shadow">
           <GoogleMap
             center={center}
             zoom={14}
@@ -169,41 +257,90 @@ export default function MapOrderInfo() {
           >
             {/* DRIVER */}
             {driver && (
-              <Marker
+              <OverlayView
                 position={{
                   lat: driver.lat,
                   lng: driver.lng,
                 }}
-              />
+                mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+                getPixelPositionOffset={(width, height) => ({
+                  x: -(width / 2),
+                  y: -(height / 2),
+                })}
+              >
+                <div
+                  style={{
+                    transform: `rotate(${driver.heading ?? 0}deg)`,
+                    transformOrigin: 'center',
+                  }}
+                >
+                  <img
+                    src="/assets/image/3d-car.png"
+                    alt="car"
+                    style={{
+                      width: '28px',
+                      height: '28px',
+                      objectFit: 'contain',
+                    }}
+                  />
+                </div>
+              </OverlayView>
             )}
 
             {/* STORE */}
-            {activeOrder && (
-              <Marker
+            {orderData && (
+              <OverlayView
                 position={{
-                  lat: activeOrder.store_lat,
-                  lng: activeOrder.store_lng,
+                  lat: orderData.store.lat,
+                  lng: orderData.store.lng,
                 }}
-              />
+                mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+              >
+                <div className="w-8 h-8 rounded-full overflow-hidden border border-white shadow-md">
+                  <img
+                    src={orderData.store.logo ?? '/assets/image/store.png'}
+                    alt="store"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              </OverlayView>
             )}
 
             {/* CUSTOMER */}
-            {activeOrder?.dropoff_location.latitude &&
-              activeOrder?.dropoff_location.longitude && (
+            {typeof orderData?.order.dropoffLocation.latitude === 'number' &&
+              typeof orderData?.order.dropoffLocation.longitude ===
+                'number' && (
                 <Marker
                   position={{
-                    lat: activeOrder.dropoff_location.latitude,
-                    lng: activeOrder.dropoff_location.longitude,
+                    lat: orderData.order.dropoffLocation.latitude,
+                    lng: orderData.order.dropoffLocation.longitude,
+                  }}
+                  icon={{
+                    url: '/assets/image/user.png',
+                    scaledSize: new google.maps.Size(26, 26),
                   }}
                 />
               )}
 
             {/* ROUTE */}
-            {route.length > 0 && (
+            {/* VENDOR ROUTE */}
+            {vendorRoute.length > 0 && (
               <Polyline
-                path={route}
+                path={vendorRoute}
                 options={{
-                  strokeColor: '#10B981',
+                  strokeColor: '#F59E0B', // orange
+                  strokeOpacity: 0.6,
+                  strokeWeight: 4,
+                }}
+              />
+            )}
+
+            {/* CUSTOMER ROUTE */}
+            {customerRoute.length > 0 && (
+              <Polyline
+                path={customerRoute}
+                options={{
+                  strokeColor: '#10B981', // green
                   strokeOpacity: 0.9,
                   strokeWeight: 5,
                 }}
@@ -213,11 +350,13 @@ export default function MapOrderInfo() {
         </div>
 
         {/* ETA */}
-        <Card border="none" gap="md" className="bg-white">
+        <Card border="none"  gap="md" className="bg-white shadow">
           <div className="flex items-center justify-between text-sm">
             <span className="flex items-center gap-3">
               <Clock size={16} className="text-primary" />
-              Estimated Arrival
+              {isToCustomer
+                ? `Driver is on the way to your location `
+                : `Driver is heading to pickup location`}
             </span>
 
             <span className="font-medium">{etaText}</span>
@@ -226,14 +365,14 @@ export default function MapOrderInfo() {
           <div className="h-2 rounded-full bg-neutral-200">
             <div
               className="h-full rounded-full bg-primary transition-all"
-              style={{ width: `${progress}%` }}
+              style={{ width: `${displayedProgress}%` }}
             />
           </div>
         </Card>
       </Card>
 
       {/* STATUS */}
-      {/* <Card
+      <Card
         border="none"
         gap="md"
         className="flex items-start gap-4 bg-primary"
@@ -241,16 +380,16 @@ export default function MapOrderInfo() {
         <Smile size={24} />
 
         <div className="space-y-3">
-          <p className="font-medium">{STATUS_TEXT[status ?? 'pending']}</p>
+          <h2 className="font-medium">{statusText}</h2>
 
-          <p className="text-sm text-neutral-500">
+          <p className="text-sm text-neutral-600">
             Your driver is delivering your order in real time.
           </p>
         </div>
-      </Card> */}
+      </Card>
 
       {/* PROGRESS */}
-      {/* <Card gap="md" className="bg-foreground-200">
+      <Card border="none" gap="md" className="bg-foreground-200">
         <h3 className="font-medium">Delivery Progress</h3>
 
         <div className="flex flex-col gap-8">
@@ -266,7 +405,7 @@ export default function MapOrderInfo() {
             return (
               <div key={step.label} className="relative flex gap-4">
                 {!isLast && (
-                  <div className="absolute left-4 top-8 h-full w-0.5 bg-primary" />
+                  <div className="absolute left-5 top-8 h-full w-0.5 bg-primary" />
                 )}
 
                 <div
@@ -285,35 +424,35 @@ export default function MapOrderInfo() {
                   )}
                 </div>
 
-                <div>
-                  <p className="font-medium">{step.label}</p>
-                  <p className="text-sm text-neutral-500">{step.date}</p>
+                <div className="mt-2">
+                  <p className="font-medium text-sm">{step.label}</p>
+                  {/* <p className=" text-neutral-500 text-xs">{step.date}</p> */}
                 </div>
               </div>
             );
           })}
         </div>
-      </Card> */}
+      </Card>
 
       {/* ROUTE */}
-      {/* <Card gap="md" className="bg-foreground-200">
+      <Card border="none" gap="md" className="bg-foreground-200">
         <h3 className="font-medium">Delivery Route</h3>
 
         <div className="flex flex-col gap-8">
           <RouteItem
-            title="Pickup"
-            address={activeOrder?.pickup_location.address ?? '--'}
-            time="—"
+            title={orderData?.store?.name ?? 'Store'}
+            address={orderData?.store?.address}
+            highlight={isToVendor}
+            storeLogo={orderData?.store?.logo ?? ''}
           />
 
           <RouteItem
             title="Drop-off"
-            address={activeOrder?.dropoff_location.address ?? '--'}
-            time={etaText}
-            highlight
+            address={orderData?.order.dropoffLocation?.address ?? ''}
+            highlight={isToCustomer}
           />
         </div>
-      </Card> */}
+      </Card>
     </div>
   );
 }

@@ -3,11 +3,10 @@
 import { useEffect, useRef } from 'react';
 import { io, Socket } from 'socket.io-client';
 
-import { useCustomerStore } from '@/store/socket';
+import { normalizeRouteLeg, useCustomerStore } from '@/store/socket';
 
 const SOCKET_URL = 'https://backend-service-1rc7.onrender.com';
-
-type RouteLeg = 'to-vendor' | 'to-customer';
+const LAST_TRACKED_ORDER_ID_KEY = 'customer:lastTrackedOrderId';
 
 interface DriverLocationPayload {
   lat: number;
@@ -21,12 +20,12 @@ interface OrderStatusPayload {
 }
 
 interface EtaPayload {
-  leg: RouteLeg;
+  leg: string | null;
   etaSeconds: number;
 }
 
 interface PolylinePayload {
-  leg: RouteLeg;
+  leg: string | null;
   polyline: string;
 }
 
@@ -45,14 +44,27 @@ export function useCustomerSocket(orderId?: string, accessToken?: string) {
 
   const setHistory = useCustomerStore((s) => s.setHistory);
 
+  const clearTracking = useCustomerStore((s) => s.clearTracking);
+
   useEffect(() => {
+    const resolveOrderId = () => {
+      if (orderId) {
+        localStorage.setItem(LAST_TRACKED_ORDER_ID_KEY, orderId);
+        return orderId;
+      }
+
+      return localStorage.getItem(LAST_TRACKED_ORDER_ID_KEY) ?? undefined;
+    };
+
+    const activeOrderId = resolveOrderId();
+
     console.log('⚡ useCustomerSocket');
 
-    console.log('Order ID:', orderId);
+    console.log('Order ID:', activeOrderId);
 
     console.log('Access Token:', accessToken);
 
-    if (!orderId) {
+    if (!activeOrderId) {
       console.warn('No orderId provided.');
       return;
     }
@@ -60,6 +72,12 @@ export function useCustomerSocket(orderId?: string, accessToken?: string) {
     if (!accessToken) {
       console.warn('No access token provided.');
       return;
+    }
+
+    if (socketRef.current) {
+      socketRef.current.removeAllListeners();
+      socketRef.current.disconnect();
+      socketRef.current = null;
     }
 
     const socket = io(`${SOCKET_URL}/map`, {
@@ -70,7 +88,7 @@ export function useCustomerSocket(orderId?: string, accessToken?: string) {
       },
 
       query: {
-        orderId,
+        orderId: activeOrderId,
       },
 
       reconnection: true,
@@ -88,12 +106,19 @@ export function useCustomerSocket(orderId?: string, accessToken?: string) {
      * Connected
      */
 
+    const joinRoom = () => {
+      socket.emit('subscribe-order', activeOrderId);
+      socket.emit('trackOrder', activeOrderId);
+    };
+
     socket.on('connect', () => {
       console.log('✅ Connected:', socket.id);
 
-      socket.emit('subscribe-order', orderId);
+      joinRoom();
+    });
 
-      socket.emit('trackOrder', orderId);
+    socket.io.on('reconnect', () => {
+      joinRoom();
     });
 
     /**
@@ -110,22 +135,24 @@ export function useCustomerSocket(orderId?: string, accessToken?: string) {
      * ETA
      */
 
-    socket.on('eta-update', ({ leg, etaSeconds }: EtaPayload) => {
-      console.log('⏱ ETA', leg, etaSeconds);
+    socket.on('eta-update', (payload: EtaPayload) => {
+      const leg = normalizeRouteLeg(payload?.leg);
 
-      setEta(leg, etaSeconds);
+      if (!leg || typeof payload?.etaSeconds !== 'number') return;
+
+      setEta(leg, payload.etaSeconds);
     });
-
     /**
      * Polyline
      */
 
-    socket.on('polyline-update', ({ leg, polyline }: PolylinePayload) => {
-      console.log('🛣 Polyline', leg);
+    socket.on('polyline-update', (payload: PolylinePayload) => {
+      const leg = normalizeRouteLeg(payload?.leg);
 
-      setPolyline(leg, polyline);
+      if (!leg || !payload?.polyline) return;
+
+      setPolyline(leg, payload.polyline);
     });
-
     /**
      * Order Status
      */
@@ -153,19 +180,21 @@ export function useCustomerSocket(orderId?: string, accessToken?: string) {
      */
 
     socket.on('connect_error', (err) => {
-      console.error('❌ Socket Error:', err.message);
-    });
+      console.error('❌ Socket connection failed');
 
-    socket.on('disconnect', (reason) => {
-      console.log('🔌 Disconnected:', reason);
+      console.error(err);
     });
 
     return () => {
       console.log('Closing customer socket...');
 
+      socket.removeAllListeners();
+
       socket.disconnect();
 
       socketRef.current = null;
+
+      clearTracking();
 
       setSocket(null);
     };
@@ -178,5 +207,6 @@ export function useCustomerSocket(orderId?: string, accessToken?: string) {
     setPolyline,
     setOrderStatus,
     setHistory,
+    clearTracking,
   ]);
 }

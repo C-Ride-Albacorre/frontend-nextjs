@@ -1,209 +1,239 @@
 import { create } from 'zustand';
 import { Socket } from 'socket.io-client';
 
-export interface DriverLocation {
+export type OrderStatus =
+  | 'ORDER_ASSIGNED'
+  | 'PICKED_UP'
+  | 'DELIVERED'
+  | 'CANCELLED'
+  | 'IN_TRANSIT'
+  | string;
+
+type OrderLocation = {
+  store_lat: number;
+  store_lng: number;
+  dropoff_lat: number;
+  dropoff_lng: number;
+  store_address?: string;
+  dropoff_address?: string;
+};
+
+export type DriverLocation = {
   lat: number;
   lng: number;
   heading?: number;
+};
+
+export type RouteLeg = 'to-vendor' | 'to-customer';
+
+export function normalizeRouteLeg(
+  leg: string | null | undefined,
+): RouteLeg | null {
+  if (!leg) return null;
+
+  const normalized = leg.toLowerCase().replace(/_/g, '-');
+
+  if (normalized === 'to-vendor') return 'to-vendor';
+  if (normalized === 'to-customer') return 'to-customer';
+
+  return null;
 }
 
-export interface ActiveOrderProps {
-  assigned_at: string;
-  created_at: string;
-
-  distance_meters: number;
-
-  order_id: string;
-  order_number: string;
-
-  order_status: string;
-
-  total_amount: number;
-
-  rn: string;
-
-  store_id: string;
+type CustomerOrder = {
   store_lat: number;
   store_lng: number;
-  store_logo: string;
-  store_name: string;
-
   pickup_location: {
+    address: string;
+  };
+  dropoff_location: {
     address: string;
     latitude: number;
     longitude: number;
-    storeId: string;
-    storeName: string;
   };
+};
 
-  dropoff_location: {
-    address: string;
-    city: string;
-    country: string;
-    postalCode: string;
-    state: string;
-
-    /**
-     * Add these if your backend returns them.
-     * Otherwise remove them until available.
-     */
-    latitude?: number;
-    longitude?: number;
-  };
-
-  items: {
-    productName: string;
-    quantity: number;
-    unitPrice: number;
-  }[];
-}
-
-export interface TrackingState {
+type CustomerTrackingState = {
+  orderStatus: OrderStatus | null;
   driverLocation: DriverLocation | null;
-
   eta: {
     toVendor: number | null;
     toCustomer: number | null;
   };
-
   polylines: {
     toVendor: string | null;
     toCustomer: string | null;
   };
-
-  orderStatus: string | null;
-
   history: unknown[];
-}
-
-type RouteLeg = 'to-vendor' | 'to-customer';
-
-type CustomerState = {
-  /**
-   * SOCKET
-   */
-  socket: Socket | null;
-
-  setSocket: (socket: Socket | null) => void;
-
-  /**
-   * ACTIVE ORDER
-   */
-  activeOrder: ActiveOrderProps | null;
-
-  setActiveOrder: (order: ActiveOrderProps | null) => void;
-
-  /**
-   * TRACKING
-   */
-  tracking: TrackingState;
-
-  setDriverLocation: (location: DriverLocation | null) => void;
-
-  setEta: (leg: RouteLeg, eta: number | null) => void;
-
-  setPolyline: (leg: RouteLeg, polyline: string | null) => void;
-
-  setOrderStatus: (status: string | null) => void;
-
-  setHistory: (history: unknown[]) => void;
-
-  clearTracking: () => void;
-
-  /**
-   * INCOMING ORDERS
-   */
-  incomingOrders: ActiveOrderProps[];
-
-  addOrder: (order: ActiveOrderProps) => void;
-
-  removeOrder: (orderId: string) => void;
-
-  clearOrders: () => void;
 };
 
-const initialTrackingState: TrackingState = {
-  driverLocation: null,
+type CustomerStoreState = {
+  socket: Socket | null;
+  activeOrder: CustomerOrder | null;
+  tracking: CustomerTrackingState;
+  setSocket: (socket: Socket | null) => void;
+  setActiveOrder: (order: CustomerOrder | null) => void;
+  setOrderStatus: (status: OrderStatus) => void;
+  setDriverLocation: (loc: DriverLocation | null) => void;
+  setEta: (leg: RouteLeg, value: number | null) => void;
+  setPolyline: (leg: RouteLeg, value: string | null) => void;
+  setHistory: (history: unknown[]) => void;
+  clearTracking: () => void;
+};
 
+const initialCustomerTrackingState: CustomerTrackingState = {
+  orderStatus: null,
+  driverLocation: null,
   eta: {
     toVendor: null,
     toCustomer: null,
   },
-
   polylines: {
     toVendor: null,
     toCustomer: null,
   },
-
-  orderStatus: null,
-
   history: [],
 };
 
-export const useCustomerStore = create<CustomerState>((set) => ({
-  /**
-   * SOCKET
-   */
+type DriverJobsState = {
+  /** SOCKET */
+  socket: Socket | null;
 
+  setSocket: (socket: Socket | null) => void;
+
+  /** ORDER LIFECYCLE */
+
+  orderStatus: OrderStatus | null;
+
+  setOrderStatus: (status: OrderStatus) => void;
+  /** TRACKING */
+  driverLocation: DriverLocation | null;
+
+  setDriverLocation: (loc: DriverLocation | null) => void;
+
+  etaToVendor: number | null;
+
+  etaToCustomer: number | null;
+
+  setEta: (leg: RouteLeg, value: number | null) => void;
+
+  polylineToVendor: string | null;
+  polylineToCustomer: string | null;
+
+  setPolyline: (leg: RouteLeg, value: string | null) => void;
+
+  clearTracking: () => void;
+
+  order: OrderLocation | null;
+
+  setOrder: (order: OrderLocation | null) => void;
+};
+
+export const useDriverJobsStore = create<DriverJobsState>((set, get) => ({
+  /** SOCKET */
   socket: null,
 
-  setSocket: (socket) =>
+  setSocket: (socket) => set({ socket }),
+
+  order: null,
+
+  setOrder: (order) => set({ order }),
+
+  /** ORDER */
+  orderStatus: null,
+
+  setOrderStatus: (status) =>
+    set((state) => ({
+      orderStatus: status,
+    })),
+
+  /** TRACKING */
+  driverLocation: null,
+
+  setDriverLocation: (loc) => set({ driverLocation: loc }),
+
+  etaToVendor: null,
+
+  etaToCustomer: null,
+
+  setEta: (leg, value) =>
+    set((state) => ({
+      etaToVendor: leg === 'to-vendor' ? value : state.etaToVendor,
+
+      etaToCustomer: leg === 'to-customer' ? value : state.etaToCustomer,
+    })),
+
+  polylineToVendor: null,
+
+  polylineToCustomer: null,
+
+  setPolyline: (leg, value) =>
+    set((state) => ({
+      polylineToVendor: leg === 'to-vendor' ? value : state.polylineToVendor,
+
+      polylineToCustomer:
+        leg === 'to-customer' ? value : state.polylineToCustomer,
+    })),
+
+  clearTracking: () =>
     set({
-      socket,
+      driverLocation: null,
+      etaToVendor: null,
+      etaToCustomer: null,
+      polylineToVendor: null,
+      polylineToCustomer: null,
+      order: null,
     }),
+}));
 
-  /**
-   * ACTIVE ORDER
-   */
-
+export const useCustomerStore = create<CustomerStoreState>((set) => ({
+  socket: null,
   activeOrder: null,
+  tracking: initialCustomerTrackingState,
 
-  setActiveOrder: (order) =>
-    set({
-      activeOrder: order,
-    }),
+  setSocket: (socket) => set({ socket }),
 
-  /**
-   * TRACKING
-   */
-
-  tracking: initialTrackingState,
-
-  setDriverLocation: (location) =>
-    set((state) => ({
-      tracking: {
-        ...state.tracking,
-        driverLocation: location,
-      },
-    })),
-
-  setEta: (leg, eta) =>
-    set((state) => ({
-      tracking: {
-        ...state.tracking,
-        eta: {
-          ...state.tracking.eta,
-          [leg === 'to-vendor' ? 'toVendor' : 'toCustomer']: eta,
-        },
-      },
-    })),
-
-  setPolyline: (leg, polyline) =>
-    set((state) => ({
-      tracking: {
-        ...state.tracking,
-        polylines: {
-          ...state.tracking.polylines,
-          [leg === 'to-vendor' ? 'toVendor' : 'toCustomer']: polyline,
-        },
-      },
-    })),
+  setActiveOrder: (activeOrder) => set({ activeOrder }),
 
   setOrderStatus: (status) =>
     set((state) => ({
       tracking: {
         ...state.tracking,
         orderStatus: status,
+      },
+    })),
+
+  setDriverLocation: (loc) =>
+    set((state) => ({
+      tracking: {
+        ...state.tracking,
+        driverLocation: loc,
+      },
+    })),
+
+  setEta: (leg, value) =>
+    set((state) => ({
+      tracking: {
+        ...state.tracking,
+        eta: {
+          ...state.tracking.eta,
+          toVendor: leg === 'to-vendor' ? value : state.tracking.eta.toVendor,
+          toCustomer:
+            leg === 'to-customer' ? value : state.tracking.eta.toCustomer,
+        },
+      },
+    })),
+
+  setPolyline: (leg, value) =>
+    set((state) => ({
+      tracking: {
+        ...state.tracking,
+        polylines: {
+          ...state.tracking.polylines,
+          toVendor:
+            leg === 'to-vendor' ? value : state.tracking.polylines.toVendor,
+          toCustomer:
+            leg === 'to-customer' ? value : state.tracking.polylines.toCustomer,
+        },
       },
     })),
 
@@ -217,34 +247,6 @@ export const useCustomerStore = create<CustomerState>((set) => ({
 
   clearTracking: () =>
     set({
-      tracking: initialTrackingState,
-    }),
-
-  /**
-   * INCOMING ORDERS
-   */
-
-  incomingOrders: [],
-
-  addOrder: (order) =>
-    set((state) => ({
-      incomingOrders: [
-        order,
-        ...state.incomingOrders.filter(
-          (existing) => existing.order_id !== order.order_id,
-        ),
-      ],
-    })),
-
-  removeOrder: (orderId) =>
-    set((state) => ({
-      incomingOrders: state.incomingOrders.filter(
-        (order) => order.order_id !== orderId,
-      ),
-    })),
-
-  clearOrders: () =>
-    set({
-      incomingOrders: [],
+      tracking: initialCustomerTrackingState,
     }),
 }));

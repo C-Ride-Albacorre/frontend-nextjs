@@ -1,11 +1,12 @@
 import EmptyState from '@/components/layout/empty-state';
 import Header from '@/components/ui/headers/user-route-header';
 
-import MapOrderInfo from '@/features/user/track-order/components/map-order-info';
-import SideInfo from '@/features/user/track-order/components/side-info';
+
+import TrackingDetails from '@/features/user/track-order/components/tracking-details';
 import TrackingSocket from '@/features/user/track-order/components/tracking-socket';
 import { getAuthTokens } from '@/utils/cookies';
-import { Locate, Package } from 'lucide-react';
+import { Loader,  Package } from 'lucide-react';
+import { Suspense } from 'react';
 
 type Props = {
   searchParams: {
@@ -23,7 +24,7 @@ export default async function TrackingDeliveryPage({ searchParams }: Props) {
   if (!orderId) {
     return (
       <main className="max-w-7xl mx-auto p-6 space-y-8">
-        <Header orderId={orderId} />
+        <Header />
 
         <EmptyState
           icon={<Package size={36} className="text-neutral-500" />}
@@ -40,19 +41,17 @@ export default async function TrackingDeliveryPage({ searchParams }: Props) {
       <TrackingSocket orderId={orderId} accessToken={accessToken} />
 
       {/* Header */}
-      <Header orderId={orderId} />
+      <Header/>
 
-      <section className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-        {/* Map */}
-        <section className="lg:col-span-2">
-          <MapOrderInfo />
-        </section>
-
-        {/* Sidebar */}
-        <section>
-          <SideInfo />
-        </section>
-      </section>
+      <Suspense
+        fallback={
+          <div className="flex flex-col items-center justify-center py-12">
+            <Loader size={36} className="text-primary animate-spin" />
+          </div>
+        }
+      >
+        <TrackingDetails orderId={orderId} />
+      </Suspense>
     </main>
   );
 }
