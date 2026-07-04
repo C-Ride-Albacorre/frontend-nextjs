@@ -237,9 +237,7 @@ export default function OrderCard({
 
             <Button
               size="icon"
-              variant="outline"
               className="flex-1"
-              leftIcon={<Eye size={16} />}
               onClick={() => handleViewAction(id)}
             >
               View Details
