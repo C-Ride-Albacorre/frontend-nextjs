@@ -65,7 +65,7 @@ export default function StoreCard({
         <div className="absolute right-4 top-4">
           <span
             className={clsx(
-              'rounded-full px-3 py-1 text-xs font-medium shadow-lg',
+              'rounded-full px-3 py-1 text-xs font-medium shadow-xl',
               isOpen ? 'bg-green-500 text-white' : 'bg-red-500 text-white',
             )}
           >

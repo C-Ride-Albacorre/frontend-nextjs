@@ -36,6 +36,7 @@ export default function StoreGrid({
           name={store.storeName}
           tag={store.storeCategory}
           cuisine={store.storeDescription}
+          isOpen={store.isOpen}
           rating={0}
           location={store.storeAddress}
           delivery={`${Math.round(store.distance ?? 0)} km`}
