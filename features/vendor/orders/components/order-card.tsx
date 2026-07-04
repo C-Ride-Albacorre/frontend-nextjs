@@ -152,7 +152,7 @@ export default function OrderCard({
 
               <div className="flex justify-between flex-1">
                 <div className=" space-y-1">
-                  <p className="font-medium">{customer}</p>
+                  <h2 className="font-medium capitalize">{customer}</h2>
 
                   <p className="text-xs text-neutral-500">{email || 'N/A'}</p>
 
@@ -212,7 +212,7 @@ export default function OrderCard({
 
           <div className="flex flex-col md:flex-row gap-2">
             {orderStatus === 'CONFIRMED' && (
-              <div className="flex gap-2">
+              <div className="flex gap-2 w-full">
                 <Button
                   size="icon"
                   variant="red-secondary"
@@ -237,7 +237,6 @@ export default function OrderCard({
 
             <Button
               size="icon"
-              variant='black'
               className="w-full"
               onClick={() => handleViewAction(id)}
             >
