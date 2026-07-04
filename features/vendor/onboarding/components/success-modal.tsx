@@ -22,7 +22,7 @@ export default function SuccessModal({
           <p className="font-medium">Registration Submitted Successfully</p>
 
           <span className=" text-xs md:text-sm text-neutral-500">
-            Welcome to C-Ride, The Place. Your application is now under review
+            Welcome to C-Ride. Your application is now under review
             by our care team. We'll notify you within 24-48 hours once your
             account is approved.
           </span>
@@ -89,9 +89,9 @@ export default function SuccessModal({
           </Button>
         </div>
 
-        <div className="py-6 border-t border-border ">
+        {/* <div className="py-6 border-t border-border ">
           <p className=" text-xs md:text-sm">Vendor's ID: VEN-39200022</p>
-        </div>
+        </div> */}
       </div>
     </Modal>
   );

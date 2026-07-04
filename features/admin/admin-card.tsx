@@ -14,7 +14,7 @@ export default function AdminCard({
 }) {
   console.log('User Info :', user);
   return (
-    <Card spacing="sm" gap="sm" className="bg-primary/10">
+    <Card border="none" spacing="sm" gap="sm" className="bg-primary/10 shadow">
       <div className="flex items-start gap-3">
         <div className="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center shrink-0 border border-border">
           <ShieldUser size={20} className="text-neutral-800" />

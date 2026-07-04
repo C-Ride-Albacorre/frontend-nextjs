@@ -11,10 +11,7 @@ export const STEPS = [
     label: 'Driver Assigned',
     date: 'Aug 20, 2024, 2:05 PM',
   },
-  {
-    label: 'Driver En Route',
-    date: 'Aug 20, 2024, 2:15 PM',
-  },
+
   {
     label: 'Out for Delivery',
     date: 'Aug 20, 2024, 2:30 PM',

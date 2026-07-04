@@ -2,9 +2,7 @@ import ErrorState from '@/components/layout/error-state';
 import { trackingDetailsService } from '../service';
 import MapOrderInfo from './map-order-info';
 import SideInfo from './side-info';
-import { LocateIcon, LocateOff } from 'lucide-react';
-import { use } from 'react';
-import { useCustomerStore } from '@/store/socket';
+import { LocateOff } from 'lucide-react';
 
 export default async function TrackingDetails({
   orderId,

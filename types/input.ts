@@ -3,7 +3,7 @@ export type InputProps = {
   label?: string;
   name?: string;
   defaultValue?: string;
-  value?: string;
+  value?: string | number;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   variant?: 'default' | 'fill';
   ariaLabel?: string;

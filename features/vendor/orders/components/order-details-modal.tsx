@@ -110,19 +110,19 @@ export default function OrderDetailsModal({
 
               <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
                 <InfoCard
-                  icon={<ShoppingBag size={16} className='text-neutral-400' />}
+                  icon={<ShoppingBag size={16} className="text-neutral-400" />}
                   label="Order Number"
-                    value={order.orderNumber}
+                  value={order.orderNumber}
                 />
 
                 <InfoCard
-                  icon={<Code size={16} className='text-neutral-400' />}
+                  icon={<Code size={16} className="text-neutral-400" />}
                   label="Order Code"
                   value={order.orderCode}
                 />
 
                 <InfoCard
-                  icon={<Package size={16} className='text-neutral-400' />}
+                  icon={<Package size={16} className="text-neutral-400" />}
                   label="Status"
                   value={
                     <span
@@ -144,7 +144,7 @@ export default function OrderDetailsModal({
                 />
 
                 <InfoCard
-                  icon={<CreditCard size={16} className='text-neutral-400' />}
+                  icon={<CreditCard size={16} className="text-neutral-400" />}
                   label="Payment"
                   value={
                     <span
@@ -168,12 +168,12 @@ export default function OrderDetailsModal({
             </section>
 
             {/* Customer */}
-            <section className='space-y-4'>
+            <section className="space-y-4">
               <h3 className="text-sm font-semibold uppercase tracking-wide text-neutral-400">
                 Customer Information
               </h3>
 
-              <Card spacing='none' border='none' >
+              <Card spacing="none" border="none">
                 <div className="flex gap-4">
                   <Avatar
                     src={order.user?.profilePicture}
@@ -182,13 +182,13 @@ export default function OrderDetailsModal({
                   />
 
                   <div className="flex-1 space-y-1">
-                  {  <p className="font-medium">{customerName}</p>}
+                    {<p className="font-medium">{customerName}</p>}
 
-                   {order.user?.email && (
-                     <p className=" text-sm text-neutral-500">
-                       {order.user.email}
-                     </p>
-                   )}
+                    {order.user?.email && (
+                      <p className=" text-sm text-neutral-500">
+                        {order.user.email}
+                      </p>
+                    )}
 
                     {order.user?.phoneNumber && (
                       <p className="mt-1 text-sm text-neutral-500">
@@ -201,57 +201,59 @@ export default function OrderDetailsModal({
             </section>
 
             {/* Delivery */}
-            <section className='space-y-4'>
+            <section className="space-y-4">
               <h3 className="text-sm font-semibold uppercase tracking-wide text-neutral-400">
                 Delivery Information
               </h3>
 
-              <Card spacing='none' border="none" >
-               <div className=' flex flex-col gap-6'>
-                 <div className="flex gap-3 mb-0">
-                  <User size={18} className=" text-neutral-400" />
+              <Card spacing="none" border="none">
+                <div className=" flex flex-col gap-6">
+                  <div className="flex gap-3 mb-0">
+                    <User size={18} className=" text-neutral-400" />
 
-                  <div className='space-y-1'>
-                    <p className="font-medium">{order.recipientName}</p>
+                    <div className="space-y-1">
+                      <p className="font-medium">{order.recipientName}</p>
 
-                    <p className="text-sm text-neutral-500">
-                      {order.recipientPhone}
-                    </p>
+                      <p className="text-sm text-neutral-500">
+                        {order.recipientPhone}
+                      </p>
+                    </div>
                   </div>
+
+                  <div className="flex gap-3 mb-0">
+                    <MapPin size={18} className="mt-0.5 text-neutral-400" />
+
+                    <div className="space-y-1">
+                      <p className="font-medium">Delivery Address</p>
+
+                      <p className="text-sm text-neutral-500">
+                        {order.dropoffLocation?.address}
+                      </p>
+
+                      <p className="text-sm text-neutral-500">
+                        {order.dropoffLocation?.state},{' '}
+                        {order.dropoffLocation?.country}
+                      </p>
+                    </div>
+                  </div>
+
+                  {order.deliveryInstructions && (
+                    <div className="space-y-1">
+                      <p className="text-xs font-medium text-neutral-400">
+                        DELIVERY INSTRUCTIONS
+                      </p>
+
+                      <p className="mt-1 text-sm">
+                        {order.deliveryInstructions}
+                      </p>
+                    </div>
+                  )}
                 </div>
-
-                <div className="flex gap-3 mb-0">
-                  <MapPin size={18} className="mt-0.5 text-neutral-400" />
-
-              <div className='space-y-1'>
-                    <p className="font-medium">Delivery Address</p>
-
-                    <p className="text-sm text-neutral-500">
-                      {order.dropoffLocation?.address}
-                    </p>
-
-                    <p className="text-sm text-neutral-500">
-                      {order.dropoffLocation?.state},{' '}
-                      {order.dropoffLocation?.country}
-                    </p>
-                  </div>
-                </div>
-
-                {order.deliveryInstructions && (
-             <div className='space-y-1'>
-                    <p className="text-xs font-medium text-neutral-400">
-                      DELIVERY INSTRUCTIONS
-                    </p>
-
-                    <p className="mt-1 text-sm">{order.deliveryInstructions}</p>
-                  </div>
-                )}
-               </div>
               </Card>
             </section>
 
             {/* Items */}
-            <section className='space-y-4'>
+            <section className="space-y-4">
               <h3 className="text-sm font-semibold uppercase tracking-wide text-neutral-400">
                 Order Items
               </h3>
@@ -273,7 +275,9 @@ export default function OrderDetailsModal({
                       </div>
 
                       <div>
-                        <p className="font-medium">{item.product.productName}</p>
+                        <p className="font-medium">
+                          {item.product.productName}
+                        </p>
 
                         <p className="text-neutral-500 text-xs">
                           Quantity: x {item.quantity}
@@ -290,12 +294,12 @@ export default function OrderDetailsModal({
             </section>
 
             {/* Summary */}
-            <section className='space-y-4'>
+            <section className="space-y-4">
               <h3 className="text-sm font-semibold uppercase tracking-wide text-neutral-400">
                 Order Summary
               </h3>
 
-              <div className='space-y-4'>
+              <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <p className="text-neutral-500 text-sm">Total Items</p>
 
@@ -324,26 +328,35 @@ export default function OrderDetailsModal({
             <div className="flex items-center gap-2 text-sm text-neutral-400">
               <Calendar size={14} />
 
-              <span className='text-sm'>Created {formatDate(order.createdAt)}</span>
+              <span className="text-sm">
+                Created {formatDate(order.createdAt)}
+              </span>
             </div>
           </div>
 
+          {order.status === 'CONFIRMED' && (
+            <div className="flex justify-around items-center gap-4">
+              <Button
+                variant="red-secondary"
+                leftIcon={<XCircle size={16} />}
+                size="icon"
+                onClick={onDecline}
+              >
+                Decline Order
+              </Button>
 
-         <div className='flex justify-around items-center gap-4'>
-          <Button variant='red-secondary' leftIcon={<XCircle size={16} />} size='icon' onClick={onDecline}>
-            Decline Order
-          </Button>
-
-
-          <Button variant='green' size='icon' leftIcon={<CheckCircle size={16}  />} onClick={onAccept}>
-            Accept Order
-          </Button>
-         </div>
-
+              <Button
+                variant="green"
+                size="icon"
+                leftIcon={<CheckCircle size={16} />}
+                onClick={onAccept}
+              >
+                Accept Order
+              </Button>
+            </div>
+          )}
         </div>
       )}
     </Modal>
   );
 }
-
-

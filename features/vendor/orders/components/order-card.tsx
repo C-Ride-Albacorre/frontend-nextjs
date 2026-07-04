@@ -8,9 +8,7 @@ import { useState } from 'react';
 import OrderActionModal from './order-action-modal';
 import Image from 'next/image';
 import Avatar from '@/components/ui/avatar';
-import { set } from 'zod';
 import OrderDetailsModal from './order-details-modal';
-import { getVendorOrderIdAction } from '../action';
 import { formatDate } from '@/helpers/date-formatter';
 
 type Item = {

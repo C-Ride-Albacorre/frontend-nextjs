@@ -39,7 +39,7 @@ export default function OrderDetail({ orderId }: { orderId: string }) {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col gap-2 items-center justify-center min-h-50">
+      <div className="flex flex-col gap-4 items-center justify-center min-h-50">
         <Loader size={24} className="animate-spin text-primary" />
         <p className="text-primary">Loading Order Details...</p>
       </div>
@@ -58,21 +58,21 @@ export default function OrderDetail({ orderId }: { orderId: string }) {
           <div className="space-y-1">
             <p className="font-medium text-xs text-neutral-500">Order Number</p>
             <p className="text-sm">
-              {(order.orderCode ?? order.orderNumber ?? '').toUpperCase()}
+              {(order?.orderCode ?? order?.orderNumber ?? '').toUpperCase()}
             </p>
           </div>
 
           <span
             className={`rounded-full px-2 py-0.5 text-[0.65rem] font-medium capitalize ${statusColor(
-              order.orderStatus,
+              order?.orderStatus,
             )}`}
           >
-            {order.orderStatus?.toLowerCase().replace(/_/g, ' ') ?? 'unknown'}
+            {order?.orderStatus?.toLowerCase().replace(/_/g, ' ') ?? 'unknown'}
           </span>
         </div>
 
         {/* Delivery info */}
-        {order.dropoffLocation &&
+        {order?.dropoffLocation &&
           (() => {
             const loc =
               typeof order.dropoffLocation === 'string'

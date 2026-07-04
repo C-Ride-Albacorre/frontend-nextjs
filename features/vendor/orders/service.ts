@@ -73,7 +73,9 @@ export async function getVendorOrdersService({
     `${BASE_URL}/vendor/orders?page=${page}&limit=${limit}`,
     {
       method: 'GET',
-      cache: 'no-store',
+      next: {
+        revalidate: 30,
+      },
     },
   );
 

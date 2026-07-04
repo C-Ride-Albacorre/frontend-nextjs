@@ -102,7 +102,8 @@ export default async function StoreProductsWrapper({
                     <div>
                       <MapPin size={14} className="text-primary" />
                     </div>
-                    <span>{store.data.storeAddress}</span>
+                
+                  <span className="flex items-start gap-1 text-neutral-500">{store.data.storeAddress}</span>
                   </div>
                 )}
               </div>

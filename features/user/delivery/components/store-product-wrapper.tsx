@@ -53,7 +53,7 @@ export default async function StoreProductsWrapper({
 
             <div className="flex flex-col gap-3">
               <div className="flex flex-col md:flex-row md:items-center gap-3">
-                <h1 className="text-lg md:text-xl font-semibold">
+                <h1 className="text-lg md:text-xl font-semibold capitalize">
                   {store.data.storeName}
                 </h1>
 
@@ -99,7 +99,8 @@ export default async function StoreProductsWrapper({
                     <div>
                       <MapPin size={14} className="text-primary" />
                     </div>
-                    <span>{store.data.storeAddress}</span>
+                  
+                  <span className="flex items-start gap-1 text-neutral-500 capitalize">{store.data.storeAddress}</span>
                   </div>
                 )}
               </div>

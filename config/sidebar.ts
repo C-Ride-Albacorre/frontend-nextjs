@@ -82,56 +82,56 @@ export const VENDOR_SIDEBAR: SidebarSection[] = [
       },
     ],
   },
-  {
-    title: 'Business Tools',
-    items: [
-      {
-        label: 'Promotions',
-        icon: Tag,
-        href: '/vendor/promotions',
-      },
-      {
-        label: 'Analytics',
-        icon: BarChart3,
-        href: '/vendor/analytics',
-      },
-      {
-        label: 'Performance',
-        icon: TrendingUp,
-        href: '/vendor/performance',
-      },
-      {
-        label: 'Delivery',
-        icon: Truck,
-        href: '/vendor/delivery',
-      },
-      {
-        label: 'Active Deliveries',
-        icon: Navigation,
-        href: '/vendor/active-deliveries',
-      },
-    ],
-  },
-  {
-    title: 'Settings',
-    items: [
-      {
-        label: 'Tutorials & Tips',
-        icon: BookOpen,
-        href: '/vendor/tutorials-tips',
-      },
-      {
-        label: 'Partner Program',
-        icon: BadgeCheck,
-        href: '/vendor/partner-program',
-      },
-      // {
-      //   label: 'Onboarding',
-      //   icon: Settings,
-      //   href: '/vendor/onboarding',
-      // },
-    ],
-  },
+  // {
+  //   title: 'Business Tools',
+  //   items: [
+  //     {
+  //       label: 'Promotions',
+  //       icon: Tag,
+  //       href: '/vendor/promotions',
+  //     },
+  //     {
+  //       label: 'Analytics',
+  //       icon: BarChart3,
+  //       href: '/vendor/analytics',
+  //     },
+  //     {
+  //       label: 'Performance',
+  //       icon: TrendingUp,
+  //       href: '/vendor/performance',
+  //     },
+  //     {
+  //       label: 'Delivery',
+  //       icon: Truck,
+  //       href: '/vendor/delivery',
+  //     },
+  //     {
+  //       label: 'Active Deliveries',
+  //       icon: Navigation,
+  //       href: '/vendor/active-deliveries',
+  //     },
+  //   ],
+  // },
+  // {
+  //   title: 'Settings',
+  //   items: [
+  //     {
+  //       label: 'Tutorials & Tips',
+  //       icon: BookOpen,
+  //       href: '/vendor/tutorials-tips',
+  //     },
+  //     {
+  //       label: 'Partner Program',
+  //       icon: BadgeCheck,
+  //       href: '/vendor/partner-program',
+  //     },
+  //     {
+  //       label: 'Onboarding',
+  //       icon: Settings,
+  //       href: '/vendor/onboarding',
+  //     },
+  //   ],
+  // },
   {
     items: [
       {

@@ -40,7 +40,7 @@ export default function VendorDashboardHeader() {
         pathName === '/vendor/partner-program',
     },
     !excludedPaths.includes(pathName) &&
-      'The Place Restaurant - Victoria Island, Lagos',
+      'Manage your store, products, and orders efficiently',
   );
 
   return (

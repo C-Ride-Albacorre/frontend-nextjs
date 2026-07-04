@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import Card from '@/components/layout/card';
 import { CheckCircle, Clock, Loader, Smile } from 'lucide-react';
@@ -18,6 +18,8 @@ import PolylineUtil from '@mapbox/polyline';
 import { RouteItem } from '@/features/user/track-order/components/section';
 import { STEPS } from '@/features/user/track-order/data';
 import { normalizeRouteLeg, useCustomerStore } from '@/store/socket';
+import RatingsModal from './ratings-modal';
+import ExpiredModal from './expired';
 
 const STATUS_TEXT: Record<string, string> = {
   PENDING: 'Waiting for driver',
@@ -40,11 +42,15 @@ const STATUS_STEP: Record<string, number> = {
 };
 
 export default function MapOrderInfo({ orderData }: { orderData: any }) {
+  const [isRatingsModalOpen, setIsRatingsModalOpen] = useState(false);
+
+    const [isExpiredModalOpen, setIsExpiredModalOpen] = useState(false);
+
   const mapRef = useRef<google.maps.Map | null>(null);
 
   const driver = useCustomerStore((s) => s.tracking.driverLocation);
 
-  const status = useCustomerStore((s) => s.tracking.orderStatus);
+  
 
   const etaToVendor = useCustomerStore((s) => s.tracking.eta.toVendor);
 
@@ -223,6 +229,22 @@ export default function MapOrderInfo({ orderData }: { orderData: any }) {
       ? 0
       : (STATUS_STEP[orderStatus ?? 'PENDING'] ?? 1);
 
+  useEffect(() => {
+    if (orderStatus === 'DELIVERED' && orderData.assignment.status !== 'EXPIRED') {
+      setIsRatingsModalOpen(true);
+    }
+
+   
+  }, [orderStatus]);
+
+   useEffect(() => {
+    if (orderData.assignment.status === 'EXPIRED') {
+      setIsExpiredModalOpen(true);
+    }
+
+   
+  }, [orderData]);
+
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!,
   });
@@ -240,219 +262,227 @@ export default function MapOrderInfo({ orderData }: { orderData: any }) {
     );
 
   return (
-    <div className="space-y-8">
-      {/* MAP */}
-      <Card border="none" className="bg-foreground-200">
-        <div className="h-105 overflow-hidden rounded-xl shadow">
-          <GoogleMap
-            center={center}
-            zoom={14}
-            mapContainerStyle={{
-              width: '100%',
-              height: '100%',
-            }}
-            onLoad={(map) => {
-              mapRef.current = map;
-            }}
-          >
-            {/* DRIVER */}
-            {driver && (
-              <OverlayView
-                position={{
-                  lat: driver.lat,
-                  lng: driver.lng,
-                }}
-                mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
-                getPixelPositionOffset={(width, height) => ({
-                  x: -(width / 2),
-                  y: -(height / 2),
-                })}
-              >
-                <div
-                  style={{
-                    transform: `rotate(${driver.heading ?? 0}deg)`,
-                    transformOrigin: 'center',
+    <>
+      <div className="space-y-8">
+        {/* MAP */}
+        <Card border="none" className="bg-foreground-200">
+          <div className="h-105 overflow-hidden rounded-xl shadow">
+            <GoogleMap
+              center={center}
+              zoom={14}
+              mapContainerStyle={{
+                width: '100%',
+                height: '100%',
+              }}
+              onLoad={(map) => {
+                mapRef.current = map;
+              }}
+            >
+              {/* DRIVER */}
+              {driver && (
+                <OverlayView
+                  position={{
+                    lat: driver.lat,
+                    lng: driver.lng,
                   }}
+                  mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+                  getPixelPositionOffset={(width, height) => ({
+                    x: -(width / 2),
+                    y: -(height / 2),
+                  })}
                 >
-                  <img
-                    src="/assets/image/3d-car.png"
-                    alt="car"
+                  <div
                     style={{
-                      width: '28px',
-                      height: '28px',
-                      objectFit: 'contain',
+                      transform: `rotate(${driver.heading ?? 0}deg)`,
+                      transformOrigin: 'center',
+                    }}
+                  >
+                    <img
+                      src="/assets/image/3d-car.png"
+                      alt="car"
+                      style={{
+                        width: '28px',
+                        height: '28px',
+                        objectFit: 'contain',
+                      }}
+                    />
+                  </div>
+                </OverlayView>
+              )}
+
+              {/* STORE */}
+              {orderData && (
+                <OverlayView
+                  position={{
+                    lat: orderData.store.lat,
+                    lng: orderData.store.lng,
+                  }}
+                  mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+                >
+                  <div className="w-8 h-8 rounded-full overflow-hidden border border-white shadow-md">
+                    <img
+                      src={orderData.store.logo ?? '/assets/image/store.png'}
+                      alt="store"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                </OverlayView>
+              )}
+
+              {/* CUSTOMER */}
+              {typeof orderData?.order.dropoffLocation.latitude === 'number' &&
+                typeof orderData?.order.dropoffLocation.longitude ===
+                  'number' && (
+                  <Marker
+                    position={{
+                      lat: orderData.order.dropoffLocation.latitude,
+                      lng: orderData.order.dropoffLocation.longitude,
+                    }}
+                    icon={{
+                      url: '/assets/image/user.png',
+                      scaledSize: new google.maps.Size(26, 26),
                     }}
                   />
-                </div>
-              </OverlayView>
-            )}
+                )}
 
-            {/* STORE */}
-            {orderData && (
-              <OverlayView
-                position={{
-                  lat: orderData.store.lat,
-                  lng: orderData.store.lng,
-                }}
-                mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
-              >
-                <div className="w-8 h-8 rounded-full overflow-hidden border border-white shadow-md">
-                  <img
-                    src={orderData.store.logo ?? '/assets/image/store.png'}
-                    alt="store"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              </OverlayView>
-            )}
-
-            {/* CUSTOMER */}
-            {typeof orderData?.order.dropoffLocation.latitude === 'number' &&
-              typeof orderData?.order.dropoffLocation.longitude ===
-                'number' && (
-                <Marker
-                  position={{
-                    lat: orderData.order.dropoffLocation.latitude,
-                    lng: orderData.order.dropoffLocation.longitude,
-                  }}
-                  icon={{
-                    url: '/assets/image/user.png',
-                    scaledSize: new google.maps.Size(26, 26),
+              {/* ROUTE */}
+              {/* VENDOR ROUTE */}
+              {vendorRoute.length > 0 && (
+                <Polyline
+                  path={vendorRoute}
+                  options={{
+                    strokeColor: '#F59E0B', // orange
+                    strokeOpacity: 0.6,
+                    strokeWeight: 4,
                   }}
                 />
               )}
 
-            {/* ROUTE */}
-            {/* VENDOR ROUTE */}
-            {vendorRoute.length > 0 && (
-              <Polyline
-                path={vendorRoute}
-                options={{
-                  strokeColor: '#F59E0B', // orange
-                  strokeOpacity: 0.6,
-                  strokeWeight: 4,
-                }}
-              />
-            )}
-
-            {/* CUSTOMER ROUTE */}
-            {customerRoute.length > 0 && (
-              <Polyline
-                path={customerRoute}
-                options={{
-                  strokeColor: '#10B981', // green
-                  strokeOpacity: 0.9,
-                  strokeWeight: 5,
-                }}
-              />
-            )}
-          </GoogleMap>
-        </div>
-
-        {/* ETA */}
-        <Card border="none"  gap="md" className="bg-white shadow">
-          <div className="flex items-center justify-between text-sm">
-            <span className="flex items-center gap-3">
-              <Clock size={16} className="text-primary" />
-              {isToCustomer
-                ? `Driver is on the way to your location `
-                : `Driver is heading to pickup location`}
-            </span>
-
-            <span className="font-medium">{etaText}</span>
+              {/* CUSTOMER ROUTE */}
+              {customerRoute.length > 0 && (
+                <Polyline
+                  path={customerRoute}
+                  options={{
+                    strokeColor: '#10B981', // green
+                    strokeOpacity: 0.9,
+                    strokeWeight: 5,
+                  }}
+                />
+              )}
+            </GoogleMap>
           </div>
 
-          <div className="h-2 rounded-full bg-neutral-200">
-            <div
-              className="h-full rounded-full bg-primary transition-all"
-              style={{ width: `${displayedProgress}%` }}
+          {/* ETA */}
+          <Card border="none" gap="md" className="bg-white shadow">
+            <div className="flex items-center justify-between text-sm">
+              <span className="flex items-center gap-3">
+                <Clock size={16} className="text-primary" />
+                {isToCustomer
+                  ? `Driver is on the way to your location `
+                  : `Driver is heading to pickup location`}
+              </span>
+
+              <span className="font-medium">{etaText}</span>
+            </div>
+
+            <div className="h-2 rounded-full bg-neutral-200">
+              <div
+                className="h-full rounded-full bg-primary transition-all"
+                style={{ width: `${displayedProgress}%` }}
+              />
+            </div>
+          </Card>
+        </Card>
+
+        {/* STATUS */}
+        <Card
+          border="none"
+          gap="md"
+          className="flex items-start gap-4 bg-primary"
+        >
+          <Smile size={24} />
+
+          <div className="space-y-3">
+            <h2 className="font-medium">{statusText}</h2>
+
+            <p className="text-sm text-neutral-600">
+              Your driver is delivering your order in real time.
+            </p>
+          </div>
+        </Card>
+
+        {/* PROGRESS */}
+        <Card border="none" gap="md" className="bg-foreground-200">
+          <h3 className="font-medium">Delivery Progress</h3>
+
+          <div className="flex flex-col gap-8">
+            {STEPS.map((step, index) => {
+              const stepNumber = index + 1;
+
+              const isCompleted = stepNumber < activeStep;
+
+              const isActive = stepNumber === activeStep;
+
+              const isLast = index === STEPS.length - 1;
+
+              return (
+                <div key={step.label} className="relative flex gap-4">
+                  {!isLast && (
+                    <div className="absolute left-5 top-8 h-full w-0.5 bg-primary" />
+                  )}
+
+                  <div
+                    className={`relative z-10 flex h-10 w-10 items-center justify-center rounded-full ${
+                      isCompleted
+                        ? 'bg-primary text-white'
+                        : isActive
+                          ? 'bg-primary-text-100 text-primary'
+                          : 'bg-neutral-200 text-neutral-500'
+                    }`}
+                  >
+                    {isCompleted || isActive ? (
+                      <CheckCircle size={16} />
+                    ) : (
+                      <span className="h-2 w-2 rounded-full bg-neutral-500" />
+                    )}
+                  </div>
+
+                  <div className="mt-2">
+                    <p className="font-medium text-sm">{step.label}</p>
+                    {/* <p className=" text-neutral-500 text-xs">{step.date}</p> */}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </Card>
+
+        {/* ROUTE */}
+        <Card border="none" gap="md" className="bg-foreground-200">
+          <h3 className="font-medium">Delivery Route</h3>
+
+          <div className="flex flex-col gap-8">
+            <RouteItem
+              title={orderData?.store?.name ?? 'Store'}
+              address={orderData?.store?.address}
+              highlight={isToVendor}
+              storeLogo={orderData?.store?.logo ?? ''}
+            />
+
+            <RouteItem
+              title="Drop-off"
+              address={orderData?.order.dropoffLocation?.address ?? ''}
+              highlight={isToCustomer}
             />
           </div>
         </Card>
-      </Card>
+      </div>
 
-      {/* STATUS */}
-      <Card
-        border="none"
-        gap="md"
-        className="flex items-start gap-4 bg-primary"
-      >
-        <Smile size={24} />
+      <RatingsModal driver={orderData.driver} orderId={orderData?.order.id} isOpen={isRatingsModalOpen} />
 
-        <div className="space-y-3">
-          <h2 className="font-medium">{statusText}</h2>
 
-          <p className="text-sm text-neutral-600">
-            Your driver is delivering your order in real time.
-          </p>
-        </div>
-      </Card>
 
-      {/* PROGRESS */}
-      <Card border="none" gap="md" className="bg-foreground-200">
-        <h3 className="font-medium">Delivery Progress</h3>
-
-        <div className="flex flex-col gap-8">
-          {STEPS.map((step, index) => {
-            const stepNumber = index + 1;
-
-            const isCompleted = stepNumber < activeStep;
-
-            const isActive = stepNumber === activeStep;
-
-            const isLast = index === STEPS.length - 1;
-
-            return (
-              <div key={step.label} className="relative flex gap-4">
-                {!isLast && (
-                  <div className="absolute left-5 top-8 h-full w-0.5 bg-primary" />
-                )}
-
-                <div
-                  className={`relative z-10 flex h-10 w-10 items-center justify-center rounded-full ${
-                    isCompleted
-                      ? 'bg-primary text-white'
-                      : isActive
-                        ? 'bg-primary-text-100 text-primary'
-                        : 'bg-neutral-200 text-neutral-500'
-                  }`}
-                >
-                  {isCompleted || isActive ? (
-                    <CheckCircle size={16} />
-                  ) : (
-                    <span className="h-2 w-2 rounded-full bg-neutral-500" />
-                  )}
-                </div>
-
-                <div className="mt-2">
-                  <p className="font-medium text-sm">{step.label}</p>
-                  {/* <p className=" text-neutral-500 text-xs">{step.date}</p> */}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </Card>
-
-      {/* ROUTE */}
-      <Card border="none" gap="md" className="bg-foreground-200">
-        <h3 className="font-medium">Delivery Route</h3>
-
-        <div className="flex flex-col gap-8">
-          <RouteItem
-            title={orderData?.store?.name ?? 'Store'}
-            address={orderData?.store?.address}
-            highlight={isToVendor}
-            storeLogo={orderData?.store?.logo ?? ''}
-          />
-
-          <RouteItem
-            title="Drop-off"
-            address={orderData?.order.dropoffLocation?.address ?? ''}
-            highlight={isToCustomer}
-          />
-        </div>
-      </Card>
-    </div>
+       <ExpiredModal driver={orderData.driver}  isOpen={isExpiredModalOpen} />
+    </>
   );
 }
