@@ -79,7 +79,7 @@ export default function OrderCard({
   return (
     <>
       <Card
-        className="flex h-full flex-col bg-white shadow hover:shadow-sm"
+        className="flex h-full flex-col bg-white shadow-sm hover:shadow-md transition-shadow duration-300"
         spacing="none"
       >
         {/* Header */}
@@ -212,11 +212,11 @@ export default function OrderCard({
 
           <div className="flex flex-col md:flex-row gap-2">
             {orderStatus === 'CONFIRMED' && (
-              <div className="flex gap-2 flex-1">
+              <div className="flex gap-2">
                 <Button
                   size="icon"
                   variant="red-secondary"
-                  className="flex-1"
+                   className="w-full"
                   leftIcon={<XCircle size={16} />}
                   onClick={handleRejectAction}
                 >
@@ -226,7 +226,7 @@ export default function OrderCard({
                 <Button
                   size="icon"
                   variant="green"
-                  className="flex-1"
+                  className="w-full"
                   leftIcon={<CheckCircle size={16} />}
                   onClick={handleAcceptAction}
                 >
@@ -237,7 +237,8 @@ export default function OrderCard({
 
             <Button
               size="icon"
-              className="flex-1"
+              variant='black'
+              className="w-full"
               onClick={() => handleViewAction(id)}
             >
               View Details

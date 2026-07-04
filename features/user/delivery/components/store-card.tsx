@@ -32,6 +32,7 @@ export default function StoreCard({
         border
         border-border/60
         bg-white
+          shadow-sm
         transition-all
         duration-300
         hover:-translate-y-1

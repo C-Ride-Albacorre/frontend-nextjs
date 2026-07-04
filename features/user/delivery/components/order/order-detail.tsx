@@ -40,8 +40,7 @@ export default function OrderDetail({ orderId }: { orderId: string }) {
   if (isLoading) {
     return (
       <div className="flex flex-col gap-4 items-center justify-center min-h-50">
-        <Loader size={24} className="animate-spin text-primary" />
-        <p className="text-primary">Loading Order Details...</p>
+        <Loader size={20} className="animate-spin text-primary" />
       </div>
     );
   }
