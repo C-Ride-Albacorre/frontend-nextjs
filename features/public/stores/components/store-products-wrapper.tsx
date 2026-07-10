@@ -25,6 +25,7 @@ export default async function StoreProductsWrapper({
     const store = await fetchStoreDetailsService(slug);
 
     console.log('Store details:', store);
+    console.log('Products:', store.data.products);
 
     const storeSlug = store.data.storeName
       ?.toLowerCase()

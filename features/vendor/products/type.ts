@@ -50,6 +50,10 @@ export interface Product {
   name?: string;
   productName: string;
   subcategoryId: string;
+  subcategory?: {
+    id: string;
+    name: string;
+  };
   sku: string;
   description?: string;
   productType: ProductType;
@@ -58,8 +62,8 @@ export interface Product {
   basePrice: number;
   stockQuantity: number;
   lowStockThreshold: number;
-  variants?: ProductVariant[];
-  addons?: ProductAddon[];
+  variants: ProductVariant[];
+  addons: ProductAddon[];
   productImages?: ProductImage[];
   storeId: string;
   createdAt: string;

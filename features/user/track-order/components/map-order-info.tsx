@@ -44,13 +44,11 @@ const STATUS_STEP: Record<string, number> = {
 export default function MapOrderInfo({ orderData }: { orderData: any }) {
   const [isRatingsModalOpen, setIsRatingsModalOpen] = useState(false);
 
-    const [isExpiredModalOpen, setIsExpiredModalOpen] = useState(false);
+  const [isExpiredModalOpen, setIsExpiredModalOpen] = useState(false);
 
   const mapRef = useRef<google.maps.Map | null>(null);
 
   const driver = useCustomerStore((s) => s.tracking.driverLocation);
-
-  
 
   const etaToVendor = useCustomerStore((s) => s.tracking.eta.toVendor);
 
@@ -230,19 +228,18 @@ export default function MapOrderInfo({ orderData }: { orderData: any }) {
       : (STATUS_STEP[orderStatus ?? 'PENDING'] ?? 1);
 
   useEffect(() => {
-    if (orderStatus === 'DELIVERED' && orderData.assignment.status !== 'EXPIRED') {
+    if (
+      orderStatus === 'DELIVERED' &&
+      orderData.assignment.status !== 'EXPIRED'
+    ) {
       setIsRatingsModalOpen(true);
     }
-
-   
   }, [orderStatus]);
 
-   useEffect(() => {
+  useEffect(() => {
     if (orderData.assignment.status === 'EXPIRED') {
       setIsExpiredModalOpen(true);
     }
-
-   
   }, [orderData]);
 
   const { isLoaded } = useLoadScript({
@@ -375,14 +372,20 @@ export default function MapOrderInfo({ orderData }: { orderData: any }) {
           {/* ETA */}
           <Card border="none" gap="md" className="bg-white shadow">
             <div className="flex items-center justify-between text-sm">
-              <span className="flex items-center gap-3">
-                <Clock size={16} className="text-primary" />
-                {isToCustomer
-                  ? `Driver is on the way to your location `
-                  : `Driver is heading to pickup location`}
-              </span>
+              <div className="flex items-center gap-3">
+                <Clock size={20} className="text-primary" />
 
-              <span className="font-medium">{etaText}</span>
+                <h2
+                  className="
+                font-semibold text-lg"
+                >
+                  {isToCustomer
+                    ? `Driver is on the way to your location `
+                    : `Driver is heading to pickup location`}
+                </h2>
+              </div>
+
+              <span className="font-medium bg-green-100/10 text-green-100 text-[10px] px-2 py-1 rounded-md border border-green-100/30">{etaText}</span>
             </div>
 
             <div className="h-2 rounded-full bg-neutral-200">
@@ -478,11 +481,13 @@ export default function MapOrderInfo({ orderData }: { orderData: any }) {
         </Card>
       </div>
 
-      <RatingsModal driver={orderData.driver} orderId={orderData?.order.id} isOpen={isRatingsModalOpen} />
+      <RatingsModal
+        driver={orderData.driver}
+        orderId={orderData?.order.id}
+        isOpen={isRatingsModalOpen}
+      />
 
-
-
-       <ExpiredModal driver={orderData.driver}  isOpen={isExpiredModalOpen} />
+      <ExpiredModal driver={orderData.driver} isOpen={isExpiredModalOpen} />
     </>
   );
 }

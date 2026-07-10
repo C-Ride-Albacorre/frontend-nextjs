@@ -1,18 +1,21 @@
 'use client';
 
-import { Loader, ShoppingCart, Trash, Trash2, X } from 'lucide-react';
-import { useCartStore } from '../../hooks/store';
+import { Loader, Package, ShoppingCart, Trash2 } from 'lucide-react';
 import { Suspense } from 'react';
+
 import Card from '@/components/layout/card';
-import { IconButton } from '@/components/ui/buttons/icon-button';
 import EmptyState from '@/components/layout/empty-state';
+import { IconButton } from '@/components/ui/buttons/icon-button';
+import { useCartStore } from '../../hooks/store';
 
 export default function OrderSummary() {
   const { cart, removeItem, isLoading, updatingItems } = useCartStore();
 
   const items = cart?.items ?? [];
 
-  if (items.length === 0) {
+  const isUpdatingCart = updatingItems.length > 0;
+
+  if (!items.length) {
     return (
       <EmptyState
         icon={<ShoppingCart size={36} className="text-neutral-400" />}
@@ -22,58 +25,106 @@ export default function OrderSummary() {
     );
   }
 
-  const isUpdatingCart = updatingItems.length > 0;
-
-  console.log('isUpdatingCart:', isUpdatingCart);
-
   return (
     <Suspense
       fallback={
-        <Loader size={24} className="animate-spin text-primary mx-auto" />
+        <Loader size={24} className="mx-auto animate-spin text-primary" />
       }
     >
-      <Card border="none" gap="lg" className="bg-foreground-200">
-        <h2 className="text-lg font-semibold">Your Order Summary</h2>
+      <Card
+        gap="lg"
+        border='none'
+        className="rounded-2xl bg-foreground-200"
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-primary-text-100">
+            Order Summary
+          </h2>
 
-        <ul className="space-y-6">
-          {items.map((item: any) => (
-            <li key={item.id} className="flex justify-between items-center">
-              <div className='flex items-center justify-center gap-3' >
-              <p className=" text-primary-text-100 text-left capitalize">
-                {item.productName}
-              </p>   <p className="text-neutral-500 text-sm text-left capitalize">
-               x {item.quantity}
-              </p>
-              </div>
+       <div className="flex items-center gap-1">
+        <Package size={16} className="inline-block mr-1 text-neutral-500" />
+           <span className="text-sm text-neutral-500">
+            {items.length} {items.length === 1 ? 'item' : 'items'}
+          </span>
+       </div>
+        </div>
 
-              <div className="flex items-center gap-4  md:gap-8">
-                {isLoading || isUpdatingCart ? (
-                  <Loader size={16} className="animate-spin text-primary" />
-                ) : (
-                  <span>₦ {item?.totalPrice?.toLocaleString()}</span>
-                )}
-                <IconButton
-                  variant="red"
-                  rounded="md"
-                  disabled={isLoading || isUpdatingCart}
-                  onClick={() => removeItem(item.id)}
-                >
-                  <X size={14} />
-                </IconButton>
-              </div>
-            </li>
-          ))}
+        {/* Items */}
+        <ul className="divide-y divide-border mb-0">
+          {items.map((item: any) => {
+            const isUpdating =
+              isUpdatingCart || isLoading || updatingItems.includes(item.id);
+
+            return (
+              <li
+                key={item.id}
+                className="flex items-start justify-between py-6"
+              >
+                <div className="min-w-0 flex-1">
+                  <p className="font-medium capitalize text-primary-text-100 text-sm truncate w-44">
+                    {item.productName}
+                  </p>
+
+                  <p className="mt-1 text-sm text-neutral-500">
+                    Qty {item.quantity}
+                  </p>
+                </div>
+
+                <div className="ml-4 flex items-center gap-3">
+                  {isUpdating ? (
+                    <Loader size={16} className="animate-spin text-primary" />
+                  ) : (
+                    <h4 className="whitespace-nowrap font-semibold text-neutral-900">
+                      NGN {(item.totalPrice ?? 0).toLocaleString()}
+                    </h4>
+                  )}
+
+                  <IconButton
+                    variant="red"
+                    rounded="md"
+                    disabled={isUpdating}
+                    onClick={() => removeItem(item.id)}
+                    aria-label={`Remove ${item.productName}`}
+                  >
+                    <Trash2 size={15} />
+                  </IconButton>
+                </div>
+              </li>
+            );
+          })}
         </ul>
 
-        <div className="border-t border-border pt-8 flex justify-between">
-          <span className="font-bold text-lg">Sub Total</span>
-          {isLoading || isUpdatingCart ? (
-            <Loader size={16} className="animate-spin text-primary" />
-          ) : (
-            <span className="font-bold text-lg">
-              ₦ {(cart?.subTotal ?? 0).toLocaleString()}
-            </span>
-          )}
+        {/* Totals */}
+        <div className="space-y-5 border-t border-border py-6">
+          <div className="flex items-center justify-between text-sm text-neutral-500">
+            <span>Subtotal</span>
+
+            {isLoading ? (
+              <Loader size={16} className="animate-spin text-primary" />
+            ) : (
+              <h4>NGN {(cart?.subTotal ?? 0).toLocaleString()}</h4>
+            )}
+          </div>
+
+          <div className="flex items-center justify-between text-sm text-neutral-500">
+            <span>Delivery</span>
+            <span>Calculated at checkout</span>
+          </div>
+
+          <div className="flex items-center justify-between border-t border-border pt-4">
+            <h4 className="text-lg font-bold text-primary-text-100">
+              Total
+            </h4>
+
+            {isLoading ? (
+              <Loader size={18} className="animate-spin text-primary" />
+            ) : (
+              <h4 className="text-lg font-bold text-primary">
+                NGN {(cart?.subTotal ?? 0).toLocaleString()}
+              </h4>
+            )}
+          </div>
         </div>
       </Card>
     </Suspense>

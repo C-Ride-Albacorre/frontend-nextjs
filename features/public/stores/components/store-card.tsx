@@ -35,9 +35,9 @@ export default function StoreCard({
         shadow-sm
         transition-all
         duration-300
-        hover:-translate-y-1
-        hover:border-primary/20
-        hover:shadow-xl
+       hover:-translate-y-1
+       hover:border-primary/20
+       hover:shadow-xl
       "
     >
       {/* Cover */}
