@@ -37,15 +37,15 @@ export default async function UserProfilePage() {
         >
           <ProfileAddressWrapper />
         </Suspense>
-        <ProfileSettings />
+        {/* <ProfileSettings /> */}
 
         <section className="flex flex-col md:flex-row gap-4 justify-center  md:gap-6">
           <Logout />
-          <Button variant="primary-black-outline" size="lg">
+          {/* <Button variant="primary-black-outline" size="lg">
             Back to Portal Selection
-          </Button>
+          </Button> */}
 
-          <DeleteAccountButton />
+          {/* <DeleteAccountButton /> */}
         </section>
       </main>
     </>

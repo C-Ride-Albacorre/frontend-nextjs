@@ -8,7 +8,7 @@ import {
   getCartAction,
   removeFromCartAction,
   updateCartQuantityAction,
-} from '../action';
+} from '../cart-action';
 
 // ─── Types ───
 

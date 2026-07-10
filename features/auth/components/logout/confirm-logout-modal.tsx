@@ -1,5 +1,6 @@
 import Modal from '@/components/layout/modal';
 import { Button } from '@/components/ui/buttons/button';
+import { Loader, LogOut } from 'lucide-react';
 
 export default function ConfirmLogoutModal({
   confirmLogout,
@@ -30,18 +31,21 @@ export default function ConfirmLogoutModal({
           <div className="flex gap-4 mt-6 w-full">
             <Button
               variant="green"
-              size='full'
+              size='icon'
               onClick={() => setConfirmLogout(false)}
               disabled={isPending}
+              className='flex-1'
             >
               Cancel
             </Button>
             <Button
               variant="red"
-              size='full'
+              size='icon'
+              leftIcon={isPending ? <Loader size={16} className="animate-spin" /> : <LogOut size={16} />}
               onClick={handleLogout}
               loading={isPending}
               disabled={isPending}
+              className='flex-1'
             >
               {isPending ? 'Logging out...' : 'Logout'}
             </Button>

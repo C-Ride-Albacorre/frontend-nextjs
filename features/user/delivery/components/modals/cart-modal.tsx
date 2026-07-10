@@ -135,8 +135,7 @@ export default function CartModal() {
                         />
                       ) : (
                         <>
-                          ₦
-                          {(
+                          NGN {(
                             item.totalPrice ?? item.unitPrice * item.quantity
                           ).toLocaleString()}
                         </>
@@ -146,7 +145,7 @@ export default function CartModal() {
                 </div>
 <div className="flex flex-wrap items-center justify-between gap-3 sm:grid sm:grid-cols-3 sm:gap-4">
               <p className="w-full text-xs text-neutral-500 sm:w-auto">
-                    ₦{item.unitPrice?.toLocaleString()} x {item.quantity}
+                    NGN {item.unitPrice?.toLocaleString()} x {item.quantity}
                   </p>
 
                   {/* Quantity */}
@@ -154,7 +153,7 @@ export default function CartModal() {
                     <IconButton
                       variant="primary-outline"
                       size="icon"
-                      rounded="md"
+                      rounded="full"
                       disabled={isLoading || isUpdating || item.quantity <= 1}
                       onClick={() => updateQuantity(item.id, item.quantity - 1)}
                     >
@@ -168,7 +167,7 @@ export default function CartModal() {
                     <IconButton
                       variant="primary"
                       size="icon"
-                      rounded="md"
+                      rounded="full"
                       disabled={isLoading || isUpdating}
                       onClick={() => updateQuantity(item.id, item.quantity + 1)}
                     >
@@ -197,12 +196,12 @@ export default function CartModal() {
         {items.length > 0 && (
           <div className="space-y-4 border-t border-border pt-4">
         <div className="flex flex-wrap items-center justify-between gap-2 text-base font-semibold">
-              <span>Subtotal</span>
+              <h4>Subtotal</h4>
 
               {isLoading || isUpdatingCart ? (
                 <Loader size={16} className="animate-spin text-primary" />
               ) : (
-                <span>₦{(cart?.subTotal ?? 0).toLocaleString()}</span>
+                <h4>NGN {(cart?.subTotal ?? 0).toLocaleString()}</h4>
               )}
             </div>
 

@@ -1,9 +1,11 @@
 import { getAuthTokens, getOrCreateGuestSessionId } from '@/utils/cookies';
 import { parseResponse } from './http';
 import { authFetch } from './auth-fetch';
+import { AuthRequestOptions } from '../types';
+
 export async function cartRequest<T>(
   url: string,
-  options: RequestInit = {},
+  options: AuthRequestOptions = {},
 ): Promise<T> {
   const { accessToken, refreshToken } = await getAuthTokens();
 
@@ -12,7 +14,14 @@ export async function cartRequest<T>(
   // AUTH USER
 
   if (accessToken || refreshToken) {
-    res = await authFetch(url, { ...options, cacheStrategy: 'no-store' });
+    res = await authFetch(url, {
+      ...options,
+      headers: {
+        'Content-Type': 'application/json',
+        ...options.headers,
+      },
+      cacheStrategy: 'no-store',
+    });
   } else {
     // GUEST USER
 

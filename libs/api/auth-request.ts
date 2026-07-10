@@ -1,13 +1,11 @@
+import { AuthRequestOptions } from '../types';
 import { authFetch } from './auth-fetch';
 import { parseResponse } from './http';
 
 
-type CacheStrategy = 'no-store' | { revalidate: number };
 
-interface AuthRequestOptions extends RequestInit {
-  cacheStrategy?: CacheStrategy;
-  nextTags?: string[];
-}
+
+
 export async function authRequest<T>(
   url: string,
   options: AuthRequestOptions = {},

@@ -1,255 +1,20 @@
 'use server';
 
-import { cancelOrderService, createOrderService, getDeliveryOptionsService, getOrderDetailsService, getOrdersService, getPaymentStatusService, initializePaymentService } from './order-service';
 import {
-  AddToCartSchema,
+  cancelOrderService,
+  createOrderService,
+  getDeliveryOptionsService,
+  getOrderDetailsService,
+  getOrdersService,
+  getPaymentStatusService,
+  initializePaymentService,
+} from './order-service';
+import type { ActionResult, CreateOrderPayload } from './types';
+
+import {
   CreateOrderSchema,
   InitializePaymentSchema,
-  RemoveCartItemSchema,
-  UpdateCartQuantitySchema,
 } from './schema';
-import {
-  addToCartService,
-  fetchCategoriesService,
-  fetchCategoryStoresService,
-  fetchStoreDetailsService,
-  // fetchSubcategoriesService,
-  fetchVendorAddressService,
-  getCartService,
-
-  removeFromCartService,
-  updateCartQuantityService,
-
-  fetchSubcategoriesService,
-  clearCartService,
-} from './service';
-import { AddToCartPayload, ActionResult, CreateOrderPayload } from './types';
-
-// ═══════════════════════════════════════
-// CATEGORIES & STORES
-// ═══════════════════════════════════════
-
-// export async function fetchCategoriesAction() {
-//   try {
-//     const result = await fetchCategoriesService();
-//     return result.data;
-//   } catch (error) {
-//     return {
-//       status: 'error',
-//       message:
-//         error instanceof Error ? error.message : 'Failed to fetch categories',
-//     };
-//   }
-// }
-
-// export async function fetchCategoryStoresAction(
-//   categoryId?: string,
-//   lat?: number,
-//   lng?: number,
-//   subcategoryId?: string,
-//   page?: number,
-//   limit?: number,
-//   search?: string,
-//   radiusKm?: number,
-// ) {
-//   const result = await fetchCategoryStoresService(
-//     categoryId,
-//     lat,
-//     lng,
-//     subcategoryId,
-//     page,
-//     limit,
-//     search,
-//     radiusKm,
-//   );
-
-//   return {
-//     stores: result.data.data ?? [],
-//     total: result.data.meta?.total ?? 0,
-//   };
-// }
-
-// export async function fetchSubcategoriesAction(categoryId: string) {
-//   try {
-//     const result = await fetchSubcategoriesService(categoryId);
-//     return result.data ?? [];
-//   } catch (error) {
-//     return {
-//       status: 'error',
-//       message:
-//         error instanceof Error
-//           ? error.message
-//           : 'Failed to fetch subcategories',
-//     };
-//   }
-// }
-
-// export async function fetchStoreDetailsAction(storeId: string) {
-//   try {
-//     const result = await fetchStoreDetailsService(storeId);
-
-//     console.log('[fetchStoreDetailsAction] Result:', result);
-//     return result.data ?? [];
-//   } catch (error) {
-//     return {
-//       error:
-//         error instanceof Error
-//           ? error.message
-//           : 'Failed to fetch store details',
-//     };
-//   }
-// }
-
-// export async function fetchVendorAddressAction(
-//   storeId: string,
-// ): Promise<ActionResult> {
-//   try {
-//     const result = await fetchVendorAddressService(storeId);
-//     return { success: true, data: result.data };
-//   } catch (error: any) {
-//     return {
-//       success: false,
-//       error: error.message || 'Failed to fetch vendor address',
-//     };
-//   }
-// }
-
-// ═══════════════════════════════════════
-// CART
-// ═══════════════════════════════════════
-
-export async function getCartAction(): Promise<ActionResult> {
-  try {
-    const response = await getCartService();
-
-    if (response.status !== 'success') {
-      return {
-        success: false,
-        error: response.data?.message || 'Failed to fetch cart',
-      };
-    }
-
-    return { success: true, data: response.data };
-  } catch (error: any) {
-    return { success: false, error: error.message || 'Failed to fetch cart' };
-  }
-}
-
-export async function addToCartAction(
-  payload: AddToCartPayload,
-): Promise<ActionResult> {
-  const parsed = AddToCartSchema.safeParse(payload);
-  if (!parsed.success) {
-    const msg = parsed.error.issues[0]?.message ?? 'Invalid payload';
-    console.error('[addToCartAction] Validation failed:', msg);
-    return { success: false, error: msg };
-  }
-
-  try {
-    const response = await addToCartService(parsed.data);
-
-    if (response.status !== 'success') {
-      return {
-        success: false,
-        error: response.data?.message || 'Failed to add item to cart',
-      };
-    }
-
-    return { success: true, data: response.data };
-  } catch (error: any) {
-    return {
-      success: false,
-      error: error.message || 'Failed to add item to cart',
-    };
-  }
-}
-
-export async function updateCartQuantityAction(
-  itemId: string,
-  quantity: number,
-): Promise<ActionResult> {
-  const parsed = UpdateCartQuantitySchema.safeParse({ quantity });
-  if (!parsed.success) {
-    const msg = parsed.error.issues[0]?.message || 'Invalid quantity';
-    console.error('[updateCartQuantityAction] Validation failed:', msg);
-    return { success: false, error: msg };
-  }
-
-  console.log(
-    '[updateCartQuantityAction] Item ID:',
-    itemId,
-    'Quantity:',
-    quantity,
-  );
-
-  try {
-    const response = await updateCartQuantityService(
-      itemId,
-      parsed.data.quantity,
-    );
-
-    console.log('[updateCartQuantityAction] Service response:', response);
-
-    if (response.status !== 'success') {
-      return {
-        success: false,
-        error: response.data?.message || 'Failed to update quantity',
-      };
-    }
-    return { success: true, data: response.data };
-  } catch (error: any) {
-    return {
-      success: false,
-      error: error.message || 'Failed to update quantity',
-    };
-  }
-}
-
-export async function removeFromCartAction(
-  itemId: string,
-): Promise<ActionResult> {
-  const parsed = RemoveCartItemSchema.safeParse({ itemId });
-  if (!parsed.success) {
-    const msg = parsed.error.issues[0]?.message || 'Invalid item ID';
-    console.error('[removeFromCartAction] Validation failed:', msg);
-    return { success: false, error: msg };
-  }
-
-  try {
-    const response = await removeFromCartService(parsed.data.itemId);
-
-    if (response.status !== 'success') {
-      return {
-        success: false,
-        error: response.data?.message || 'Failed to remove item from cart',
-      };
-    }
-
-    return { success: true, data: response.data };
-  } catch (error: any) {
-    return {
-      success: false,
-      error: error.message || 'Failed to remove item from cart',
-    };
-  }
-}
-
-export async function clearCartAction(): Promise<ActionResult> {
-  try {
-    const response = await clearCartService();
-
-    if (response.status !== 'success') {
-      return {
-        success: false,
-        error: response.data?.message || 'Failed to clear cart',
-      };
-    }
-
-    return { success: true, data: response.data };
-  } catch (error: any) {
-    return { success: false, error: error.message || 'Failed to clear cart' };
-  }
-}
 
 // ═══════════════════════════════════════
 // ORDERS
@@ -364,7 +129,6 @@ export async function getPaymentStatusAction(
 ): Promise<ActionResult<any>> {
   try {
     const res = await getPaymentStatusService(transactionReference);
-
 
     return { success: true, data: res.data };
   } catch (e: any) {

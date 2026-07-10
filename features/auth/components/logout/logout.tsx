@@ -49,8 +49,9 @@ export default function Logout({ onClose }: { onClose?: () => void }) {
       ) : (
         <Button
           onClick={() => setConfirmLogout(true)}
-          variant="primary-black-outline"
-          size="lg"
+          variant="red-secondary"
+          size="icon"
+          leftIcon={<LogOut size={16} />}
         >
           Logout from Account
         </Button>
