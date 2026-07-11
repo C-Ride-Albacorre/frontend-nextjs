@@ -164,10 +164,10 @@ export default function DeliveryConfirmationPage() {
         </div>
       </div>
 
-      <Card className="bg-green-100/10 flex flex-col md:flex-row gap-4 md:gap-6 items-start">
+      <Card border='none' className="bg-green-100/10 flex flex-col md:flex-row gap-4 md:gap-6 items-start">
         <Shield size={24} className="text-green-100 mb-0" />
         <div className="space-y-6">
-          <h5 className="font-semibold text-lg">C-Ride Guarantee</h5>
+          <h5 className="font-medium text-lg">C-Ride Guarantee</h5>
           <ul className="space-y-4">
             {[
               'On-time delivery or full refund',
@@ -177,7 +177,7 @@ export default function DeliveryConfirmationPage() {
             ].map((item) => (
               <li
                 key={item}
-                className="flex items-center gap-2 text-neutral-400 text-sm"
+                className="flex items-center gap-2 text-neutral-500 text-sm"
               >
                 <Dot size={16} /> {item}
               </li>
@@ -188,10 +188,10 @@ export default function DeliveryConfirmationPage() {
 
       <div className="space-y-12 mt-12">
         <div className="flex justify-between items-center">
-          <p className="font-medium">Pricing Breakdown</p>
-          <span className="flex items-center gap-1 text-primary text-sm">
+          <h2 className="font-medium ">Pricing Breakdown</h2>
+          {/* <span className="flex items-center gap-1 text-primary text-sm">
             <Info size={16} /> Transparent pricing
-          </span>
+          </span> */}
         </div>
 
         <ul className="space-y-6 text-sm text-neutral-500">
@@ -200,14 +200,14 @@ export default function DeliveryConfirmationPage() {
               <Box size={16} /> Items Subtotal
             </span>
             <span className="text-base text-primary-text-100">
-              ₦ {subTotal.toLocaleString()}
+              NGN {subTotal.toLocaleString()}
             </span>
           </li>
         </ul>
 
         <div className="flex justify-between items-center text-xl border-t border-border py-6">
-          <p>Total Amount</p>
-          <span className="text-primary">₦ {total.toLocaleString()}</span>
+          <h2 className='font-bold text-xl'>Total Amount</h2>
+          <h2 className="text-primary font-bold text-xl">NGN {total.toLocaleString()}</h2>
         </div>
       </div>
 

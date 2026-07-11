@@ -52,9 +52,13 @@ export default function OrderDetailModal({
     const nonCancellable = [
       'DELIVERED',
       'CANCELLED',
+      'ORDER_ASSIGNED',
+      'ORDER_ACCEPTED',
+      'PICKED_UP',
       'IN_TRANSIT',
       'COMPLETED',
       'CONFIRMED',
+      'DECLINED',
     ];
     return !nonCancellable.includes(s);
   };
@@ -117,16 +121,7 @@ export default function OrderDetailModal({
     return 'bg-primary-text-100 text-primary';
   };
 
-  // const formatDate = (d?: string) => {
-  //   if (!d) return '—';
-  //   return new Date(d).toLocaleDateString('en-NG', {
-  //     day: 'numeric',
-  //     month: 'short',
-  //     year: 'numeric',
-  //     hour: '2-digit',
-  //     minute: '2-digit',
-  //   });
-  // };
+
 
   return (
     <Modal isModalOpen={isModalOpen} onClose={onClose}>
@@ -185,8 +180,9 @@ export default function OrderDetailModal({
                     : order.dropoffLocation;
                 return (
                   <Card
+                    border="none"
                     gap="xs"
-                    className="bg-foreground-200 text-sm space-y-2"
+                    className="bg-foreground-200 text-sm space-y-4"
                   >
                     <p className="font-medium text-xs text-neutral-500">
                       Delivery Details
@@ -216,8 +212,8 @@ export default function OrderDetailModal({
 
             {/* Items */}
             {order.items && order.items.length > 0 && (
-              <div className="space-y-2">
-                <p className="text-sm font-medium">Items</p>
+              <div className="space-y-2 mb-0">
+                <h4 className="text-sm font-semibold">Items</h4>
                 <ul className="divide-y divide-border text-sm">
                   {order.items.map((item: any) => {
                     const cartItem = cartLookup.get(item.productId);
@@ -229,16 +225,17 @@ export default function OrderDetailModal({
                       'Item';
                     const image =
                       item.product?.productImages?.[0]?.imageUrl ??
-                      cartItem?.productImage ??
+                      cartItem?.imageUrl ??
                       null;
 
                     return (
                       <li
                         key={item.id}
-                        className="flex items-center gap-3 py-3"
+                        className="flex items-center gap-3 py-6"
                       >
                         {/* Product image */}
-                        <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-neutral-100">
+                     <div className='flex-1 flex items-center gap-6'>
+                         <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-neutral-100">
                           {image ? (
                             <Image
                               src={image}
@@ -257,19 +254,20 @@ export default function OrderDetailModal({
                         </div>
 
                         {/* Name + qty */}
-                        <div className="flex-1 min-w-0 text-left">
+                        <div className="flex-1 min-w-0 text-left space-y-1">
                           <p className="font-medium capitalize truncate">
                             {name.toLowerCase()}
                           </p>
                           <p className="text-xs text-neutral-500">
-                            Qty: {item.quantity} &times; ₦
+                            Qty: {item.quantity} &times; NGN{' '}
                             {(item.unitPrice ?? 0).toLocaleString()}
                           </p>
                         </div>
+                     </div>
 
                         {/* Price */}
                         <span className="font-medium shrink-0">
-                          ₦
+                          NGN{' '}
                           {(
                             item.totalPrice ?? item.unitPrice * item.quantity
                           ).toLocaleString()}
@@ -286,14 +284,14 @@ export default function OrderDetailModal({
               {order.deliveryFee != null && order.deliveryFee > 0 && (
                 <div className="flex justify-between text-neutral-500">
                   <span>Delivery Fee</span>
-                  <span>₦{order.deliveryFee.toLocaleString()}</span>
+                  <span>NGN {order.deliveryFee.toLocaleString()}</span>
                 </div>
               )}
               <div className="flex justify-between font-semibold text-base pt-2">
-                <span>Total</span>
-                <span className="text-primary">
-                  ₦{(order.totalAmount ?? 0).toLocaleString()}
-                </span>
+                <h2 className='text-xl font-bold'>Total</h2>
+                <h2 className="text-primary text-xl font-bold">
+                  NGN {(order.totalAmount ?? 0).toLocaleString()}
+                </h2>
               </div>
             </div>
 

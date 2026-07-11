@@ -62,10 +62,6 @@ export default function DeliveryLocationClient({
 }: any) {
   const router = useRouter();
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  // const [isFetching, setIsFetching] = useState(true);
-
   const {
     recipientName,
     recipientPhone,
@@ -77,11 +73,6 @@ export default function DeliveryLocationClient({
     setDropoffLocation,
     setVendorDeliveryLocation,
   } = useOrderStore();
-
-  // const [vendorAddressDetails, setVendorAddressDetails] =
-  //   useState<VendorAddressDetails | null>(null);
-
-  // const [addresses, setAddresses] = useState<Address[]>([]);
 
   const [selectedAddress, setSelectedAddress] = useState<Address | undefined>(
     undefined,
@@ -114,7 +105,7 @@ export default function DeliveryLocationClient({
     city: addr.city || 'N/A',
     state: addr.state || 'N/A',
     country: addr.country || 'Nigeria',
-    postalCode: addr.postalCode,
+    postalCode: addr.postalCode || '',
   });
 
   /* ---------------- Fetch Data ---------------- */

@@ -78,24 +78,28 @@ export default function OrderDetail({ orderId }: { orderId: string }) {
                 ? JSON.parse(order.dropoffLocation)
                 : order.dropoffLocation;
             return (
-              <Card border='none' gap="xs" className="bg-foreground-200 text-sm">
+              <Card
+                border="none"
+                gap="xs"
+                className="bg-foreground-200 text-sm space-y-6"
+              >
                 <p className="font-medium text-xs text-neutral-500">
                   Delivery To
                 </p>
-                <p className="text-sm flex items-center gap-2">
-                  <User size={14} className="text-neutral-400" />
+                <p className="text-sm flex items-center gap-3">
+                  <User size={14} className="text-green-100" />
                   {order.recipientName}
                 </p>
-                <p className="text-sm capitalize flex items-center gap-2">
-                  <MapPin size={14} className="text-neutral-400" />
+                <p className="text-sm capitalize flex items-center gap-3">
+                  <MapPin size={14} className="text-green-100" />
                   {[loc.address, loc.city, loc.state]
                     .filter(Boolean)
                     .join(', ')
                     .toLocaleLowerCase()}
                 </p>
                 {order.recipientPhone && (
-                  <p className="text-sm flex items-center gap-2">
-                    <Phone size={14} className="text-neutral-400" />
+                  <p className="text-sm flex items-center gap-3">
+                    <Phone size={14} className="text-green-100" />
                     {order.recipientPhone}
                   </p>
                 )}
@@ -113,23 +117,25 @@ export default function OrderDetail({ orderId }: { orderId: string }) {
                   key={item.id}
                   className="flex items-center justify-between py-6 gap-4 md:gap-12 mb-0"
                 >
-                  <div className="relative w-32 h-16">
-                    <Image
-                      src={item.product?.productImages?.[0]?.imageUrl ?? ''}
-                      alt={item.product?.productName ?? ''}
-                      fill
-                      className="object-cover rounded-md"
-                    />
+                  <div className="flex-1 flex  items-center gap-6">
+                    <div className="relative w-32 h-16">
+                      <Image
+                        src={item.product?.productImages?.[0]?.imageUrl ?? ''}
+                        alt={item.product?.productName ?? ''}
+                        fill
+                        className="object-cover rounded-md"
+                      />
+                    </div>
+
+                    <div className="capitalize w-full text-left">
+                      <p>{item.product?.productName?.toLowerCase()} </p>
+
+                      <p className='text-sm text-neutral-500'>Qty: {item.quantity}</p>
+                    </div>
                   </div>
 
-                  <div className="capitalize w-full text-left">
-                    <p>
-                      {item.product?.productName?.toLowerCase()} ×{' '}
-                      {item.quantity}
-                    </p>
-                  </div>
                   <span className="font-medium">
-                    ₦{item.totalPrice.toLocaleString()}
+                    NGN {item.totalPrice.toLocaleString()}
                   </span>
                 </li>
               ))}
@@ -142,26 +148,26 @@ export default function OrderDetail({ orderId }: { orderId: string }) {
           {order.serviceFee !== undefined && (
             <div className="flex justify-between text-neutral-500">
               <span>Service Fee</span>
-              <span>₦{order.serviceFee.toLocaleString()}</span>
+              <span>NGN {order.serviceFee.toLocaleString()}</span>
             </div>
           )}
           {order.deliveryFee !== undefined && (
             <div className="flex justify-between text-neutral-500">
               <span>Delivery Fee</span>
-              <span>₦{order.deliveryFee.toLocaleString()}</span>
+              <span>NGN {order.deliveryFee.toLocaleString()}</span>
             </div>
           )}
           {order.vat !== undefined && (
             <div className="flex justify-between text-neutral-500">
               <span>VAT</span>
-              <span>₦{order.vat.toLocaleString()}</span>
+              <span>NGN {order.vat.toLocaleString()}</span>
             </div>
           )}
           <div className="flex justify-between font-semibold text-base pt-2">
-            <span>Total</span>
-            <span className="text-primary">
-              ₦{(order.totalAmount ?? order.amount ?? 0).toLocaleString()}
-            </span>
+            <h2 className='text-xl font-bold'>Total</h2>
+            <h2 className="text-primary text-xl font-bold">
+              NGN {(order.totalAmount ?? order.amount ?? 0).toLocaleString()}
+            </h2>
           </div>
         </div>
 

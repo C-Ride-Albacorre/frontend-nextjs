@@ -172,20 +172,20 @@ export default function OrderDetailsModal({
               <p className="font-medium text-xs text-neutral-500">
                 Delivery To
               </p>
-              <p className="text-sm flex items-center gap-2">
-                <User size={14} className="text-neutral-400" />
+              <p className="text-sm flex items-center gap-3">
+                <User size={14} className="text-green-100" />
                 {order.recipientName}
               </p>
-              <p className="text-sm capitalize flex items-center gap-2">
-                <MapPin size={14} className="text-neutral-400" />
+              <p className="text-sm capitalize flex items-center gap-3">
+                <MapPin size={14} className="text-green-100" />
                 {[loc.address, loc.city, loc.state]
                   .filter(Boolean)
                   .join(', ')
                   .toLocaleLowerCase()}
               </p>
               {order.recipientPhone && (
-                <p className="text-sm flex items-center gap-2">
-                  <Phone size={14} className="text-neutral-400" />
+                <p className="text-sm flex items-center gap-3">
+                  <Phone size={14} className="text-green-100" />
                   {order.recipientPhone}
                 </p>
               )}

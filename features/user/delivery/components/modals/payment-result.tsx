@@ -14,7 +14,7 @@ export default function PaymentResultContent() {
   const orderNumber = searchParams.get('orderNumber') ?? '';
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] gap-6 p-6">
+    <div className="flex flex-col  items-center min-h-[60vh] gap-6 p-6">
       <div className="bg-[#10B981]/20 w-24 h-24 flex items-center justify-center rounded-full border-8 border-white/60">
         <CheckCircle2 size={48} className="text-[#10B981]" />
       </div>
@@ -26,7 +26,7 @@ export default function PaymentResultContent() {
         </p>
       </div>
 
-      <Card className="w-full max-w-md p-4">
+      <Card className="w-full max-w-xl p-4">
         <ul className="space-y-4 text-sm">
           {orderNumber && (
             <li className="flex justify-between">

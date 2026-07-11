@@ -80,7 +80,7 @@ export default function ProductCard({ item }: { item: Product }) {
       <Card
         border="none"
         spacing="sm"
-        className="group bg-foreground-200 overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
+        className="group bg-foreground-200 overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1  h-full"
       >
         <div className="space-y-2">
           {/* Product Image */}
@@ -105,8 +105,8 @@ export default function ProductCard({ item }: { item: Product }) {
           </div>
 
           {/* Product Details */}
-          <div className="col-span-2 flex flex-col justify-between">
-            <div className="space-y-3">
+          <div className="flex flex-1 flex-col gap-8">
+            <div className="flex flex-1 flex-col gap-3">
               <div>
                 <h3 className="text-base md:text-lg font-semibold capitalize line-clamp-1">
                   {item.productName}
@@ -116,7 +116,7 @@ export default function ProductCard({ item }: { item: Product }) {
                   {item.subcategory?.name || 'No subcategory available'}
                 </p>
               </div>
-              <div className="space-y-3  h-20 overflow-scroll">
+              <div className="space-y-3 ">
                 {/* Price */}
                 <div>
                   <h2 className="text-lg md:text-xl font-bold text-primary">
@@ -141,7 +141,7 @@ export default function ProductCard({ item }: { item: Product }) {
                   <div>
                     <div className="space-y-2">
                       {item.variants?.length > 0 && (
-                        <div className="flex justify-between items-center gap-2">
+                        <div className="flex  items-center gap-6">
                           <div className="flex items-center gap-2">
                             <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10">
                               <span className="text-xs">
@@ -149,35 +149,30 @@ export default function ProductCard({ item }: { item: Product }) {
                               </span>
                             </div>
                             <p className="text-xs font-medium text-neutral-800">
-                              Variant
+                              {item.variants.length} Variant{' '}
+                              {item.variants.length > 1 ? 's' : ''}
                             </p>
                           </div>
 
-                          <p className="text-xs text-neutral-500">
-                            {item.variants.length} option
-                            {item.variants.length > 1 ? 's' : ''} available
-                          </p>
-                        </div>
-                      )}
+                          {item.addons?.length > 0 && (
+                            <div className="flex justify-between items-center gap-2">
+                              <div className="flex items-center gap-2">
+                                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-green-100/10">
+                                  <span className="text-xs">
+                                    <Plus
+                                      size={12}
+                                      className="text-green-100"
+                                    />
+                                  </span>
+                                </div>
 
-                      {item.addons?.length > 0 && (
-                        <div className="flex justify-between items-center gap-2">
-                          <div className="flex items-center gap-2">
-                            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-green-100/10">
-                              <span className="text-xs">
-                                <Plus size={12} className="text-green-100" />
-                              </span>
+                                <p className="text-xs font-medium text-neutral-800">
+                                  {item.addons.length} Add on
+                                  {item.addons.length > 1 ? 's' : ''}
+                                </p>
+                              </div>
                             </div>
-
-                            <p className="text-xs font-medium text-neutral-800">
-                              Add ons
-                            </p>
-                          </div>
-
-                          <p className="text-xs text-neutral-500">
-                            {item.addons.length} option
-                            {item.addons.length > 1 ? 's' : ''} available
-                          </p>
+                          )}
                         </div>
                       )}
                     </div>
@@ -186,7 +181,7 @@ export default function ProductCard({ item }: { item: Product }) {
               </div>
             </div>
 
-            <div className="mt-4 flex flex-col gap-3">
+            <div className="flex flex-col gap-3">
               {!isConfigurable && (
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-medium">Quantity</span>
@@ -219,11 +214,11 @@ export default function ProductCard({ item }: { item: Product }) {
                 </div>
               )}
 
-              {isConfigurable && (
+              {/* {isConfigurable && (
                 <p className="text-xs text-neutral-500">
                   This item has custom options. Choose variant and add-ons.
                 </p>
-              )}
+              )} */}
 
               <Button
                 type="button"

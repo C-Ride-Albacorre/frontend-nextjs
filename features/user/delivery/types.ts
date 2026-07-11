@@ -147,23 +147,7 @@ export interface CartResponse {
     cartId: string;
     storeId: string;
     storeName: string;
-    items: {
-      id: string;
-      itemType: CartItemType;
-      productId?: string;
-      variantId?: string | null;
-      packageId?: string | null;
-      name: string;
-      imageUrl: string;
-      quantity: number;
-      unitPrice: number;
-      totalPrice: number;
-      selectedAddons: any[];
-      storeId: string;
-      storeName: string;
-      categoryId: string;
-      specialInstructions?: string | null;
-    }[];
+    items: CartItem[];
     subtotal: number;
     deliveryFee: number;
     serviceFee: number;
@@ -175,18 +159,22 @@ export interface CartResponse {
 export interface CartItem {
   id: string;
   itemType: CartItemType;
+  productName?: string;
   productId?: string;
-  variantId?: string;
-  packageId?: string;
+  variantId?: string | null;
+  packageId?: string | null;
   addonIds?: string[];
-  quantity: number;
-  specialInstructions?: string;
-  productName: string;
-  productImage?: string;
+  name?: string;
   imageUrl?: string;
-  basePrice: number;
+  quantity: number;
+  basePrice?: number;
   unitPrice: number;
   totalPrice: number;
+  selectedAddons?: any[];
+  storeId?: string;
+  storeName?: string;
+  categoryId?: string;
+  specialInstructions?: string | null;
 }
 
 export interface Cart {
@@ -218,23 +206,7 @@ export interface AddToCartResponse {
     cartId: string;
     storeId: string;
     storeName: string;
-    items: {
-      id: string;
-      itemType: CartItemType;
-      productId?: string;
-      variantId?: string | null;
-      packageId?: string | null;
-      name: string;
-      imageUrl: string;
-      quantity: number;
-      unitPrice: number;
-      totalPrice: number;
-      selectedAddons: any[];
-      storeId: string;
-      storeName: string;
-      categoryId: string;
-      specialInstructions?: string | null;
-    }[];
+    items: CartItem[];
     subtotal: number;
     deliveryFee: number;
     serviceFee: number;
@@ -258,23 +230,7 @@ export interface UpdateCartQuantityResponse {
     cartId: string;
     storeId: string;
     storeName: string;
-    items: {
-      id: string;
-      itemType: string;
-      productId: string;
-      variantId: string | null;
-      packageId: string | null;
-      name: string;
-      imageUrl: string;
-      quantity: number;
-      unitPrice: number;
-      totalPrice: number;
-      selectedAddons: any[];
-      storeId: string;
-      storeName: string;
-      categoryId: string;
-      specialInstructions: string | null;
-    }[];
+    items: CartItem[];
     subtotal: number;
     deliveryFee: number;
     serviceFee: number;
@@ -300,7 +256,21 @@ export interface DropoffLocation {
   city: string;
   state: string;
   country: string;
-  postalCode?: string;
+  postalCode: string;
+}
+
+export interface PickupLocation {
+  address: string;
+  storeId: string;
+  latitude: number;
+  longitude: number;
+  storeName: string;
+}
+
+export interface StatusHistory {
+  note: string;
+  status: string;
+  timestamp: string;
 }
 
 export interface CreateOrderPayload {
@@ -312,6 +282,98 @@ export interface CreateOrderPayload {
   deliveryInstructions?: string;
 }
 
+export interface GetDeliveryOptionResponse {
+  status: string;
+  statusCode: number;
+  timestamp: string;
+  path: string;
+  error: string;
+  message: string;
+  data: {
+    success: boolean;
+    message: string;
+  };
+}
+
+export interface OrderResponse {
+  status: string;
+  statusCode: number;
+  timestamp: string;
+  path: string;
+  data: [
+    {
+      id: string;
+      orderNumber: string;
+      userId: string;
+      orderType: 'VENDOR';
+      subtotal: number;
+      deliveryFee: number;
+      serviceFee: number;
+      taxAmount: number;
+      totalAmount: number;
+      deliveryOptionId: string | null;
+      dropoffLocation: DropoffLocation[];
+      recipientName: string;
+      recipientPhone: string;
+      deliveryInstructions: string | null;
+      paymentStatus: 'PENDING' | 'PAID' | 'FAILED';
+      paymentMethod: string | null;
+      paymentReference: string | null;
+      monnifyReference: string | null;
+      orderStatus: string;
+      statusHistory: StatusHistory[];
+      metadata: Record<string, unknown> | null;
+      createdAt: string;
+      updatedAt: string;
+      pickupLocation: PickupLocation[];
+      orderCode: string;
+      respondedAt: string | null;
+      reason: string | null;
+      canceledAt: string | null;
+      deliveredAt: string | null;
+      driverAssignedAt: string | null;
+      pickedUpAt: string | null;
+      vendorAcceptedAt: string | null;
+      vendorDeclinedAt: string | null;
+      storeId: string | null;
+      items: CartItem[];
+      deliveryOption: null;
+    },
+  ];
+}
+
+export interface CreateOrderResponse {
+  status: string;
+  statusCode: number;
+  timestamp: string;
+  path: string;
+  error: string;
+  message: string;
+  data: {
+    orderId: string;
+    orderNumber: string;
+    orderType: 'VENDOR';
+    items: CartItem[];
+
+    subtotal: number;
+    deliveryFee: number;
+    serviceFee: number;
+    taxAmount: number;
+    totalAmount: number;
+    dropoffLocation: DropoffLocation;
+    pickupLocation: PickupLocation;
+    recipientName: string;
+    recipientPhone: string;
+    deliveryInstructions: string | null;
+    paymentStatus: 'PENDING' | 'PAID' | 'FAILED';
+    orderStatus: string;
+    statusHistory: StatusHistory[];
+    createdAt: string;
+    updatedAt: string;
+    deliveryOption: null;
+  };
+}
+
 export interface Order {
   id: string;
   status?: string;
@@ -321,12 +383,104 @@ export interface Order {
   updatedAt?: string;
 }
 
+export interface OrderDetailsResponse {
+  status: string;
+  statusCode: number;
+  timestamp: string;
+  path: string;
+  data: {
+    id: string;
+    orderNumber: string;
+    userId: string;
+    orderType: 'VENDOR';
+    subtotal: number;
+    deliveryFee: number;
+    serviceFee: number;
+    taxAmount: number;
+    totalAmount: number;
+    deliveryOptionId: string | null;
+    dropoffLocation: {
+      address: string;
+      city: string;
+      state: string;
+      country: string;
+      postalCode: string;
+      latitude: number;
+      longitude: number;
+    };
+    recipientName: string;
+    recipientPhone: string;
+    deliveryInstructions: string | null;
+    paymentStatus: 'PENDING' | 'PAID' | 'FAILED';
+    paymentMethod: string | null;
+    paymentReference: string | null;
+    monnifyReference: string | null;
+    orderStatus: string;
+    statusHistory: StatusHistory[];
+    metadata: Record<string, unknown> | null;
+    createdAt: string;
+    updatedAt: string;
+    pickupLocation: PickupLocation;
+    orderCode: string;
+    respondedAt: string | null;
+    reason: string | null;
+    canceledAt: string | null;
+    deliveredAt: string | null;
+    driverAssignedAt: string | null;
+    pickedUpAt: string | null;
+    vendorAcceptedAt: string | null;
+    vendorDeclinedAt: string | null;
+    storeId: string | null;
+    items: CartItem[];
+    deliveryOption: string | null;
+  };
+}
+
+export interface CancelOrderResponse {
+  status: string;
+  statusCode: number;
+  timestamp: string;
+  path: string;
+  error: string;
+  message: string;
+  data: {
+    success: boolean;
+    message: string;
+  };
+}
+
 // ─── Payment ───
 
 export interface InitializePaymentPayload {
   orderId: string;
   paymentMethod: 'CARD';
   callbackUrl: string;
+}
+
+export interface InitializePaymentResponse {
+  status: string;
+  statusCode: number;
+  timestamp: string;
+  path: string;
+  error: string;
+  message: string;
+  data: {
+    success: boolean;
+    message: string;
+  };
+}
+
+export interface GetPaymentStatusResponse {
+  status: string;
+  statusCode: number;
+  timestamp: string;
+  path: string;
+  error: string;
+  message: string;
+  data: {
+    success: boolean;
+    message: string;
+  };
 }
 
 // ─── Vendor Address ───

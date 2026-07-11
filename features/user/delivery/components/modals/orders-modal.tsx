@@ -254,10 +254,14 @@ export default function OrdersModal({
                   const id = order.id ?? order.orderId ?? '';
                   return (
                     <li key={id}>
-                      <Card gap="md" className="bg-foreground-200 ">
+                      <Card
+                        border="none"
+                        gap="md"
+                        className="bg-foreground-200 "
+                      >
                         <div className="flex items-center justify-between mb-6">
                           <p className="text-xs font-medium">
-                            #{order.orderNumber}
+                            {order.orderNumber}
                           </p>
                           <span
                             className={`rounded-full px-2 py-0.5 text-[0.65rem] capitalize ${statusColor(
@@ -298,15 +302,17 @@ export default function OrdersModal({
                           </div>
 
                           <div className="flex justify-between items-center">
-                            <p>Total:</p>
-                            <p className="font-medium  text-primary-text-100">
-                              ₦
+                            <h2 className="font-bold  text-primary-text-100">
+                              Total:
+                            </h2>
+                            <h2 className="font-bold  text-primary-text-100">
+                              NGN{' '}
                               {(
                                 order.totalAmount ??
                                 order.amount ??
                                 0
                               ).toLocaleString()}
-                            </p>
+                            </h2>
                           </div>
                         </div>
 
@@ -360,24 +366,28 @@ export default function OrdersModal({
                     ? JSON.parse(selectedOrder.dropoffLocation)
                     : selectedOrder.dropoffLocation;
                 return (
-                  <Card gap="xs" className="bg-foreground-200 text-sm">
+                  <Card
+                    border="none"
+                    gap="xs"
+                    className="bg-foreground-200 text-sm space-y-4"
+                  >
                     <p className="font-medium text-xs text-neutral-500">
                       Delivery To
                     </p>
-                    <p className="text-sm flex items-center gap-2">
-                      <User size={14} className="text-neutral-400" />
+                    <p className="text-sm flex items-center gap-3">
+                      <User size={14} className="text-green-100" />
                       {selectedOrder.recipientName}
                     </p>
-                    <p className="text-sm capitalize flex items-center gap-2">
-                      <MapPin size={14} className="text-neutral-400" />
+                    <p className="text-sm capitalize flex items-center gap-3">
+                      <MapPin size={14} className="text-green-100" />
                       {[loc.address, loc.city, loc.state]
                         .filter(Boolean)
                         .join(', ')
                         .toLocaleLowerCase()}
                     </p>
                     {selectedOrder.recipientPhone && (
-                      <p className="text-sm flex items-center gap-2">
-                        <Phone size={14} className="text-neutral-400" />
+                      <p className="text-sm flex items-center gap-3">
+                        <Phone size={14} className="text-green-100" />
                         {selectedOrder.recipientPhone}
                       </p>
                     )}
@@ -393,26 +403,27 @@ export default function OrdersModal({
                   {selectedOrder.items.map((item: OrderItem) => (
                     <li
                       key={item.id}
-                      className="flex items-center justify-between py-6 gap-4 md:gap-12 mb-0"
+                      className="flex items-center justify-between py-6 gap-4 md:gap-8 mb-0"
                     >
-                      <div className="relative w-32 h-16 ">
+                    <div className='flex items-center gap-4 md:gap-6 flex-1'>
+                        <div className="relative w-32 h-20 ">
                         <Image
                           src={item.product?.productImages?.[0]?.imageUrl ?? ''}
                           alt={item.product?.productName ?? ''}
                           fill
+                          priority
                           className="object-cover rounded-md"
                         />
                       </div>
 
-                      <div className="capitalize  w-full text-left">
-                        <p>
-                          {item.product?.productName?.toLowerCase()} ×{' '}
-                          {item.quantity}
-                        </p>
+                      <div className="capitalize  w-full text-left space-y-2">
+                        <p>{item.product?.productName?.toLowerCase()}</p>
+                        <p className="text-xs text-neutral-500">Qty: {item.quantity}</p>
                       </div>
-                      <span className="font-medium">
-                        ₦{item.totalPrice.toLocaleString()}
-                      </span>
+                    </div>
+                      <p className="font-medium">
+                        NGN {item.totalPrice.toLocaleString()}
+                      </p>
                     </li>
                   ))}
                 </ul>
@@ -424,31 +435,31 @@ export default function OrdersModal({
               {selectedOrder.serviceFee !== undefined && (
                 <div className="flex justify-between text-neutral-500">
                   <span>Service Fee</span>
-                  <span>₦{selectedOrder.serviceFee.toLocaleString()}</span>
+                  <span>NGN {selectedOrder.serviceFee.toLocaleString()}</span>
                 </div>
               )}
               {selectedOrder.deliveryFee !== undefined && (
                 <div className="flex justify-between text-neutral-500">
                   <span>Delivery Fee</span>
-                  <span>₦{selectedOrder.deliveryFee.toLocaleString()}</span>
+                  <span>NGN {selectedOrder.deliveryFee.toLocaleString()}</span>
                 </div>
               )}
               {selectedOrder.vat !== undefined && (
                 <div className="flex justify-between text-neutral-500">
                   <span>VAT</span>
-                  <span>₦{selectedOrder.vat.toLocaleString()}</span>
+                  <span>NGN {selectedOrder.vat.toLocaleString()}</span>
                 </div>
               )}
               <div className="flex justify-between font-semibold text-base pt-2">
-                <span>Total</span>
-                <span className="text-primary">
-                  ₦
+                <h2>Total</h2>
+                <h2 className="text-primary">
+                  NGN{' '}
                   {(
                     selectedOrder.totalAmount ??
                     selectedOrder.amount ??
                     0
                   ).toLocaleString()}
-                </span>
+                </h2>
               </div>
             </div>
 
@@ -466,7 +477,7 @@ export default function OrdersModal({
               ) && (
                 <Button
                   variant="primary"
-                  size="lg"
+                  size="full"
                   className="flex-1"
                   leftIcon={
                     isInitiatingPayment ? (
@@ -481,8 +492,8 @@ export default function OrdersModal({
                   {isInitiatingPayment
                     ? 'Processing...'
                     : selectedOrder.paymentReference
-                      ? `Continue Payment - ₦${(selectedOrder.totalAmount ?? 0).toLocaleString()}`
-                      : `Pay - ₦${(selectedOrder.totalAmount ?? 0).toLocaleString()}`}
+                      ? `Continue Payment - NGN ${(selectedOrder.totalAmount ?? 0).toLocaleString()}`
+                      : `Pay - NGN ${(selectedOrder.totalAmount ?? 0).toLocaleString()}`}
                 </Button>
               )}
 

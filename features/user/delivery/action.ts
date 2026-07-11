@@ -11,10 +11,7 @@ import {
 } from './order-service';
 import type { ActionResult, CreateOrderPayload } from './types';
 
-import {
-  CreateOrderSchema,
-  InitializePaymentSchema,
-} from './schema';
+import { CreateOrderSchema, InitializePaymentSchema } from './schema';
 
 // ═══════════════════════════════════════
 // ORDERS
@@ -22,19 +19,7 @@ import {
 
 export async function createOrderAction(
   payload: CreateOrderPayload,
-): Promise<ActionResult<{ id: string; orderId?: string }>> {
-  // Preprocess: convert null postalCode to undefined
-  // const sanitizedPayload = {
-  //   ...payload,
-  //   dropoffLocation: {
-  //     ...payload.dropoffLocation,
-  //     postalCode:
-  //       payload.dropoffLocation?.postalCode === null
-  //         ? undefined
-  //         : payload.dropoffLocation?.postalCode,
-  //   },
-  // };
-
+): Promise<ActionResult<{  orderId?: string }>> {
   console.log('Order payload validated:', payload);
 
   const parsed = CreateOrderSchema.safeParse(payload);
@@ -47,7 +32,11 @@ export async function createOrderAction(
 
   try {
     const res = await createOrderService(parsed.data);
-    return { success: true, data: res.data };
+
+    console.log('[createOrderAction] Response:', res);
+
+
+    return { success: true, data: res?.data };
   } catch (e: any) {
     return { success: false, error: e.message || 'Failed to create order' };
   }
@@ -56,6 +45,8 @@ export async function createOrderAction(
 export async function getOrdersAction(): Promise<ActionResult<any[]>> {
   try {
     const res = await getOrdersService();
+
+    console.log(' [getOrdersAction] Response:', res);
     return { success: true, data: res.data };
   } catch (e: any) {
     return { success: false, error: e.message || 'Failed to fetch orders' };
@@ -67,6 +58,10 @@ export async function getOrderDetailsAction(
 ): Promise<ActionResult<any>> {
   try {
     const res = await getOrderDetailsService(orderId);
+
+
+    console.log(' [getOrderDetailsAction] Response:', res);
+
     return { success: true, data: res.data };
   } catch (e: any) {
     return {
@@ -81,6 +76,8 @@ export async function cancelOrderAction(
 ): Promise<ActionResult<any>> {
   try {
     const res = await cancelOrderService(orderId);
+
+    console.log(' [cancelOrderAction] Response:', res);
     return { success: true, data: res.data };
   } catch (e: any) {
     return { success: false, error: e.message || 'Failed to cancel order' };
@@ -143,7 +140,7 @@ export async function getPaymentStatusAction(
 // DELIVERY OPTIONS
 // ═══════════════════════════════════════
 
-export async function getDeliveryOptionsAction(): Promise<ActionResult<any[]>> {
+export async function getDeliveryOptionsAction(): Promise<ActionResult<any>> {
   try {
     const res = await getDeliveryOptionsService();
     return { success: true, data: res.data ?? [] };

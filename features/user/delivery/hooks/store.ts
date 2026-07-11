@@ -139,7 +139,9 @@ export const useCartStore = create<CartStore>()(
                 ? {
                     ...i,
                     quantity: i.quantity + quantity,
-                    totalPrice: i.basePrice * (i.quantity + quantity),
+                    totalPrice:
+                      (i.unitPrice ?? i.basePrice ?? 0) *
+                      (i.quantity + quantity),
                   }
                 : i,
             );
@@ -163,7 +165,7 @@ export const useCartStore = create<CartStore>()(
 
               productName: product.productName,
 
-              productImage: product.productImages?.[0]?.imageUrl,
+              imageUrl: product.productImages?.[0]?.imageUrl,
 
               unitPrice: product.basePrice,
 
@@ -317,7 +319,7 @@ export const useCartStore = create<CartStore>()(
                 ? {
                     ...i,
                     quantity,
-                    totalPrice: i.basePrice * quantity,
+                    totalPrice: (i.unitPrice ?? i.basePrice ?? 0) * quantity,
                   }
                 : i,
             );
