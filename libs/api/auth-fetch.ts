@@ -9,9 +9,14 @@ export async function authFetch(
   url: string,
   options: AuthFetchOptions = {},
 ): Promise<Response> {
-  const { cacheStrategy = 'no-store', nextTags, ...rest } = options;
+  const {
+    cacheStrategy = 'no-store',
+    nextTags,
+    headers: customHeaders,
+    ...rest
+  } = options;
 
-  const headers = new Headers(rest.headers);
+  const headers = new Headers(customHeaders);
 
   const accessToken = await getCookie(COOKIE_KEYS.ACCESS_TOKEN);
 

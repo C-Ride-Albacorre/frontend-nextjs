@@ -49,12 +49,14 @@ export async function fetchCategoryStoresService({
   if (search) params.set('search', search);
   if (radiusKm) params.set('radiusKm', String(radiusKm));
 
+  const cacheTag = categoryId ? `stores-category-${categoryId}` : 'stores-all';
+  const subcatTag = subcategoryId ? `-subcat-${subcategoryId}` : '';
+
   return request<CategoryStoresApiResponse>(
     `${BASE_URL}/customer/stores?${params.toString()}`,
     {
       cacheStrategy: { revalidate: 3600 },
-
-      nextTags: [`stores-category-${categoryId}-subcat-${subcategoryId}`],
+      nextTags: [`${cacheTag}${subcatTag}`],
     },
   );
 }

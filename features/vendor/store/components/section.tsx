@@ -1,11 +1,15 @@
 import Card from '@/components/layout/card';
+import { useEffect } from 'react';
+import { searchAddress } from '@/helpers/address-search';
 import Input from '@/components/ui/inputs/input';
 import { Select } from '@/components/ui/inputs/select';
 import Textarea from '@/components/ui/inputs/textarea';
 import TimePicker from '@/components/ui/inputs/time-picker';
 import { Button } from '@/components/ui/buttons/button';
-import { Copy } from 'lucide-react';
 import { useBusinessTypes } from '../../onboarding/fetch';
+import { AddressSuggestion } from '@/helpers/address-search';
+import { useState } from 'react';
+import PhoneInput from '@/components/ui/inputs/phone-input';
 
 export interface StoreFormValues {
   storeName: string;
@@ -32,6 +36,9 @@ export function StoreInformation({
   errors,
   disabled,
 }: StoreInformationProps) {
+  const [suggestions, setSuggestions] = useState<AddressSuggestion[]>([]);
+  const [isFocused, setIsFocused] = useState(false);
+
   const { data: StoreCategory, isPending, error } = useBusinessTypes();
 
   console.log('Store Category :', StoreCategory);
@@ -43,13 +50,24 @@ export function StoreInformation({
     })) ?? [];
 
   console.log('store category options :', options);
+
+  useEffect(() => {
+    const timeout = setTimeout(async () => {
+      const results = await searchAddress(values.storeAddress);
+
+      setSuggestions(results);
+    }, 300);
+
+    return () => clearTimeout(timeout);
+  }, [values.storeAddress]);
+
   return (
     <Card
       spacing="md"
       className={`bg-white ${disabled ? 'opacity-50 pointer-events-none' : ''}`}
     >
       <div className=" space-y-6 md:space-y-10">
-        <p className="text-neutral-900 font-medium">Store Information</p>
+        <h2 className="text-neutral-900 font-semibold">Store Information</h2>
         <div className="space-y-6">
           <Input
             name="storeName"
@@ -60,6 +78,7 @@ export function StoreInformation({
             onChange={(e) => onChange('storeName', e.target.value)}
             errorMessage={errors?.storeName?.[0]}
             disabled={disabled}
+            required
           />
 
           <Select
@@ -68,6 +87,7 @@ export function StoreInformation({
             label="Store Category"
             placeholder="Select category"
             spacing="sm"
+            required
             options={
               error
                 ? [{ value: '', label: 'Error loading Business Types' }]
@@ -81,27 +101,55 @@ export function StoreInformation({
             disabled={disabled}
           />
 
-          <Input
-            name="storeAddress"
-            label="Store Address"
-            placeholder="12B Adeola Odaku street, Victoria Island Lag.."
-            spacing="sm"
-            value={values.storeAddress}
-            onChange={(e) => onChange('storeAddress', e.target.value)}
-            errorMessage={errors?.storeAddress?.[0]}
-            disabled={disabled}
-          />
+          <div className="relative">
+            {' '}
+            <Input
+              name="storeAddress"
+              label="Store Address"
+              required
+              placeholder="12B Adeola Odaku street, Victoria Island Lag.."
+              spacing="sm"
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => {
+                setTimeout(() => setIsFocused(false), 150);
+              }}
+              value={values.storeAddress}
+              onChange={(e) => onChange('storeAddress', e.target.value)}
+              errorMessage={errors?.storeAddress?.[0]}
+              disabled={disabled}
+            />
+            {isFocused && suggestions.length > 0 && (
+              <div className="absolute z-50 mt-2 w-full rounded-xl border border-border bg-white shadow-lg overflow-hidden">
+                {suggestions.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    className="w-full border-b border-border px-4 py-3 text-left hover:bg-neutral-50 last:border-b-0 text-sm text-neutral-700 cursor-pointer "
+                    onClick={() => {
+                      onChange('storeAddress', item.description);
+                      setSuggestions([]);
+                    }}
+                  >
+                    {item.description}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
 
           <Input
             name="phoneNumber"
             label="Phone Number"
             type="tel"
-            placeholder="+234 812 345 6789"
+            required
+            placeholder="+234 123 456 7890"
             spacing="sm"
             value={values.phoneNumber}
             onChange={(e) => onChange('phoneNumber', e.target.value)}
             errorMessage={errors?.phoneNumber?.[0]}
             disabled={disabled}
+            pattern="[0-9]+"
+            maxLength={11}
           />
 
           <Input
@@ -114,6 +162,7 @@ export function StoreInformation({
             onChange={(e) => onChange('email', e.target.value)}
             errorMessage={errors?.email?.[0]}
             disabled={disabled}
+            required
           />
         </div>
       </div>
@@ -153,7 +202,7 @@ export function OperatingHours({
       className={`bg-white ${disabled ? 'opacity-50 pointer-events-none' : ''}`}
     >
       <div className="space-y-6 md:space-y-10">
-        <p className="text-neutral-900 font-medium">Operating Hours</p>
+        <h2 className="text-neutral-900 font-semibold">Operating Hours</h2>
         {errors?.operatingHours && (
           <p className="text-xs text-red-600">{errors.operatingHours[0]}</p>
         )}
@@ -184,9 +233,11 @@ export function OperatingHours({
 
               return (
                 <div key={day} className="space-y-2">
-                  <div className="grid grid-cols-12 gap-4 items-center">
-                    <span className="text-sm col-span-3">{day}</span>
-                    <div className="col-span-4">
+                  <div className="grid grid-cols-5  xl:grid-cols-12 gap-4 items-center">
+                    <span className="text-sm col-span-5 xl:col-span-3">
+                      {day}<span className="text-red-500">*</span>
+                    </span>
+                    <div className="col-span-2 xl:col-span-4">
                       <TimePicker
                         name={`${dayKey}Open`}
                         value={values.operatingHours[dayKey]?.open || ''}
@@ -196,10 +247,10 @@ export function OperatingHours({
                       />
                     </div>
 
-                    <span className="text-sm flex justify-center items-center">
+                    <span className="text-sm flex justify-center items-center col-span-1 xl:col-span-1">
                       to
                     </span>
-                    <div className="col-span-4">
+                    <div className="col-span-2 xl:col-span-4">
                       <TimePicker
                         name={`${dayKey}Close`}
                         value={values.operatingHours[dayKey]?.close || ''}
@@ -218,9 +269,8 @@ export function OperatingHours({
                         <Button
                           type="button"
                           variant="outline"
-                          size="xs"
+                          size="icon"
                           rounded="md"
-                          leftIcon={<Copy size={12} />}
                           onClick={() => onApplyToAll(dayKey)}
                         >
                           Apply to all
@@ -255,9 +305,9 @@ export function StoreDetails({
       className={`bg-white ${disabled ? 'opacity-50 pointer-events-none' : ''}`}
     >
       <div className="space-y-6 md:space-y-10">
-        <p className="text-neutral-900 font-medium">
+        <h2 className="text-neutral-900 font-semibold">
           Store Description & Details
-        </p>
+        </h2>
         <div className="grid md:grid-cols-2 gap-4">
           <Textarea
             id="storeDescription"
@@ -268,6 +318,7 @@ export function StoreDetails({
             value={values.storeDescription}
             onChange={(e) => onChange('storeDescription', e.target.value)}
             disabled={disabled}
+            required
           />
 
           <Input
@@ -279,6 +330,7 @@ export function StoreDetails({
             onChange={(e) => onChange('dailyOrderLimit', e.target.value)}
             errorMessage={errors?.dailyOrderLimit?.[0]}
             disabled={disabled}
+            required
           />
 
           <Input
@@ -290,6 +342,7 @@ export function StoreDetails({
             onChange={(e) => onChange('preparationTime', e.target.value)}
             errorMessage={errors?.preparationTime?.[0]}
             disabled={disabled}
+            required
           />
         </div>
       </div>

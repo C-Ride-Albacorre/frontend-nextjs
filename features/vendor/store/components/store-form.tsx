@@ -34,6 +34,7 @@ interface StoreFormProps {
 
 export default function StoreForm({ initialData }: StoreFormProps) {
   const isEditMode = Boolean(initialData?.id);
+
   const [isEditing, setIsEditing] = useState(!isEditMode);
 
   // Convert initial data to form values
@@ -160,7 +161,7 @@ export default function StoreForm({ initialData }: StoreFormProps) {
         Back
       </Button>
 
-      <form action={action} className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <form action={action} className="grid grid-cols-2 xl:grid-cols-4 gap-8">
         {/* Hidden field for store ID when editing */}
         {isEditMode && (
           <input type="hidden" name="storeId" value={initialData?.id} />
@@ -170,17 +171,17 @@ export default function StoreForm({ initialData }: StoreFormProps) {
         {isEditMode && !isEditing && (
           <Card
             spacing="none"
-            className="md:col-span-2 flex flex-col md:flex-row gap-4 md:items-center justify-between bg-primary/10 px-4 md:px-6 py-3"
+            className="col-span-2 xl:col-span-4 flex flex-col md:flex-row gap-4 md:items-center justify-between bg-primary/10 px-4 md:px-6 py-3 border border-primary/20"
           >
             <div className="flex items-center gap-2 text-primary mb-0">
               <Lock size={16} />
-              <span className="text-xs font-medium">
+              <span className="text-sm font-medium">
                 Fields are locked. Click Edit to make changes.
               </span>
             </div>
             <Button
               variant="white"
-              size="sm"
+              size="icon"
               type="button"
               onClick={handleEditToggle}
               leftIcon={<Pencil size={14} />}
@@ -190,21 +191,27 @@ export default function StoreForm({ initialData }: StoreFormProps) {
           </Card>
         )}
 
-        <StoreInformation
-          values={values}
-          onChange={handleChange}
-          errors={errors}
-          disabled={isEditMode && !isEditing}
-        />
-        <OperatingHours
-          values={values}
-          onTimeChange={handleTimeChange}
-          onApplyToAll={handleApplyToAll}
-          lastChangedDay={lastChangedDay}
-          errors={errors}
-          disabled={isEditMode && !isEditing}
-        />
-        <div className="md:col-span-2">
+        <div className="col-span-2 xl:col-span-2">
+          <StoreInformation
+            values={values}
+            onChange={handleChange}
+            errors={errors}
+            disabled={isEditMode && !isEditing}
+          />
+        </div>
+
+        <div className="col-span-2 xl:col-span-2">
+          <OperatingHours
+            values={values}
+            onTimeChange={handleTimeChange}
+            onApplyToAll={handleApplyToAll}
+            lastChangedDay={lastChangedDay}
+            errors={errors}
+            disabled={isEditMode && !isEditing}
+          />
+        </div>
+
+        <div className="col-span-2 xl:col-span-4">
           <StoreDetails
             values={values}
             onChange={handleChange}
@@ -213,7 +220,7 @@ export default function StoreForm({ initialData }: StoreFormProps) {
           />
         </div>
 
-        <div className="md:col-span-2">
+        <div className="col-span-2 xl:col-span-4">
           <StoreImageUpload
             initialLogo={initialData?.storeLogo}
             disabled={isEditMode && !isEditing}
@@ -221,10 +228,10 @@ export default function StoreForm({ initialData }: StoreFormProps) {
           />
         </div>
 
-        <div className="flex justify-end items-center md:col-span-2">
+        <div className="flex justify-end items-center col-span-2 xl:col-span-4">
           <Button
             variant="primary"
-            size="md"
+            size="icon"
             type="submit"
             disabled={pending || (isEditMode && !isEditing)}
           >
@@ -241,14 +248,15 @@ export default function StoreForm({ initialData }: StoreFormProps) {
       <Modal
         isModalOpen={showSuccessModal}
         onClose={() => setShowSuccessModal(false)}
+        wrapperClassName='max-w-md'
       >
         <div className="flex flex-col items-center text-center space-y-6 py-6">
           <div className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100">
-            <CheckCircle size={32} className="text-emerald-600" />
+            <CheckCircle size={36} className="text-emerald-600" />
           </div>
 
           <div className="space-y-2">
-            <h3 className="text-lg font-semibold text-neutral-900">
+            <h3 className="text-xl font-semibold text-neutral-900">
               Store Created Successfully!
             </h3>
             <p className="text-sm text-neutral-500">
@@ -260,14 +268,14 @@ export default function StoreForm({ initialData }: StoreFormProps) {
           <div className="flex items-center gap-4">
             <Button
               variant="outline"
-              size="md"
+              size="icon"
               onClick={() => setShowSuccessModal(false)}
             >
               Create Another
             </Button>
             <Button
               variant="primary"
-              size="md"
+              size="icon"
               href={
                 createdStoreId
                   ? `/vendor/store/${createdStoreId}`

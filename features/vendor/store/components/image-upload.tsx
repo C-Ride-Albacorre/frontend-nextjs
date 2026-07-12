@@ -70,8 +70,8 @@ export default function StoreImageUpload({
 
   return (
     <Card className={disabled ? 'opacity-50 pointer-events-none' : ''}>
-      <div className="px-4 md:px-8 space-y-6 md:space-y-10">
-        <p className="text-neutral-900 font-medium">Store Logo</p>
+      <div className="space-y-6 md:space-y-10">
+        <h2 className="text-neutral-900 font-semibold">Store Logo</h2>
 
         {/* Error Message */}
         {error && (
@@ -98,7 +98,7 @@ export default function StoreImageUpload({
                 <button
                   type="button"
                   onClick={removeImage}
-                  className="absolute top-2 right-2 rounded-full bg-black/60 p-1 text-white hover:bg-black"
+                  className="absolute top-2 right-2 rounded-full bg-black/60 p-1 text-white hover:bg-black cursor-pointer"
                 >
                   <X size={14} />
                 </button>
@@ -112,13 +112,13 @@ export default function StoreImageUpload({
               type="button"
               onClick={() => !disabled && inputRef.current?.click()}
               disabled={disabled}
-              className={`flex h-40 w-40 flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-border text-sm text-neutral-500 transition bg-foreground-200 ${
+              className={`flex h-40 w-40 flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-border text-neutral-500 transition bg-foreground-200 text-sm ${
                 disabled
                   ? 'cursor-not-allowed opacity-60'
                   : 'hover:bg-foreground-100 cursor-pointer'
               }`}
             >
-              <Upload size={20} className="text-primary" />
+              <Upload size={20} className="text-neutral-500" />
               Add Logo
             </button>
           )}

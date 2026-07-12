@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Clock, ChevronUp, ChevronDown } from 'lucide-react';
 import clsx from 'clsx';
+import { Button } from '../buttons/button';
 
 interface TimePickerProps {
   name: string;
@@ -120,12 +121,12 @@ export default function TimePicker({
         )}
       >
         <span>{displayValue || placeholder}</span>
-        <Clock size={16} className="text-neutral-400" />
+        <Clock size={16}  className='text-neutral-600' />
       </button>
 
       {/* Dropdown */}
       {isOpen && (
-        <div className="absolute z-50 mt-2 left-0 min-w-50 bg-white border border-border rounded-xl shadow-lg p-4 cursor-pointer">
+        <div className="absolute z-50 mt-2 right-0 min-w-50 bg-white border border-border rounded-xl shadow-lg p-4 cursor-pointer">
           <div className="flex items-center justify-center gap-2">
             {/* Hour */}
             <div className="flex flex-col items-center">
@@ -134,17 +135,17 @@ export default function TimePicker({
                 onClick={() => adjustHour(1)}
                 className="p-1 hover:bg-foreground-100 rounded cursor-pointer"
               >
-                <ChevronUp size={16} />
+                <ChevronUp size={16}  className='text-neutral-600' />
               </button>
-              <span className="text-xl font-semibold w-8 text-center">
+              <h2 className="text-xl font-bold w-8 text-center">
                 {hour}
-              </span>
+              </h2>
               <button
                 type="button"
                 onClick={() => adjustHour(-1)}
                 className="p-1 hover:bg-foreground-100 rounded cursor-pointer"
               >
-                <ChevronDown size={16} />
+                <ChevronDown size={16}  className='text-neutral-600' />
               </button>
             </div>
 
@@ -157,17 +158,17 @@ export default function TimePicker({
                 onClick={() => adjustMinute(1)}
                 className="p-1 hover:bg-foreground-100 rounded cursor-pointer"
               >
-                <ChevronUp size={16} />
+                <ChevronUp size={16}  className='text-neutral-600' />
               </button>
-              <span className="text-xl font-semibold w-8 text-center">
+              <h2 className="text-xl font-bold w-8 text-center">
                 {minute}
-              </span>
+              </h2>
               <button
                 type="button"
                 onClick={() => adjustMinute(-1)}
                 className="p-1 hover:bg-foreground-100 rounded cursor-pointer"
               >
-                <ChevronDown size={16} />
+                <ChevronDown size={16}  className='text-neutral-600' />
               </button>
             </div>
 
@@ -178,29 +179,30 @@ export default function TimePicker({
                 onClick={() => setPeriod(period === 'AM' ? 'PM' : 'AM')}
                 className="p-1 hover:bg-foreground-100 rounded cursor-pointer"
               >
-                <ChevronUp size={16} />
+                <ChevronUp size={16} className='text-neutral-600' />
               </button>
-              <span className="text-lg font-semibold w-8 text-center">
+              <h2 className="text-lg font-bold w-8 text-center">
                 {period}
-              </span>
+              </h2>
               <button
                 type="button"
                 onClick={() => setPeriod(period === 'AM' ? 'PM' : 'AM')}
                 className="p-1 hover:bg-foreground-100 rounded cursor-pointer"
               >
-                <ChevronDown size={16} />
+                <ChevronDown size={16}  className='text-neutral-600' />
               </button>
             </div>
           </div>
 
           {/* Confirm button */}
-          <button
+          <Button
+          size='icon'
             type="button"
             onClick={handleConfirm}
-            className="mt-4 w-full py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary-hover transition cursor-pointer"
+            className="mt-4 w-full"
           >
             Confirm
-          </button>
+          </Button>
         </div>
       )}
     </div>

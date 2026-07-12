@@ -79,13 +79,13 @@ export default async function VendorStoreCard() {
         )}
 
         {store.status === 'PENDING_APPROVAL' && (
-          <span className="flex w-fit items-center gap-2 rounded-full  bg-primary-text-100  text-[10px] text-primary justify-center shadow-2xl">
+          <span className="flex w-fit items-center gap-2 rounded-full  bg-primary-text-100  text-[8px] text-primary justify-center shadow-2xl px-2 py-1 font-medium">
             Pending
           </span>
         )}
 
         {store.status === 'REJECTED' && (
-          <span className="flex w-fit items-center gap-2 rounded-full border border-red-500 bg-red-500/10 px-1.5 py-0.5 text-[10px] text-red-600">
+          <span className="flex w-fit items-center gap-2 rounded-full border border-red-500 bg-red-500/10 px-2  py-1 text-[8px] text-red-600">
             Requires Attention
           </span>
         )}

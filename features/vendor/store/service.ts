@@ -1,62 +1,39 @@
 'use server';
 
 import { BASE_URL } from '@/config/api';
-import { ApiError } from '@/features/libs/api-error';
-import { authFetch } from '@/features/libs/auth-fetch';
-import {
-  GetStoreApiResponse,
-  StoreResponse,
-} from './types';
+import { GetStoreApiResponse, StoreResponse } from './types';
 import { authRequest } from '@/libs/api/auth-request';
 
 export async function getStoreService() {
   return await authRequest<GetStoreApiResponse>(`${BASE_URL}/vendor/stores`, {
+    method: 'GET',
     nextTags: ['vendor-store'],
-    cacheStrategy: { revalidate: 3600 },
   });
 }
 
 export async function createStoreService(
   formData: FormData,
 ): Promise<StoreResponse> {
-  const res = await authFetch(`${BASE_URL}/vendor/stores`, {
+  return await authRequest<StoreResponse>(`${BASE_URL}/vendor/stores`, {
     method: 'POST',
     body: formData,
+    nextTags: ['create-store'],
   });
-
-  const result = await res.json();
-
-  if (!res.ok) {
-    throw new ApiError(
-      result?.message || 'Failed to create store',
-      result?.statusCode ?? res.status,
-    );
-  }
-
-  return result;
 }
 
+export async function updateStoreService(storeId: string, formData: FormData) {
+  return await authRequest<StoreResponse>(
+    `${BASE_URL}/vendor/stores/${storeId}`,
+    {
+      method: 'PUT',
+      body: formData,
+      nextTags: [`update-store-${storeId}`],
+    },
 
+    
+  );
 
-export async function updateStoreService(
-  storeId: string,
-  formData: FormData,
-): Promise<StoreResponse> {
-  const res = await authFetch(`${BASE_URL}/vendor/stores/${storeId}`, {
-    method: 'PUT',
-    body: formData,
-  });
-
-  const result = await res.json();
-
-  if (!res.ok) {
-    throw new ApiError(
-      result?.message || 'Failed to update store',
-      result?.statusCode ?? res.status,
-    );
-  }
-
-  return result;
+  
 }
 
 export async function updateOperatingHoursService(
@@ -68,7 +45,7 @@ export async function updateOperatingHoursService(
     closingTime: string | null;
   }>,
 ): Promise<StoreResponse> {
-  const res = await authFetch(
+  return await authRequest<StoreResponse>(
     `${BASE_URL}/vendor/stores/${storeId}/operating-hours`,
     {
       method: 'PUT',
@@ -76,35 +53,18 @@ export async function updateOperatingHoursService(
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(operatingHours),
+      nextTags: [`update-operating-hours-${storeId}`],
     },
   );
-
-  const result = await res.json();
-
-  if (!res.ok) {
-    throw new ApiError(
-      result?.message || 'Failed to update operating hours',
-      result?.statusCode ?? res.status,
-    );
-  }
-
-  return result;
 }
 
 export async function deleteStoreService(storeIds: string[]): Promise<void> {
-  const res = await authFetch(`${BASE_URL}/vendor/stores/delete`, {
+  return await authRequest<void>(`${BASE_URL}/vendor/stores/delete`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ storeIds }),
+    nextTags: ['delete-store'],
   });
-
-  if (!res.ok) {
-    const result = await res.json().catch(() => null);
-    throw new ApiError(
-      result?.message || 'Failed to delete store(s)',
-      result?.statusCode ?? res.status,
-    );
-  }
 }

@@ -1,6 +1,6 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import {
   createStoreService,
   deleteStoreService,
@@ -44,7 +44,7 @@ export async function deleteStoresAction(
 ): Promise<{ success: boolean; message: string }> {
   try {
     await deleteStoreService(storeIds);
-    revalidatePath('/vendor/store');
+    revalidateTag('vendor-store', 'default');
     return { success: true, message: 'Store(s) deleted successfully' };
   } catch (error) {
     return {
@@ -180,14 +180,14 @@ export async function createStoreAction(
       };
     }
 
-    apiFormData.append('logo', logo, logo.name || 'logo');
+    apiFormData.append('logo', logo, logo.name || 'store-logo');
   }
 
   try {
     const response = await createStoreService(apiFormData);
 
-    // Revalidate the store page to fetch fresh data
-    revalidatePath('/vendor/store');
+    // Revalidate the store cache tag to fetch fresh data
+    revalidateTag('vendor-store', 'default');
 
     return {
       status: 'success',
@@ -281,6 +281,7 @@ export async function updateStoreAction(
   apiFormData.append('categoryId', result.data.categoryId);
   apiFormData.append('storeAddress', result.data.storeAddress);
   apiFormData.append('phoneNumber', result.data.phoneNumber);
+  apiFormData.append('email', result.data.email);
 
   // Optional fields
   if (result.data.storeDescription) {
@@ -330,18 +331,24 @@ export async function updateStoreAction(
       };
     }
 
-    apiFormData.append('storeLogo', logo, logo.name || 'store-logo');
+    apiFormData.append('logo', logo, logo.name || 'store-logo');
   }
 
+  // Append operating hours as JSON array for consistency
+  apiFormData.append('operatingHours', JSON.stringify(operatingHours));
+
+  console.log(' Payload for updateStoreAction:', {
+    storeId,
+    apiFormData,
+    operatingHours,
+  });
   try {
-    // Update store details
+    // Update store details (includes logo and operating hours)
     await updateStoreService(storeId, apiFormData);
 
-    // Update operating hours separately
-    await updateOperatingHoursService(storeId, operatingHours);
-
     // Revalidate the store page to fetch fresh data
-    revalidatePath('/vendor/store');
+    // revalidatePath('/vendor/store');
+    revalidateTag('vendor-store', 'default');
 
     return {
       status: 'success',
