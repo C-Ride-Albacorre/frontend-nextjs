@@ -8,22 +8,21 @@ import { IconButton } from '@/components/ui/buttons/icon-button';
 import { MenuIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { StoreData } from './store/types';
 
 type Props = {
   children: React.ReactNode;
-  store: StoreData | null;
+  sideBarCard: React.ReactNode;
 };
 
-export default function VendorLayoutClient({ store, children }: Props) {
+export default function VendorLayoutClient({ sideBarCard, children }: Props) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="flex h-screen bg-[#FDFDFB] overflow-hidden">
+    <div className="flex h-dvh bg-[#FDFDFB] overflow-hidden">
       {/* SIDEBAR */}
       <div
         className={`
-          w-[90vw] max-w-xs lg:w-72
+       w-72 max-w-[85vw]
           bg-white
           transition-transform duration-300 ease-out
           ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
@@ -34,7 +33,8 @@ export default function VendorLayoutClient({ store, children }: Props) {
         <Sidebar
           onClose={() => setSidebarOpen(false)}
           config={VENDOR_SIDEBAR_CONFIG}
-          storeCard={<VendorStoreCard store={store} />}
+          storeCard={sideBarCard}
+      
         />
       </div>
 

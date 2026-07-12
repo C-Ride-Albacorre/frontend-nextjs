@@ -6,7 +6,6 @@ import VendorDashboardHeader from '@/components/ui/headers/vendor-header';
 import OrdersWrapper from '@/features/vendor/orders/components/orders-wrapper';
 import OrderSkeleton from '@/features/vendor/orders/components/order-skeleton';
 import { Suspense } from 'react';
-import Toolbar from '@/components/layout/tool-bar';
 
 
 const CATEGORIES = [

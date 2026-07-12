@@ -1,16 +1,22 @@
 import VendorLayoutClient from '@/features/vendor/layout-client';
-import { getStoreAction } from '@/features/vendor/store/action';
+import VendorStoreCard from '@/features/vendor/store-card';
+import VendorStoreCardSkeleton from '@/features/vendor/store-card-skeleton';
+import { Suspense } from 'react';
 
 export default async function VendorLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const store = await getStoreAction();
-
-  console.log('Store data in layout:', store);
-
-  
-
-  return <VendorLayoutClient store={store}>{children}</VendorLayoutClient>;
+  return (
+    <VendorLayoutClient
+      sideBarCard={
+        <Suspense fallback={<VendorStoreCardSkeleton />}>
+          <VendorStoreCard />
+        </Suspense>
+      }
+    >
+      {children}
+    </VendorLayoutClient>
+  );
 }

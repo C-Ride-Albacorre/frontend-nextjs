@@ -2,33 +2,40 @@ import Image from 'next/image';
 import { Star, Store } from 'lucide-react';
 import { StoreData } from './store/types';
 import Card from '@/components/layout/card';
+import { getStoreAction } from './store/action';
 
+export default async function VendorStoreCard({}: {}) {
+  const store = await getStoreAction();
 
-export default function VendorStoreCard({ store }: { store: StoreData | null }) {
-  console.log('Store:', store);
+  console.log('Store data in layout:', store);
 
   if (!store) {
     return (
-      <div className="rounded-2xl bg-primary/10 border border-border p-4 space-y-3">
-        <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-full bg-neutral-50 flex items-center justify-center">
-            <Store size={20} className="text-neutral-400" />
+      <Card
+        border="none"
+        spacing="sm"
+        gap="sm"
+        className="bg-primary/10 shadow"
+      >
+        <div className="flex gap-3">
+          <div className="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center shrink-0 aspect-square">
+            <Store size={16} className="text-primary" />
           </div>
           <div>
-            <p className="font-medium text-primary-text-100 text-sm">
-              No Store Yet
-            </p>
-            <span className="text-xs text-neutral-400">
-              Create your store to get started
+            <h2 className="font-medium text-primary-text-100 text-sm">
+              No Store
+            </h2>
+            <span className="text-xs text-neutral-500 leading-1">
+              You have not created a store yet.
             </span>
           </div>
         </div>
-      </div>
+      </Card>
     );
   }
 
   return (
-    <Card border='none' spacing="sm" gap="sm" className="bg-primary/10 shadow">
+    <Card border="none" spacing="sm" gap="sm" className="bg-primary/10 shadow">
       <div className="flex items-start gap-3">
         {/* Store Logo */}
         {store.storeLogo ? (

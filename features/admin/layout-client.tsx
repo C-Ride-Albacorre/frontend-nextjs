@@ -28,7 +28,8 @@ export default function AdminLayoutClient({ children, user }: Props) {
       {/* SIDEBAR */}
       <div
         className={`
-          w-[90vw] max-w-xs lg:w-72
+     w-72
+max-w-[85vw]
           bg-white
           transition-transform duration-300 ease-out
           ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
