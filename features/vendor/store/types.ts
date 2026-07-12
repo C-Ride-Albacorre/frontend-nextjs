@@ -79,6 +79,8 @@ export interface GetStoreApiResponse {
   data: StoreData[];
 }
 
+
+
 export type StoreFormState =
   | undefined
   | { status: 'error'; errors?: Record<string, string[]>; message?: string }

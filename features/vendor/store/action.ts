@@ -5,7 +5,6 @@ import {
   createStoreService,
   deleteStoreService,
   getStoreService,
-  getStoreByIdService,
   updateStoreService,
   updateOperatingHoursService,
 } from './service';
@@ -22,20 +21,6 @@ const DAYS = [
   'SUNDAY',
 ] as const;
 
-// export async function getStoreAction(): Promise<StoreData | null> {
-//   try {
-//     const response = await getStoreService();
-
-//     const stores = response?.data;
-//     if (Array.isArray(stores) && stores.length > 0) {
-//       return stores[0];
-//     }
-//     return null;
-//   } catch {
-//     return null;
-//   }
-// }
-
 export async function getStoresAction(): Promise<StoreData[]> {
   try {
     const response = await getStoreService();
@@ -49,42 +34,9 @@ export async function getStoresAction(): Promise<StoreData[]> {
 export async function getStoreByIdAction(
   storeId: string,
 ): Promise<StoreData | null> {
-  // Try fetching the single store by ID first
-  try {
-    const response = await getStoreByIdService(storeId);
-    if (response) {
-      const data = response.data;
+  const allStores = await getStoresAction();
 
-      // API may return a single object or an array
-      if (Array.isArray(data)) {
-        const match = data.find((s) => s.id === storeId);
-        if (match) return match;
-        if (data.length > 0) return data[0];
-      } else if (data && typeof data === 'object' && 'id' in data) {
-        // Single store object returned directly in data
-        return data as unknown as StoreData;
-      }
-
-      // Some APIs return the store at the root level (no data wrapper)
-      if (
-        'id' in response &&
-        'storeName' in response &&
-        (response as unknown as StoreData).id === storeId
-      ) {
-        return response as unknown as StoreData;
-      }
-    }
-  } catch {
-    // Single-store endpoint failed — fall through to list fallback
-  }
-
-  // Fallback: fetch all stores and find by ID
-  try {
-    const allStores = await getStoresAction();
-    return allStores.find((s) => s.id === storeId) ?? null;
-  } catch {
-    return null;
-  }
+  return allStores.find((s) => s.id === storeId) ?? null;
 }
 
 export async function deleteStoresAction(
