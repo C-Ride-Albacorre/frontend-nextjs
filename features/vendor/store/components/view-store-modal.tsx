@@ -27,6 +27,8 @@ export default function ViewStoreModal({
 }: ViewStoreModalProps) {
   if (!store) return null;
 
+  console.log(' store', store);
+
   const {
     storeName,
     categoryId,
@@ -44,26 +46,28 @@ export default function ViewStoreModal({
     updatedAt,
   } = store;
 
-  // Format status display
-  const statusDisplay =
-    status === 'ACTIVE'
-      ? 'Active'
-      : status === 'PENDING_APPROVAL'
-        ? 'Pending'
-        : status === 'DRAFT'
-          ? 'Draft'
-          : (status?.toLowerCase() ?? 'Active');
+  const statusMap = {
+    ACTIVE: {
+      label: 'Active',
+      className: 'bg-emerald-500/10 text-emerald-600',
+    },
+    PENDING_APPROVAL: {
+      label: 'Pending',
+      className: 'bg-amber-100 text-amber-600',
+    },
+    DRAFT: {
+      label: 'Draft',
+      className: 'bg-amber-500/10 text-amber-600',
+    },
+    INACTIVE: {
+      label: 'Inactive',
+      className: 'bg-neutral-100 text-neutral-600',
+    },
+  };
 
-  // Format dates
-  // const formatDate = (dateString: string) => {
-  //   return new Date(dateString).toLocaleDateString('en-NG', {
-  //     year: 'numeric',
-  //     month: 'short',
-  //     day: 'numeric',
-  //     hour: '2-digit',
-  //     minute: '2-digit',
-  //   });
-  // };
+  const currentStatus =
+    statusMap[(status || 'INACTIVE') as keyof typeof statusMap] ??
+    statusMap.INACTIVE;
 
   // Format currency
   const formatCurrency = (amount?: number) =>
@@ -80,47 +84,34 @@ export default function ViewStoreModal({
         {/* Header */}
         <div className="flex items-start justify-between">
           <div>
-            <h2 className="text-2xl font-semibold text-neutral-900">
+            <h2 className="text-2xl font-semibold capitalize text-neutral-900">
               {storeName}
             </h2>
-            <p className="text-sm text-neutral-500 mt-1">{categoryId}</p>
+            <p className="text-xs text-neutral-500 mt-1">{categoryId}</p>
           </div>
 
           <span
             className={clsx(
-              'rounded-full px-3 py-1 text-xs font-medium capitalize',
-              {
-                'bg-emerald-500/10 text-emerald-600': status === 'ACTIVE',
-                'bg-amber-100 text-amber-600': status === 'PENDING_APPROVAL',
-                'bg-amber-500/10 text-amber-600': status === 'DRAFT',
-                'bg-neutral-100 text-neutral-600':
-                  !status || status === 'INACTIVE',
-              },
+              'rounded-full px-3 py-1 text-xs font-medium',
+              currentStatus.className,
             )}
           >
-            {statusDisplay}
+            {currentStatus.label}
           </span>
         </div>
 
         {/* Store Logo */}
-        {storeLogo ? (
-          <div className="relative w-full h-64 rounded-xl overflow-hidden">
+        
+          <div className="relative w-64 h-64 rounded-2xl overflow-hidden">
             <Image
-              src={storeLogo}
-              alt={storeName}
+              src={storeLogo ??'/assets/image/store-placeholder.png'}
+              alt={storeName ?? 'Store logo'}
               fill
-              className="object-contain"
+              className="object-cover"
               unoptimized
             />
           </div>
-        ) : (
-          <Card
-            border="none"
-            className="w-full h-48  bg-neutral-100 flex items-center justify-center"
-          >
-            <span className="text-neutral-400">No store logo</span>
-          </Card>
-        )}
+        
 
         {/* Contact & Location Info */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -129,10 +120,10 @@ export default function ViewStoreModal({
             border="none"
             className="flex items-start gap-3  bg-neutral-50"
           >
-            <MapPin size={16} className="text-neutral-500 mt-0.5 shrink-0" />
+            <MapPin size={16} className="text-green-100 mt-0.5 shrink-0" />
             <div>
-              <p className="text-xs text-neutral-500 mb-1">Address</p>
-              <p className="font-medium text-neutral-900 text-sm">
+              <p className="text-xs text-neutral-500 mb-1 ">Address</p>
+              <p className="font-medium text-neutral-900 text-sm capitalize leading-6">
                 {storeAddress}
               </p>
             </div>
@@ -143,7 +134,7 @@ export default function ViewStoreModal({
             border="none"
             className="flex items-start gap-3  bg-neutral-50"
           >
-            <Phone size={16} className="text-neutral-500 mt-0.5 shrink-0" />
+            <Phone size={16} className="text-green-100 mt-0.5 shrink-0" />
             <div>
               <p className="text-xs text-neutral-500 mb-1">Phone</p>
               <p className="font-medium text-neutral-900 text-sm">
@@ -157,7 +148,7 @@ export default function ViewStoreModal({
             border="none"
             className="flex items-start gap-3  bg-neutral-50"
           >
-            <Mail size={16} className="text-neutral-500 mt-0.5 shrink-0" />
+            <Mail size={16} className="text-green-100 mt-0.5 shrink-0" />
             <div>
               <p className="text-xs text-neutral-500 mb-1">Email</p>
               <p className="font-medium text-neutral-900 text-sm">{email}</p>
@@ -169,28 +160,28 @@ export default function ViewStoreModal({
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Card gap="md" border="none" className=" bg-neutral-50">
             <div className="flex items-center gap-2 mb-1">
-              <ShoppingBag size={16} className="text-neutral-500" />
-              <p className="text-xs text-neutral-500">Min. Order</p>
+              <ShoppingBag size={16} className="text-green-100" />
+              <p className="text-xs text-neutral-500">Daily Order Limit</p>
             </div>
-            <p className="font-medium text-primary ">{dailyOrderLimit}</p>
+            <p className="font-medium text-neutral-900 text-sm">{dailyOrderLimit}</p>
           </Card>
 
           <Card gap="md" border="none" className=" bg-neutral-50">
             <div className="flex items-center gap-2 mb-1">
-              <Truck size={16} className="text-neutral-500" />
+              <Truck size={16} className="text-green-100" />
               <p className="text-xs text-neutral-500">Delivery Fee</p>
             </div>
-            <p className="font-medium text-primary ">
+            <p className="font-medium text-neutral-900 text-sm">
               {formatCurrency(deliveryFee)}
             </p>
           </Card>
 
           <Card gap="md" border="none" className=" bg-neutral-50">
             <div className="flex items-center gap-2 mb-1">
-              <Timer size={16} className="text-neutral-500" />
+              <Timer size={16} className="text-green-100" />
               <p className="text-xs text-neutral-500">Prep. Time</p>
             </div>
-            <p className="font-medium text-neutral-900">
+            <p className="font-medium text-neutral-900 text-sm">
               {preparationTime ? `${preparationTime} min` : 'N/A'}
             </p>
           </Card>
@@ -200,7 +191,7 @@ export default function ViewStoreModal({
         {storeDescription && (
           <Card gap="md" border="none" className=" bg-neutral-50">
             <p className="text-xs text-neutral-500 mb-2">Description</p>
-            <p className="text-neutral-700 text-sm leading-relaxed">
+            <p className="text-neutral-900 text-sm leading-relaxed">
               {storeDescription}
             </p>
           </Card>
@@ -210,7 +201,7 @@ export default function ViewStoreModal({
         {operatingHours && operatingHours.length > 0 && (
           <Card gap="md" border="none" className=" bg-neutral-50 ">
             <div className="flex items-center gap-2">
-              <Clock size={16} className="text-neutral-500" />
+              <Clock size={16} className="text-green-100" />
               <p className="text-xs text-neutral-500">Operating Hours</p>
             </div>
             <div className="space-y-6">
@@ -219,12 +210,12 @@ export default function ViewStoreModal({
                   key={hour.dayOfWeek}
                   className="flex items-center justify-between text-sm"
                 >
-                  <span className="text-neutral-600 capitalize">
+                  <span className="text-neutral-900 text-sm capitalize">
                     {hour.dayOfWeek.charAt(0) +
                       hour.dayOfWeek.slice(1).toLowerCase()}
                   </span>
                   {hour.isOpen ? (
-                    <span className="text-neutral-900 font-medium">
+                    <span className="text-neutral-900 text-sm font-medium">
                       {hour.openingTime} - {hour.closingTime}
                     </span>
                   ) : (
@@ -243,17 +234,17 @@ export default function ViewStoreModal({
         </div>
 
         {/* Actions */}
-        <div className="flex justify-between gap-4 pt-4">
+     <div className="flex flex-col-reverse sm:flex-row justify-between gap-3">
           <Button
             variant="white"
-            size="lg"
+            size="icon"
             onClick={() => setIsModalOpen(false)}
           >
             Close
           </Button>
 
           {onEdit && (
-            <Button variant="primary" size="lg" onClick={handleEdit}>
+            <Button variant="primary" size="icon" onClick={handleEdit}>
               <Edit size={16} />
               Edit Store
             </Button>

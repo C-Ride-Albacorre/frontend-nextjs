@@ -10,7 +10,7 @@ export default function VendorStoreCardSkeleton() {
     >
       <div className="flex items-center gap-3">
         {/* Avatar */}
-        <div className="h-10 w-10 rounded-full bg-primary/20 shrink-0" />
+        <div className="h-10 w-10 rounded-md bg-primary/20 shrink-0" />
 
         {/* Text */}
         <div className="flex-1 space-y-2">

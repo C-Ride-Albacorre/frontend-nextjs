@@ -56,8 +56,8 @@ export default function DeleteStoreModal({
     >
       <div className="py-6 text-center space-y-8">
         {/* Warning Icon */}
-        <div className="mx-auto w-16 h-16 rounded-full bg-red-100 flex items-center justify-center">
-          <AlertTriangle size={24} className=" text-red-600" />
+        <div className="mx-auto w-20 h-20 rounded-full bg-red-100 flex items-center justify-center">
+          <AlertTriangle size={36} className=" text-red-600" />
         </div>
 
         <div className="space-y-4">
@@ -74,7 +74,7 @@ export default function DeleteStoreModal({
               {stores.length === 1 ? (
                 <>
                   Are you sure you want to delete{' '}
-                  <span className="font-medium text-neutral-900">
+                  <span className="font-medium text-neutral-900 capitalize">
                     &quot;{stores[0].storeName}&quot;
                   </span>
                   ?
@@ -100,21 +100,23 @@ export default function DeleteStoreModal({
         {error && <ErrorMessage message={error} />}
 
         {/* Actions */}
-        <div className="flex justify-around">
+        <div className="flex justify-around gap-4">
           <Button
             variant="outline"
-            size="lg"
+            size="icon"
             onClick={() => setIsModalOpen(false)}
             disabled={isDeleting}
+            className="flex-1"
           >
             Cancel
           </Button>
 
           <Button
             variant="red"
-            size="lg"
+            size="icon"
             onClick={handleDelete}
             disabled={isDeleting}
+            className="flex-1"
           >
             {isDeleting
               ? 'Deleting...'

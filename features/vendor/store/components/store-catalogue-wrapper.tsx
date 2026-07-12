@@ -9,23 +9,18 @@ import VendorToolbar from '@/components/layout/tool-bar';
 import StoreCatalogue from './store-catalogue';
 import ViewStoreModal from './view-store-modal';
 import DeleteStoreModal from './delete-store-modal';
-import { StoreData } from '../types';
-import { getStoresAction } from '../action';
+import { GetStoreApiResponse, StoreData } from '../types';
 
 export default function StoreCatalogueWrapper({
-  storeData: initialStoreData,
+  storeData,
 }: {
-  storeData: StoreData | null;
+  storeData: StoreData[];
 }) {
   const router = useRouter();
-  const [stores, setStores] = useState<StoreData[]>(
-    initialStoreData ? [initialStoreData] : [],
-  );
+
+  const stores = storeData;
+
   const [sort, setSort] = useState('All');
-  const [isLoading, setIsLoading] = useState(false);
-
-  console.log('Store:', stores);
-
   // Modal states
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -33,25 +28,6 @@ export default function StoreCatalogueWrapper({
   const [selectedStoreIds, setSelectedStoreIds] = useState<Set<string>>(
     new Set(),
   );
-  const [isDeletingMultiple, setIsDeletingMultiple] = useState(false);
-
-  // Refresh store list
-  const fetchStores = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const data = await getStoresAction();
-      setStores(data);
-    } catch {
-      // Keep existing data on error
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  // Load fresh data on mount
-  useEffect(() => {
-    fetchStores();
-  }, [fetchStores]);
 
   // Handle view store
   const handleViewStore = (store: StoreData) => {
@@ -64,12 +40,6 @@ export default function StoreCatalogueWrapper({
     router.push(`/vendor/store/${store.id}`);
   };
 
-  // Handle delete store
-  const handleDeleteStore = (store: StoreData) => {
-    setSelectedStoreIds(new Set([store.id]));
-    setIsDeleteModalOpen(true);
-  };
-
   // Handle bulk delete — open modal for selected stores
   const handleDeleteSelectedStores = () => {
     if (selectedStoreIds.size === 0) return;
@@ -80,20 +50,22 @@ export default function StoreCatalogueWrapper({
   // Handle delete success — refresh list and clear selection
   const handleDeleteSuccess = () => {
     setSelectedStoreIds(new Set());
-    fetchStores();
+    setIsDeleteModalOpen(false);
   };
 
-  const selectStore = (store: StoreData) => {
+  const selectStore = useCallback((store: StoreData) => {
     setSelectedStoreIds((prev) => {
       const next = new Set(prev);
+
       if (next.has(store.id)) {
         next.delete(store.id);
       } else {
         next.add(store.id);
       }
+
       return next;
     });
-  };
+  }, []);
 
   return (
     <>
@@ -112,53 +84,23 @@ export default function StoreCatalogueWrapper({
             leftIcon={<Trash2 size={14} />}
             size="icon"
             onClick={handleDeleteSelectedStores}
-            disabled={isDeletingMultiple}
           >
-            {isDeletingMultiple
-              ? 'Deleting...'
-              : `Delete Selected Store (${selectedStoreIds.size})`}
+            {`Delete Selected Store (${selectedStoreIds.size})`}
           </Button>
         </div>
       )}
-
-      {isLoading ? (
-        <Card>
-          <div className="flex items-center justify-center py-12">
-            <Loader className="w-8 h-8 animate-spin text-primary" />
-          </div>
-        </Card>
-      ) : stores.length === 0 ? (
-        <Card>
-          <div className="text-center py-12">
-            <Store size={60} className="mx-auto mb-4 text-neutral-300" />
-            <p className="text-neutral-500 mb-4">
-              No stores yet. Add your first store to get started.
-            </p>
-            <Button
-              variant="primary"
-              size="md"
-              href="/vendor/store/new-store"
-              leftIcon={<Store size={16} />}
-            >
-              Add Store
-            </Button>
-          </div>
-        </Card>
-      ) : (
-        <div className="space-y-6">
-          {stores.map((store) => (
-            <StoreCatalogue
-              key={store.id}
-              storeData={store}
-              onView={() => handleViewStore(store)}
-              onEdit={() => handleEditStore(store)}
-              onSelectStore={selectStore}
-              isSelected={selectedStoreIds.has(store.id)}
-            />
-          ))}
-        </div>
-      )}
-
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {stores.map((store) => (
+          <StoreCatalogue
+            key={store.id}
+            storeData={store}
+            onView={() => handleViewStore(store)}
+            onEdit={() => handleEditStore(store)}
+            onSelectStore={selectStore}
+            isSelected={selectedStoreIds.has(store.id)}
+          />
+        ))}
+      </div>
       {/* View Store Modal */}
       <ViewStoreModal
         isModalOpen={isViewModalOpen}
@@ -171,7 +113,6 @@ export default function StoreCatalogueWrapper({
           }
         }}
       />
-
       {/* Delete Confirmation Modal */}
       <DeleteStoreModal
         isModalOpen={isDeleteModalOpen}

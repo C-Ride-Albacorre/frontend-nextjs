@@ -1,13 +1,13 @@
 import Image from 'next/image';
 import { Star, Store } from 'lucide-react';
-import { StoreData } from './store/types';
 import Card from '@/components/layout/card';
-import { getStoreAction } from './store/action';
+import { getStoreService } from './store/service';
+export default async function VendorStoreCard() {
+  const data = await getStoreService();
 
-export default async function VendorStoreCard({}: {}) {
-  const store = await getStoreAction();
+  console.log(' Store Data:', data);
 
-  console.log('Store data in layout:', store);
+  const store = data.data[0];
 
   if (!store) {
     return (
@@ -18,7 +18,7 @@ export default async function VendorStoreCard({}: {}) {
         className="bg-primary/10 shadow"
       >
         <div className="flex gap-3">
-          <div className="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center shrink-0 aspect-square">
+          <div className="h-10 w-10 rounded-md bg-primary/20 flex items-center justify-center shrink-0 aspect-square">
             <Store size={16} className="text-primary" />
           </div>
           <div>
@@ -39,9 +39,9 @@ export default async function VendorStoreCard({}: {}) {
       <div className="flex items-start gap-3">
         {/* Store Logo */}
         {store.storeLogo ? (
-          <div className="relative h-10 w-10 rounded-full overflow-hidden shrink-0 bg-white shadow-md">
+          <div className="relative h-10 w-10 rounded-md overflow-hidden shrink-0 bg-white shadow-md">
             <Image
-              src={`${store.storeLogo}?t=${store.updatedAt}`}
+              src={store.storeLogo ?? '/assets/image/store-placeholder.png'}
               alt={store.storeName}
               fill
               className="object-cover"

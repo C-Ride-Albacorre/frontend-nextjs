@@ -71,7 +71,7 @@ export interface StoreResponse {
   updatedAt: string;
 }
 
-export interface StoreApiResponse {
+export interface GetStoreApiResponse {
   status: string;
   statusCode: number;
   timestamp: string;

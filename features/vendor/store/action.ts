@@ -22,19 +22,19 @@ const DAYS = [
   'SUNDAY',
 ] as const;
 
-export async function getStoreAction(): Promise<StoreData | null> {
-  try {
-    const response = await getStoreService();
+// export async function getStoreAction(): Promise<StoreData | null> {
+//   try {
+//     const response = await getStoreService();
 
-    const stores = response?.data;
-    if (Array.isArray(stores) && stores.length > 0) {
-      return stores[0];
-    }
-    return null;
-  } catch {
-    return null;
-  }
-}
+//     const stores = response?.data;
+//     if (Array.isArray(stores) && stores.length > 0) {
+//       return stores[0];
+//     }
+//     return null;
+//   } catch {
+//     return null;
+//   }
+// }
 
 export async function getStoresAction(): Promise<StoreData[]> {
   try {

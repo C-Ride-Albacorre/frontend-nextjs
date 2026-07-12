@@ -43,8 +43,8 @@ export default function StoreCard({
       {/* Cover */}
       <div className="relative h-56 overflow-hidden bg-foreground-200">
         <Image
-          src={image || '/assets/image/store-placeholder.png'}
-          alt={name || 'Store Image'}
+          src={image ?? '/assets/image/store-placeholder.png'}
+          alt={name ?? 'Store Image'}
           fill
           loading="lazy"
           className={`${image ? 'object-cover' : 'object-contain'} transition-transform duration-700 group-hover:scale-105`}
