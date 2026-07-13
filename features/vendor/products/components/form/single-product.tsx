@@ -201,6 +201,7 @@ export default function SingleProductForm({
           value={productName}
           onChange={(e) => setProductName(e.target.value)}
           errorMessage={errors?.productName?.[0]}
+          required
         />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -212,6 +213,7 @@ export default function SingleProductForm({
             value={subcategoryId}
             onChange={setSubcategoryId}
             errorMessage={errors?.subcategoryId?.[0]}
+                required
           />
 
           <Input
@@ -223,18 +225,20 @@ export default function SingleProductForm({
             onChange={(e) => setSku(e.target.value)}
             disabled={isEditing}
             errorMessage={errors?.sku?.[0]}
+                required
           />
         </div>
 
         <Input
           id="basePrice"
           name="basePrice"
-          label="Price (₦)"
+          label="Price (NGN)"
           type="number"
           placeholder="e.g., 4500"
           value={basePrice}
           onChange={(e) => setBasePrice(e.target.value)}
           errorMessage={errors?.basePrice?.[0]}
+              required
         />
 
         <Textarea
@@ -245,6 +249,7 @@ export default function SingleProductForm({
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           errorMessage={errors?.description?.[0]}
+              required
         />
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -257,6 +262,7 @@ export default function SingleProductForm({
             value={stockQuantity}
             onChange={(e) => setStockQuantity(e.target.value)}
             errorMessage={errors?.stockQuantity?.[0]}
+                required
           />
 
           <Input
@@ -268,6 +274,7 @@ export default function SingleProductForm({
             value={lowStockThreshold}
             onChange={(e) => setLowStockThreshold(e.target.value)}
             errorMessage={errors?.lowStockThreshold?.[0]}
+                required
           />
 
           <div>
@@ -283,6 +290,7 @@ export default function SingleProductForm({
                 )
               }
               errorMessage={errors?.stockStatus?.[0]}
+                  required
             />
           </div>
         </div>
@@ -298,6 +306,7 @@ export default function SingleProductForm({
               setProductStatus(value as 'ACTIVE' | 'INACTIVE' | 'DRAFT')
             }
             errorMessage={errors?.productStatus?.[0]}
+                required
           />
         </div>
 
@@ -308,15 +317,16 @@ export default function SingleProductForm({
           maxSizeMB={5}
           existingImageUrl={existingImageUrl}
           errorMessage={errors?.images?.[0]}
+              required
         />
       </div>
 
       <div className="flex items-center justify-between md:justify-around gap-8 pt-4">
-        <Button variant="outline" size="lg" onClick={handleClose} type="button">
+        <Button variant="white" size="icon"  onClick={handleClose} type="button">
           Cancel
         </Button>
 
-        <Button type="submit" size="lg" variant="primary" disabled={isPending}>
+        <Button type="submit" size="icon" variant="primary" disabled={isPending}>
           {isPending
             ? isEditing
               ? 'Updating...'

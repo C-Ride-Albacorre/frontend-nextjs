@@ -22,7 +22,7 @@ export default async function VendorStoreCard() {
             <Store size={16} className="text-primary" />
           </div>
           <div>
-            <h2 className="font-medium text-primary-text-100 text-sm">
+            <h2 className="font-semibold text-primary-text-100 text-sm">
               No Store
             </h2>
             <span className="text-xs text-neutral-500 leading-1">
@@ -55,7 +55,7 @@ export default async function VendorStoreCard() {
         )}
 
         <div className="w-full flex flex-col gap-y-1.5  min-w-0">
-          <h2 className="font-medium text-primary-text-100 text-sm wrap-break-word capitalize truncate block flex-wrap overflow-hidden whitespace-normal">
+          <h2 className="font-semibold text-neutral-800 text-sm wrap-break-word capitalize truncate block flex-wrap overflow-hidden whitespace-normal">
             {store.storeName}
           </h2>
 

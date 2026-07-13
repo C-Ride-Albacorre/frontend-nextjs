@@ -299,11 +299,12 @@ export default function VariableProductForm({
 
       <div className="flex justify-between pt-6">
         {activeStep === 0 ? (
-          <Button variant="outline" type="button" onClick={handleClose}>
+          <Button      size='icon' variant="white" type="button" onClick={handleClose}>
             Cancel
           </Button>
         ) : (
           <Button
+               size='icon'
             variant="outline"
             type="button"
             onClick={() => setActiveStep((p) => p - 1)}
@@ -313,11 +314,12 @@ export default function VariableProductForm({
         )}
 
         {isLastStep ? (
-          <Button type="button" disabled={isPending} onClick={handleSubmit}>
+          <Button      size='icon' type="button" disabled={isPending} onClick={handleSubmit}>
             {isPending ? 'Creating...' : 'Add Product'}
           </Button>
         ) : (
           <Button
+          size='icon'
             type="button"
             onClick={() => {
               if (validateStep(activeStep)) {
@@ -325,7 +327,7 @@ export default function VariableProductForm({
               }
             }}
           >
-            Next
+            Proceed to Next
           </Button>
         )}
       </div>

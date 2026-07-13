@@ -1,12 +1,10 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import {
   createProductService,
   updateProductService,
   deleteProductService,
-  getProductsService,
-  getProductService,
 } from './service';
 import { Product, ProductFormState } from './type';
 import {
@@ -15,26 +13,26 @@ import {
   UpdateProductSchema,
 } from './schema';
 
-export async function getProductsAction(storeId: string): Promise<Product[]> {
-  try {
-    const response = await getProductsService(storeId);
-    const data = response?.data;
-    return Array.isArray(data) ? data : [];
-  } catch {
-    return [];
-  }
-}
+// export async function getProductsAction(storeId: string): Promise<Product[]> {
+//   try {
+//     const response = await getProductsService(storeId);
+//     const data = response?.data;
+//     return Array.isArray(data) ? data : [];
+//   } catch {
+//     return [];
+//   }
+// }
 
-export async function getProductAction(
-  storeId: string,
-  productId: string,
-): Promise<Product | null> {
-  try {
-    return await getProductService(storeId, productId);
-  } catch {
-    return null;
-  }
-}
+// export async function getProductAction(
+//   storeId: string,
+//   productId: string,
+// ): Promise<Product | null> {
+//   try {
+//     return await getProductService(storeId, productId);
+//   } catch {
+//     return null;
+//   }
+// }
 
 export async function createProductAction(
   storeId: string,
@@ -98,7 +96,7 @@ export async function createProductAction(
   try {
     const response = await createProductService(storeId, apiFormData);
 
-    revalidatePath('/vendor/products');
+    revalidateTag(`get-products-store-${storeId}`, 'default');
 
     const product = Array.isArray(response.data)
       ? response.data[0]
@@ -182,7 +180,7 @@ export async function updateProductAction(
   try {
     await updateProductService(storeId, productId, apiFormData);
 
-    revalidatePath('/vendor/products');
+    revalidateTag(`get-products-store-${storeId}`, 'default');
 
     return {
       status: 'success',
@@ -204,7 +202,9 @@ export async function deleteProductAction(
 ): Promise<{ success: boolean; message: string }> {
   try {
     await deleteProductService(storeId, productId);
-    revalidatePath('/vendor/products');
+    revalidateTag(`get-product-${productId}`, 'default');
+    revalidateTag(`get-products-store-${storeId}`, 'default');
+
     return { success: true, message: 'Product deleted successfully' };
   } catch (error) {
     return {

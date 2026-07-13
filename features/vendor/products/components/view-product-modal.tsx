@@ -3,7 +3,7 @@
 import Modal from '@/components/layout/modal';
 import { Button } from '@/components/ui/buttons/button';
 import clsx from 'clsx';
-import { Edit } from 'lucide-react';
+import { Box, Edit, Package, Store, Wallet } from 'lucide-react';
 import Image from 'next/image';
 import { ViewProductModalProps } from '../type';
 import { formatDate } from '@/helpers/date-formatter';
@@ -18,7 +18,6 @@ export default function ViewProductModal({
 
   const {
     productName,
-    subcategoryId,
     sku,
     description,
     productType,
@@ -40,23 +39,37 @@ export default function ViewProductModal({
     productImages?.[0]?.imageUrl;
 
   // Format price
-  const formattedPrice = basePrice ? `₦${basePrice.toLocaleString()}` : 'N/A';
-
-  // Format dates
-  // const formatDate = (dateString: string) => {
-  //   return new Date(dateString).toLocaleDateString('en-NG', {
-  //     year: 'numeric',
-  //     month: 'short',
-  //     day: 'numeric',
-  //     hour: '2-digit',
-  //     minute: '2-digit',
-  //   });
-  // };
+  const formattedPrice = basePrice
+    ? `NGN ${basePrice.toLocaleString()}`
+    : 'N/A';
 
   const handleEdit = () => {
     setIsModalOpen(false);
     onEdit?.();
   };
+
+  const statusMap = {
+    ACTIVE: {
+      label: 'Active',
+      className: 'bg-emerald-500/10 text-emerald-600',
+    },
+    PENDING_APPROVAL: {
+      label: 'Pending',
+      className: 'bg-amber-100 text-amber-600',
+    },
+    DRAFT: {
+      label: 'Draft',
+      className: 'bg-amber-500/10 text-amber-600',
+    },
+    INACTIVE: {
+      label: 'Inactive',
+      className: 'bg-neutral-100 text-neutral-600',
+    },
+  };
+
+  const currentStatus =
+    statusMap[(productStatus || 'INACTIVE') as keyof typeof statusMap] ??
+    statusMap.INACTIVE;
 
   return (
     <Modal isModalOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
@@ -67,46 +80,50 @@ export default function ViewProductModal({
             <h2 className="text-xl font-semibold text-neutral-900">
               {productName}
             </h2>
-            <p className="text-sm text-neutral-500 mt-1">SKU: {sku}</p>
+            {sku && <p className="text-xs text-neutral-500 mt-1">Sku: {sku}</p>}
           </div>
 
           <div className="flex items-center gap-2">
             <span
               className={clsx(
-                'rounded-full px-3 py-1 text-xs font-medium capitalize',
-                {
-                  'bg-emerald-500/10 text-emerald-600':
-                    productStatus === 'ACTIVE',
-                  'bg-neutral-100 text-neutral-600':
-                    productStatus === 'INACTIVE',
-                  'bg-amber-500/10 text-amber-600': productStatus === 'DRAFT',
-                },
+                'rounded-full px-3 py-1 text-xs font-medium',
+                currentStatus.className,
               )}
             >
-              {productStatus.toLowerCase()}
+              {currentStatus.label}
+            </span>
+
+            <span
+              className={clsx('rounded-full px-2 py-1 text-xs font-medium', {
+                'bg-emerald-500/10 text-emerald-600':
+                  stockStatus === 'IN_STOCK',
+                'bg-amber-500/10 text-amber-600': stockStatus === 'LOW_STOCK',
+                'bg-red-500/10 text-red-600': stockStatus === 'OUT_OF_STOCK',
+              })}
+            >
+              {stockStatus === 'IN_STOCK'
+                ? 'In Stock'
+                : stockStatus === 'LOW_STOCK'
+                  ? 'Low Stock'
+                  : 'Out of Stock'}
             </span>
           </div>
         </div>
 
         {/* Image */}
-        {primaryImage ? (
-          <div className="relative w-full h-64 rounded-xl overflow-hidden">
-            <Image
-              src={primaryImage}
-              alt={productName}
-              fill
-              className="object-cover"
-              unoptimized
-            />
-          </div>
-        ) : (
-          <div className="w-full h-64 rounded-xl bg-neutral-100 flex items-center justify-center">
-            <span className="text-neutral-400">No image available</span>
-          </div>
-        )}
+
+        <div className="relative w-64 h-64 rounded-2xl overflow-hidden">
+          <Image
+            src={primaryImage ?? '/assets/image/product-placeholder.png'}
+            alt={productName ?? 'Product image'}
+            fill
+            className="object-cover"
+            unoptimized
+          />
+        </div>
 
         {/* Image gallery if multiple images */}
-        {productImages && productImages.length > 1 && (
+        {/* {productImages && productImages.length > 1 && (
           <div className="flex gap-2 overflow-x-auto pb-2">
             {productImages.map((img) => (
               <div
@@ -126,64 +143,61 @@ export default function ViewProductModal({
               </div>
             ))}
           </div>
-        )}
+        )} */}
 
         {/* Details Grid */}
-        <div className="grid grid-cols-2 gap-4">
-          <div className="p-4 bg-neutral-50 rounded-xl">
-            <p className="text-xs text-neutral-500 mb-1">Category</p>
-            <p className="font-medium text-neutral-900">{subcategoryId}</p>
-          </div>
+        <ul className="grid grid-cols-2 gap-4">
+          <li className="p-4 bg-neutral-50 rounded-xl flex items-start gap-2">
+            <Store size={16} className="text-neutral-400" />
 
-          <div className="p-4 bg-neutral-50 rounded-xl">
-            <p className="text-xs text-neutral-500 mb-1">Product Type</p>
-            <p className="font-medium text-neutral-900 capitalize">
-              {productType.toLowerCase()}
-            </p>
-          </div>
+            <div>
+              <p className="text-xs text-neutral-500 mb-1">Product Type</p>
+              <p className="font-medium text-neutral-900 capitalize text-sm">
+                {productType.toLowerCase()}
+              </p>
+            </div>
+          </li>
 
-          <div className="p-4 bg-neutral-50 rounded-xl">
-            <p className="text-xs text-neutral-500 mb-1">Price</p>
-            <p className="font-medium text-primary text-lg">{formattedPrice}</p>
-          </div>
+          <li className="p-4 bg-neutral-50 rounded-xl flex items-start gap-2">
+            <Wallet size={16} className="text-neutral-400" />
 
-          <div className="p-4 bg-neutral-50 rounded-xl">
-            <p className="text-xs text-neutral-500 mb-1">Stock Status</p>
-            <span
-              className={clsx('rounded-full px-2 py-1 text-xs font-medium', {
-                'bg-emerald-500/10 text-emerald-600':
-                  stockStatus === 'IN_STOCK',
-                'bg-amber-500/10 text-amber-600': stockStatus === 'LOW_STOCK',
-                'bg-red-500/10 text-red-600': stockStatus === 'OUT_OF_STOCK',
-              })}
-            >
-              {stockStatus === 'IN_STOCK'
-                ? 'In Stock'
-                : stockStatus === 'LOW_STOCK'
-                  ? 'Low Stock'
-                  : 'Out of Stock'}
-            </span>
-          </div>
+            <div>
+              <p className="text-xs text-neutral-500 mb-1">Price</p>
+              <h2 className="font-semibold text-primary text-sm">
+                {formattedPrice}
+              </h2>
+            </div>
+          </li>
 
-          <div className="p-4 bg-neutral-50 rounded-xl">
-            <p className="text-xs text-neutral-500 mb-1">Stock Quantity</p>
-            <p className="font-medium text-neutral-900">
-              {stockQuantity ?? 'N/A'}
-            </p>
-          </div>
+          <li className="p-4 bg-neutral-50 rounded-xl flex items-start gap-2">
+            <Package size={16} className="text-neutral-400" />
 
-          <div className="p-4 bg-neutral-50 rounded-xl">
-            <p className="text-xs text-neutral-500 mb-1">Low Stock Threshold</p>
-            <p className="font-medium text-neutral-900">
-              {lowStockThreshold ?? 'N/A'}
-            </p>
-          </div>
-        </div>
+            <div>
+              <p className="text-xs text-neutral-500 mb-1">Stock Quantity</p>
+              <p className="font-medium text-neutral-900 text-sm">
+                {stockQuantity ?? 'N/A'}
+              </p>
+            </div>
+          </li>
+
+          <li className="p-4 bg-neutral-50 rounded-xl  flex items-start gap-2">
+            <Box size={16} className="text-neutral-400" />
+
+            <div>
+              <p className="text-xs text-neutral-500 mb-1">
+                Low Stock Threshold
+              </p>
+              <p className="font-medium text-neutral-900 text-sm">
+                {lowStockThreshold ?? 'N/A'}
+              </p>
+            </div>
+          </li>
+        </ul>
 
         {/* Description */}
         {description && (
           <div className="p-4 bg-neutral-50 rounded-xl">
-            <p className="text-xs text-neutral-500 mb-2">Description</p>
+            <p className="text-xs text-neutral-500 mb-1">Description</p>
             <p className="text-neutral-700 text-sm leading-relaxed">
               {description}
             </p>
@@ -192,7 +206,7 @@ export default function ViewProductModal({
 
         {productType === 'VARIABLE' && variants?.length ? (
           <div className="space-y-3">
-            <p className="text-sm font-semibold">Variants</p>
+            <h2 className="text-sm font-semibold">Variants</h2>
 
             <div className="space-y-2">
               {variants.map((variant) => (
@@ -200,16 +214,16 @@ export default function ViewProductModal({
                   key={variant.id}
                   className="p-3 rounded-lg bg-neutral-50 flex justify-between"
                 >
-                  <div>
-                    <p className="font-medium">{variant.variantName}</p>
+                  <div className="space-y-1">
+                    <p className="font-medium text-sm">{variant.variantName}</p>
                     <p className="text-xs text-neutral-500">
                       SKU: {variant.sku}
                     </p>
                   </div>
 
-                  <p className="font-medium text-primary">
-                    ₦{variant.price?.toLocaleString()}
-                  </p>
+                  <h2 className="font-semibold text-primary text-sm">
+                    NGN {variant.price?.toLocaleString()}
+                  </h2>
                 </div>
               ))}
             </div>
@@ -218,7 +232,7 @@ export default function ViewProductModal({
 
         {addons?.length ? (
           <div className="space-y-3">
-            <p className="text-sm font-semibold">Add-ons</p>
+            <h2 className="text-sm font-semibold">Add-ons</h2>
 
             <div className="space-y-2">
               {addons.map((addon) => (
@@ -226,8 +240,8 @@ export default function ViewProductModal({
                   key={addon.id}
                   className="p-3 rounded-lg bg-neutral-50 flex justify-between"
                 >
-                  <div>
-                    <p className="font-medium">{addon.addonName}</p>
+                  <div className="space-y-1">
+                    <p className="font-medium text-sm">{addon.addonName}</p>
 
                     {addon.category && (
                       <p className="text-xs text-neutral-500">
@@ -236,9 +250,9 @@ export default function ViewProductModal({
                     )}
                   </div>
 
-                  <p className="text-primary font-medium">
-                    ₦{addon.price?.toLocaleString()}
-                  </p>
+                  <h2 className="text-primary font-semibold text-sm">
+                    NGN {addon.price?.toLocaleString()}
+                  </h2>
                 </div>
               ))}
             </div>
@@ -254,15 +268,15 @@ export default function ViewProductModal({
         {/* Actions */}
         <div className="flex justify-around gap-4 pt-4">
           <Button
-            variant="outline"
-            size="lg"
+            variant="white"
+            size="icon"
             onClick={() => setIsModalOpen(false)}
           >
             Close
           </Button>
 
           {onEdit && (
-            <Button variant="primary" size="lg" onClick={handleEdit}>
+            <Button variant="primary" size="icon" onClick={handleEdit}>
               <Edit size={16} />
               Edit Product
             </Button>

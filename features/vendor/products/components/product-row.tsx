@@ -1,8 +1,19 @@
-import { Edit, Eye, Trash2 } from 'lucide-react';
+import {
+  Edit,
+  Eye,
+  Icon,
+  Package,
+  Package2,
+  Store,
+  Trash2,
+  Wallet,
+} from 'lucide-react';
 import Image from 'next/image';
 import { ProductRowProps } from '../type';
 import clsx from 'clsx';
 import Card from '@/components/layout/card';
+import { Button } from '@/components/ui/buttons/button';
+import { IconButton } from '@/components/ui/buttons/icon-button';
 
 export default function ProductRow({
   product,
@@ -13,7 +24,6 @@ export default function ProductRow({
   const {
     productName,
     basePrice,
-    subcategoryId,
     productStatus,
     stockStatus,
     productImages,
@@ -31,7 +41,9 @@ export default function ProductRow({
     productImages?.[0]?.imageUrl;
 
   // Format price
-  const formattedPrice = basePrice ? `₦${basePrice.toLocaleString()}` : 'N/A';
+  const formattedPrice = basePrice
+    ? `NGN ${basePrice.toLocaleString()}`
+    : 'N/A';
 
   // Status display
   const statusDisplay = productStatus.toLowerCase();
@@ -43,117 +55,127 @@ export default function ProductRow({
         : 'Out of Stock';
 
   return (
-    <Card className="md:flex items-center justify-between gap-4 bg-white space-y-6 md:space-y-0">
-      {/* LEFT */}
-      <div className="md:flex space-y-6 md:space-y-0 items-center gap-6 flex-1 mb-0">
-        <div className="relative w-full md:w-16 xl:w-24 h-40 md:h-16 xl:h-24 ">
-          {imageUrl ? (
-            <Image
-              src={imageUrl}
-              alt={productName}
-              fill
-              className="rounded-xl object-cover"
-              sizes="(max-width: 768px) 100vw, 160px"
-              unoptimized
-            />
-          ) : (
-            <div className="w-full h-full rounded-xl bg-neutral-100 flex items-center justify-center">
-              <span className="text-neutral-400 text-xs">No image</span>
+    <Card spacing='none' className="group overflow-hidden rounded-2xl bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+      <div className="flex flex-col">
+        <div className="space-y-6 items-center gap-6 flex-1  p-6 mb-0">
+          <div className="flex items-center gap-4">
+            <div className="relative w-20 h-20 overflow-hidden rounded-xl  shrink-0">
+              <Image
+                src={imageUrl ?? '/assets/image/product-placeholder.png'}
+                alt={productName}
+                fill
+                className="object-cover transition-transform duration-300 group-hover:scale-105"
+                loading="lazy"
+              />
             </div>
-          )}
+
+            <div className="space-y-2 flex-1">
+              <h2 className="font-medium text-primary-text-100">
+                {productName}
+              </h2>
+
+              <div className="flex items-center gap-2">
+                <span
+                  className={clsx(
+                    'rounded-full px-2 py-0.5 text-[10px] capitalize',
+                    {
+                      'bg-emerald-500/10 text-emerald-600':
+                        productStatus === 'ACTIVE',
+                      'bg-neutral-100 text-neutral-600':
+                        productStatus === 'INACTIVE',
+                      'bg-amber-500/10 text-amber-600':
+                        productStatus === 'DRAFT',
+                    },
+                  )}
+                >
+                  {statusDisplay}
+                </span>
+
+                <span
+                  className={clsx(
+                    'rounded-full px-2 py-0.5 text-[10px] capitalize',
+                    {
+                      'bg-emerald-500/10 text-emerald-600':
+                        stockStatus === 'IN_STOCK',
+                      'bg-amber-500/10 text-amber-600':
+                        stockStatus === 'LOW_STOCK',
+                      ' bg-red-100 text-red-600':
+                        stockStatus === 'OUT_OF_STOCK',
+                    },
+                  )}
+                >
+                  {stockDisplay}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <ul className="grid grid-cols-2 gap-6 mb-0">
+            <li className="flex items-start gap-2">
+              <Store size={16} className="text-neutral-400" />
+              <div>
+                <p className="text-xs text-neutral-500">Product type:</p>
+                <p className="font-medium text-sm">{productType}</p>
+              </div>
+            </li>
+
+            <li className="flex items-start gap-2">
+              <Package2 size={16} className="text-neutral-400" />
+
+              <div>
+                <p className="text-xs text-neutral-500">SKU:</p>
+                <p className="font-medium text-sm">{sku ?? 'N/A'}</p>
+              </div>
+            </li>
+
+
+            <li className="flex items-start gap-2">
+              <Package size={16} className="text-neutral-400" />
+              <div>
+                <p className="text-xs text-neutral-500">Quantity:</p>
+                <p className="font-medium text-sm">{stockQuantity}</p>
+              </div>
+            </li>
+
+           <li className="flex items-start gap-2">
+           <Package size={16} className="text-neutral-400" />
+
+           <div>
+               <p className="text-xs text-neutral-500">Low Stock:</p>
+              <p className="font-medium text-sm">{lowStockThreshold}</p>
+           </div>
+            </li>
+
+
+            
+            <li className="flex items-start gap-2">
+              <Wallet size={16} className="text-neutral-400" />
+              <div>
+                <p className="text-xs text-neutral-500">Price:</p>
+                <h2 className="font-semibold text-sm text-primary">
+                  {formattedPrice}
+                </h2>
+              </div>
+            </li>
+          </ul>
         </div>
 
-        <div className="space-y-3">
-          <div className="flex items-center  gap-4">
-            <p className="font-medium text-primary-text-100 text-sm">
-              {productName}
-            </p>
+        <div className="flex justify-between items-center border-t border-neutral-100 px-6 py-4">
+          <IconButton onClick={onDelete} variant="red" rounded="md">
+            <Trash2 size={16} />
+          </IconButton>
 
-            <div className="space-x-2">
-              <span
-                className={clsx(
-                  'rounded-full px-2 py-0.5 text-[10px] capitalize',
-                  {
-                    'bg-emerald-500/10 text-emerald-600':
-                      productStatus === 'ACTIVE',
-                    'bg-neutral-100 text-neutral-600':
-                      productStatus === 'INACTIVE',
-                    'bg-amber-500/10 text-amber-600': productStatus === 'DRAFT',
-                  },
-                )}
-              >
-                {statusDisplay}
-              </span>
+          <div className="flex items-center gap-2">
+            <Button onClick={onEdit} size="icon" variant="white">
+              <Edit size={14} />
+              Edit
+            </Button>
 
-              <span className="text-xs text-primary">{subcategoryId}</span>
-
-              <span
-                className={clsx(' text-[10px]', {
-                  'text-emerald-600': stockStatus === 'IN_STOCK',
-                  ' text-amber-600': stockStatus === 'LOW_STOCK',
-                  ' text-red-600': stockStatus === 'OUT_OF_STOCK',
-                })}
-              >
-                {stockDisplay}
-              </span>
-            </div>
-          </div>
-
-          <div className="text-sm flex items-center gap-4 text-neutral-600">
-            <div className="flex items-center gap-2 ">
-              <span className="text-xs text-neutral-500">Product type:</span>
-              <span className="font-medium">{productType}</span>
-            </div>
-
-            <div className="flex items-center gap-2 ">
-              <span className="text-xs text-neutral-500">SKU:</span>
-              <span>{sku}</span>
-            </div>
-
-            <div className="flex items-center gap-2 ">
-              <span className="text-xs text-neutral-500">Price:</span>
-              <span className="font-medium text-primary">{formattedPrice}</span>
-            </div>
-          </div>
-
-          <div className="text-sm flex items-center gap-4 text-neutral-600">
-            <div className="flex items-center gap-2 ">
-              <span className="text-xs text-neutral-500">Quantity:</span>
-              <span className="font-medium">{stockQuantity}</span>
-            </div>
-
-            <div className="flex items-center gap-2 ">
-              <span className="text-xs text-neutral-500">Low Stock:</span>
-              <span className="font-medium">{lowStockThreshold}</span>
-            </div>
+            <Button size="icon" onClick={onView}>
+              View Product
+            </Button>
           </div>
         </div>
-      </div>
-
-      {/* ACTIONS */}
-      <div className="flex items-center gap-2">
-        <button
-          onClick={onView}
-          className="flex items-center gap-1 rounded-lg border border-border px-3 py-2 text-sm hover:bg-foreground-200 cursor-pointer"
-        >
-          <Eye size={14} />
-          View
-        </button>
-
-        <button
-          onClick={onEdit}
-          className="flex items-center gap-1 rounded-lg border border-border px-3 py-2 text-sm hover:bg-foreground-200 cursor-pointer"
-        >
-          <Edit size={14} />
-          Edit
-        </button>
-
-        <button
-          onClick={onDelete}
-          className="rounded-lg border border-red-200 p-2 text-red-500 hover:bg-red-50 cursor-pointer"
-        >
-          <Trash2 size={16} />
-        </button>
       </div>
     </Card>
   );

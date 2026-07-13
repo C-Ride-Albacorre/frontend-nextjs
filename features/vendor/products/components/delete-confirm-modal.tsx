@@ -4,6 +4,7 @@ import Modal from '@/components/layout/modal';
 import { Button } from '@/components/ui/buttons/button';
 import { AlertTriangle } from 'lucide-react';
 import { useState } from 'react';
+import { toast } from 'sonner';
 import { deleteProductAction } from '../action';
 import { DeleteConfirmModalProps } from '../type';
 
@@ -12,12 +13,12 @@ export default function DeleteConfirmModal({
   setIsModalOpen,
   product,
   storeId,
-  onSuccess,
 }: DeleteConfirmModalProps) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   if (!product) return null;
+
 
   const handleDelete = async () => {
     setIsDeleting(true);
@@ -27,43 +28,52 @@ export default function DeleteConfirmModal({
       const result = await deleteProductAction(storeId, product.id);
 
       if (result.success) {
+        
+        toast.success('Product deleted successfully');
+
         setIsModalOpen(false);
-        onSuccess?.();
+
       } else {
         setError(result.message);
       }
-    } catch {
-      setError('Failed to delete product. Please try again.');
+    } catch (error) {
+      setError(
+        error instanceof Error
+          ? error.message
+          : 'Failed to delete product. Please try again.',
+      );
     } finally {
       setIsDeleting(false);
     }
   };
 
   return (
-    <Modal isModalOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-      <div className="py-6 text-center">
+    <Modal
+      isModalOpen={isModalOpen}
+      onClose={() => setIsModalOpen(false)}
+      wrapperClassName="max-w-md"
+    >
+      <div className="py-6 text-center space-y-5">
         {/* Warning Icon */}
-        <div className="mx-auto w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mb-4">
-          <AlertTriangle className="w-8 h-8 text-red-600" />
+        <div className="mx-auto w-16 h-16 rounded-full bg-red-100 flex items-center justify-center ">
+          <AlertTriangle size={32} className=" text-red-600" />
         </div>
 
         {/* Title */}
-        <h2 className="text-xl font-semibold text-neutral-900 mb-2">
+        <h2 className="text-xl font-semibold text-neutral-900 ">
           Delete Product
         </h2>
 
         {/* Message */}
-        <p className="text-neutral-600 mb-2">
+        <div className="text-neutral-600 text-sm leading-7">
           Are you sure you want to delete{' '}
-          <span className="font-medium text-neutral-900">
+          <h2 className="font-semibold text-neutral-900 inline">
             &quot;{product.productName}&quot;
-          </span>
-          ?
-        </p>
-        <p className="text-sm text-neutral-500 mb-6">
-          This action cannot be undone. The product will be permanently removed
-          from your store.
-        </p>
+          </h2>
+          ? This action cannot be undone. The product will be permanently
+          removed from your store.
+        </div>
+        <p className="text-sm text-neutral-500 mb-6"></p>
 
         {/* Error Message */}
         {error && (
@@ -75,22 +85,23 @@ export default function DeleteConfirmModal({
         {/* Actions */}
         <div className="flex justify-center gap-4">
           <Button
-            variant="outline"
-            size="lg"
+            variant="white"
+            size="icon"
             onClick={() => setIsModalOpen(false)}
             disabled={isDeleting}
+            className="flex-1"
           >
             Cancel
           </Button>
 
           <Button
             variant="red"
-            size="lg"
+            size="icon"
             onClick={handleDelete}
             disabled={isDeleting}
-       
+            className="flex-1"
           >
-            {isDeleting ? 'Deleting...' : 'Delete Product'}
+            {isDeleting ? 'Deleting...' : 'Yes, Delete Product'}
           </Button>
         </div>
       </div>

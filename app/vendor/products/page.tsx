@@ -1,10 +1,8 @@
-﻿import MainLayout from '@/components/layout/main-layout';
-import SectionLayout from '@/components/layout/section-layout';
-import VendorDashboardHeader from '@/components/ui/headers/vendor-header';
-import ProductsPageSection from '@/features/vendor/products/components/products-page-section';
-import { getProductsAction } from '@/features/vendor/products/action';
+﻿import ProductsPageSection from '@/features/vendor/products/components/products-page-section';
 import { getStoresAction } from '@/features/vendor/store/action';
-import { Product } from '@/features/vendor/products/type';
+import EmptyState from '@/components/layout/empty-state';
+import { Store } from 'lucide-react';
+import ErrorState from '@/components/layout/error-state';
 
 type Props = {
   searchParams: Promise<{
@@ -13,30 +11,35 @@ type Props = {
 };
 
 export default async function ProductsPage({ searchParams }: Props) {
-  const params = await searchParams;
-  const storeId = params.storeId || null;
+  try {
+    const stores = await getStoresAction();
 
-  const stores = await getStoresAction();
-  let products: Product[] = [];
+    if (stores.length === 0) {
+      return (
+        <EmptyState
+          icon={<Store size={36} className="text-neutral-500" />}
+          title="No stores found"
+          message="Please add a store to manage products."
+          buttonText="Create Store"
+          urlPath="/vendor/store/new-store"
+        />
+      );
+    }
 
-  if (storeId) {
-    products = await getProductsAction(storeId);
+    return (
+      <>
+        <ProductsPageSection stores={stores} />
+      </>
+    );
+  } catch (error) {
+    console.error(error);
+
+    return (
+      <ErrorState
+        icon={<Store size={36} className="text-orange-500" />}
+        title="Failed to load products"
+        message="Please try again later."
+      />
+    );
   }
-
-  return (
-    <>
-      <MainLayout>
-        <VendorDashboardHeader />
-
-        <SectionLayout>
-          <ProductsPageSection
-            stores={stores}
-            products={products}
-            selectedStoreId={storeId}
-          />
-        </SectionLayout>
-      </MainLayout>
-    </>
-  );
 }
-

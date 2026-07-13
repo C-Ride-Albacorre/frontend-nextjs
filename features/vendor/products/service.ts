@@ -4,6 +4,7 @@ import { BASE_URL } from '@/config/api';
 import { ApiError } from '@/features/libs/api-error';
 import { authFetch } from '@/features/libs/auth-fetch';
 import { Product, ProductApiResponse } from './type';
+import { authRequest } from '@/libs/api/auth-request';
 
 /**
  * Create a new product
@@ -11,92 +12,39 @@ import { Product, ProductApiResponse } from './type';
 export async function createProductService(
   storeId: string,
   formData: FormData,
-): Promise<ProductApiResponse> {
-  const res = await authFetch(`${BASE_URL}/vendor/stores/${storeId}/products`, {
-    method: 'POST',
-    body: formData,
-  });
-
-  const result = await res.json();
-
-  console.log(
-    '[createProductService] Response:',
-    JSON.stringify(result, null, 2),
+) {
+  return await authRequest<ProductApiResponse>(
+    `${BASE_URL}/vendor/stores/${storeId}/products`,
+    {
+      method: 'POST',
+      body: formData,
+      nextTags: [`create-product-store-${storeId}`],
+    },
   );
-
-  if (!res.ok) {
-    throw new ApiError(
-      result?.message || 'Failed to create product',
-      result?.statusCode ?? res.status,
-    );
-  }
-
-  return result;
 }
 
 /**
  * Get all products for a store
  */
-export async function getProductsService(
-  storeId: string,
-): Promise<ProductApiResponse | null> {
-  const res = await authFetch(`${BASE_URL}/vendor/stores/${storeId}/products`, {
-    method: 'GET',
-    cache: 'no-store',
-  });
-
-  const result = await res.json();
-
-  console.log(
-    '[getProductsService] Response:',
-    JSON.stringify(result, null, 2),
+export async function getStoreProductsService(storeId: string) {
+  return await authRequest<ProductApiResponse>(
+    `${BASE_URL}/vendor/stores/${storeId}/products`,
+    {
+      nextTags: [`get-products-store-${storeId}`],
+    },
   );
-
-  if (res.status === 404 || result?.statusCode === 404) {
-    return null;
-  }
-
-  if (!res.ok) {
-    throw new ApiError(
-      result?.message || 'Failed to fetch products',
-      result?.statusCode ?? res.status,
-    );
-  }
-
-  return result;
 }
 
 /**
  * Get a single product by ID
  */
-export async function getProductService(
-  storeId: string,
-  productId: string,
-): Promise<Product | null> {
-  const res = await authFetch(
+export async function getProductIdService(storeId: string, productId: string) {
+  return await authRequest<Product>(
     `${BASE_URL}/vendor/stores/${storeId}/products/${productId}`,
     {
-      method: 'GET',
-      cache: 'no-store',
+      nextTags: [`get-product-${productId}`],
     },
   );
-
-  const result = await res.json();
-
-  console.log('[getProductService] Response:', JSON.stringify(result, null, 2));
-
-  if (res.status === 404 || result?.statusCode === 404) {
-    return null;
-  }
-
-  if (!res.ok) {
-    throw new ApiError(
-      result?.message || 'Failed to fetch product',
-      result?.statusCode ?? res.status,
-    );
-  }
-
-  return result.data;
 }
 
 /**
@@ -106,7 +54,7 @@ export async function updateProductService(
   storeId: string,
   productId: string,
   formData: FormData,
-): Promise<ProductApiResponse> {
+) {
   // Log what fields are being sent
   console.log('[updateProductService] FormData fields:');
   for (const [key, value] of formData.entries()) {
@@ -117,29 +65,15 @@ export async function updateProductService(
     }
   }
 
-  const res = await authFetch(
+  return await authRequest<ProductApiResponse>(
     `${BASE_URL}/vendor/stores/${storeId}/products/${productId}`,
     {
       method: 'PUT',
       body: formData,
+    
+      nextTags: [`update-product-${productId}`],
     },
   );
-
-  const result = await res.json();
-
-  console.log(
-    '[updateProductService] Response:',
-    JSON.stringify(result, null, 2),
-  );
-
-  if (!res.ok) {
-    throw new ApiError(
-      result?.message || 'Failed to update product',
-      result?.statusCode ?? res.status,
-    );
-  }
-
-  return result;
 }
 
 /**
@@ -149,28 +83,14 @@ export async function deleteProductService(
   storeId: string,
   productId: string,
 ): Promise<void> {
-  const url = `${BASE_URL}/vendor/stores/${storeId}/products/${productId}`;
-  console.log('[deleteProductService] DELETE Request URL:', url);
-
-  const res = await authFetch(url, {
-    method: 'DELETE',
-  });
-
-  console.log('[deleteProductService] Response status:', res.status);
-
-  // Try to parse response body
-  const result = await res.json().catch(() => null);
-  console.log(
-    '[deleteProductService] Response body:',
-    JSON.stringify(result, null, 2),
+  return await authRequest<void>(
+    `${BASE_URL}/vendor/stores/${storeId}/products/${productId}`,
+    {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      nextTags: [`delete-product-${productId}`],
+    },
   );
-
-  if (!res.ok) {
-    throw new ApiError(
-      result?.message || 'Failed to delete product',
-      result?.statusCode ?? res.status,
-    );
-  }
-
-  console.log('[deleteProductService] Success - Product deleted');
 }

@@ -71,7 +71,7 @@ export default function ViewStoreModal({
 
   // Format currency
   const formatCurrency = (amount?: number) =>
-    amount != null ? `₦${amount.toLocaleString()}` : 'N/A';
+    amount != null ? `NGN ${amount.toLocaleString()}` : 'N/A';
 
   const handleEdit = () => {
     setIsModalOpen(false);

@@ -88,6 +88,7 @@ export default function VariableDetailsFields({
           value={subcategoryId}
           onChange={setSubcategoryId}
           errorMessage={errors?.subcategoryId?.[0]}
+              required
         />
 
         <Input
@@ -99,18 +100,20 @@ export default function VariableDetailsFields({
           onChange={(e) => setSku(e.target.value)}
           disabled={isEditing}
           errorMessage={errors?.sku?.[0]}
+              required
         />
       </div>
 
       <Input
         id="basePrice"
         name="basePrice"
-        label="Base Price (₦)"
+        label="Base Price (NGN)"
         type="number"
         placeholder="e.g., 4500"
         value={basePrice}
         onChange={(e) => setBasePrice(e.target.value)}
         errorMessage={errors?.basePrice?.[0]}
+            required
       />
 
       <Textarea
@@ -121,6 +124,7 @@ export default function VariableDetailsFields({
         value={description}
         onChange={(e) => setDescription(e.target.value)}
         errorMessage={errors?.description?.[0]}
+            required
       />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -133,6 +137,7 @@ export default function VariableDetailsFields({
           value={stockQuantity}
           onChange={(e) => setStockQuantity(e.target.value)}
           errorMessage={errors?.stockQuantity?.[0]}
+              required
         />
 
         <Input
@@ -144,6 +149,7 @@ export default function VariableDetailsFields({
           value={lowStockThreshold}
           onChange={(e) => setLowStockThreshold(e.target.value)}
           errorMessage={errors?.lowStockThreshold?.[0]}
+              required
         />
 
         <div>
@@ -155,6 +161,7 @@ export default function VariableDetailsFields({
             value={stockStatus}
             onChange={(value) => setStockStatus(value as StockStatus)}
             errorMessage={errors?.stockStatus?.[0]}
+                required
           />
         </div>
       </div>
@@ -168,6 +175,7 @@ export default function VariableDetailsFields({
           value={productStatus}
           onChange={(value) => setProductStatus(value as ProductStatus)}
           errorMessage={errors?.productStatus?.[0]}
+              required
         />
       </div>
 
@@ -178,6 +186,7 @@ export default function VariableDetailsFields({
         maxSizeMB={5}
         existingImageUrl={existingImageUrl}
         errorMessage={errors?.images?.[0]}
+            required
       />
     </div>
   );

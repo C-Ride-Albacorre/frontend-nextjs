@@ -1,5 +1,9 @@
 // Stock status matches API
-export type StockStatus = 'IN_STOCK' | 'LOW_STOCK' | 'OUT_OF_STOCK' | 'NOT_AVAILABLE';
+export type StockStatus =
+  | 'IN_STOCK'
+  | 'LOW_STOCK'
+  | 'OUT_OF_STOCK'
+  | 'NOT_AVAILABLE';
 
 // Product status matches API
 export type ProductStatus = 'ACTIVE' | 'INACTIVE' | 'DRAFT';
@@ -76,7 +80,9 @@ export interface ProductApiResponse {
   statusCode: number;
   timestamp: string;
   path: string;
-  data: Product | Product[];
+  error: string;
+  message: string;
+  data: Product[];
 }
 
 // Form state for server actions
@@ -145,5 +151,5 @@ export interface DeleteConfirmModalProps {
   setIsModalOpen: (isOpen: boolean) => void;
   product: Product | null;
   storeId: string;
-  onSuccess?: () => void;
+  onSuccess?: (result: { success: boolean; message: string }) => void;
 }
