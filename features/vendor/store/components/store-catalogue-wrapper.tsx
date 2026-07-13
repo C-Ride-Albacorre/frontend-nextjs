@@ -2,14 +2,13 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Loader, Store, Trash2 } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/buttons/button';
-import Card from '@/components/layout/card';
 import VendorToolbar from '@/components/layout/tool-bar';
 import StoreCatalogue from './store-catalogue';
 import ViewStoreModal from './view-store-modal';
 import DeleteStoreModal from './delete-store-modal';
-import { GetStoreApiResponse, StoreData } from '../types';
+import {  StoreData } from '../types';
 
 export default function StoreCatalogueWrapper({
   storeData,
@@ -71,10 +70,7 @@ export default function StoreCatalogueWrapper({
     <>
       <VendorToolbar
         title="Store Catalog"
-        searchPlaceholder="Search stores..."
-        filter={sort}
-        onFilterChange={setSort}
-        filterOptions={[{ label: 'All', value: 'All' }]}
+
       />
       {selectedStoreIds.size > 0 && (
         <div className="flex justify-end">
