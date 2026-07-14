@@ -65,8 +65,9 @@ export default function OrderList({
   }, [isFetching, data]);
 
   const formatTime = () => {
-    const diffInSeconds = Math.floor(
-      (now.getTime() - lastUpdateTime.getTime()) / 1000,
+    const diffInSeconds = Math.max(
+      0,
+      Math.floor((now.getTime() - lastUpdateTime.getTime()) / 1000),
     );
 
     if (diffInSeconds < 60) {
@@ -128,17 +129,27 @@ export default function OrderList({
             ? 'All Orders'
             : `${CATEGORIES.find((cat) => cat.value === statusFilter)?.label ?? statusFilter} Orders`
         }
-        updatedAt={isFetching ? 'Updating...' : `Updated ${formatTime()}`}
+        updatedAt={
+          isFetching ? (
+            <LoaderCircle className="animate-spin text-primary" size={12} />
+          ) : (
+            `Updated ${formatTime()}`
+          )
+        }
         filterOptions={CATEGORIES}
         filter={statusFilter}
         onFilterChange={handleStatusChange}
       />
 
-      {!data?.orders.length ? (
+      {!!data?.orders.length && isFetching ? (
+        <div className="flex flex-col items-center justify-center h-screen gap-4">
+          <LoaderCircle size={24} className="animate-spin text-primary" />
+        </div>
+      ) : !data?.orders.length ? (
         <EmptyState
           icon={<Package size={48} className="text-neutral-400" />}
           title="No Orders Available"
-          message="There are currently no incoming orders."
+          message="There are currently no incoming orders. Once customers place orders, they will appear here for you to manage and fulfill."
         />
       ) : (
         <>

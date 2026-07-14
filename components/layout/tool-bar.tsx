@@ -85,8 +85,8 @@ export default function Toolbar({
       {updatedAt && (
         <div className="flex items-center gap-2">
           <Clock size={14} className="text-green-100" />
-          <h6 className="text-neutral-400 text-xs">Last updated:</h6>
-          <div>{updatedAt}</div>
+          <p className="text-neutral-400 text-[10px]">Last updated:</p>
+          <div className='text-neutral-400 text-[10px]'>{updatedAt}</div>
         </div>
       )}
     </div>
