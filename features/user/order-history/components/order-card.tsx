@@ -56,117 +56,129 @@ export default function OrderCard({ order }: { order: Order }) {
     <>
       <Card
         spacing="none"
-        gap="md"
-        className="bg-white border rounded-xl shadow-md p-2 h-full flex flex-col"
+        gap="none"
+        className="bg-white border rounded-xl h-full flex flex-col  transition-all duration-300 hover:shadow-lg hover:-translate-y-1  "
       >
         {/* Header */}
-        <div className="flex justify-between items-start px-2 py-4 border-b border-border">
+        <div className="flex justify-between items-start p-4 border-b border-border">
           <div className="flex justify-between items-center gap-4 w-full">
-            <div className="flex items-center gap-2 mb-1">
-              <p className="font-medium text-primary-text-100 text-sm">
-                Order #{order.orderCode}
-              </p>
+            <div className="">
+              <p className="font-medium text-neutral-500 text-xs">Order Code</p>
 
-              <span
-                className={`px-3 py-1 rounded-full text-[10px] font-medium capitalize ${getStatusColor(
-                  order.orderStatus,
-                )}`}
-              >
-                {orderStatus}
-              </span>
+              <h4 className="font-semibold text-primary-text-100 text-lg">
+                {order.orderCode}
+              </h4>
             </div>
 
             {/* <p className="text-xs text-neutral-500">{order.orderNumber}</p> */}
 
-            {/* Date */}
-            <div className="text-xs text-neutral-500">
-              {formatDate(order.createdAt)}
-            </div>
-          </div>
-        </div>
+            <div className="flex flex-col items-end gap-1 ">
+              <div className="text-[10px] text-neutral-500">
+                {formatDate(order.createdAt)}
+              </div>
 
-        {/* Items */}
-        <div className="pb-4 px-2 space-y-2">
-          <div className="text-xs text-neutral-500 flex items-center gap-1">
-            <Package size={14} /> <span>Items</span>
-          </div>
-
-          <div className="space-y-2 ">
-            {order.items.slice(0, 3).map((item) => (
-              <div key={item.id} className="flex justify-between gap-2 text-sm">
-                <span className="truncate">
-                  {item.product.productName} × {item.quantity}
+              <div className="flex gap-2">
+                <span
+                  className={`px-3 py-1 rounded-full text-[10px] font-medium capitalize w-fit ${getStatusColor(
+                    order.orderStatus,
+                  )}`}
+                >
+                  {orderStatus}
                 </span>
 
-                <span className="shrink-0">
-                  ₦{item.totalPrice.toLocaleString()}
+                <span
+                  className={`px-3 py-1 rounded-full text-[10px] font-medium capitalize ${getStatusColor(
+                    order.paymentStatus,
+                  )}`}
+                >
+                  {paymentStatus}
                 </span>
               </div>
-            ))}
+            </div>
+            {/* Date */}
+          </div>
+        </div>
 
-            {order.items.length > 3 && (
-              <p className="text-xs text-neutral-500">
-                +{order.items.length - 3} more items
+        <div className="flex flex-col gap-6 p-4 flex-1">
+          {/* Items */}
+          <div className="space-y-3">
+            <div className="text-xs text-neutral-500 flex items-center gap-1">
+              <Package size={14} className="text-green-100" /> <h4>Items</h4>
+            </div>
+
+            <div className="space-y-2">
+              {order.items.slice(0, 3).map((item) => (
+                <div
+                  key={item.id}
+                  className="flex justify-between gap-2 text-sm"
+                >
+                  <div className="flex flex-col gap-1">
+                    <span className="truncate text-sm">
+                      {item.product?.productName ?? 'Unknown Product'}
+                    </span>
+                    <span className="text-xs text-neutral-500">
+                      Qty: {item.quantity}
+                    </span>
+                  </div>
+
+                  <h4 className="font-semibold text-neutral-900">
+                    NGN {item.totalPrice.toLocaleString()}
+                  </h4>
+                </div>
+              ))}
+
+              {order.items.length > 3 && (
+                <p className="text-xs text-neutral-500">
+                  +{order.items.length - 3} more items
+                </p>
+              )}
+            </div>
+          </div>
+
+          {/* Delivery Address */}
+          <div className="space-y-2">
+            <div className="text-xs text-neutral-500 flex items-center gap-1">
+              <MapPinHouse size={14} className="text-green-100" />{' '}
+              <h4>Delivery Address</h4>
+            </div>
+
+            <div className="space-y-1">
+              <p className="text-sm line-clamp-2">
+                {order.dropoffLocation.address}
               </p>
-            )}
-          </div>
-        </div>
 
-        {/* Delivery Address */}
-        <div className="pb-4 px-2 space-y-2">
-          <div className="text-xs text-neutral-500 flex items-center gap-1">
-            <MapPinHouse size={14} /> <span>Delivery Address</span>
-          </div>
+              <p className="text-sm">
+                {order.dropoffLocation.city}, {order.dropoffLocation.state}
+              </p>
 
-          <div className="space-y-1">
-            <p className="text-sm line-clamp-2">
-              {order.dropoffLocation.address}
-            </p>
-
-            <p className="text-sm">
-              {order.dropoffLocation.city}, {order.dropoffLocation.state}
-            </p>
-
-            <p className="text-sm">
-              {order.dropoffLocation.country},{' '}
-              {order.dropoffLocation.postalCode}
-            </p>
-          </div>
-        </div>
-
-        <div className="pb-4 px-2 space-y-2">
-          <div className="text-xs text-neutral-500 flex items-center gap-1">
-            <User size={14} /> <span>Recipient Details</span>
+              <p className="text-sm">
+                {order.dropoffLocation.country},{' '}
+                {order.dropoffLocation.postalCode}
+              </p>
+            </div>
           </div>
 
-          <div className="space-y-1">
-            <p className="text-sm ">{order.recipientName}</p>
+          <div className=" space-y-2">
+            <div className="text-xs text-neutral-500 flex items-center gap-1">
+              <User size={14} className="text-green-100" />{' '}
+              <span>Recipient Details</span>
+            </div>
 
-            <p className="text-sm ">{order.recipientPhone}</p>
+            <div className="space-y-1">
+              <p className="text-sm ">{order.recipientName}</p>
+
+              <p className="text-sm ">{order.recipientPhone}</p>
+            </div>
           </div>
-        </div>
 
-        <div className="mt-auto space-y-4">
-          {/* Payment */}
-          <div className="flex justify-between text-sm px-2 pb-4 border-b border-border">
-            <span>Payment</span>
-
-            <span
-              className={`px-3 py-1 rounded-full text-[10px] font-medium capitalize ${getStatusColor(
-                order.paymentStatus,
-              )}`}
-            >
-              {paymentStatus}
-            </span>
-          </div>
 
           {/* Total */}
-          <div className="flex justify-between items-center px-2">
-            <span className="font-medium">Total</span>
+          <div className="flex justify-between items-center">
+            <h2 className="font-medium">Total</h2>
 
-            <span className="font-bold">
-              ₦{order.totalAmount.toLocaleString()}
-            </span>
+            <h2 className="font-bold">
+              NGN {order.totalAmount.toLocaleString()}
+            </h2>
           </div>
 
           {/* Action */}

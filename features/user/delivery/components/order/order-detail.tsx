@@ -47,18 +47,16 @@ export default function OrderDetail({ orderId }: { orderId: string }) {
 
   return (
     <>
-      <div className="my-6">
-        <h3 className="text-lg font-semibold mb-4">Order Details</h3>
-      </div>
+     
 
       <div className="space-y-6">
         {/* Status badge + ID */}
-        <div className="flex items-center justify-between">
-          <div className="space-y-1">
-            <p className="font-medium text-xs text-neutral-500">Order Number</p>
-            <p className="text-sm">
+        <Card border='none' className="flex items-start  justify-between bg-primary/10">
+          <div className="space-y-1.5 mb-0">
+            <p className="font-medium text-xs text-neutral-500">Your Order Code</p>
+            <h2 className="text-3xl font-semibold text-primary-text-100">
               {(order?.orderCode ?? order?.orderNumber ?? '').toUpperCase()}
-            </p>
+            </h2>
           </div>
 
           <span
@@ -68,7 +66,7 @@ export default function OrderDetail({ orderId }: { orderId: string }) {
           >
             {order?.orderStatus?.toLowerCase().replace(/_/g, ' ') ?? 'unknown'}
           </span>
-        </div>
+        </Card>
 
         {/* Delivery info */}
         {order?.dropoffLocation &&
@@ -80,12 +78,12 @@ export default function OrderDetail({ orderId }: { orderId: string }) {
             return (
               <Card
                 border="none"
-                gap="xs"
-                className="bg-foreground-200 text-sm space-y-6"
+                gap="sm"
+                className="bg-foreground-200 text-sm"
               >
-                <p className="font-medium text-xs text-neutral-500">
+                <h6 className="font-medium text-xs text-neutral-500">
                   Delivery To
-                </p>
+                </h6>
                 <p className="text-sm flex items-center gap-3">
                   <User size={14} className="text-green-100" />
                   {order.recipientName}
@@ -110,7 +108,7 @@ export default function OrderDetail({ orderId }: { orderId: string }) {
         {/* Items */}
         {order.items && order.items.length > 0 && (
           <div className="space-y-4 mb-0">
-            <p className="text-sm font-medium">Items</p>
+            <h6 className="text-sm font-medium">Items</h6>
             <ul className="divide-y divide-border text-sm space-y-8">
               {order.items.map((item: OrderItem) => (
                 <li
@@ -118,27 +116,27 @@ export default function OrderDetail({ orderId }: { orderId: string }) {
                   className="flex items-center justify-between py-6 gap-4 md:gap-12 mb-0"
                 >
                   <div className="flex-1 flex  items-center gap-6">
-                    <div className="relative w-32 h-16">
+                    <div className="relative w-16 h-16">
                       <Image
-                        src={item.product?.productImages?.[0]?.imageUrl ?? ''}
+                        src={item.product?.productImages?.[0]?.imageUrl ?? '/assets/image/product-placeholder.png'}
                         alt={item.product?.productName ?? ''}
                         fill
-                        className="object-cover rounded-md"
+                        className="object-contain"
                       />
                     </div>
 
                     <div className="capitalize w-full text-left">
-                      <p>{item.product?.productName?.toLowerCase()} </p>
+                      <h5>{item.product?.productName?.toLowerCase() ?? 'unknown product'} </h5>
 
-                      <p className="text-sm text-neutral-500">
+                      <p className="text-xs text-neutral-500">
                         Qty: {item.quantity}
                       </p>
                     </div>
                   </div>
 
-                  <span className="font-medium">
+                  <h5 className="font-medium">
                     NGN {item.totalPrice.toLocaleString()}
-                  </span>
+                  </h5>
                 </li>
               ))}
             </ul>
@@ -148,19 +146,19 @@ export default function OrderDetail({ orderId }: { orderId: string }) {
         {/* Totals */}
         <div className="border-t border-border pt-4 space-y-2 text-sm">
           {order.serviceFee !== undefined && (
-            <div className="flex justify-between text-neutral-500">
+            <div className="flex justify-between text-sm text-neutral-500">
               <span>Service Fee</span>
               <span>NGN {order.serviceFee.toLocaleString()}</span>
             </div>
           )}
           {order.deliveryFee !== undefined && (
-            <div className="flex justify-between text-neutral-500">
+            <div className="flex justify-between text-sm text-neutral-500">
               <span>Delivery Fee</span>
               <span>NGN {order.deliveryFee.toLocaleString()}</span>
             </div>
           )}
           {order.vat !== undefined && (
-            <div className="flex justify-between text-neutral-500">
+            <div className="flex justify-between text-sm text-neutral-500">
               <span>VAT</span>
               <span>NGN {order.vat.toLocaleString()}</span>
             </div>

@@ -1,21 +1,27 @@
-import Card from '@/components/layout/card';
-import Header from '@/components/ui/headers/user-route-header';
-import { getOrdersAction } from '@/features/user/delivery/action';
+import ErrorState from '@/components/layout/error-state';
+import { Package } from 'lucide-react';
+import { getOrdersService } from '@/features/user/delivery/order-service';
 
 import OrderList from '@/features/user/order-history/components/order-list';
-import { LoaderCircle } from 'lucide-react';
-import { Suspense } from 'react';
+import EmptyState from '@/components/layout/empty-state';
 
 export default async function OrderHistoryPage() {
-  const response = await getOrdersAction();
+  try {
+    const response = await getOrdersService();
 
-  const orders = response.success ? response.data : [];
+    // console.log(' [OrderHistoryPage] Response:', response);
 
-  return (
-    <main className="max-w-7xl mx-auto p-6 space-y-8">
-      <Header />
+    const orders = response.data;
 
-      {/* <div className="flex items-center gap-4 w-full">
+
+    if (!orders || orders.length === 0) {
+
+      return <EmptyState icon={<Package size={48} className="text-neutral-500" />} title="No Orders" message="You have not placed any orders yet." />
+    }
+
+    return (
+      <>
+        {/* <div className="flex items-center gap-4 w-full">
         <Input
           placeholder="Search by order ID, type, or location..."
           leftIcon={<Search size={12} className="text-primary-text-100" />}
@@ -41,21 +47,30 @@ export default async function OrderHistoryPage() {
         </div>
       </div> */}
 
-      {/* <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <StatCard title="Total Spent" value="₦21,000.00" />
         <StatCard title="Orders Placed" value="15" />
         <StatCard title="Cancelled Orders" value="2" />
       </section> */}
 
-      <Suspense
-        fallback={
-          <Card className="flex items-center justify-center py-16 gap-4">
-            <LoaderCircle size={20} className="animate-spin text-primary" />
-          </Card>
+        <>
+          <OrderList orders={orders as any} />
+        </>
+      </>
+    );
+  } catch (error) {
+    console.error('Error fetching orders:', error);
+
+    return (
+      <ErrorState
+        icon={<Package size={48} className="text-orange-500" />}
+        title="Something went wrong"
+        message={
+          error instanceof Error
+            ? error.message
+            : 'There are currently no incoming orders. Once customers place orders, they will appear here for you to manage and fulfill.'
         }
-      >
-        <OrderList orders={orders} />
-      </Suspense>
-    </main>
-  );
+      />
+    );
+  }
 }

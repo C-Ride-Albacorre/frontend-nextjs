@@ -41,13 +41,13 @@ export default function AddressSelector({
 
   return (
     <div className="flex flex-col md:flex-row items-start gap-2">
-      <div className="bg-red-100 w-8 h-8 md:w-12 md:h-12 rounded-full shrink-0 flex items-center justify-center ">
-        <MapPin size={20} className="text-red-600 md:animate-bounce" />
+      <div className="bg-green-100/10 w-8 h-8 md:w-12 md:h-12 rounded-full shrink-0 flex items-center justify-center ">
+        <MapPin size={20} className="text-green-100 " />
       </div>
 
       <div className="space-y-4">
         <div>
-          <p className="font-medium text-sm">Drop Address</p>
+          <h6 className="font-medium text-sm">Drop Address</h6>
 
           <span className="text-sm text-neutral-500">
             {activeSelected?.address || 'No address selected'}

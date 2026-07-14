@@ -48,5 +48,6 @@ export function useVendorOrders(
     ...query,
     isLoading: query.isPending && !shouldUseInitialData,
     isFetching: query.isFetching,
+    refetch: query.refetch,
   };
 }

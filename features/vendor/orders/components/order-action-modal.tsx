@@ -16,6 +16,7 @@ interface OrderActionModalProps {
   orderId: string;
   customer: string;
   actionStatus: 'ACCEPT' | 'DECLINE';
+  onSuccess?: () => void;
 }
 
 const DECLINE_REASONS = [
@@ -32,6 +33,7 @@ export default function OrderActionModal({
   isModalOpen,
   onClose,
   actionStatus,
+  onSuccess,
 }: OrderActionModalProps) {
   const [selectedReason, setSelectedReason] = useState('');
   const [customReason, setCustomReason] = useState('');
@@ -77,6 +79,11 @@ export default function OrderActionModal({
         setSelectedReason('');
         setCustomReason('');
         handleClose();
+
+        // Trigger immediate refresh
+        if (onSuccess) {
+          onSuccess();
+        }
       } else {
         toast.error(result.message);
       }

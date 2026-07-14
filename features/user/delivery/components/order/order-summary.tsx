@@ -13,6 +13,8 @@ export default function OrderSummary() {
 
   const items = cart?.items ?? [];
 
+  const storeName = cart?.storeName;
+
   const isUpdatingCart = updatingItems.length > 0;
 
   if (!items.length) {
@@ -34,9 +36,15 @@ export default function OrderSummary() {
       <Card gap="lg" border="none" className="rounded-2xl bg-foreground-200">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-primary-text-100">
-            Order Summary
-          </h2>
+          <div>
+            <h2 className="text-lg font-semibold text-primary-text-100">
+              Order Summary
+            </h2>
+
+              <h6 className="font-medium text-xs capitalize text-neutral-600">
+              {storeName ? `From: ${storeName}` : 'No store selected'}
+            </h6>
+          </div>
 
           <div className="flex items-center gap-1">
             <Package size={16} className="inline-block mr-1 text-neutral-500" />

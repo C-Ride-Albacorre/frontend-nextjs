@@ -84,6 +84,8 @@ export async function vendorOrderAction({
 
     console.log(' Vendor order action response:', response);
 
+    revalidatePath(`/vendor/orders`);
+
     revalidateTag(`vendor-orders-${orderId}`, 'default');
 
     revalidateTag(`vendor-orders`, 'default');

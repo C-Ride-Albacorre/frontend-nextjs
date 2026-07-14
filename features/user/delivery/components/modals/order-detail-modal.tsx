@@ -157,12 +157,12 @@ export default function OrderDetailModal({
             <div className="flex items-center justify-between">
               <div className="space-y-1">
                 <p className="text-xs text-neutral-500">Order Number</p>
-                <p className="text-sm font-medium">
+                <h5 className="text-sm font-medium">
                   {(order.orderNumber ?? '').toUpperCase()}
-                </p>
+                </h5>
               </div>
               <span
-                className={`rounded-full px-2 py-0.5 text-[0.65rem] font-medium capitalize ${statusColor(order.orderStatus)}`}
+                className={`rounded-full px-2 py-1 text-[0.65rem] font-medium capitalize ${statusColor(order.orderStatus)}`}
               >
                 {order.orderStatus?.toLowerCase().replace(/_/g, ' ') ??
                   'unknown'}
@@ -186,11 +186,11 @@ export default function OrderDetailModal({
                       Delivery Details
                     </p>
                     <div className="flex items-center gap-2">
-                      <User size={14} className="text-neutral-400" />
+                      <User size={14} className="text-green-100" />
                       <span>{order.recipientName}</span>
                     </div>
                     <div className="flex items-start gap-2">
-                      <MapPin size={14} className="text-neutral-400 mt-0.5" />
+                      <MapPin size={14} className="text-green-100 mt-0.5" />
                       <span className="capitalize">
                         {[loc.address, loc.city, loc.state]
                           .filter(Boolean)
@@ -200,7 +200,7 @@ export default function OrderDetailModal({
                     </div>
                     {order.recipientPhone && (
                       <div className="flex items-center gap-2">
-                        <Phone size={14} className="text-neutral-400" />
+                        <Phone size={14} className="text-green-100" />
                         <span>{order.recipientPhone}</span>
                       </div>
                     )}
@@ -234,28 +234,21 @@ export default function OrderDetailModal({
                         {/* Product image */}
                         <div className="flex-1 flex items-center gap-6">
                           <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-neutral-100">
-                            {image ? (
+                             (
                               <Image
-                                src={image}
+                                src={image ?? '/assets/image/product-placeholder.png'}
                                 alt={name}
                                 fill
                                 className="object-cover"
                               />
-                            ) : (
-                              <div className="flex items-center justify-center h-full w-full">
-                                <ShoppingBag
-                                  size={18}
-                                  className="text-neutral-400"
-                                />
-                              </div>
-                            )}
+                            ) 
                           </div>
 
                           {/* Name + qty */}
                           <div className="flex-1 min-w-0 text-left space-y-1">
-                            <p className="font-medium capitalize truncate">
+                            <h6 className="font-medium capitalize truncate">
                               {name.toLowerCase()}
-                            </p>
+                            </h6>
                             <p className="text-xs text-neutral-500">
                               Qty: {item.quantity} &times; NGN{' '}
                               {(item.unitPrice ?? 0).toLocaleString()}
@@ -264,12 +257,12 @@ export default function OrderDetailModal({
                         </div>
 
                         {/* Price */}
-                        <span className="font-medium shrink-0">
+                        <h6 className="font-medium shrink-0">
                           NGN{' '}
                           {(
                             item.totalPrice ?? item.unitPrice * item.quantity
                           ).toLocaleString()}
-                        </span>
+                        </h6>
                       </li>
                     );
                   })}
@@ -280,7 +273,7 @@ export default function OrderDetailModal({
             {/* Totals */}
             <div className="border-t border-border pt-4 space-y-2 text-sm">
               {order.deliveryFee != null && order.deliveryFee > 0 && (
-                <div className="flex justify-between text-neutral-500">
+                <div className="flex justify-between text-neutral-500 text-sm">
                   <span>Delivery Fee</span>
                   <span>NGN {order.deliveryFee.toLocaleString()}</span>
                 </div>
@@ -335,7 +328,7 @@ export default function OrderDetailModal({
               >
                 {isInitiatingPayment
                   ? 'Initializing Payment...'
-                  : `Proceed to Payment — ₦${(order.totalAmount ?? 0).toLocaleString()}`}
+                  : `Proceed to Payment — NGN ${(order.totalAmount ?? 0).toLocaleString()}`}
               </Button>
             </div>
           </>

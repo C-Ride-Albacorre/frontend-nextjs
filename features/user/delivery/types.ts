@@ -300,46 +300,44 @@ export interface OrderResponse {
   statusCode: number;
   timestamp: string;
   path: string;
-  data: [
-    {
-      id: string;
-      orderNumber: string;
-      userId: string;
-      orderType: 'VENDOR';
-      subtotal: number;
-      deliveryFee: number;
-      serviceFee: number;
-      taxAmount: number;
-      totalAmount: number;
-      deliveryOptionId: string | null;
-      dropoffLocation: DropoffLocation[];
-      recipientName: string;
-      recipientPhone: string;
-      deliveryInstructions: string | null;
-      paymentStatus: 'PENDING' | 'PAID' | 'FAILED';
-      paymentMethod: string | null;
-      paymentReference: string | null;
-      monnifyReference: string | null;
-      orderStatus: string;
-      statusHistory: StatusHistory[];
-      metadata: Record<string, unknown> | null;
-      createdAt: string;
-      updatedAt: string;
-      pickupLocation: PickupLocation[];
-      orderCode: string;
-      respondedAt: string | null;
-      reason: string | null;
-      canceledAt: string | null;
-      deliveredAt: string | null;
-      driverAssignedAt: string | null;
-      pickedUpAt: string | null;
-      vendorAcceptedAt: string | null;
-      vendorDeclinedAt: string | null;
-      storeId: string | null;
-      items: CartItem[];
-      deliveryOption: null;
-    },
-  ];
+  data: {
+    id: string;
+    orderNumber: string;
+    userId: string;
+    orderType: 'VENDOR';
+    subtotal: number;
+    deliveryFee: number;
+    serviceFee: number;
+    taxAmount: number;
+    totalAmount: number;
+    deliveryOptionId: string | null;
+    dropoffLocation: DropoffLocation[];
+    recipientName: string;
+    recipientPhone: string;
+    deliveryInstructions: string | null;
+    paymentStatus: 'PENDING' | 'PAID' | 'FAILED';
+    paymentMethod: string | null;
+    paymentReference: string | null;
+    monnifyReference: string | null;
+    orderStatus: string;
+    statusHistory: StatusHistory[];
+    metadata: Record<string, unknown> | null;
+    createdAt: string;
+    updatedAt: string;
+    pickupLocation: PickupLocation[];
+    orderCode: string;
+    respondedAt: string | null;
+    reason: string | null;
+    canceledAt: string | null;
+    deliveredAt: string | null;
+    driverAssignedAt: string | null;
+    pickedUpAt: string | null;
+    vendorAcceptedAt: string | null;
+    vendorDeclinedAt: string | null;
+    storeId: string | null;
+    items: CartItem[];
+    deliveryOption: null;
+  }[];
 }
 
 export interface CreateOrderResponse {

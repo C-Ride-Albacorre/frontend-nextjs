@@ -70,9 +70,15 @@ export default function CartModal() {
       <div className="max-h-[80vh] overflow-y-auto space-y-6">
         {/* Header */}
         <div className="flex  gap-3 pt-8 items-center  justify-between md:pt-6">
-          <h2 className="text-xl font-semibold">
+       <div className="flex flex-col gap-1">
+           <h2 className="text-xl font-semibold">
             Your Cart ({cart?.itemCount ?? 0})
           </h2>
+
+          <h6 className="font-medium text-xs capitalize">
+            {storeName ? `From: ${storeName}` : 'No store selected'}
+          </h6>
+       </div>
 
           {items.length > 0 && (
             <Button

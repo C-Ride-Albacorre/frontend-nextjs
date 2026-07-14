@@ -51,7 +51,7 @@ export default function OrderList({
     return () => clearInterval(interval);
   }, []);
 
-  const { data, error, isFetching } = useVendorOrders(
+  const { data, error, isFetching, refetch } = useVendorOrders(
     page,
     limit,
     statusFilter ?? '',
@@ -197,6 +197,7 @@ export default function OrderList({
                   phoneNumber={order.user?.phoneNumber}
                   items={items}
                   subtotal={order.vendorSummary?.subtotal ?? 0}
+                  onActionSuccess={() => refetch()}
                 />
               );
             })}

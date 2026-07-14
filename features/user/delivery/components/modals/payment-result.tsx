@@ -1,5 +1,4 @@
 'use client';
-
 import { useSearchParams } from 'next/navigation';
 import { CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/buttons/button';
@@ -26,17 +25,17 @@ export default function PaymentResultContent() {
         </p>
       </div>
 
-      <Card className="w-full max-w-xl p-4">
+      <Card gap="md" className="w-full max-w-xl p-4">
         <ul className="space-y-4 text-sm">
           {orderNumber && (
             <li className="flex justify-between">
-              <span className="text-neutral-500">Order Number</span>
-              <span className="font-medium">{orderNumber}</span>
+              <h4 className="text-neutral-500 text-sm">Order Number</h4>
+              <h4 className="font-medium">{orderNumber}</h4>
             </li>
           )}
           <li className="flex justify-between border-t border-border pt-4">
             <span className="text-neutral-500">Status</span>
-            <span className="text-xs rounded-full bg-[#10B981] text-white px-2 py-1 capitalize">
+            <span className="text-[10px] rounded-full bg-[#10B981] text-white px-2 py-1 capitalize">
               {status?.toLowerCase() || 'success'}
             </span>
           </li>
@@ -46,31 +45,34 @@ export default function PaymentResultContent() {
       </Card>
 
       <Card
-        border='none'
-        gap="sm"
+        border="none"
+        gap="md"
         className="w-full max-w-md bg-[#10B981]/10 text-sm"
       >
-        <p className="font-medium">Beyond Delivery, It&apos;s Care</p>
-        <p className="text-neutral-500">
-          Your order will be handled with premium care by our dedicated delivery
-          partners
-        </p>
+        <div className="flex flex-col gap-3">
+          <h6 className="font-medium">Beyond Delivery, It&apos;s Care</h6>
+
+          <p className="text-neutral-500 text-xs leading-5">
+            Your order will be handled with premium care by our dedicated
+            delivery partners
+          </p>
+        </div>
       </Card>
 
       <div className="flex gap-4 w-full max-w-md">
         <Button
           variant="primary"
-          size="lg"
+          size="icon"
           href={`/user/track-order?orderId=${orderId}`}
-          className="w-full"
+          className="flex-1"
         >
           Track Your Order
         </Button>
         <Button
-          variant="outline"
-          size="lg"
+          variant="white"
+          size="icon"
           href="/user/order-history"
-          className="w-full"
+          className="flex-1"
         >
           View Order History
         </Button>

@@ -39,6 +39,7 @@ interface OrderCardProps {
   totalPrice?: number;
   subtotal: number;
   phoneNumber?: string;
+  onActionSuccess?: () => void;
 }
 
 export default function OrderCard({
@@ -54,6 +55,7 @@ export default function OrderCard({
   customer,
   items,
   subtotal,
+  onActionSuccess,
 }: OrderCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
@@ -127,7 +129,9 @@ export default function OrderCard({
           </div>
 
           <div className="flex flex-col items-end gap-1.5">
-            <p className="text-[10px] text-neutral-500">{formatDate(createdAt)}</p>
+            <p className="text-[10px] text-neutral-500">
+              {formatDate(createdAt)}
+            </p>
 
             <div className="flex items-end gap-2">
               <span
@@ -323,6 +327,7 @@ export default function OrderCard({
         orderId={id}
         customer={customer}
         actionStatus={actionStatus}
+        onSuccess={onActionSuccess}
       />
 
       {selectedOrderId && (
