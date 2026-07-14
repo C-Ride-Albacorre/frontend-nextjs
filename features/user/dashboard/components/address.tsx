@@ -2,7 +2,13 @@
 
 import { useState } from 'react';
 
-import { Loader, MapPin, MapPinHouse, MapPinned, Plus } from 'lucide-react';
+import {
+  LoaderCircle,
+  MapPin,
+  MapPinHouse,
+  MapPinned,
+  Plus,
+} from 'lucide-react';
 import AddressModal from '@/features/user/address/components/address-modal';
 import { Button } from '@/components/ui/buttons/button';
 import Card from '@/components/layout/card';
@@ -31,7 +37,7 @@ export default function DashboardAddress({
           </div>
         </div>
 
-        { savedAddresses ? (
+        {savedAddresses ? (
           <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-72 overflow-y-scroll">
             {savedAddresses?.map((item: any) => (
               <li key={item.id}>

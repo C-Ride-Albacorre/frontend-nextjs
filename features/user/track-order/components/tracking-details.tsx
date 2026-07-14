@@ -2,7 +2,7 @@ import ErrorState from '@/components/layout/error-state';
 import { trackingDetailsService } from '../service';
 import MapOrderInfo from './map-order-info';
 import SideInfo from './side-info';
-import { Loader, LocateOff } from 'lucide-react';
+import { LoaderCircle, LocateOff } from 'lucide-react';
 import EmptyState from '@/components/layout/empty-state';
 
 export default async function TrackingDetails({
@@ -15,17 +15,16 @@ export default async function TrackingDetails({
 
     console.log(' [TrackingDetails] fetched tracking details:', data);
 
-    if(!data.assignment){
-
-        return (
-          <EmptyState
-            icon={<Loader size={24} className="text-neutral-500 animate-spin" />}
-            title="Awaiting Driver Assignment"
-            message="Please wait while we assign a driver to your order. You will receive a notification once a driver has been assigned."
-        
-          />
-        );
-
+    if (!data.assignment) {
+      return (
+        <EmptyState
+          icon={
+            <LoaderCircle size={24} className="text-neutral-500 animate-spin" />
+          }
+          title="Awaiting Driver Assignment"
+          message="Please wait while we assign a driver to your order. You will receive a notification once a driver has been assigned."
+        />
+      );
     }
 
     return (

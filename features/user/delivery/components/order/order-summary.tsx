@@ -1,6 +1,6 @@
 'use client';
 
-import { Loader, Package, ShoppingCart, Trash2 } from 'lucide-react';
+import { LoaderCircle, Package, ShoppingCart, Trash2 } from 'lucide-react';
 import { Suspense } from 'react';
 
 import Card from '@/components/layout/card';
@@ -28,26 +28,22 @@ export default function OrderSummary() {
   return (
     <Suspense
       fallback={
-        <Loader size={24} className="mx-auto animate-spin text-primary" />
+        <LoaderCircle size={24} className="mx-auto animate-spin text-primary" />
       }
     >
-      <Card
-        gap="lg"
-        border='none'
-        className="rounded-2xl bg-foreground-200"
-      >
+      <Card gap="lg" border="none" className="rounded-2xl bg-foreground-200">
         {/* Header */}
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold text-primary-text-100">
             Order Summary
           </h2>
 
-       <div className="flex items-center gap-1">
-        <Package size={16} className="inline-block mr-1 text-neutral-500" />
-           <span className="text-sm text-neutral-500">
-            {items.length} {items.length === 1 ? 'item' : 'items'}
-          </span>
-       </div>
+          <div className="flex items-center gap-1">
+            <Package size={16} className="inline-block mr-1 text-neutral-500" />
+            <span className="text-sm text-neutral-500">
+              {items.length} {items.length === 1 ? 'item' : 'items'}
+            </span>
+          </div>
         </div>
 
         {/* Items */}
@@ -73,7 +69,10 @@ export default function OrderSummary() {
 
                 <div className="ml-4 flex items-center gap-3">
                   {isUpdating ? (
-                    <Loader size={16} className="animate-spin text-primary" />
+                    <LoaderCircle
+                      size={16}
+                      className="animate-spin text-primary"
+                    />
                   ) : (
                     <h4 className="whitespace-nowrap font-semibold text-neutral-900">
                       NGN {(item.totalPrice ?? 0).toLocaleString()}
@@ -101,7 +100,7 @@ export default function OrderSummary() {
             <span>Subtotal</span>
 
             {isLoading ? (
-              <Loader size={16} className="animate-spin text-primary" />
+              <LoaderCircle size={16} className="animate-spin text-primary" />
             ) : (
               <h4>NGN {(cart?.subTotal ?? 0).toLocaleString()}</h4>
             )}
@@ -113,12 +112,10 @@ export default function OrderSummary() {
           </div>
 
           <div className="flex items-center justify-between border-t border-border pt-4">
-            <h4 className="text-lg font-bold text-primary-text-100">
-              Total
-            </h4>
+            <h4 className="text-lg font-bold text-primary-text-100">Total</h4>
 
             {isLoading ? (
-              <Loader size={18} className="animate-spin text-primary" />
+              <LoaderCircle size={18} className="animate-spin text-primary" />
             ) : (
               <h4 className="text-lg font-bold text-primary">
                 NGN {(cart?.subTotal ?? 0).toLocaleString()}

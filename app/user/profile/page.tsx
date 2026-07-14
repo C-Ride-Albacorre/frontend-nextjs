@@ -2,7 +2,7 @@ import Card from '@/components/layout/card';
 import Avatar from '@/components/ui/avatar';
 import { Button } from '@/components/ui/buttons/button';
 import Header from '@/components/ui/headers/user-route-header';
-import { Calendar, Edit, Image, Loader, Mail, Phone } from 'lucide-react';
+import { Calendar, Edit, Image, LoaderCircle, Mail, Phone } from 'lucide-react';
 import { profileService } from '@/features/user/profile/service';
 import ProfileSettings from '@/features/user/profile/components/profile-settings';
 import SavedAddress from '@/features/user/profile/components/saved-address';
@@ -21,7 +21,7 @@ export default async function UserProfilePage() {
         <Suspense
           fallback={
             <div className="h-72 bg-foreground-200 animate-pulse w-full flex justify-center items-center">
-              <Loader size={24} className="animate-spin text-primary" />
+              <LoaderCircle size={24} className="animate-spin text-primary" />
             </div>
           }
         >
@@ -31,7 +31,7 @@ export default async function UserProfilePage() {
         <Suspense
           fallback={
             <div className="h-72 bg-foreground-200 animate-pulse w-full flex justify-center items-center">
-              <Loader size={24} className="animate-spin text-primary" />
+              <LoaderCircle size={24} className="animate-spin text-primary" />
             </div>
           }
         >

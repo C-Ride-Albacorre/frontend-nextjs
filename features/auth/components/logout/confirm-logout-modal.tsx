@@ -1,6 +1,6 @@
 import Modal from '@/components/layout/modal';
 import { Button } from '@/components/ui/buttons/button';
-import { Loader, LogOut } from 'lucide-react';
+import { LoaderCircle, LogOut } from 'lucide-react';
 
 export default function ConfirmLogoutModal({
   confirmLogout,
@@ -14,43 +14,49 @@ export default function ConfirmLogoutModal({
   isPending: boolean;
 }) {
   return (
-      <Modal
-        isModalOpen={confirmLogout}
-        onClose={() => setConfirmLogout(false)}
-        wrapperClassName="max-w-sm"
-      >
+    <Modal
+      isModalOpen={confirmLogout}
+      onClose={() => setConfirmLogout(false)}
+      wrapperClassName="max-w-sm"
+    >
+      <div className="flex flex-col justify-center items-center space-y-4">
         <div className="flex flex-col justify-center items-center space-y-4">
-          <div className="flex flex-col justify-center items-center space-y-4">
-            <h4 className="text-lg md:text-xl font-medium">Confirm Logout</h4>
-            <p className="text-neutral-500 text-sm text-center leading-6">
-              Are you sure you want to logout? You will need to login again to
-              access your account and deliveries.
-            </p>
-          </div>
-
-          <div className="flex gap-4 mt-6 w-full">
-            <Button
-              variant="green"
-              size='icon'
-              onClick={() => setConfirmLogout(false)}
-              disabled={isPending}
-              className='flex-1'
-            >
-              Cancel
-            </Button>
-            <Button
-              variant="red"
-              size='icon'
-              leftIcon={isPending ? <Loader size={16} className="animate-spin" /> : <LogOut size={16} />}
-              onClick={handleLogout}
-              loading={isPending}
-              disabled={isPending}
-              className='flex-1'
-            >
-              {isPending ? 'Logging out...' : 'Logout'}
-            </Button>
-          </div>
+          <h4 className="text-lg md:text-xl font-medium">Confirm Logout</h4>
+          <p className="text-neutral-500 text-sm text-center leading-6">
+            Are you sure you want to logout? You will need to login again to
+            access your account and deliveries.
+          </p>
         </div>
-      </Modal>
+
+        <div className="flex gap-4 mt-6 w-full">
+          <Button
+            variant="green"
+            size="icon"
+            onClick={() => setConfirmLogout(false)}
+            disabled={isPending}
+            className="flex-1"
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="red"
+            size="icon"
+            leftIcon={
+              isPending ? (
+                <LoaderCircle size={16} className="animate-spin" />
+              ) : (
+                <LogOut size={16} />
+              )
+            }
+            onClick={handleLogout}
+            loading={isPending}
+            disabled={isPending}
+            className="flex-1"
+          >
+            {isPending ? 'Logging out...' : 'Logout'}
+          </Button>
+        </div>
+      </div>
+    </Modal>
   );
 }

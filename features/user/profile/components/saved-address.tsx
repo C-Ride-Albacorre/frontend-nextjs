@@ -8,7 +8,7 @@ import {
   Briefcase,
   Edit,
   Home,
-  Loader,
+  LoaderCircle,
   MapPin,
   MapPinHouse,
   Trash2,
@@ -17,20 +17,14 @@ import AddressModal from '../../address/components/address-modal';
 import { AddressItem } from '../../address/service';
 import EmptyState from '@/components/layout/empty-state';
 
-
 export default function ProfileSavedAddress({
   savedAddresses,
-}:{
+}: {
   savedAddresses: AddressItem[];
 }) {
   const [addLocation, setAddLocation] = useState(false);
 
-
   // console.log(' [SavedAddress] savedAddresses:', savedAddresses);
-
-
-
-
 
   return (
     <>
@@ -47,13 +41,13 @@ export default function ProfileSavedAddress({
             Add Location
           </Button>
         </div>
-      
+
         {savedAddresses && savedAddresses.length > 0 ? (
           <ul className="space-y-6">
             {savedAddresses.map((option: AddressItem, index: number) => (
               <li key={index}>
                 <Card
-                border='none'
+                  border="none"
                   gap="none"
                   className="bg-foreground-200 flex flex-col md:flex-row gap-8 items-start justify-between"
                 >
@@ -117,7 +111,11 @@ export default function ProfileSavedAddress({
             ))}
           </ul>
         ) : (
-       <EmptyState icon={<MapPinHouse size={36} className="text-orange-500" />} title="No saved addresses" message="You have not added any addresses yet." />
+          <EmptyState
+            icon={<MapPinHouse size={36} className="text-orange-500" />}
+            title="No saved addresses"
+            message="You have not added any addresses yet."
+          />
         )}
       </Card>
 
@@ -126,5 +124,6 @@ export default function ProfileSavedAddress({
         onClose={() => setAddLocation(false)}
         savedAddresses={savedAddresses}
       />
-    </>)
+    </>
+  );
 }

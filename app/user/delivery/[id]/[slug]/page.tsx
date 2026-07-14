@@ -1,6 +1,6 @@
 import ProductsSkeleton from '@/features/public/stores/components/products-skeleton';
 import StoreProductsWrapper from '@/features/user/delivery/components/store-product-wrapper';
-import { Loader } from 'lucide-react';
+import { LoaderCircle } from 'lucide-react';
 import { Suspense } from 'react';
 
 export default async function StoreVendorsPage({

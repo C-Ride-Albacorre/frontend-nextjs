@@ -3,7 +3,7 @@ import Header from '@/components/ui/headers/user-route-header';
 import { getOrdersAction } from '@/features/user/delivery/action';
 
 import OrderList from '@/features/user/order-history/components/order-list';
-import { Loader } from 'lucide-react';
+import { LoaderCircle } from 'lucide-react';
 import { Suspense } from 'react';
 
 export default async function OrderHistoryPage() {
@@ -50,7 +50,7 @@ export default async function OrderHistoryPage() {
       <Suspense
         fallback={
           <Card className="flex items-center justify-center py-16 gap-4">
-            <Loader size={20} className="animate-spin text-primary" />
+            <LoaderCircle size={20} className="animate-spin text-primary" />
           </Card>
         }
       >

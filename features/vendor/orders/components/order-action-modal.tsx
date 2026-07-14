@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/buttons/button';
 import Textarea from '@/components/ui/inputs/textarea';
 
 import { vendorOrderAction } from '../action';
-import { Loader } from 'lucide-react';
+import { LoaderCircle } from 'lucide-react';
 
 interface OrderActionModalProps {
   isModalOpen: boolean;
@@ -89,7 +89,7 @@ export default function OrderActionModal({
       onClose={handleClose}
       wrapperClassName={isDecline ? 'max-w-md' : 'max-w-sm'}
     >
-      <div className="flex flex-col items-center space-y-6">
+      <div className="flex flex-col items-center space-y-8">
         <div className="space-y-3 text-center">
           <h4 className="text-lg font-semibold">
             {isDecline ? 'Decline Order' : 'Accept Order'}
@@ -101,7 +101,7 @@ export default function OrderActionModal({
               {isDecline ? 'decline' : 'accept'}
             </span>{' '}
             the order from{' '}
-            <span className="font-medium text-neutral-800 capitalize">
+            <span className="font-medium text-neutral-800 capitalize font-heading">
               {customer}
             </span>
             ?
@@ -110,10 +110,10 @@ export default function OrderActionModal({
 
         {isDecline && (
           <div className="w-full space-y-4">
-            <div className='space-y-2'>
-              <p className="mb-3 text-sm font-medium text-neutral-700">
+            <div className="space-y-2">
+              <h6 className="mb-3 text-sm font-medium text-neutral-800">
                 Why are you declining this order?
-              </p>
+              </h6>
 
               <div className="space-y-2">
                 {DECLINE_REASONS.map((item) => (
@@ -145,7 +145,6 @@ export default function OrderActionModal({
                 placeholder="Additional details (optional)"
                 value={customReason}
                 onChange={(e) => setCustomReason(e.target.value)}
-
                 errorMessage={error}
               />
             )}
@@ -154,22 +153,33 @@ export default function OrderActionModal({
 
         <div className="flex w-full gap-3">
           <Button
-            variant="outline"
-            size="full"
+            variant="white"
+            size="icon"
             onClick={handleClose}
             disabled={isPending}
+            className="flex-1"
           >
             Cancel
           </Button>
 
           <Button
             variant={isDecline ? 'red' : 'green'}
-            size="full"
+            size="icon"
             onClick={handleAction}
             loading={isPending}
             disabled={isPending}
+            className="flex-1"
           >
-            {isPending ? <div className="flex items-center justify-center gap-2"><Loader  size={18} className="animate-spin" /> <span>{isDecline ? 'Declining...' : 'Accepting...'}</span></div> : isDecline ? 'Decline Order' : 'Accept Order'}
+            {isPending ? (
+              <div className="flex items-center justify-center gap-2">
+                <LoaderCircle size={18} className="animate-spin" />{' '}
+                <span>{isDecline ? 'Declining...' : 'Accepting...'}</span>
+              </div>
+            ) : isDecline ? (
+              'Decline Order'
+            ) : (
+              'Accept Order'
+            )}
           </Button>
         </div>
       </div>

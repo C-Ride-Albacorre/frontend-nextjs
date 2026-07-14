@@ -1,6 +1,6 @@
 'use client';
 
-import { ClipboardList, Loader, ShoppingCart } from 'lucide-react';
+import { ClipboardList, LoaderCircle, ShoppingCart } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import Stepper from '@/components/navigation/stepper';
@@ -70,14 +70,14 @@ export default function DeliveryHeader() {
             <span className="flex items-center gap-2 text-xs">
               <ShoppingCart size={16} />
               {isLoading ? (
-                <Loader size={16} className="animate-spin text-primary" />
+                <LoaderCircle size={16} className="animate-spin text-primary" />
               ) : (
                 `${itemCount} ${itemCount === 1 ? 'item' : 'items'}`
               )}
             </span>
             <div className="rounded-md border border-border bg-foreground-100 px-2 py-1 text-xs font-medium">
               {isLoading ? (
-                <Loader size={16} className="animate-spin text-primary" />
+                <LoaderCircle size={16} className="animate-spin text-primary" />
               ) : (
                 `₦ ${subTotal.toLocaleString()}`
               )}

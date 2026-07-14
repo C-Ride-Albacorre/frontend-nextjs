@@ -5,6 +5,9 @@ import Card from '@/components/layout/card';
 import { Package } from 'lucide-react';
 
 import RetryButton from '@/components/ui/buttons/retry-button';
+import EmptyState from '@/components/layout/empty-state';
+import ErrorState from '@/components/layout/error-state';
+import OrderList from './order-list';
 
 const CATEGORIES = [
   { label: 'All', value: 'ALL' },
@@ -24,106 +27,50 @@ export default async function OrdersWrapper({
   const { page, limit } = searchParams;
 
   const pageNum = page ? parseInt(page) : 1;
-  const limitNum = limit ? parseInt(limit) : 5;
+  const limitNum = limit ? parseInt(limit) : 10;
 
-  const response = await getVendorOrderAction({
-    page: pageNum,
-    limit: limitNum,
-  });
+  try {
+    const response = await getVendorOrderAction({
+      page: pageNum,
+      limit: limitNum,
+    });
 
-  const Orders = response.orders || [];
+    const orders = response.orders || [];
 
+    const totalPages = response.totalPages;
 
+    if (orders.length === 0) {
+      return (
+        <EmptyState
+          icon={<Package size={48} className="text-neutral-400" />}
+          title="No Orders Available"
+          message="There are currently no incoming orders. Once customers place orders, they will appear here for you to manage and fulfill."
+        />
+      );
+    }
 
-  const totalPages = response.totalPages;
+    return <OrderList
+      page={pageNum}
+      limit={limitNum}
+      initialData={{
+        orders,
+        total: response.total,
+        totalPages,
+      }}
+    />;
+  } catch (error) {
+    console.error('Error fetching orders:', error);
 
-  console.log(Orders, 'orders baby');
-
-  if (!response.success) {
     return (
-      <Card
-        gap="md"
-        spacing="lg"
-        className="flex  flex-col  items-center min-h-[85vh] justify-center"
-      >
-        <Package size={48} className="text-neutral-400" />
-        <div className="space-y-2 text-center">
-          <h2 className="text-xl font-semibold">No Orders Available</h2>
-          <p className="text-center text-sm text-neutral-500 max-w-2xl mx-auto">
-            {response.message ||
-              'Failed to load orders. Please check your connection and try again.'}
-          </p>
-        </div>
-
-        <RetryButton />
-      </Card>
+      <ErrorState
+        icon={<Package size={48} className="text-orange-400" />}
+        title="Something went wrong"
+        message={
+          error instanceof Error
+            ? error.message
+            : 'An unexpected error occurred while fetching orders.'
+        }
+      />
     );
   }
-
-  return (
-    <>
-   
-
-      {!Orders.length ? (
-        <Card
-          gap="md"
-          spacing="lg"
-          className=" flex  flex-col  items-center min-h-[75vh] justify-center"
-        >
-          <Package size={48} className="text-neutral-400" />
-          <div className="space-y-2 text-center">
-            <h2 className="text-xl font-semibold">No Orders Available</h2>
-            <p className="text-center text-sm text-neutral-500 max-w-2xl mx-auto">
-              You currently have no incoming orders. Once customers place
-              orders, they will appear here for you to manage and fulfill.
-            </p>
-          </div>
-        </Card>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {Orders.map((order) => {
-            const customer = `${order.user?.firstName ?? ''} ${order.user?.lastName ?? ''}`;
-
-            const items =
-              order.items?.map(
-                (item: {
-                  product?: { productName?: string; image: string };
-                  quantity: number;
-                  totalPrice: number;
-                }) => ({
-                  name: item.product?.productName ?? 'Unknown Product',
-                  quantity: item.quantity,
-
-                  totalPrice: item?.totalPrice ?? 0,
-                  image: item.product?.image ?? '',
-                }),
-              ) ?? [];
-
-            return (
-              <OrderCard
-                id={order.id}
-                key={order.id}
-                orderCode={order.orderCode}
-                orderNumber={order.orderNumber}
-                orderStatus={order.orderStatus}
-                paymentStatus={order.paymentStatus}
-                createdAt={order.createdAt}
-                profilePicture={order.user?.profilePicture ?? ''}
-                customer={customer}
-                email={order.user?.email ?? 'N/A'}
-                phoneNumber={order.user?.phoneNumber}
-                items={items}
-                subtotal={order.vendorSummary?.subtotal ?? 0}
-                
-              />
-            );
-          })}
-        </div>
-      )}
-
-      {totalPages > 1 && (
-        <PaginationControls currentPage={pageNum} totalPages={totalPages} />
-      )}
-    </>
-  );
 }

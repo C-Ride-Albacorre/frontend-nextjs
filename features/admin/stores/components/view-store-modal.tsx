@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Modal from '@/components/layout/modal';
 import { Button } from '@/components/ui/buttons/button';
-import { Store as StoreIcon, Loader, Package } from 'lucide-react';
+import { Store as StoreIcon, LoaderCircle, Package } from 'lucide-react';
 import Image from 'next/image';
 import clsx from 'clsx';
 import { Store, StoreDetail } from '../types';
@@ -115,7 +115,7 @@ export default function ViewStoreModal({
     <Modal isModalOpen={isModalOpen} onClose={handleClose}>
       {isLoadingDetail ? (
         <div className="flex justify-center py-20">
-          <Loader className="animate-spin text-primary" size={32} />
+          <LoaderCircle className="animate-spin text-primary" size={32} />
         </div>
       ) : storeDetail ? (
         <div className="space-y-6 py-4">

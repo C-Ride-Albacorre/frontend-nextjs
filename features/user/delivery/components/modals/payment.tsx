@@ -2,7 +2,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Loader, Lock } from 'lucide-react';
+import { LoaderCircle, Lock } from 'lucide-react';
 import Image from 'next/image';
 import Card from '@/components/layout/card';
 import Modal from '@/components/layout/modal';
@@ -209,7 +209,8 @@ export default function PaymentModal({
           >
             {isLoading ? (
               <span className="flex items-center gap-2">
-                <Loader size={16} className="animate-spin" /> Processing...
+                <LoaderCircle size={16} className="animate-spin" />{' '}
+                Processing...
               </span>
             ) : (
               `Pay ₦${totalAmount.toLocaleString()}`

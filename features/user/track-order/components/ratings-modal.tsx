@@ -5,7 +5,7 @@ import Modal from '@/components/layout/modal';
 import Avatar from '@/components/ui/avatar';
 import { Button } from '@/components/ui/buttons/button';
 import Textarea from '@/components/ui/inputs/textarea';
-import { CheckCircle, CheckCircle2, Loader, Star } from 'lucide-react';
+import { CheckCircle, CheckCircle2, LoaderCircle, Star } from 'lucide-react';
 import { useActionState, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { submitRatingAction } from '../action';
@@ -41,9 +41,9 @@ export default function RatingsModal({
     );
   };
 
-const combinedComment = [...selectedTags, comment.trim()]
-  .filter(Boolean)
-  .join(', ');
+  const combinedComment = [...selectedTags, comment.trim()]
+    .filter(Boolean)
+    .join(', ');
 
   const [state, formAction, pending] = useActionState(submitRatingAction, {
     success: false,
@@ -95,7 +95,7 @@ const combinedComment = [...selectedTags, comment.trim()]
         </Card>
 
         {/* Rating */}
-        <form className='space-y-8' action={formAction}>
+        <form className="space-y-8" action={formAction}>
           <input type="hidden" name="orderId" value={orderId} />
           <input type="hidden" name="rating" value={rating} />
           <input type="hidden" name="comment" value={combinedComment} />
@@ -127,73 +127,70 @@ const combinedComment = [...selectedTags, comment.trim()]
             {labels[rating]}
           </p>
 
+          {/* Tags */}
+          <div className="space-y-4">
+            <h4 className=" text-sm font-medium">What went well?</h4>
 
-
-          
-        {/* Tags */}
-        <div className="space-y-4">
-          <h4 className=" text-sm font-medium">What went well?</h4>
-
-          <div className="flex flex-wrap gap-2">
-            {[
-              'Friendly',
-              'Fast Delivery',
-              'Professional',
-              'Great Communication',
-              'Handled Food Carefully',
-            ].map((tag) => (
-              <Button
-                key={tag}
-                rounded="full"
-                size="icon"
-                variant={selectedTags.includes(tag) ? 'primary' : 'white'}
-                onClick={() => handleSelectTag(tag)}
-              >
-                {tag}
-              </Button>
-            ))}
+            <div className="flex flex-wrap gap-2">
+              {[
+                'Friendly',
+                'Fast Delivery',
+                'Professional',
+                'Great Communication',
+                'Handled Food Carefully',
+              ].map((tag) => (
+                <Button
+                  key={tag}
+                  rounded="full"
+                  size="icon"
+                  variant={selectedTags.includes(tag) ? 'primary' : 'white'}
+                  onClick={() => handleSelectTag(tag)}
+                >
+                  {tag}
+                </Button>
+              ))}
+            </div>
           </div>
-        </div>
 
-        {/* Comment */}
-        <div>
-          <Textarea
-            name="comment"
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-            placeholder="Tell us about your experience"
-          />
-        </div>
+          {/* Comment */}
+          <div>
+            <Textarea
+              name="comment"
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              placeholder="Tell us about your experience"
+            />
+          </div>
 
-        {/* Actions */}
-        <div className="mt-8 flex gap-3">
-          <Button
-            variant="outline"
-            size="icon"
-            className="flex-1"
-            href="/user/delivery"
-          >
-            Skip
-          </Button>
+          {/* Actions */}
+          <div className="mt-8 flex gap-3">
+            <Button
+              variant="outline"
+              size="icon"
+              className="flex-1"
+              href="/user/delivery"
+            >
+              Skip
+            </Button>
 
-          <Button
-            size="icon"
-            type="submit"
-            loading={pending}
-                className="flex-1"
-            disabled={!rating || pending}
-          >
-            {pending ? (
-              <div className="flex items-center gap-2">
-                <Loader size={16} className="animate-spin" /> <span>Submitting...</span>
-              </div>
-            ) : (
-              'Submit Feedback'
-            )}
-          </Button>
-        </div>
+            <Button
+              size="icon"
+              type="submit"
+              loading={pending}
+              className="flex-1"
+              disabled={!rating || pending}
+            >
+              {pending ? (
+                <div className="flex items-center gap-2">
+                  <LoaderCircle size={16} className="animate-spin" />{' '}
+                  <span>Submitting...</span>
+                </div>
+              ) : (
+                'Submit Feedback'
+              )}
+            </Button>
+          </div>
         </form>
-
       </div>
     </Modal>
   );

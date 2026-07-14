@@ -2,7 +2,7 @@
 
 import Card from '@/components/layout/card';
 import { Button } from '@/components/ui/buttons/button';
-import { Loader, MapPin, Navigation } from 'lucide-react';
+import { LoaderCircle, MapPin, Navigation } from 'lucide-react';
 import { useActionState, useEffect, useState } from 'react';
 import { saveLocationAction } from '../action';
 import { LocationState } from '../schema';
@@ -199,14 +199,18 @@ export default function MapLocations({
             size="2xl"
             className="w-full md:w-auto"
             disabled={!location.latitude || !location.longitude || isPending}
-            leftIcon={isPending? <Loader size={18} className='animate-spin'/> : <Navigation size={18} />}
+            leftIcon={
+              isPending ? (
+                <LoaderCircle size={18} className="animate-spin" />
+              ) : (
+                <Navigation size={18} />
+              )
+            }
           >
             {isPending ? 'Saving...' : 'Continue with Selected Location'}
           </Button>
         </div>
       </form>
-
-   
     </div>
   );
 }

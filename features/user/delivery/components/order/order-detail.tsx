@@ -1,4 +1,4 @@
-import { Loader, MapPin, Phone, User } from 'lucide-react';
+import { LoaderCircle, MapPin, Phone, User } from 'lucide-react';
 import { useOrderDetails } from '../../hooks/use-orders';
 import { formatDate } from '@/helpers/date-formatter';
 
@@ -40,7 +40,7 @@ export default function OrderDetail({ orderId }: { orderId: string }) {
   if (isLoading) {
     return (
       <div className="flex flex-col gap-4 items-center justify-center min-h-50">
-        <Loader size={20} className="animate-spin text-primary" />
+        <LoaderCircle size={20} className="animate-spin text-primary" />
       </div>
     );
   }
@@ -130,7 +130,9 @@ export default function OrderDetail({ orderId }: { orderId: string }) {
                     <div className="capitalize w-full text-left">
                       <p>{item.product?.productName?.toLowerCase()} </p>
 
-                      <p className='text-sm text-neutral-500'>Qty: {item.quantity}</p>
+                      <p className="text-sm text-neutral-500">
+                        Qty: {item.quantity}
+                      </p>
                     </div>
                   </div>
 
@@ -164,7 +166,7 @@ export default function OrderDetail({ orderId }: { orderId: string }) {
             </div>
           )}
           <div className="flex justify-between font-semibold text-base pt-2">
-            <h2 className='text-xl font-bold'>Total</h2>
+            <h2 className="text-xl font-bold">Total</h2>
             <h2 className="text-primary text-xl font-bold">
               NGN {(order.totalAmount ?? order.amount ?? 0).toLocaleString()}
             </h2>

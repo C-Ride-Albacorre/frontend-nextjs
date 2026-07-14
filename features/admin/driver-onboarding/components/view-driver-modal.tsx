@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Modal from '@/components/layout/modal';
 import { Button } from '@/components/ui/buttons/button';
-import {  Loader, Car } from 'lucide-react';
+import { LoaderCircle, Car } from 'lucide-react';
 import Image from 'next/image';
 import clsx from 'clsx';
 
@@ -17,7 +17,7 @@ export default function ViewDriverModal({
   driver,
   isLoading,
   onAction,
-}: ViewDriverModalProps ) {
+}: ViewDriverModalProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showRejectForm, setShowRejectForm] = useState(false);
   const [rejectionReason, setRejectionReason] = useState('');
@@ -66,7 +66,7 @@ export default function ViewDriverModal({
     <Modal isModalOpen={isModalOpen} onClose={handleClose}>
       {isLoading ? (
         <div className="flex justify-center py-20">
-          <Loader className="animate-spin text-primary" size={32} />
+          <LoaderCircle className="animate-spin text-primary" size={32} />
         </div>
       ) : driver ? (
         <div className="space-y-6 py-4">
@@ -91,8 +91,7 @@ export default function ViewDriverModal({
           <div className="flex flex-col md:flex-row gap-4 items-start justify-between">
             <div>
               <h2 className="text-xl font-semibold text-neutral-900 flex-wrap">
-                {driver.name ??
-                  `${driver.firstName} ${driver.lastName}`}
+                {driver.name ?? `${driver.firstName} ${driver.lastName}`}
               </h2>
               <p className="text-xs text-neutral-500 mt-0.5 flex-wrap">
                 {driver.id}
@@ -119,7 +118,9 @@ export default function ViewDriverModal({
             </div>
 
             <div className="p-4 bg-neutral-50 rounded-xl">
-              <p className="text-xs text-neutral-500 mb-1">Address Information</p>
+              <p className="text-xs text-neutral-500 mb-1">
+                Address Information
+              </p>
               <div className="font-medium text-neutral-900 flex-wrap text-sm md:text-base">
                 {driver.driverProfile ? (
                   <>
@@ -152,8 +153,7 @@ export default function ViewDriverModal({
                 <div className="p-4 bg-neutral-50 rounded-xl">
                   <p className="text-xs text-neutral-500 mb-1">Vehicle Type</p>
                   <p className="font-medium text-neutral-900 text-sm md:text-base capitalize">
-                    {driver.driverProfile.vehicleType?.toLocaleLowerCase()
-}
+                    {driver.driverProfile.vehicleType?.toLocaleLowerCase()}
                   </p>
                 </div>
 
@@ -261,9 +261,6 @@ export default function ViewDriverModal({
               <p className="text-sm text-neutral-400">No documents yet</p>
             )}
           </div>
-
-   
-      
 
           {/* Actions */}
           {isPending && (

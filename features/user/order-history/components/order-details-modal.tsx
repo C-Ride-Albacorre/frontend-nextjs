@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { CreditCard, Loader, MapPin, Phone, User, X } from 'lucide-react';
+import { CreditCard, LoaderCircle, MapPin, Phone, User, X } from 'lucide-react';
 import { toast } from 'sonner';
 import Card from '@/components/layout/card';
 import { Button } from '@/components/ui/buttons/button';
@@ -71,8 +71,6 @@ export default function OrderDetailsModal({
   const router = useRouter();
   const cancelMutation = useCancelOrder();
 
-  
-
   const { data: order, isLoading, error } = useOrderDetails(selectedOrder);
 
   const handlePayNow = async () => {
@@ -125,7 +123,7 @@ export default function OrderDetailsModal({
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-16">
-        <Loader size={24} className="animate-spin text-primary" />
+        <LoaderCircle size={24} className="animate-spin text-primary" />
       </div>
     );
   }
@@ -270,7 +268,7 @@ export default function OrderDetailsModal({
             className="flex-1"
             leftIcon={
               isInitiatingPayment ? (
-                <Loader size={16} className="animate-spin" />
+                <LoaderCircle size={16} className="animate-spin" />
               ) : (
                 <CreditCard size={16} />
               )
@@ -293,7 +291,7 @@ export default function OrderDetailsModal({
             className="flex-1"
             leftIcon={
               cancelMutation.isPending ? (
-                <Loader size={16} className="animate-spin" />
+                <LoaderCircle size={16} className="animate-spin" />
               ) : (
                 <X size={16} />
               )

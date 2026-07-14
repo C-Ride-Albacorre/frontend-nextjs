@@ -1,6 +1,6 @@
 import Header from '@/components/ui/headers/user-route-header';
 import PaymentResultContent from '@/features/user/delivery/components/modals/payment-result';
-import { Loader } from 'lucide-react';
+import { LoaderCircle } from 'lucide-react';
 import { Suspense } from 'react';
 
 export default function PaymentResultPage() {
@@ -10,12 +10,12 @@ export default function PaymentResultPage() {
       <Suspense
         fallback={
           <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-            <Loader size={48} className="animate-spin text-primary" />
+            <LoaderCircle size={48} className="animate-spin text-primary" />
             <p className="text-primary">Verifying Payment...</p>
           </div>
         }
       >
-        <PaymentResultContent  />
+        <PaymentResultContent />
       </Suspense>
     </main>
   );

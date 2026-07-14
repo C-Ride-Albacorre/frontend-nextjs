@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Store, Loader, UserRound } from 'lucide-react';
+import { Store, LoaderCircle, UserRound } from 'lucide-react';
 import clsx from 'clsx';
 import { Button } from '@/components/ui/buttons/button';
 import { statusStyles } from '../data';
@@ -23,7 +23,6 @@ export default function DriverRow({ driver, onView, onAction }: Props) {
   const isPending = REVIEWABLE_STATUSES.includes(driver.status);
 
   const name = driver?.name ?? '—';
-
 
   const handleAction = async (action: 'APPROVED' | 'REJECTED') => {
     setIsSubmitting(true);
@@ -48,15 +47,12 @@ export default function DriverRow({ driver, onView, onAction }: Props) {
         </div>
       </td>
 
-    
-
       {/* Contact */}
       <td className="px-6 py-5">
         <p className="font-medium">{driver.email}</p>
         <p className="text-neutral-400 text-xs">{driver.phoneNumber ?? '—'}</p>
       </td>
 
-  
       {/* Status */}
       <td className="px-6 py-5">
         <span
@@ -74,7 +70,10 @@ export default function DriverRow({ driver, onView, onAction }: Props) {
         <div className="flex justify-end gap-1.5">
           {isPending &&
             (isSubmitting ? (
-              <Loader size={18} className="animate-spin text-neutral-400" />
+              <LoaderCircle
+                size={18}
+                className="animate-spin text-neutral-400"
+              />
             ) : (
               <>
                 <Button

@@ -1,11 +1,10 @@
 import EmptyState from '@/components/layout/empty-state';
 import Header from '@/components/ui/headers/user-route-header';
 
-
 import TrackingDetails from '@/features/user/track-order/components/tracking-details';
 import TrackingSocket from '@/features/user/track-order/components/tracking-socket';
 import { getAuthTokens } from '@/utils/cookies';
-import { Loader,  Package } from 'lucide-react';
+import { LoaderCircle, Package } from 'lucide-react';
 import { Suspense } from 'react';
 
 type Props = {
@@ -41,12 +40,12 @@ export default async function TrackingDeliveryPage({ searchParams }: Props) {
       <TrackingSocket orderId={orderId} accessToken={accessToken} />
 
       {/* Header */}
-      <Header/>
+      <Header />
 
       <Suspense
         fallback={
           <div className="flex flex-col items-center justify-center py-12">
-            <Loader size={36} className="text-primary animate-spin" />
+            <LoaderCircle size={36} className="text-primary animate-spin" />
           </div>
         }
       >

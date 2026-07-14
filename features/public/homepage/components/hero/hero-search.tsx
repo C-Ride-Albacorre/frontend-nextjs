@@ -9,7 +9,7 @@ import {
 } from 'react';
 import { createPortal } from 'react-dom';
 import { useRouter } from 'next/navigation';
-import { MapPin, Search, Loader, Store, Locate } from 'lucide-react';
+import { MapPin, Search, LoaderCircle, Store, Locate } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Input from '@/components/ui/inputs/input';
 import { Button } from '@/components/ui/buttons/button';
@@ -262,7 +262,7 @@ export default function HeroSearch() {
           <Input
             leftIcon={
               isLoadingSuggestions ? (
-                <Loader className="animate-spin h-5 w-5 text-primary" />
+                <LoaderCircle className="animate-spin h-5 w-5 text-primary" />
               ) : (
                 <Search className="h-5 w-5 text-neutral-500" />
               )

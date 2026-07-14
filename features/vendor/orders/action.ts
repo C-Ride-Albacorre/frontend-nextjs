@@ -1,9 +1,12 @@
 'use server';
 
-import { success } from 'zod';
-import { getVendorOrderIdService, getVendorOrdersService, vendorOrderActionService } from './service';
+import {
+  getVendorOrderIdService,
+  getVendorOrdersService,
+  vendorOrderActionService,
+} from './service';
 import { VendorOrderActionPayload } from './types';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 
 export async function getVendorOrderAction({
   page,
@@ -44,9 +47,9 @@ export async function getVendorOrderIdAction({ orderId }: { orderId: string }) {
       orderId,
     });
 
-    console.log(' Get vendor order details response:', response);
+    console.log(' Get vendor order details response:', response.data.items);
 
-    const orderDetails = response?.data ;
+    const orderDetails = response?.data;
 
     return {
       success: true,
@@ -78,7 +81,10 @@ export async function vendorOrderAction({
 
     console.log(' Vendor order action response:', response);
 
-    revalidatePath('/vendor/orders');
+    revalidateTag(`vendor-orders-${orderId}`, 'default');
+
+    revalidateTag(`vendor-orders`, 'default');
+    
     return {
       success: true,
       message: response?.message ?? 'Order action performed successfully',

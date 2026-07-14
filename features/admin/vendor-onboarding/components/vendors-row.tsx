@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Store, Loader, UserRound } from 'lucide-react';
+import { Store, LoaderCircle, UserRound } from 'lucide-react';
 import clsx from 'clsx';
 import { Button } from '@/components/ui/buttons/button';
 import { Vendor } from '../types';
@@ -89,7 +89,10 @@ export default function VendorRow({ vendor, onView, onAction }: Props) {
         <div className="flex justify-end gap-1.5">
           {isPending &&
             (isSubmitting ? (
-              <Loader size={18} className="animate-spin text-neutral-400" />
+              <LoaderCircle
+                size={18}
+                className="animate-spin text-neutral-400"
+              />
             ) : (
               <>
                 <Button

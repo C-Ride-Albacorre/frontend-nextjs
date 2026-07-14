@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { ChevronRight, Clock, Loader } from 'lucide-react';
+import { ChevronRight, Clock, LoaderCircle } from 'lucide-react';
 import { useOrderStore } from '@/features/user/delivery/hooks/order-store';
 import { getDeliveryOptionsAction } from '@/features/user/delivery/action';
 
@@ -53,7 +53,6 @@ function normalizeOption(opt: DeliveryOption, index: number) {
 }
 
 export default function DeliveryTypePage() {
-
   const { id, slug } = useParams<{ id: string; slug: string }>();
   const router = useRouter();
   const setDeliveryOption = useOrderStore((s) => s.setDeliveryOption);
@@ -75,13 +74,10 @@ export default function DeliveryTypePage() {
     router.push(`/user/delivery/${id}/${slug}/delivery-location`);
   };
 
-
-
-
   // if (isLoading) {
   //   return (
   //     <div className="flex justify-center items-center py-24">
-  //       <Loader size={32} className="animate-spin text-primary" />
+  //       <LoaderCircle size={32} className="animate-spin text-primary" />
   //     </div>
   //   );
   // }

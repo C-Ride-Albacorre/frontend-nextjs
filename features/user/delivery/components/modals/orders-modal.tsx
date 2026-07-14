@@ -5,7 +5,7 @@ import {
   ChevronLeft,
   ChevronRight,
   CreditCard,
-  Loader,
+  LoaderCircle,
   MapPin,
   Phone,
   User,
@@ -230,7 +230,7 @@ export default function OrdersModal({
         {/* ── Loading ── */}
         {(isLoadingOrders || isLoadingDetails) && (
           <div className="flex justify-center py-12">
-            <Loader size={24} className="animate-spin text-primary" />
+            <LoaderCircle size={24} className="animate-spin text-primary" />
           </div>
         )}
 
@@ -405,22 +405,26 @@ export default function OrdersModal({
                       key={item.id}
                       className="flex items-center justify-between py-6 gap-4 md:gap-8 mb-0"
                     >
-                    <div className='flex items-center gap-4 md:gap-6 flex-1'>
+                      <div className="flex items-center gap-4 md:gap-6 flex-1">
                         <div className="relative w-32 h-20 ">
-                        <Image
-                          src={item.product?.productImages?.[0]?.imageUrl ?? ''}
-                          alt={item.product?.productName ?? ''}
-                          fill
-                          priority
-                          className="object-cover rounded-md"
-                        />
-                      </div>
+                          <Image
+                            src={
+                              item.product?.productImages?.[0]?.imageUrl ?? ''
+                            }
+                            alt={item.product?.productName ?? ''}
+                            fill
+                            priority
+                            className="object-cover rounded-md"
+                          />
+                        </div>
 
-                      <div className="capitalize  w-full text-left space-y-2">
-                        <p>{item.product?.productName?.toLowerCase()}</p>
-                        <p className="text-xs text-neutral-500">Qty: {item.quantity}</p>
+                        <div className="capitalize  w-full text-left space-y-2">
+                          <p>{item.product?.productName?.toLowerCase()}</p>
+                          <p className="text-xs text-neutral-500">
+                            Qty: {item.quantity}
+                          </p>
+                        </div>
                       </div>
-                    </div>
                       <p className="font-medium">
                         NGN {item.totalPrice.toLocaleString()}
                       </p>
@@ -481,7 +485,7 @@ export default function OrdersModal({
                   className="flex-1"
                   leftIcon={
                     isInitiatingPayment ? (
-                      <Loader size={16} className="animate-spin" />
+                      <LoaderCircle size={16} className="animate-spin" />
                     ) : (
                       <CreditCard size={16} />
                     )
@@ -506,7 +510,7 @@ export default function OrdersModal({
                   className="flex-1"
                   leftIcon={
                     cancelMutation.isPending ? (
-                      <Loader size={16} className="animate-spin" />
+                      <LoaderCircle size={16} className="animate-spin" />
                     ) : (
                       <X size={16} />
                     )

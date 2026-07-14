@@ -12,7 +12,7 @@ import {
   Stars,
   ChevronLeft,
   ChevronRight,
-  Loader,
+  LoaderCircle,
 } from 'lucide-react';
 import OrderDetailModal from '@/features/user/delivery/components/modals/order-detail-modal';
 import { useOrderStore } from '@/features/user/delivery/hooks/order-store';
@@ -164,7 +164,10 @@ export default function DeliveryConfirmationPage() {
         </div>
       </div>
 
-      <Card border='none' className="bg-green-100/10 flex flex-col md:flex-row gap-4 md:gap-6 items-start">
+      <Card
+        border="none"
+        className="bg-green-100/10 flex flex-col md:flex-row gap-4 md:gap-6 items-start"
+      >
         <Shield size={24} className="text-green-100 mb-0" />
         <div className="space-y-6">
           <h5 className="font-medium text-lg">C-Ride Guarantee</h5>
@@ -206,8 +209,10 @@ export default function DeliveryConfirmationPage() {
         </ul>
 
         <div className="flex justify-between items-center text-xl border-t border-border py-6">
-          <h2 className='font-bold text-xl'>Total Amount</h2>
-          <h2 className="text-primary font-bold text-xl">NGN {total.toLocaleString()}</h2>
+          <h2 className="font-bold text-xl">Total Amount</h2>
+          <h2 className="text-primary font-bold text-xl">
+            NGN {total.toLocaleString()}
+          </h2>
         </div>
       </div>
 
@@ -239,7 +244,8 @@ export default function DeliveryConfirmationPage() {
         >
           {isCreatingOrder ? (
             <span className="flex items-center gap-2">
-              <Loader size={16} className="animate-spin" /> Creating Order...
+              <LoaderCircle size={16} className="animate-spin" /> Creating
+              Order...
             </span>
           ) : (
             'Create Order'

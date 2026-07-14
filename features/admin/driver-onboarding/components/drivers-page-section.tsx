@@ -2,7 +2,12 @@
 
 import { useState, useEffect, useTransition } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
-import { Loader, RefreshCcw, ChevronLeft, ChevronRight } from 'lucide-react';
+import {
+  LoaderCircle,
+  RefreshCcw,
+  ChevronLeft,
+  ChevronRight,
+} from 'lucide-react';
 import { toast } from 'sonner';
 import DriversTable from './drivers-table';
 
@@ -149,7 +154,7 @@ export default function DriverPageSection({
         <div className="relative">
           {isPending && (
             <div className="absolute inset-0 bg-white/60 flex justify-center pt-20 z-10">
-              <Loader className="animate-spin text-primary" size={32} />
+              <LoaderCircle className="animate-spin text-primary" size={32} />
             </div>
           )}
 

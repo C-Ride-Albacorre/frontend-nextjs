@@ -55,7 +55,7 @@ export default async function StoresWrapper({
 
     const stores = data.data;
 
-    console.log('Stores:', stores);
+    console.log('Stores in store public page:', stores);
     console.log('Meta:', meta);
 
     if (!stores?.length) {

@@ -5,7 +5,7 @@ import { useMemo, useState } from 'react';
 import Card from '@/components/layout/card';
 import { Button } from '@/components/ui/buttons/button';
 import { Product } from '@/features/vendor/products/type';
-import { Loader, Minus, Package, Plus, ShoppingCart } from 'lucide-react';
+import { LoaderCircle, Minus, Package, Plus, ShoppingCart } from 'lucide-react';
 import Image from 'next/image';
 import { useCartStore } from '../hooks/store';
 import { IconButton } from '@/components/ui/buttons/icon-button';
@@ -229,7 +229,7 @@ export default function ProductCard({ item }: { item: Product }) {
                 className="w-full"
               >
                 {isUpdating ? (
-                  <Loader
+                  <LoaderCircle
                     size={16}
                     className="animate-spin text-primary-text-100"
                   />

@@ -1,4 +1,4 @@
-import { Loader, MapPinHouse, MapPinned, Search } from 'lucide-react';
+import { LoaderCircle, MapPinHouse, MapPinned, Search } from 'lucide-react';
 
 import Card from '@/components/layout/card';
 import { Address, AddressItem } from '../service';
@@ -6,12 +6,12 @@ import { Address, AddressItem } from '../service';
 export default function SavedAddresses({
   savedAddresses,
 }: {
-  savedAddresses?: AddressItem[]
+  savedAddresses?: AddressItem[];
 }) {
   if (!savedAddresses) {
     return (
       <div className="flex items-center justify-center py-10">
-        <Loader size={24} className="animate-spin text-neutral-500" />
+        <LoaderCircle size={24} className="animate-spin text-neutral-500" />
       </div>
     );
   }

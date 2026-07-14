@@ -6,7 +6,7 @@ import {
   CheckCircle,
   Code,
   CreditCard,
-  Loader,
+  LoaderCircle,
   MapPin,
   Package,
   Phone,
@@ -67,11 +67,43 @@ export default function OrderDetailsModal({
     fetchOrder();
   }, [isModalOpen, orderId]);
 
-  console.log(' Order details in modal:', order);
+  // console.log(' Order details in modal:', order.items);
 
   const customerName = order
     ? `${order.user?.firstName ?? ''} ${order.user?.lastName ?? ''}`
     : '';
+
+  const orderStatusText =
+    order?.orderStatus === 'CONFIRMED'
+      ? 'Confirmed'
+      : order?.orderStatus === 'PENDING'
+        ? 'Pending'
+        : order?.orderStatus === 'COMPLETED'
+          ? 'Completed'
+          : order?.orderStatus === 'CANCELLED'
+            ? 'Cancelled'
+            : order?.orderStatus === 'REJECTED'
+              ? 'Rejected'
+              : order?.orderStatus === 'FAILED'
+                ? 'Failed'
+                : order?.orderStatus === 'DELIVERED'
+                  ? 'Delivered'
+                  : order?.orderStatus === 'PICKED_UP'
+                    ? 'Picked Up'
+                    : order?.orderStatus === 'ORDER_ASSIGNED'
+                      ? 'Order Assigned'
+                      : order?.orderStatus === 'ORDER_ACCEPTED'
+                        ? 'Order Accepted'
+                        : order?.orderStatus;
+
+  const paymentStatusText =
+    order?.paymentStatus === 'PAID'
+      ? 'Paid'
+      : order?.paymentStatus === 'PENDING'
+        ? 'Pending'
+        : order?.paymentStatus === 'FAILED'
+          ? 'Failed'
+          : order?.paymentStatus;
 
   return (
     <Modal
@@ -81,7 +113,7 @@ export default function OrderDetailsModal({
     >
       {loading ? (
         <div className="flex flex-col items-center gap-4 justify-center min-h-[85vh]">
-          <Loader size={24} className="animate-spin text-primary" />
+          <LoaderCircle size={32} className="animate-spin text-primary" />
         </div>
       ) : !order ? (
         <div className="flex flex-col items-center gap-4 justify-center min-h-[85vh]">
@@ -95,61 +127,78 @@ export default function OrderDetailsModal({
           {/* Header */}
           <div className="space-y-1">
             <h2 className="text-xl font-semibold">Order Details</h2>
-
-            <p className="text-sm text-neutral-500">
-              Order Code #{order.orderCode}
-            </p>
           </div>
 
-          <div className="space-y-12">
+          <div className="space-y-8">
             {/* Order Overview */}
             <section className="space-y-4">
               <h3 className="text-sm font-semibold uppercase tracking-wide text-neutral-400">
-                Order Overview
+                Overview
               </h3>
 
               <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
                 <InfoCard
-                  icon={<ShoppingBag size={16} className="text-neutral-400" />}
+                  icon={<ShoppingBag size={16} className="text-green-100" />}
                   label="Order Number"
                   value={order.orderNumber}
                 />
 
                 <InfoCard
-                  icon={<Code size={16} className="text-neutral-400" />}
+                  icon={<Code size={16} className="text-green-100" />}
                   label="Order Code"
                   value={order.orderCode}
                 />
 
                 <InfoCard
-                  icon={<Package size={16} className="text-neutral-400" />}
+                  icon={<Package size={16} className="text-green-100" />}
                   label="Status"
                   value={
                     <span
                       className={clsx(
-                        'rounded-full px-2 py-1 text-xs font-medium',
+                        'rounded-full px-2 py-1 text-[10px] font-medium uppercase',
                         {
                           'bg-blue-100 text-blue-600':
                             order.orderStatus === 'CONFIRMED',
-                          'bg-emerald-100 text-emerald-600':
-                            order.orderStatus === 'COMPLETED',
                           'bg-amber-100 text-amber-600':
                             order.orderStatus === 'PENDING',
+                          'bg-emerald-100 text-emerald-600':
+                            order.orderStatus === 'COMPLETED',
+                          'bg-emerald-100 text-emerald-700':
+                            order.orderStatus === 'ORDER_ASSIGNED',
+                          'bg-red-100 text-red-600':
+                            order.orderStatus === 'CANCELLED',
+                          'bg-red-100 text-red-700':
+                            order.orderStatus === 'REJECTED',
+
+                          'bg-neutral-100 text-neutral-600':
+                            order.orderStatus === 'FAILED',
+
+                          'bg-green-100/10 text-green-700':
+                            order.orderStatus === 'DELIVERED',
+
+                          'bg-amber-100 text-amber-700':
+                            order.orderStatus === 'PICKED_UP',
+
+                          'bg-purple-100 text-purple-700':
+                            order.orderStatus === 'ORDER_ACCEPTED',
+
+                          'bg-blue-100 text-blue-700':
+                            order.orderStatus === 'ORDER_ASSIGNED',
                         },
                       )}
                     >
-                      {order.orderStatus}
+                      {orderStatusText}
                     </span>
                   }
                 />
 
                 <InfoCard
-                  icon={<CreditCard size={16} className="text-neutral-400" />}
+                  icon={<CreditCard size={16} className="text-green-100" />}
                   label="Payment"
                   value={
                     <span
                       className={clsx(
-                        'rounded-full px-2 py-1 text-xs font-medium',
+                        'rounded-full px-2 py-1 text-[10px] font-medium uppercase',
                         {
                           'bg-emerald-100 text-emerald-600':
                             order.paymentStatus === 'PAID',
@@ -160,10 +209,103 @@ export default function OrderDetailsModal({
                         },
                       )}
                     >
-                      {order.paymentStatus}
+                      {paymentStatusText}
                     </span>
                   }
                 />
+              </div>
+            </section>
+
+            {/* Items */}
+            <section className="space-y-4">
+              <h3 className="text-sm font-semibold uppercase tracking-wide text-neutral-400">
+                Order Items
+              </h3>
+
+              <div>
+                {order.items.map((item: any) => (
+                  <div
+                    key={item.id}
+                    className="flex items-center justify-between py-4"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="relative h-12 w-12 overflow-hidden rounded-lg ">
+                        <Image
+                          src={
+                            item.product?.image ??
+                            '/assets/image/product-placeholder.png'
+                          }
+                          alt={item.product?.productName ?? 'Product Image'}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+
+                      <div>
+                        <h2 className="font-medium text-sm">
+                          {item.product?.productName ?? 'Unknown Product'}
+                        </h2>
+
+                        <div className="flex  gap-2">
+                          {item.variant && (
+                            <p className="text-neutral-500 text-xs">
+                              {item.variant.variantName}
+                            </p>
+                          )}
+
+                          {item.addons && (
+                            <p className="text-neutral-500 text-xs">
+                              {item.addons
+                                .map((addon: any) => addon.addonName)
+                                .join(', ')}
+                            </p>
+                          )}
+                        </div>
+
+                        <p className="text-neutral-500 text-xs">
+                          Qty: {item.quantity}
+                        </p>
+                      </div>
+                    </div>
+
+                    <h2 className="font-semibold">
+                      NGN {item.totalPrice.toLocaleString()}
+                    </h2>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {/* Summary */}
+            <section className="space-y-3">
+              <h3 className="text-sm font-semibold uppercase tracking-wide text-neutral-400">
+                Order Summary
+              </h3>
+
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <p className="text-neutral-500 text-sm">Total Items</p>
+
+                  <p className="font-medium text-sm">
+                    {order.vendorSummary.itemCount}
+                  </p>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <p className="text-neutral-500 text-sm">Total Quantity</p>
+
+                  <p className="font-medium text-sm">
+                    {order.vendorSummary.totalQuantity}
+                  </p>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <h2 className="font-medium">Grand Total</h2>
+
+                  <h2 className="text-lg font-semibold text-primary">
+                    NGN {order.vendorSummary.subtotal.toLocaleString()}
+                  </h2>
+                </div>
               </div>
             </section>
 
@@ -182,10 +324,10 @@ export default function OrderDetailsModal({
                   />
 
                   <div className="flex-1 space-y-1">
-                    {<p className="font-medium">{customerName}</p>}
+                    {<h2 className="font-medium capitalize">{customerName}</h2>}
 
                     {order.user?.email && (
-                      <p className=" text-sm text-neutral-500">
+                      <p className=" text-xs text-neutral-500">
                         {order.user.email}
                       </p>
                     )}
@@ -209,28 +351,30 @@ export default function OrderDetailsModal({
               <Card spacing="none" border="none">
                 <div className=" flex flex-col gap-6">
                   <div className="flex gap-3 mb-0">
-                    <User size={18} className=" text-neutral-400" />
+                    <User size={16} className=" text-green-100" />
 
                     <div className="space-y-1">
-                      <p className="font-medium">{order.recipientName}</p>
+                      <h2 className="font-medium text-sm">
+                        {order.recipientName}
+                      </h2>
 
-                      <p className="text-sm text-neutral-500">
+                      <p className="text-xs text-neutral-500">
                         {order.recipientPhone}
                       </p>
                     </div>
                   </div>
 
                   <div className="flex gap-3 mb-0">
-                    <MapPin size={18} className="mt-0.5 text-neutral-400" />
+                    <MapPin size={16} className=" text-green-100" />
 
                     <div className="space-y-1">
-                      <p className="font-medium">Delivery Address</p>
+                      <h2 className="font-medium text-sm">Delivery Address</h2>
 
-                      <p className="text-sm text-neutral-500">
+                      <p className="text-xs text-neutral-500">
                         {order.dropoffLocation?.address}
                       </p>
 
-                      <p className="text-sm text-neutral-500">
+                      <p className="text-xs text-neutral-500">
                         {order.dropoffLocation?.state},{' '}
                         {order.dropoffLocation?.country}
                       </p>
@@ -239,102 +383,28 @@ export default function OrderDetailsModal({
 
                   {order.deliveryInstructions && (
                     <div className="space-y-1">
-                      <p className="text-xs font-medium text-neutral-400">
+                      <h3 className="text-sm font-semibold uppercase tracking-wide text-neutral-400">
                         DELIVERY INSTRUCTIONS
-                      </p>
+                      </h3>
 
-                      <p className="mt-1 text-sm">
-                        {order.deliveryInstructions}
-                      </p>
+                      <p className="text-sm">{order.deliveryInstructions}</p>
                     </div>
                   )}
                 </div>
               </Card>
             </section>
 
-            {/* Items */}
-            <section className="space-y-4">
-              <h3 className="text-sm font-semibold uppercase tracking-wide text-neutral-400">
-                Order Items
-              </h3>
-
-              <div>
-                {order.items.map((item: any) => (
-                  <div
-                    key={item.id}
-                    className="flex items-center justify-between py-4"
-                  >
-                    <div className="flex items-center gap-4">
-                      <div className="relative h-16 w-16 overflow-hidden rounded-lg ">
-                        <Image
-                          src={item.product.image}
-                          alt={item.product.productName}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-
-                      <div>
-                        <p className="font-medium">
-                          {item.product.productName}
-                        </p>
-
-                        <p className="text-neutral-500 text-xs">
-                          Quantity: x {item.quantity}
-                        </p>
-                      </div>
-                    </div>
-
-                    <p className="font-semibold">
-                      ₦{item.totalPrice.toLocaleString()}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            {/* Summary */}
-            <section className="space-y-4">
-              <h3 className="text-sm font-semibold uppercase tracking-wide text-neutral-400">
-                Order Summary
-              </h3>
-
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <p className="text-neutral-500 text-sm">Total Items</p>
-
-                  <p className="font-medium">{order.vendorSummary.itemCount}</p>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <p className="text-neutral-500 text-sm">Total Quantity</p>
-
-                  <p className="font-medium">
-                    {order.vendorSummary.totalQuantity}
-                  </p>
-                </div>
-
-                <div className="mt-4 pt-4 flex items-center justify-between">
-                  <p className="font-medium">Grand Total</p>
-
-                  <p className="text-2xl font-semibold text-primary">
-                    ₦{order.vendorSummary.subtotal.toLocaleString()}
-                  </p>
-                </div>
-              </div>
-            </section>
-
             {/* Created Date */}
-            <div className="flex items-center gap-2 text-sm text-neutral-400">
-              <Calendar size={14} />
+            <div className="flex items-center gap-2 text-sm text-neutral-400 border-t border-border pt-6">
+              <Calendar size={14} className="text-green-100" />
 
-              <span className="text-sm">
+              <span className="text-xs">
                 Created {formatDate(order.createdAt)}
               </span>
             </div>
           </div>
 
-          {order.status === 'CONFIRMED' && (
+          {order?.orderStatus === 'CONFIRMED' && (
             <div className="flex justify-around items-center gap-4">
               <Button
                 variant="red-secondary"

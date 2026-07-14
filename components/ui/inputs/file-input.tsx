@@ -1,7 +1,13 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import { Upload, Check, FileText, CheckCircle, Loader } from 'lucide-react';
+import {
+  Upload,
+  Check,
+  FileText,
+  CheckCircle,
+  LoaderCircle,
+} from 'lucide-react';
 import { FileInputProps } from '@/types/input';
 
 export default function FileInput({
@@ -40,7 +46,7 @@ export default function FileInput({
           `}
         >
           {isUploading ? (
-            <Loader size={20} className="animate-spin" />
+            <LoaderCircle size={20} className="animate-spin" />
           ) : isUploaded ? (
             <Check size={20} />
           ) : mode === 'dashboard' ? (

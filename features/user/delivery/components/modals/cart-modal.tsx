@@ -1,4 +1,4 @@
-import { ChevronRight, Loader, Minus, Plus, Trash2 } from 'lucide-react';
+import { ChevronRight, LoaderCircle, Minus, Plus, Trash2 } from 'lucide-react';
 
 import Modal from '@/components/layout/modal';
 
@@ -46,7 +46,6 @@ export default function CartModal() {
     .replace(/[^\w\s-]/g, '')
     .replace(/\s+/g, '-');
 
-
   console.log(
     ' Cart Modal Rendered. Store ID:',
     storeId,
@@ -68,9 +67,9 @@ export default function CartModal() {
 
   return (
     <Modal isModalOpen={isCartOpen} onClose={closeCart}>
-    <div className="max-h-[80vh] overflow-y-auto space-y-6">
+      <div className="max-h-[80vh] overflow-y-auto space-y-6">
         {/* Header */}
-     <div className="flex  gap-3 pt-8 items-center  justify-between md:pt-6">
+        <div className="flex  gap-3 pt-8 items-center  justify-between md:pt-6">
           <h2 className="text-xl font-semibold">
             Your Cart ({cart?.itemCount ?? 0})
           </h2>
@@ -104,22 +103,25 @@ export default function CartModal() {
             const isUpdating = updatingItems.includes(itemKey);
 
             return (
-              <li key={item.id}   className="flex flex-col gap-4 py-4 sm:flex-row sm:items-center sm:justify-between">
-<div className="flex min-w-0 items-center gap-3">
+              <li
+                key={item.id}
+                className="flex flex-col gap-4 py-4 sm:flex-row sm:items-center sm:justify-between"
+              >
+                <div className="flex min-w-0 items-center gap-3">
                   {item.imageUrl && (
-                <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg sm:h-16 sm:w-16">
+                    <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg sm:h-16 sm:w-16">
                       <Image
                         src={item.imageUrl}
                         alt={item.productName || 'Product Image'}
                         fill
-                      priority
+                        priority
                         className="object-cover"
                       />
                     </div>
                   )}
 
                   <div className="flex flex-col gap-2 justify-between">
-           <p className="truncate text-sm font-medium capitalize">
+                    <p className="truncate text-sm font-medium capitalize">
                       {item.productName}
                     </p>
 
@@ -129,13 +131,14 @@ export default function CartModal() {
                       }`}
                     >
                       {isUpdating ? (
-                        <Loader
+                        <LoaderCircle
                           size={16}
                           className="animate-spin text-primary"
                         />
                       ) : (
                         <>
-                          NGN {(
+                          NGN{' '}
+                          {(
                             item.totalPrice ?? item.unitPrice * item.quantity
                           ).toLocaleString()}
                         </>
@@ -143,13 +146,13 @@ export default function CartModal() {
                     </p>
                   </div>
                 </div>
-<div className="flex flex-wrap items-center justify-between gap-3 sm:grid sm:grid-cols-3 sm:gap-4">
-              <p className="w-full text-xs text-neutral-500 sm:w-auto">
+                <div className="flex flex-wrap items-center justify-between gap-3 sm:grid sm:grid-cols-3 sm:gap-4">
+                  <p className="w-full text-xs text-neutral-500 sm:w-auto">
                     NGN {item.unitPrice?.toLocaleString()} x {item.quantity}
                   </p>
 
                   {/* Quantity */}
-               <div className="flex items-center gap-1 sm:gap-2">
+                  <div className="flex items-center gap-1 sm:gap-2">
                     <IconButton
                       variant="primary-outline"
                       size="icon"
@@ -195,11 +198,11 @@ export default function CartModal() {
         {/* Footer */}
         {items.length > 0 && (
           <div className="space-y-4 border-t border-border pt-4">
-        <div className="flex flex-wrap items-center justify-between gap-2 text-base font-semibold">
+            <div className="flex flex-wrap items-center justify-between gap-2 text-base font-semibold">
               <h4>Subtotal</h4>
 
               {isLoading || isUpdatingCart ? (
-                <Loader size={16} className="animate-spin text-primary" />
+                <LoaderCircle size={16} className="animate-spin text-primary" />
               ) : (
                 <h4>NGN {(cart?.subTotal ?? 0).toLocaleString()}</h4>
               )}

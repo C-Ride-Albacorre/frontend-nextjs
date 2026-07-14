@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import {
   CreditCard,
-  Loader,
+  LoaderCircle,
   MapPin,
   Phone,
   ShoppingBag,
@@ -121,15 +121,13 @@ export default function OrderDetailModal({
     return 'bg-primary-text-100 text-primary';
   };
 
-
-
   return (
     <Modal isModalOpen={isModalOpen} onClose={onClose}>
       <div className="space-y-6">
         {/* Loading */}
         {isLoading && (
           <div className="flex justify-center py-12">
-            <Loader size={24} className="animate-spin text-primary" />
+            <LoaderCircle size={24} className="animate-spin text-primary" />
           </div>
         )}
 
@@ -234,36 +232,36 @@ export default function OrderDetailModal({
                         className="flex items-center gap-3 py-6"
                       >
                         {/* Product image */}
-                     <div className='flex-1 flex items-center gap-6'>
-                         <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-neutral-100">
-                          {image ? (
-                            <Image
-                              src={image}
-                              alt={name}
-                              fill
-                              className="object-cover"
-                            />
-                          ) : (
-                            <div className="flex items-center justify-center h-full w-full">
-                              <ShoppingBag
-                                size={18}
-                                className="text-neutral-400"
+                        <div className="flex-1 flex items-center gap-6">
+                          <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-neutral-100">
+                            {image ? (
+                              <Image
+                                src={image}
+                                alt={name}
+                                fill
+                                className="object-cover"
                               />
-                            </div>
-                          )}
-                        </div>
+                            ) : (
+                              <div className="flex items-center justify-center h-full w-full">
+                                <ShoppingBag
+                                  size={18}
+                                  className="text-neutral-400"
+                                />
+                              </div>
+                            )}
+                          </div>
 
-                        {/* Name + qty */}
-                        <div className="flex-1 min-w-0 text-left space-y-1">
-                          <p className="font-medium capitalize truncate">
-                            {name.toLowerCase()}
-                          </p>
-                          <p className="text-xs text-neutral-500">
-                            Qty: {item.quantity} &times; NGN{' '}
-                            {(item.unitPrice ?? 0).toLocaleString()}
-                          </p>
+                          {/* Name + qty */}
+                          <div className="flex-1 min-w-0 text-left space-y-1">
+                            <p className="font-medium capitalize truncate">
+                              {name.toLowerCase()}
+                            </p>
+                            <p className="text-xs text-neutral-500">
+                              Qty: {item.quantity} &times; NGN{' '}
+                              {(item.unitPrice ?? 0).toLocaleString()}
+                            </p>
+                          </div>
                         </div>
-                     </div>
 
                         {/* Price */}
                         <span className="font-medium shrink-0">
@@ -288,7 +286,7 @@ export default function OrderDetailModal({
                 </div>
               )}
               <div className="flex justify-between font-semibold text-base pt-2">
-                <h2 className='text-xl font-bold'>Total</h2>
+                <h2 className="text-xl font-bold">Total</h2>
                 <h2 className="text-primary text-xl font-bold">
                   NGN {(order.totalAmount ?? 0).toLocaleString()}
                 </h2>
@@ -309,7 +307,7 @@ export default function OrderDetailModal({
                   className="flex-1"
                   leftIcon={
                     cancelMutation.isPending ? (
-                      <Loader size={16} className="animate-spin" />
+                      <LoaderCircle size={16} className="animate-spin" />
                     ) : (
                       <X size={16} />
                     )
@@ -327,7 +325,7 @@ export default function OrderDetailModal({
                 className="flex-1"
                 leftIcon={
                   isInitiatingPayment ? (
-                    <Loader size={16} className="animate-spin" />
+                    <LoaderCircle size={16} className="animate-spin" />
                   ) : (
                     <CreditCard size={16} />
                   )

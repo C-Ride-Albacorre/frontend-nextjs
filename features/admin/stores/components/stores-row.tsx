@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Store as StoreIcon, Loader } from 'lucide-react';
+import { Store as StoreIcon, LoaderCircle } from 'lucide-react';
 import clsx from 'clsx';
 import { StoreRowProps } from '../types';
 import { Button } from '@/components/ui/buttons/button';
@@ -71,7 +71,10 @@ export default function StoreRow({ store, onView, onAction }: StoreRowProps) {
         <div className="flex justify-end gap-1.5">
           {isPending &&
             (isSubmitting ? (
-              <Loader size={18} className="animate-spin text-neutral-400" />
+              <LoaderCircle
+                size={18}
+                className="animate-spin text-neutral-400"
+              />
             ) : (
               <>
                 <Button

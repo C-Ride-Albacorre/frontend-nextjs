@@ -8,7 +8,7 @@ import {
   CreditCard,
   Gift,
   HelpCircle,
-  Loader,
+  LoaderCircle,
 } from 'lucide-react';
 
 import {
@@ -64,7 +64,7 @@ export default function DashboardPage() {
           <Suspense
             fallback={
               <div className="bg-neutral-100 h-72 animate-pulse rounded-2xl justify-center items-center flex">
-                <Loader size={24} className="animate-spin text-primary" />
+                <LoaderCircle size={24} className="animate-spin text-primary" />
               </div>
             }
           >

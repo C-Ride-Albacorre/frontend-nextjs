@@ -3,7 +3,7 @@
 import Card from '@/components/layout/card';
 import { Button } from '@/components/ui/buttons/button';
 import clsx from 'clsx';
-import { CheckCircle, Eye, XCircle } from 'lucide-react';
+import { CheckCircle, XCircle } from 'lucide-react';
 import { useState } from 'react';
 import OrderActionModal from './order-action-modal';
 import Image from 'next/image';
@@ -16,6 +16,13 @@ type Item = {
   quantity: number;
   totalPrice: number;
   image: string;
+  variant: {
+    variantName: string;
+  };
+  addons: {
+    name: string;
+    price: number;
+  }[];
 };
 
 interface OrderCardProps {
@@ -56,6 +63,8 @@ export default function OrderCard({
     'ACCEPT',
   );
 
+  console.log(' order items:', items);
+
   const handleAcceptAction = () => {
     setActionStatus('ACCEPT');
     setIsModalOpen(true);
@@ -71,74 +80,107 @@ export default function OrderCard({
     setIsDetailsModalOpen(true);
   };
 
+  const orderStatusText =
+    orderStatus === 'CONFIRMED'
+      ? 'Confirmed'
+      : orderStatus === 'PENDING'
+        ? 'Pending'
+        : orderStatus === 'COMPLETED'
+          ? 'Completed'
+          : orderStatus === 'CANCELLED'
+            ? 'Cancelled'
+            : orderStatus === 'REJECTED'
+              ? 'Rejected'
+              : orderStatus === 'FAILED'
+                ? 'Failed'
+                : orderStatus === 'DELIVERED'
+                  ? 'Delivered'
+                  : orderStatus === 'PICKED_UP'
+                    ? 'Picked Up'
+                    : orderStatus === 'ORDER_ASSIGNED'
+                      ? 'Order Assigned'
+                      : orderStatus === 'ORDER_ACCEPTED'
+                        ? 'Order Accepted'
+                        : orderStatus;
 
-  const orderStatusText = orderStatus === 'CONFIRMED' ? 'Confirmed' :  orderStatus === 'PENDING' ? 'Pending' : orderStatus === 'COMPLETED' ? 'Completed' : orderStatus === 'CANCELLED' ? 'Cancelled' : orderStatus === 'REJECTED' ? 'Rejected' : orderStatus === 'FAILED' ? 'Failed' : orderStatus === 'DELIVERED' ? 'Delivered' : orderStatus === 'PICKED_UP' ? 'Picked Up' : orderStatus === 'ORDER_ASSIGNED' ? 'Order Assigned' : orderStatus === 'ORDER_ACCEPTED' ? 'Order Accepted' : orderStatus;
-
-  const paymentStatusText = paymentStatus === 'PAID' ? 'Paid' : paymentStatus === 'PENDING' ? 'Pending' : paymentStatus === 'FAILED' ? 'Failed' : paymentStatus;
+  const paymentStatusText =
+    paymentStatus === 'PAID'
+      ? 'Paid'
+      : paymentStatus === 'PENDING'
+        ? 'Pending'
+        : paymentStatus === 'FAILED'
+          ? 'Failed'
+          : paymentStatus;
 
   return (
     <>
       <Card
-        className="flex h-full flex-col bg-white shadow-sm hover:shadow-md transition-shadow duration-300"
+        className="flex h-full flex-col bg-white transition-all duration-300 hover:shadow-lg hover:-translate-y-1   "
         spacing="none"
       >
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-border mb-0 px-4 py-3">
-          <div>
+        <div className="flex items-start justify-between border-b border-border mb-0 px-4 py-3">
+          <div className="flex flex-col gap-0.5">
             <p className="text-xs text-neutral-500">Order Code</p>
             <h2 className="font-semibold text-xl">{orderCode}</h2>
+            <p className="text-xs text-neutral-500">{orderNumber}</p>
           </div>
 
-          <div className="flex items-end gap-2">
-            <span
-              className={clsx(
-                'rounded-full px-2 py-1 text-[10px] font-medium',
-                {
-                  'bg-blue-100 text-blue-600': orderStatus === 'CONFIRMED',
-                  'bg-amber-100 text-amber-600': orderStatus === 'PENDING',
-                  'bg-emerald-100 text-emerald-600':
-                    orderStatus === 'COMPLETED',
-                  'bg-emerald-100 text-emerald-700':
-                    orderStatus === 'ORDER_ASSIGNED',
-                  'bg-red-100 text-red-600': orderStatus === 'CANCELLED',
-                  'bg-red-100 text-red-700': orderStatus === 'REJECTED',
+          <div className="flex flex-col items-end gap-1.5">
+            <p className="text-[10px] text-neutral-500">{formatDate(createdAt)}</p>
 
-                  'bg-neutral-100 text-neutral-600': orderStatus === 'FAILED',
+            <div className="flex items-end gap-2">
+              <span
+                className={clsx(
+                  'rounded-full px-2 py-1 text-[10px] font-medium',
+                  {
+                    'bg-blue-100 text-blue-600': orderStatus === 'CONFIRMED',
+                    'bg-amber-100 text-amber-600': orderStatus === 'PENDING',
+                    'bg-emerald-100 text-emerald-600':
+                      orderStatus === 'COMPLETED',
+                    'bg-emerald-100 text-emerald-700':
+                      orderStatus === 'ORDER_ASSIGNED',
+                    'bg-red-100 text-red-600': orderStatus === 'CANCELLED',
+                    'bg-red-100 text-red-700': orderStatus === 'REJECTED',
 
-                  'bg-green-100/10 text-green-700': orderStatus === 'DELIVERED',
+                    'bg-neutral-100 text-neutral-600': orderStatus === 'FAILED',
 
-                  'bg-amber-100 text-amber-700': orderStatus === 'PICKED_UP',
+                    'bg-green-100/10 text-green-700':
+                      orderStatus === 'DELIVERED',
 
-                     'bg-purple-100 text-purple-700': orderStatus === 'ORDER_ACCEPTED',
+                    'bg-amber-100 text-amber-700': orderStatus === 'PICKED_UP',
 
-                  'bg-blue-100 text-blue-700': orderStatus === 'ORDER_ASSIGNED',
+                    'bg-purple-100 text-purple-700':
+                      orderStatus === 'ORDER_ACCEPTED',
 
+                    'bg-blue-100 text-blue-700':
+                      orderStatus === 'ORDER_ASSIGNED',
+                  },
+                )}
+              >
+                {orderStatusText}
+              </span>
 
-                },
-              )}
-            >
-              {orderStatusText}
-            </span>
-
-            <span
-              className={clsx(
-                'rounded-full px-2 py-1 text-[10px] font-medium',
-                {
-                  'bg-emerald-100 text-emerald-600': paymentStatus === 'PAID',
-                  'bg-amber-100 text-amber-600': paymentStatus === 'PENDING',
-                  'bg-red-100 text-red-600': paymentStatus === 'FAILED',
-                },
-              )}
-            >
-              {paymentStatusText}
-            </span>
+              <span
+                className={clsx(
+                  'rounded-full px-2 py-1 text-[10px] font-medium',
+                  {
+                    'bg-emerald-100 text-emerald-600': paymentStatus === 'PAID',
+                    'bg-amber-100 text-amber-600': paymentStatus === 'PENDING',
+                    'bg-red-100 text-red-600': paymentStatus === 'FAILED',
+                  },
+                )}
+              >
+                {paymentStatusText}
+              </span>
+            </div>
           </div>
         </div>
 
         {/* Customer */}
         <div className="border-b border-border mb-0 px-4 py-3">
           <p className="mb-2 text-xs font-medium uppercase tracking-wide text-neutral-400">
-            Customer
+            Customer Details
           </p>
 
           <div>
@@ -154,16 +196,14 @@ export default function OrderCard({
                 <div className=" space-y-1">
                   <h2 className="font-medium capitalize">{customer}</h2>
 
-                  <p className="text-xs text-neutral-500">{email || 'N/A'}</p>
+                  {email && (
+                    <p className="text-xs text-neutral-500">{email || 'N/A'}</p>
+                  )}
 
                   {phoneNumber && (
                     <p className="text-xs text-neutral-500">{phoneNumber}</p>
                   )}
                 </div>
-
-                <p className="mt-2 text-xs text-neutral-500">
-                  {formatDate(createdAt)}
-                </p>
               </div>
             </div>
           </div>
@@ -176,25 +216,56 @@ export default function OrderCard({
           </p>
 
           <div className="space-y-4 h-32 overflow-y-auto">
-            {items.map((item) => (
+            {items?.map((item) => (
               <div
-                key={`${item.name}-${item.quantity}`}
+                key={Math.random()}
                 className="flex items-center justify-between"
               >
                 <div className="flex items-center gap-3 ">
-                  <div className="h-12 w-12 overflow-hidden rounded-sm relative">
-                    <Image src={item.image} alt={item.name} fill priority />
+                  <div className="h-10 w-10 overflow-hidden rounded-sm relative">
+                    {item.image ? (
+                      <Image
+                        src={item?.image}
+                        alt={item.name}
+                        fill
+                        loading="lazy"
+                      />
+                    ) : (
+                      <Image
+                        src={'/assets/image/product-placeholder.png'}
+                        alt={item.name}
+                        fill
+                        loading="lazy"
+                      />
+                    )}
                   </div>
 
-                  <p className="text-sm text-neutral-700 space-x-1">
-                    <span className="flex-wrap">{item.name}</span>
-                    <span className="text-neutral-400">× {item.quantity}</span>
-                  </p>
+                  <div className="text-sm text-neutral-700 space-x-1">
+                    <h4 className="flex-wrap text-sm">{item.name}</h4>
+
+                    {item.variant && (
+                      <p className="text-neutral-500 text-xs">
+                        {item.variant.variantName}
+                      </p>
+                    )}
+
+                    {item.addons && (
+                      <p className="text-neutral-500 text-xs">
+                        {item.addons
+                          .map((addon: any) => addon.addonName)
+                          .join(', ')}
+                      </p>
+                    )}
+
+                    <p className="text-neutral-400 text-xs">
+                      Qty: {item.quantity}
+                    </p>
+                  </div>
                 </div>
 
-                <p className="text-sm font-medium">
-                  ₦ {item.totalPrice.toLocaleString()}
-                </p>
+                <h4 className="text-sm font-medium">
+                  NGN {item.totalPrice.toLocaleString()}
+                </h4>
               </div>
             ))}
           </div>
@@ -203,10 +274,10 @@ export default function OrderCard({
         {/* Total */}
         <div className="border-t border-border px-4 py-3">
           <div className="mb-4 flex items-center justify-between">
-            <p className="text-sm text-neutral-500">Total Amount</p>
+            <h2 className="text-sm text-neutral-900">Total Amount</h2>
 
-            <h2 className="text-xl font-semibold text-primary">
-              ₦{subtotal.toLocaleString()}
+            <h2 className="text-lg font-semibold text-primary">
+              NGN {subtotal.toLocaleString()}
             </h2>
           </div>
 
@@ -216,7 +287,7 @@ export default function OrderCard({
                 <Button
                   size="icon"
                   variant="red-secondary"
-                   className="w-full"
+                  className="w-full"
                   leftIcon={<XCircle size={16} />}
                   onClick={handleRejectAction}
                 >

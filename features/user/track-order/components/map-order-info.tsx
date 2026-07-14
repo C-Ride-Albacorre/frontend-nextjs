@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 import Card from '@/components/layout/card';
-import { CheckCircle, Clock, Loader, Smile } from 'lucide-react';
+import { CheckCircle, Clock, LoaderCircle, Smile } from 'lucide-react';
 
 import {
   GoogleMap,
@@ -252,7 +252,7 @@ export default function MapOrderInfo({ orderData }: { orderData: any }) {
         border="none"
         className="bg-foreground-200 h-105 mx-auto p-6 space-y-8 flex flex-col items-center justify-center gap-4"
       >
-        <Loader size={24} className="animate-spin text-primary" />
+        <LoaderCircle size={24} className="animate-spin text-primary" />
 
         <p className="text-sm text-primary">Loading map...</p>
       </Card>
@@ -385,7 +385,9 @@ export default function MapOrderInfo({ orderData }: { orderData: any }) {
                 </h2>
               </div>
 
-              <span className="font-medium bg-green-100/10 text-green-100 text-[10px] px-2 py-1 rounded-md border border-green-100/30">{etaText}</span>
+              <span className="font-medium bg-green-100/10 text-green-100 text-[10px] px-2 py-1 rounded-md border border-green-100/30">
+                {etaText}
+              </span>
             </div>
 
             <div className="h-2 rounded-full bg-neutral-200">

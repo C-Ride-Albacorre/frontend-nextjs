@@ -5,7 +5,13 @@ import Modal from '@/components/layout/modal';
 import Avatar from '@/components/ui/avatar';
 import { Button } from '@/components/ui/buttons/button';
 import Textarea from '@/components/ui/inputs/textarea';
-import { CheckCircle, CheckCircle2, Loader, Star, StarsIcon } from 'lucide-react';
+import {
+  CheckCircle,
+  CheckCircle2,
+  LoaderCircle,
+  Star,
+  StarsIcon,
+} from 'lucide-react';
 import { useActionState, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { submitRatingAction } from '../action';
@@ -23,7 +29,7 @@ export default function ExpiredModal({
   const router = useRouter();
 
   return (
-    <Modal wrapperClassName='max-w-xl' isModalOpen={isOpen} onClose={onClose}>
+    <Modal wrapperClassName="max-w-xl" isModalOpen={isOpen} onClose={onClose}>
       <div className="space-y-8">
         {/* Success Icon */}
         <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-green-100/10">
@@ -43,7 +49,7 @@ export default function ExpiredModal({
         {/* Driver */}
         <Card border="none" className="bg-primary/10 ">
           <div className="flex items-center gap-6">
-            <Avatar  size={64} name={driver?.fullName ?? 'Assigned Driver'} />
+            <Avatar size={64} name={driver?.fullName ?? 'Assigned Driver'} />
 
             <div className="flex-1">
               <h3 className="font-semibold capitalize">
@@ -51,39 +57,32 @@ export default function ExpiredModal({
               </h3>
               <p className="text-xs text-neutral-500">Delivery Partner</p>
 
-              <div className='flex items-center gap-6'>
-           
-               <div className='flex gap-1 items-center'>
+              <div className="flex items-center gap-6">
+                <div className="flex gap-1 items-center">
+                  <span className="text-xs text-neutral-500">Rating: </span>
+                  <div className="flex items-center gap-1">
+                    <Star fill="#D4AF37" stroke="0" size={16} />
+                    <span className="text-xs text-neutral-700">
+                      {driver?.rating ?? 'N/A'}
+                    </span>
+                  </div>
+                </div>
 
-                <span className="text-xs text-neutral-500">Rating: </span>
-               <div className='flex items-center gap-1'>
-                <Star fill="#D4AF37" stroke="0" size={16} />
-                 <span className="text-xs text-neutral-700">
-                  {driver?.rating ?? 'N/A'}
-                </span>
-               </div>
-              </div>
-
-
-               <p>
-
-                <span className="text-xs text-neutral-500">Total Deliveries: </span>
-                <span className="text-xs text-neutral-700">
-                  {driver?.totalTrips ?? 'N/A'}
-                </span>
-              </p>
+                <p>
+                  <span className="text-xs text-neutral-500">
+                    Total Deliveries:{' '}
+                  </span>
+                  <span className="text-xs text-neutral-700">
+                    {driver?.totalTrips ?? 'N/A'}
+                  </span>
+                </p>
               </div>
             </div>
           </div>
         </Card>
 
         <div className="mt-8 flex gap-3">
-          <Button
-        
-            size="icon"
-            className="flex-1"
-            href="/user/delivery"
-          >
+          <Button size="icon" className="flex-1" href="/user/delivery">
             Go to Delivery
           </Button>
         </div>

@@ -3,7 +3,7 @@
 import Card from '@/components/layout/card';
 import { Button } from '@/components/ui/buttons/button';
 import AddressSelector from './address-selector';
-import { Loader, MapPinPlus } from 'lucide-react';
+import { LoaderCircle, MapPinPlus } from 'lucide-react';
 import AddressModal from '../../address/components/address-modal';
 import { useState } from 'react';
 import { AddressItem } from '../../address/service';
@@ -38,8 +38,6 @@ export default function DeliveryAddressSection({
               variant="white"
               leftIcon={<MapPinPlus size={16} />}
               onClick={() => setIsModalOpen(true)}
-
-           
             >
               Add Address
             </Button>

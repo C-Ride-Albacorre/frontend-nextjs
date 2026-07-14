@@ -1,6 +1,6 @@
 'use client';
 
-import { ClipboardList, Loader, ShoppingCart } from 'lucide-react';
+import { ClipboardList, LoaderCircle, ShoppingCart } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { useCartStore } from '@/features/user/delivery/hooks/store';
@@ -46,12 +46,11 @@ export default function StoreHeader({ isLoggedIn }: { isLoggedIn: boolean }) {
             <span className="flex items-center gap-2 text-xs">
               <ShoppingCart size={14} />
               {isLoading ? (
-                <Loader size={14} className="animate-spin text-primary" />
+                <LoaderCircle size={14} className="animate-spin text-primary" />
               ) : (
                 `${itemCount} ${itemCount === 1 ? 'item' : 'items'}`
               )}
             </span>
-         
           </button>
         </div>
       </>
