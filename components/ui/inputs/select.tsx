@@ -69,7 +69,7 @@ export function Select({
     typeof rightIcon === 'function' ? rightIcon(open) : rightIcon;
 
   const wrapperClasses = clsx(
-    'relative flex w-full items-center gap-2 rounded-xl px-4 py-3.5  outline-none cursor-pointer',
+    'relative flex w-full items-center gap-2 rounded-xl px-4 py-3.5  outline-none cursor-pointer text-sm',
     'border border-border focus-within:ring focus-within:ring-primary',
     {
       'bg-white': variant === 'default',
@@ -132,7 +132,7 @@ export function Select({
         {resolvedRightIcon ?? (
           <ChevronDown
             size={18}
-            className={clsx('transition-transform', {
+            className={clsx('transition-transform text-neutral-500', {
               'rotate-180': open,
             })}
           />
@@ -172,7 +172,7 @@ export function Select({
                       setSearchTerm('');
                     }}
                     className={clsx(
-                      'w-full px-4 py-3 text-left text-sm hover:bg-foreground-100 cursor-pointer transition-colors',
+                      'w-full px-4 py-3 text-left hover:bg-foreground-100 cursor-pointer transition-colors text-sm',
                       {
                         'bg-foreground-100 font-medium': item.value === value,
                       },

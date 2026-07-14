@@ -9,9 +9,11 @@ import { VendorOrderActionPayload } from './types';
 import { revalidatePath, revalidateTag } from 'next/cache';
 
 export async function getVendorOrderAction({
+  status,
   page,
   limit,
 }: {
+  status: string;
   page: number;
   limit: number;
 }) {
@@ -19,6 +21,7 @@ export async function getVendorOrderAction({
     const response = await getVendorOrdersService({
       page,
       limit,
+      status,
     });
 
     const orders = response?.data.data ?? [];
@@ -84,7 +87,7 @@ export async function vendorOrderAction({
     revalidateTag(`vendor-orders-${orderId}`, 'default');
 
     revalidateTag(`vendor-orders`, 'default');
-    
+
     return {
       success: true,
       message: response?.message ?? 'Order action performed successfully',

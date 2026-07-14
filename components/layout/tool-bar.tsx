@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Search, Funnel, Clock } from 'lucide-react';
@@ -21,7 +20,7 @@ type Props = {
   filter?: string;
   onFilterChange?: (value: string) => void;
   filterOptions?: Option[];
-  updatedAt?: string;
+  updatedAt?: string | React.ReactNode;
 };
 
 export default function Toolbar({
@@ -52,16 +51,18 @@ export default function Toolbar({
             ${hasTitle ? 'md:w-auto' : 'md:flex-1'}`}
         >
           {/* Search */}
-        {searchPlaceholder &&   <div className={`flex-1 min-w-0 ${hasTitle ? 'md:w-64' : ''}`}>
-            <Input
-              leftIcon={<Search size={16} className="text-neutral-400" />}
-              placeholder={searchPlaceholder}
-              spacing="none"
-              variant="fill"
-              value={search}
-              onChange={(e) => onSearchChange?.(e.target.value)}
-            />
-          </div>}
+          {searchPlaceholder && (
+            <div className={`flex-1 min-w-0 ${hasTitle ? 'md:w-64' : ''}`}>
+              <Input
+                leftIcon={<Search size={16} className="text-neutral-400" />}
+                placeholder={searchPlaceholder}
+                spacing="none"
+                variant="fill"
+                value={search}
+                onChange={(e) => onSearchChange?.(e.target.value)}
+              />
+            </div>
+          )}
 
           {/* Filter */}
           {filterOptions.length > 0 && (
@@ -71,7 +72,7 @@ export default function Toolbar({
                 value={filter}
                 onChange={onFilterChange}
                 placeholder={filterPlaceholder}
-                variant="fill"
+                variant="default"
                 spacing="none"
                 options={filterOptions}
                 // leftIcon={<Funnel size={16} className="text-neutral-400" />}
@@ -83,10 +84,9 @@ export default function Toolbar({
 
       {updatedAt && (
         <div className="flex items-center gap-2">
-          <Clock size={14} className="text-primary" />
-          <span className="text-neutral-400 text-xs">
-            Last updated: {updatedAt}
-          </span>
+          <Clock size={14} className="text-green-100" />
+          <h6 className="text-neutral-400 text-xs">Last updated:</h6>
+          <div>{updatedAt}</div>
         </div>
       )}
     </div>

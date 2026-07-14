@@ -1,20 +1,10 @@
 import OrderCard from './order-card';
 import { getVendorOrderAction } from '../action';
-import PaginationControls from '@/components/ui/buttons/pagination-control';
-import Card from '@/components/layout/card';
 import { Package } from 'lucide-react';
 
-import RetryButton from '@/components/ui/buttons/retry-button';
 import EmptyState from '@/components/layout/empty-state';
 import ErrorState from '@/components/layout/error-state';
 import OrderList from './order-list';
-
-const CATEGORIES = [
-  { label: 'All', value: 'ALL' },
-  { label: 'Pending', value: 'PENDING' },
-  { label: 'Accepted', value: 'ACCEPTED' },
-  { label: 'Declined', value: 'DECLINED' },
-];
 
 export default async function OrdersWrapper({
   searchParams,
@@ -22,42 +12,50 @@ export default async function OrdersWrapper({
   searchParams: {
     page?: string;
     limit?: string;
+    status?: string;
   };
 }) {
   const { page, limit } = searchParams;
 
   const pageNum = page ? parseInt(page) : 1;
   const limitNum = limit ? parseInt(limit) : 10;
+  const status = searchParams?.status || '';
 
   try {
     const response = await getVendorOrderAction({
       page: pageNum,
       limit: limitNum,
+      status,
     });
 
     const orders = response.orders || [];
 
     const totalPages = response.totalPages;
 
-    if (orders.length === 0) {
-      return (
-        <EmptyState
-          icon={<Package size={48} className="text-neutral-400" />}
-          title="No Orders Available"
-          message="There are currently no incoming orders. Once customers place orders, they will appear here for you to manage and fulfill."
-        />
-      );
-    }
+    // if (orders.length === 0) {
+    //   return (
+    //     <EmptyState
+    //       icon={<Package size={48} className="text-neutral-400" />}
+    //       title="No Orders Available"
+    //       message="There are currently no incoming orders. Once customers place orders, they will appear here for you to manage and fulfill."
+    //     />
+    //   );
+    // }
 
-    return <OrderList
-      page={pageNum}
-      limit={limitNum}
-      initialData={{
-        orders,
-        total: response.total,
-        totalPages,
-      }}
-    />;
+    return (
+      <>
+        <OrderList
+          page={pageNum}
+          limit={limitNum}
+          status={status}
+          initialData={{
+            orders,
+            total: response.total,
+            totalPages,
+          }}
+        />
+      </>
+    );
   } catch (error) {
     console.error('Error fetching orders:', error);
 

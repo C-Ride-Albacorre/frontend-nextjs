@@ -69,7 +69,7 @@ export default async function VendorStoreCard() {
         </div>
       </div>
 
-      <div className="flex justify-end items-center ">
+      <div className=" ">
         {/* Status Badge */}
         {store.status === 'ACTIVE' && (
           <div className="text-[8px] bg-primary-text-100 rounded-2xl  wrap-break-word capitalize w-fit px-2 py-1 text-primary flex gap-1 items-center shadow-2xl font-medium">

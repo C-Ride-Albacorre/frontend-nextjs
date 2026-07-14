@@ -3,7 +3,7 @@
 import Modal from '@/components/layout/modal';
 import { Button } from '@/components/ui/buttons/button';
 import clsx from 'clsx';
-import { Box, Edit, Package, Store, Wallet } from 'lucide-react';
+import { Box, Calendar, Edit, Package, Store, Wallet } from 'lucide-react';
 import Image from 'next/image';
 import { ViewProductModalProps } from '../type';
 import { formatDate } from '@/helpers/date-formatter';
@@ -148,7 +148,7 @@ export default function ViewProductModal({
         {/* Details Grid */}
         <ul className="grid grid-cols-2 gap-4">
           <li className="p-4 bg-neutral-50 rounded-xl flex items-start gap-2">
-            <Store size={16} className="text-neutral-400" />
+            <Store size={16} className="text-green-100" />
 
             <div>
               <p className="text-xs text-neutral-500 mb-1">Product Type</p>
@@ -159,7 +159,7 @@ export default function ViewProductModal({
           </li>
 
           <li className="p-4 bg-neutral-50 rounded-xl flex items-start gap-2">
-            <Wallet size={16} className="text-neutral-400" />
+            <Wallet size={16} className="text-green-100" />
 
             <div>
               <p className="text-xs text-neutral-500 mb-1">Price</p>
@@ -170,7 +170,7 @@ export default function ViewProductModal({
           </li>
 
           <li className="p-4 bg-neutral-50 rounded-xl flex items-start gap-2">
-            <Package size={16} className="text-neutral-400" />
+            <Package size={16} className="text-green-100" />
 
             <div>
               <p className="text-xs text-neutral-500 mb-1">Stock Quantity</p>
@@ -181,7 +181,7 @@ export default function ViewProductModal({
           </li>
 
           <li className="p-4 bg-neutral-50 rounded-xl  flex items-start gap-2">
-            <Box size={16} className="text-neutral-400" />
+            <Box size={16} className="text-green-100" />
 
             <div>
               <p className="text-xs text-neutral-500 mb-1">
@@ -260,9 +260,16 @@ export default function ViewProductModal({
         ) : null}
 
         {/* Timestamps */}
-        <div className="flex justify-between text-xs text-neutral-400 pt-2 border-t border-neutral-100">
-          <span>Created: {formatDate(createdAt)}</span>
-          <span>Updated: {formatDate(updatedAt)}</span>
+        <div className="flex justify-between text-xs text-neutral-400 pt-6 border-t border-neutral-100">
+          <div className="flex items-center  gap-2">
+            <Calendar size={16} className="text-green-100" />
+            <span>Created: {formatDate(createdAt)}</span>
+          </div>
+
+          <div className="flex items-center  gap-2">
+            <Calendar size={16} className="text-green-100" />
+            <span>Updated: {formatDate(updatedAt)}</span>
+          </div>
         </div>
 
         {/* Actions */}

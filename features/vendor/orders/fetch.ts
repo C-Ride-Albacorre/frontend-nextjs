@@ -7,6 +7,7 @@ import { VendorOrderApiResponse } from './types';
 export function useVendorOrders(
   page: number,
   limit: number,
+  statusFilter: string,
   initialData?: {
     orders: VendorOrderApiResponse['data']['data'][];
     total: number;
@@ -14,22 +15,29 @@ export function useVendorOrders(
   },
 ) {
   const queryOptions = {
-    queryKey: ['vendor-orders', page, limit],
+    queryKey: ['vendor-orders', page, limit, statusFilter],
     queryFn: async () => {
-      const response = await getVendorOrderAction({ page, limit });
+      const response = await getVendorOrderAction({
+        page,
+        limit,
+        status: statusFilter,
+      });
       return {
         orders: response.orders,
         total: response.total,
         totalPages: response.totalPages,
       };
     },
-    refetchInterval: 30000, // 10 seconds
+    refetchInterval: 30000,
     refetchIntervalInBackground: true,
     refetchOnWindowFocus: true,
-    staleTime: 60000, // 60 seconds
+    staleTime: 60000,
   } as const;
 
-  const query = initialData
+  // Only use initialData if statusFilter is empty (initial load with 'All' filter)
+  const shouldUseInitialData = initialData && statusFilter === '';
+
+  const query = shouldUseInitialData
     ? useQuery({
         ...queryOptions,
         initialData,
@@ -38,7 +46,7 @@ export function useVendorOrders(
 
   return {
     ...query,
-    isLoading: query.isPending && !initialData,
+    isLoading: query.isPending && !shouldUseInitialData,
     isFetching: query.isFetching,
   };
 }

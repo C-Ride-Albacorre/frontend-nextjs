@@ -6,6 +6,7 @@ export default async function OrderManagementPage({
   searchParams: Promise<{
     page?: string;
     limit?: string;
+    status?: string;
   }>;
 }) {
   const params = await searchParams;

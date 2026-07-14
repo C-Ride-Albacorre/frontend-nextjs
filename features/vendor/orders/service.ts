@@ -10,14 +10,16 @@ import {
 import { authRequest } from '@/libs/api/auth-request';
 
 export async function getVendorOrdersService({
+  status,
   page,
   limit,
 }: {
+  status: string;
   page: number;
   limit: number;
 }) {
   return await authRequest<VendorOrderApiResponse>(
-    `${BASE_URL}/vendor/orders?page=${page}&limit=${limit}`,
+    `${BASE_URL}/vendor/orders?page=${page}&limit=${limit}&status=${status}`,
     {
       nextTags: ['vendor-orders'],
     },
