@@ -9,7 +9,7 @@ export default async function VendorLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col lg:flex-row h-dvh bg-[#FDFDFB]">
+    <section className="flex flex-col lg:flex-row h-dvh bg-[#FDFDFB]">
       <VendorSidebarWrapper
         sideBarCard={
           <Suspense fallback={<VendorStoreCardSkeleton />}>
@@ -23,6 +23,6 @@ export default async function VendorLayout({
         {/* PAGE CONTENT (natural scroll) */}
         <main className="flex-1 overflow-y-auto">{children}</main>
       </div>
-    </div>
+    </section>
   );
 }

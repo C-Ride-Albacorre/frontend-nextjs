@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Sidebar from '@/components/navigation/sidebar';
-import { VENDOR_SIDEBAR_CONFIG } from '@/config/sidebar';
+import { ADMIN_SIDEBAR_CONFIG } from '@/config/sidebar';
 import { IconButton } from '@/components/ui/buttons/icon-button';
 import { MenuIcon } from 'lucide-react';
 import Image from 'next/image';
@@ -12,7 +12,7 @@ type Props = {
   sideBarCard: React.ReactNode;
 };
 
-export default function VendorSidebarWrapper({ sideBarCard }: Props) {
+export default function AdminSidebarWrapper({ sideBarCard }: Props) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
@@ -31,9 +31,8 @@ export default function VendorSidebarWrapper({ sideBarCard }: Props) {
       >
         <Sidebar
           onClose={() => setSidebarOpen(false)}
-          config={VENDOR_SIDEBAR_CONFIG}
-          storeCard={sideBarCard}
-        />
+           config={ADMIN_SIDEBAR_CONFIG}
+           adminCard={sideBarCard}  />
       </div>
 
       {/* MOBILE HEADER */}
@@ -45,7 +44,7 @@ export default function VendorSidebarWrapper({ sideBarCard }: Props) {
           <MenuIcon size={20} />
         </IconButton>
 
-        <Link href="/vendor/orders">
+       <Link href="/admin/dashboard">
           <Image
             src="/assets/svg/logo-main.svg"
             alt="C-ride Logo"

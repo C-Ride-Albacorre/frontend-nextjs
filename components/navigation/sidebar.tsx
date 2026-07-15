@@ -57,12 +57,12 @@ export default function Sidebar({
               <X size={20} />
             </IconButton>
 
-            <div className="relative hidden lg:flex">
+            {/* <div className="relative hidden lg:flex">
               <Bell size={22} className="text-neutral-600" />
               <span className="absolute -top-3 -right-3 h-4 w-4 rounded-full bg-red-500 text-[10px] text-white flex items-center justify-center shadow-md">
                 3
               </span>
-            </div>
+            </div> */}
           </div>
 
           <span className="text-xs text-neutral-500">{config.portalName}</span>

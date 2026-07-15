@@ -14,7 +14,7 @@ export default async function ProductsPage({ searchParams }: Props) {
   try {
     const stores = await getStoresAction();
 
-    if (stores.length === 0) {
+    if (!stores || stores.length === 0) {
       return (
         <EmptyState
           icon={<Store size={36} className="text-neutral-500" />}
