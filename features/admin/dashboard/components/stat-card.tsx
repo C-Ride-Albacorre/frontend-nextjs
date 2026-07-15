@@ -21,7 +21,7 @@ export default function StatCard({
   footNote,
 }: {
   title: string;
-  value: string |number| undefined;
+  value?: string |number| undefined;
   icon?: React.ReactNode;
   iconBackground?: string;
   trend?: string;
@@ -39,7 +39,7 @@ export default function StatCard({
       className={`group bg-white rounded-xl border p-4 ${iconBackground && 'group-hover:bg-primary'} transition-colors cursor-pointer`}
     >
       <div className="flex items-center justify-between">
-        <p className="text-sm text-neutral-500">{title}</p>
+        <h4 className="text-sm text-neutral-500">{title}</h4>
 
         {icon && (
           <div
@@ -52,13 +52,13 @@ export default function StatCard({
 
       {valueInfo && <p className="text-sm text-neutral-500">{valueInfo}</p>}
 
-      <p className={`text-3xl font-medium ${valueClassName}`}>
+      <h2 className={`text-3xl font-medium ${valueClassName}`}>
         {value !== undefined && value !== null ? (
           value
         ) : (
           <span className="inline-block h-8 w-16 animate-pulse rounded-md bg-linear-to-r from-neutral-200 via-neutral-100 to-neutral-200" />
         )}
-      </p>
+      </h2>
 
       {trend && (
         <div

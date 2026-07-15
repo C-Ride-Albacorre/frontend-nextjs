@@ -1,7 +1,7 @@
 import Card from '@/components/layout/card';
-import StatCard from '@/components/layout/stat-card';
+import StatCard from '@/features/admin/dashboard/components/stat-card';
 import {
-    ChartPie,
+  ChartPie,
   CircleArrowOutUpRight,
   DollarSign,
   Package,
@@ -49,12 +49,7 @@ export default function AnalyticsStatCards({
           valueInfo="10% platform fee"
           value={data.stats.commissionPaid}
           valueClassName="text-xl"
-          icon={
-            <ChartPie
-              size={18}
-              className="text-primary-text-100"
-            />
-          }
+          icon={<ChartPie size={18} className="text-primary-text-100" />}
           iconBackground="bg-neutral-100"
         />
       </div>

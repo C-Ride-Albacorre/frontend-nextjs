@@ -35,7 +35,7 @@ export default function AdminDashboardHeader() {
       </div>
 
       <div className="flex items-center gap-3">
-        {pathName === '/admin/dashboard' && (
+        {/* {pathName === '/admin' && (
           <div className="flex items-center gap-3">
             <Button
               variant="white"
@@ -64,11 +64,11 @@ export default function AdminDashboardHeader() {
               This Month
             </Button>
           </div>
-        )}
-        <Button variant="primary" size="icon" spacing="sm" className="text-xs">
+        )} */}
+        {/* <Button variant="primary" size="icon" spacing="sm" className="text-xs">
           <Download size={16} />
           Export Data
-        </Button>
+        </Button> */}
       </div>
     </header>
   );

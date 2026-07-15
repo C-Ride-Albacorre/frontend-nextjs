@@ -6,36 +6,19 @@ import RecentAlerts from '@/features/admin/dashboard/components/recent-alert';
 import DashboardStats from '@/features/admin/dashboard/components/stats';
 import TopDrivers from '@/features/admin/dashboard/components/top-drivers';
 import TopVendors from '@/features/admin/dashboard/components/top-vendors';
-import { getDashboardStatsAction } from '@/features/admin/dashboard/action';
 
-
-
-export default async function AdminDashboard() {
-  let data = null;
-  let error: string | null = null;
-
-  try {
-    data = await getDashboardStatsAction();
-  } catch (e) {
-    error = e instanceof Error ? e.message : 'Failed to load dashboard stats';
-  }
+export default function AdminDashboard() {
 
   return (
     <>
-      <MainLayout>
-        <AdminDashboardHeader />
+      <DashboardStats />
 
-        <SectionLayout>
-          <DashboardStats data={data} error={error} />
-
-          <div className="grid xl:grid-cols-2 gap-8">
+      {/* <div className="grid xl:grid-cols-2 gap-8">
             <PendingApprovals />
             <RecentAlerts />
             <TopVendors />
             <TopDrivers />
-          </div>
-        </SectionLayout>
-      </MainLayout>
+          </div> */}
     </>
   );
 }

@@ -26,7 +26,11 @@ export default async function StoreCatalogueData() {
       <ErrorState
         icon={<AlertCircle size={36} className="text-orange-500" />}
         title="Something went wrong!"
-        message="Failed to load store data. Please try again later."
+        message={
+          error instanceof Error
+            ? error.message
+            : 'Failed to load store data. Please try again later.'
+        }
       />
     );
   }

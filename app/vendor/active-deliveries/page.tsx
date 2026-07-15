@@ -3,7 +3,7 @@
 import { useState } from 'react';
 
 import VendorDashboardHeader from '@/components/ui/headers/vendor-header';
-import StatCard from '@/components/layout/stat-card';
+import StatCard from '@/features/admin/dashboard/components/stat-card';
 import { Clock, MapPin, Package, Truck } from 'lucide-react';
 import SectionLayout from '@/components/layout/section-layout';
 import MainLayout from '@/components/layout/main-layout';
