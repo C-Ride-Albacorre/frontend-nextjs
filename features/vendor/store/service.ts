@@ -13,7 +13,7 @@ export async function getStoreService() {
 
 export async function createStoreService(
   formData: FormData,
-): Promise<StoreResponse> {
+) {
   return await authRequest<StoreResponse>(`${BASE_URL}/vendor/stores`, {
     method: 'POST',
     body: formData,

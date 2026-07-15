@@ -6,9 +6,22 @@ import {
   UpdateCategoryPayload,
   CreateSubcategoryPayload,
   UpdateSubcategoryPayload,
+  CategoryApiResponse,
+  CreateCategoriesApiResponse,
 } from './types';
+import { authRequest } from '@/libs/api/auth-request';
 
 // ─── Category Services ───────────────────────────────────────────────────────
+
+export async function getCategoriesService() {
+  return await authRequest<CategoryApiResponse>(
+    `${BASE_URL}/admin/categories`,
+    {
+      nextTags: ['get-categories'],
+    },
+  );
+}
+
 
 export async function createCategoryService(payload: CreateCategoryPayload) {
   const formData = new FormData();
@@ -30,35 +43,14 @@ export async function createCategoryService(payload: CreateCategoryPayload) {
     formData.append('image', payload.image);
   }
 
-  const res = await authFetch(`${BASE_URL}/admin/category`, {
+
+
+  return await authRequest<CreateCategoriesApiResponse>(`${BASE_URL}/admin/category`, {
     method: 'POST',
     body: formData,
+
+    nextTags: ['create-category'],
   });
-
-  const data = await res.json();
-
-  if (!res.ok) {
-    throw new Error(data?.message || 'Failed to create category');
-  }
-
-  return data;
-}
-
-export async function getCategoriesService() {
-  const res = await authFetch(`${BASE_URL}/admin/categories`, {
-    method: 'GET',
-  });
-
-  const data = await res.json();
-
-  if (!res.ok) {
-    throw new ApiError(
-      data?.message || 'Failed to fetch categories',
-      data?.statusCode ?? res.status,
-    );
-  }
-
-  return data;
 }
 
 export async function getCategoryByIdService(id: string) {

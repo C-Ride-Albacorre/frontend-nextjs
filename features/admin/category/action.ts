@@ -1,6 +1,6 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import {
   createCategoryService,
   getCategoriesService,
@@ -64,13 +64,14 @@ export async function createCategoryAction(
     const image =
       imageFile instanceof File && imageFile.size > 0 ? imageFile : undefined;
 
-    await createCategoryService({
+    const result = await createCategoryService({
       ...validatedFields.data,
       icon,
       image,
     });
 
-    revalidatePath('/admin/category');
+
+    revalidateTag('get-categories', 'default');
 
     return {
       status: 'success',
@@ -83,18 +84,6 @@ export async function createCategoryAction(
         error instanceof Error ? error.message : 'Failed to create category.',
       data: rawData,
     };
-  }
-}
-
-export async function getCategoriesAction(): Promise<Category[]> {
-  try {
-    const res = await getCategoriesService();
-    console.log('[getCategories] Response:', JSON.stringify(res, null, 2));
-
-    return res.data ?? res;
-  } catch (error) {
-    console.error('[getCategories] Error:', error);
-    return [];
   }
 }
 
@@ -143,10 +132,11 @@ export async function updateCategoryAction(
     // const image =
     //   imageFile instanceof File && imageFile.size > 0 ? imageFile : undefined;
 
-   const result =  await updateCategoryService(categoryId, { ...validated.data });
+    const result = await updateCategoryService(categoryId, {
+      ...validated.data,
+    });
 
-
-   console.log('[updateCategory] Response:', JSON.stringify(result, null, 2));
+    console.log('[updateCategory] Response:', JSON.stringify(result, null, 2));
 
     revalidatePath('/admin/category');
 
@@ -170,7 +160,7 @@ export async function deleteCategoryAction(
   try {
     const res = await deleteCategoryService(id);
     console.log('[deleteCategory] Response:', JSON.stringify(res, null, 2));
-    
+
     if (res.status !== 'success') {
       return {
         success: false,

@@ -1,3 +1,26 @@
+export interface CategoryApiResponse {
+  status: string;
+  statusCode: number;
+  timestamp: string;
+  path: string;
+  data: Array<{
+    id: string;
+    name: string;
+    description: string | null;
+    icon: string;
+    image: string;
+    isActive: boolean;
+    displayOrder: number;
+    createdAt: string;
+    updatedAt: string;
+    subcategories: Array<any>;
+    _count: Record<string, number>;
+  }>;
+}
+
+
+
+
 export interface Category {
   id: string;
   name: string;
@@ -19,6 +42,27 @@ export type CreateCategoryPayload = {
   icon?: File;
   image?: File;
 };
+
+
+
+export interface CreateCategoriesApiResponse   {
+  status: string;
+  statusCode: number;
+  timestamp: string;
+  path: string;
+  data: {
+    id: string,
+    name: string;
+    description: string | null;
+    icon: string | null;
+    image: string | null;
+    isActive: boolean;
+    displayOrder: number;
+    createdAt: string;
+    updatedAt: string;
+    subcategories: Array<any>;
+  }
+}
 
 // ─── Update Category Payload ───────────────────────────────────────────────
 export interface UpdateCategoryPayload {

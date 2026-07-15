@@ -33,6 +33,7 @@ import ToggleSwitch from '@/components/ui/buttons/toggle-switch';
 import Modal from '@/components/layout/modal';
 import DeleteCategoryModal from './delete-category-modal';
 import DeleteSubCategoryModal from './delete-subcategory-modal';
+import EmptyState from '@/components/layout/empty-state';
 
 interface CategoryPageSectionProps {
   data: Category[];
@@ -42,8 +43,7 @@ export default function CategoryPageSection({
   data,
 }: CategoryPageSectionProps) {
   const [categories, setCategories] = useState<Category[]>(data);
-  const [isPending, startTransition] = useTransition();
-  const [hasFetched, setHasFetched] = useState(true);
+
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
 
   const [deleteCategoryModalOpen, setDeleteCategoryModalOpen] = useState(false);
@@ -216,18 +216,19 @@ export default function CategoryPageSection({
       <Card className="bg-white">
         {/* Header actions */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <div>
+          <div className="flex items-center gap-2">
             <h2 className="text-lg font-semibold text-neutral-900">
               Categories
             </h2>
-            <p className="text-sm text-neutral-500">
-              {categories.length} total categories
+            <span className=" w-1.5 h-1.5  rounded-full bg-green-100 shrink-0 aspect-square"></span>
+            <p className="text-xs text-neutral-500">
+              {categories.length} total
             </p>
           </div>
           <div className="flex items-center gap-3">
             <Button
               leftIcon={<Plus size={18} />}
-              variant="outline"
+              variant="white"
               size="icon"
               spacing="sm"
               className="text-xs"
@@ -252,22 +253,16 @@ export default function CategoryPageSection({
         </div>
 
         {/* Categories list */}
-        {!hasFetched ? (
-          <div className="flex items-center justify-center py-12">
-            <p className="text-sm text-neutral-500">Loading categories...</p>
-          </div>
-        ) : categories.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-12 space-y-3">
-            <LayersPlus size={48} className="text-neutral-300" />
-            <p className="text-sm text-neutral-500">No categories found</p>
-            <Button
-              variant="primary"
-              size="icon"
+        {categories.length === 0 ? (
+          <>
+            <EmptyState
+              icon={<LayersPlus size={36} className="text-neutral-500" />}
+              title="No Categories"
+              message="There are currently no categories available."
+              buttonText="Create your category"
               onClick={() => setShowCreateCategory(true)}
-            >
-              Create your category
-            </Button>
-          </div>
+            />
+          </>
         ) : (
           <div className="space-y-4">
             {categories.map((category) => (
@@ -358,7 +353,6 @@ export default function CategoryPageSection({
                         onChange={() =>
                           handleToggleCategoryStatus(category.id, category.name)
                         }
-                        disabled={isPending}
                       />
                     </div>
 
@@ -456,7 +450,6 @@ export default function CategoryPageSection({
                               onChange={() =>
                                 handleToggleSubcategoryStatus(sub.id, sub.name)
                               }
-                              disabled={isPending}
                             />
                           </div>
                         </div>
@@ -490,7 +483,6 @@ export default function CategoryPageSection({
         )}
       </Card>
 
-      
       <DeleteCategoryModal
         deleteCategoryModalOpen={deleteCategoryModalOpen}
         handleCloseDeleteCategoryModal={handleCloseDeleteCategoryModal}

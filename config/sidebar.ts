@@ -29,6 +29,7 @@ import {
   Users2,
   ScanBarcode,
   Car,
+  Layers,
 } from 'lucide-react';
 
 export type NavItemProps = {
@@ -159,7 +160,7 @@ const ADMIN_SIDEBAR_SECTIONS: SidebarSection[] = [
       // },
       {
         label: 'Product Category',
-        icon: ScanBarcode,
+        icon: Layers,
         href: '/admin/category',
       },
     ],

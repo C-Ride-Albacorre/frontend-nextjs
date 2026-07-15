@@ -8,14 +8,17 @@ export default function EmptyState({
   icon,
   urlPath,
   buttonText,
-    retry,
+  retry,
+  onClick,
 }: {
   title: string;
   message?: string;
   icon?: React.ReactNode;
   urlPath?: string;
   buttonText?: string;
-    retry?: boolean;
+  retry?: boolean;
+  onClick?: () => void;
+
 }) {
   return (
     <Card
@@ -39,13 +42,12 @@ export default function EmptyState({
       </div>
 
       {urlPath && (
-        <Button variant="primary" size="icon" href={urlPath}>
+        <Button variant="primary" size="icon" href={urlPath} onClick={onClick}>
           {buttonText || 'Go Back'}
         </Button>
       )}
 
-
-         {retry && <RetryButton />}
+      {retry && <RetryButton />}
     </Card>
   );
 }
