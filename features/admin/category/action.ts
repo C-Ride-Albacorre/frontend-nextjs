@@ -3,8 +3,6 @@
 import { revalidatePath, revalidateTag } from 'next/cache';
 import {
   createCategoryService,
-  getCategoriesService,
-  getCategoryByIdService,
   updateCategoryService,
   deleteCategoryService,
   toggleCategoryStatusService,
@@ -19,7 +17,6 @@ import {
 } from './service';
 import {
   UpdateCategoryPayload,
-  Category,
   Subcategory,
   CreateCategoryState,
   CreateSubcategoryState,
@@ -58,11 +55,33 @@ export async function createCategoryAction(
     const iconFile = formData.get('icon');
     const imageFile = formData.get('image');
 
+    console.log(
+      '[createCategoryAction] Raw icon:',
+      iconFile,
+      'Type:',
+      iconFile?.constructor.name,
+    );
+    console.log(
+      '[createCategoryAction] Raw image:',
+      imageFile,
+      'Type:',
+      imageFile?.constructor.name,
+    );
+
     const icon =
       iconFile instanceof File && iconFile.size > 0 ? iconFile : undefined;
 
     const image =
       imageFile instanceof File && imageFile.size > 0 ? imageFile : undefined;
+
+    console.log(
+      '[createCategoryAction] Processed icon:',
+      icon ? 'Valid File' : 'undefined',
+    );
+    console.log(
+      '[createCategoryAction] Processed image:',
+      image ? 'Valid File' : 'undefined',
+    );
 
     const result = await createCategoryService({
       ...validatedFields.data,
@@ -70,6 +89,7 @@ export async function createCategoryAction(
       image,
     });
 
+    console.log('[Create category response] : ', result);
 
     revalidateTag('get-categories', 'default');
 
@@ -87,28 +107,26 @@ export async function createCategoryAction(
   }
 }
 
-export async function getCategoryByIdAction(
-  id: string,
-): Promise<Category | null> {
-  try {
-    const res = await getCategoryByIdService(id);
-    console.log('[getCategoryById] Response:', JSON.stringify(res, null, 2));
-
-    return res.data ?? res;
-  } catch (error) {
-    console.error('[getCategoryById] Error:', error);
-    return null;
-  }
-}
-
 export async function updateCategoryAction(
-  categoryId: string,
+  _state: CreateCategoryState,
   formData: FormData,
 ): Promise<UpdateCategoryState> {
+  console.log('UPDATE ACTION CALLED');
+
+  const categoryId = formData.get('categoryId')?.toString();
+
+  if (!categoryId) {
+    return {
+      status: 'error',
+      message: 'Category ID is required.',
+    };
+  }
+
+  // Only include fields that have values for partial updates
   const rawData: UpdateCategoryPayload = {
     name: formData.get('name')?.toString(),
     description: formData.get('description')?.toString(),
-    displayOrder: Number(formData.get('displayOrder')) || 1,
+    displayOrder: Number(formData.get('displayOrder')),
     isActive: formData.get('isActive') === 'true',
   };
 
@@ -123,22 +141,39 @@ export async function updateCategoryAction(
   }
 
   try {
-    // const iconFile = formData.get('icon');
-    // const imageFile = formData.get('image');
+    const iconFile = formData.get('icon');
+    const imageFile = formData.get('image');
 
-    // const icon =
-    //   iconFile instanceof File && iconFile.size > 0 ? iconFile : undefined;
+    console.log(
+      '[updateCategoryAction] Raw icon:',
+      iconFile,
+      'Type:',
+      iconFile?.constructor.name,
+    );
+    console.log(
+      '[updateCategoryAction] Raw image:',
+      imageFile,
+      'Type:',
+      imageFile?.constructor.name,
+    );
 
-    // const image =
-    //   imageFile instanceof File && imageFile.size > 0 ? imageFile : undefined;
+    const icon =
+      iconFile instanceof File && iconFile.size > 0 ? iconFile : undefined;
+
+    const image =
+      imageFile instanceof File && imageFile.size > 0 ? imageFile : undefined;
 
     const result = await updateCategoryService(categoryId, {
       ...validated.data,
+      icon,
+      image,
     });
 
-    console.log('[updateCategory] Response:', JSON.stringify(result, null, 2));
+    console.log(' [updateCategoryAction] Result:', result);
 
-    revalidatePath('/admin/category');
+    revalidateTag('get-categories', 'default');
+
+    revalidateTag(`get-category-${categoryId}`, 'default');
 
     return {
       status: 'success',
@@ -159,7 +194,8 @@ export async function deleteCategoryAction(
 ): Promise<{ success: boolean; message: string }> {
   try {
     const res = await deleteCategoryService(id);
-    console.log('[deleteCategory] Response:', JSON.stringify(res, null, 2));
+
+    revalidateTag(`get-category`, 'default');
 
     if (res.status !== 'success') {
       return {
@@ -168,7 +204,7 @@ export async function deleteCategoryAction(
       };
     }
 
-    revalidatePath('/admin/category');
+    revalidateTag(`get-category`, 'default');
 
     return {
       success: true,
@@ -189,12 +225,9 @@ export async function toggleCategoryStatusAction(
 ): Promise<{ success: boolean; message: string }> {
   try {
     const res = await toggleCategoryStatusService(id);
-    console.log(
-      '[toggleCategoryStatus] Response:',
-      JSON.stringify(res, null, 2),
-    );
+    console.log('[toggleCategoryStatus] Response:', res);
 
-    revalidatePath('/admin/category');
+    revalidateTag(`get-category`, 'default');
 
     return { success: true, message: 'Category status toggled successfully' };
   } catch (error) {

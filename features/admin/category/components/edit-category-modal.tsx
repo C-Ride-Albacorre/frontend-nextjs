@@ -14,6 +14,7 @@ import FileDropzone from '@/components/ui/inputs/file-dropzone';
 import { Button } from '@/components/ui/buttons/button';
 import ToggleSwitch from '@/components/ui/buttons/toggle-switch';
 import { updateCategoryAction } from '../action';
+import { set } from 'zod';
 
 interface EditCategoryModalProps {
   isOpen: boolean;
@@ -37,41 +38,21 @@ export default function EditCategoryModal({
 }: EditCategoryModalProps) {
   const [iconFile, setIconFile] = useState<File | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [isActive, setIsActive] = useState(category?.isActive ?? true);
-
-  const [state, action, isPending] = useActionState<
-    CreateCategoryState,
-    FormData
-  >((state, formData) => {
-    if (!category) return Promise.reject(new Error('No category selected'));
-    return updateCategoryAction(category.id, formData);
-  }, initialState);
-
-  const isError = state.status === 'error';
-
-  // Populate form data if edit fails
-  const [formDefaults, setFormDefaults] = useState({
-    name: '',
-    description: '',
-    displayOrder: '1',
-    existingIcon: '',
-    existingImage: '',
-  });
+  const [isActive, setIsActive] = useState(category?.isActive);
 
   useEffect(() => {
-    if (category) {
-      setFormDefaults({
-        name: category.name,
-        description: category.description ?? '',
-        displayOrder: String(category.displayOrder ?? 1),
-        existingIcon: category.icon ?? '',
-        existingImage: category.image ?? '',
-      });
-      setIsActive(category.isActive);
-      setIconFile(null);
-      setImageFile(null);
-    }
+    setIsActive(category?.isActive);
   }, [category]);
+  
+
+  console.log('EditCategoryModal render', { category, isActive });
+
+  const [state, action, isPending] = useActionState(
+    updateCategoryAction,
+    initialState,
+  );
+
+  const isError = state.status === 'error';
 
   useEffect(() => {
     if (state.status === 'success') {
@@ -100,6 +81,7 @@ export default function EditCategoryModal({
           </h2>
           <p className="text-sm text-neutral-500">Update category details</p>
         </div>
+        <input type="hidden" name="categoryId" value={category?.id} />
 
         <div className="space-y-4">
           <Input
@@ -107,7 +89,7 @@ export default function EditCategoryModal({
             name="name"
             label="Category Name"
             placeholder="e.g. Restaurants"
-            defaultValue={isError ? state.data?.name : formDefaults.name}
+            defaultValue={isError ? state.data?.name : (category?.name ?? '')}
             errorMessage={isError ? state.errors?.name?.[0] : undefined}
             disabled={isPending}
           />
@@ -118,7 +100,7 @@ export default function EditCategoryModal({
             label="Description"
             placeholder="Describe this category"
             defaultValue={
-              isError ? state.data?.description : formDefaults.description
+              isError ? state.data?.description : (category?.description ?? '')
             }
             errorMessage={isError ? state.errors?.description?.[0] : undefined}
             disabled={isPending}
@@ -131,17 +113,17 @@ export default function EditCategoryModal({
             maxSizeMB={5}
             value={iconFile}
             onChange={setIconFile}
-            existingImageUrl={formDefaults.existingIcon}
+            existingImageUrl={category?.icon ?? ''}
           />
 
           <FileDropzone
             label="Category Image"
-            accept="image/png, image/jpeg"
+            accept="image/png, image/jpeg, image/svg+xml"
             maxSizeMB={10}
             name="image"
             value={imageFile}
             onChange={setImageFile}
-            existingImageUrl={formDefaults.existingImage}
+            existingImageUrl={category?.image ?? ''}
           />
 
           <Input
@@ -150,7 +132,7 @@ export default function EditCategoryModal({
             defaultValue={
               isError
                 ? String(state.data?.displayOrder ?? 1)
-                : formDefaults.displayOrder
+                : String(category?.displayOrder ?? 1)
             }
             label="Display Order"
             errorMessage={isError ? state.errors?.displayOrder?.[0] : undefined}

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useTransition, use } from 'react';
+import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import {
   deleteCategoryAction,
@@ -42,6 +43,7 @@ interface CategoryPageSectionProps {
 export default function CategoryPageSection({
   data,
 }: CategoryPageSectionProps) {
+  const router = useRouter();
   const [categories, setCategories] = useState<Category[]>(data);
 
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
@@ -201,6 +203,15 @@ export default function CategoryPageSection({
     setShowEditCategory(true);
   };
 
+  const handleCloseCategory = () => {
+    setSelectedCategory(null);
+    setShowEditCategory(false);
+  };
+
+  const handleEditSuccess = () => {
+    router.refresh();
+  };
+
   const handleEditSubcategory = (subcategory: Subcategory) => {
     setSelectedSubcategory(subcategory);
     setShowEditSubcategory(true);
@@ -291,9 +302,9 @@ export default function CategoryPageSection({
 
                     <div className="flex-1 min-w-0 space-y-1.5">
                       <div className="flex items-center gap-4">
-                        <p className="font-medium text-neutral-900 truncate text-sm">
+                        <h2 className="font-medium text-neutral-900 truncate capitalize">
                           {category.name}
-                        </p>
+                        </h2>
                         <span
                           className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium ${
                             category.isActive
@@ -505,10 +516,8 @@ export default function CategoryPageSection({
 
       <EditCategoryModal
         isOpen={showEditCategory}
-        onClose={() => {
-          setShowEditCategory(false);
-          setSelectedCategory(null);
-        }}
+        onClose={handleCloseCategory}
+        onSuccess={handleEditSuccess}
         category={selectedCategory}
       />
 

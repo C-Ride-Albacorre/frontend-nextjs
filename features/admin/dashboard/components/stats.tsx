@@ -9,7 +9,9 @@ export default async function DashboardStats() {
 
     console.log(' [DashboardStats] Response:', response);
 
-    const data = response?.data;
+    const data = response?.data.data;
+
+    console.log(' [DashboardStats] Data:', data);
 
     return (
       <div className="space-y-4">
@@ -79,7 +81,7 @@ export default async function DashboardStats() {
     console.error('', error);
 
     return (
-      <section className='space-y-2'>
+      <section className="space-y-2">
         <ErrorMessage
           message={
             error instanceof Error

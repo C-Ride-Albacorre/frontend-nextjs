@@ -13,6 +13,7 @@ import Textarea from '@/components/ui/inputs/textarea';
 import { Select } from '@/components/ui/inputs/select';
 import { Button } from '@/components/ui/buttons/button';
 import ToggleSwitch from '@/components/ui/buttons/toggle-switch';
+import FileDropzone from '@/components/ui/inputs/file-dropzone';
 
 interface Props {
   isOpen: boolean;
@@ -32,6 +33,8 @@ export default function CreateSubcategoryModal({
   categories,
   preselectedCategoryId,
 }: Props) {
+  const [iconFile, setIconFile] = useState<File | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const [categoryId, setCategoryId] = useState(preselectedCategoryId || '');
 
   const [state, action, isPending] = useActionState(
@@ -116,6 +119,24 @@ export default function CreateSubcategoryModal({
             defaultValue={String(state.data?.displayOrder) || ''}
             errorMessage={isError ? state.errors?.displayOrder?.[0] : undefined}
             disabled={isPending}
+          />
+
+          <FileDropzone
+            label="Icon Image"
+            accept="image/png, image/jpeg, image/svg+xml"
+            name="icon"
+            maxSizeMB={5}
+            value={iconFile}
+            onChange={setIconFile}
+          />
+
+          <FileDropzone
+            label="Subcategory Image"
+            accept="image/png, image/jpeg, image/svg+xml"
+            name="image"
+            maxSizeMB={10}
+            value={imageFile}
+            onChange={setImageFile}
           />
 
           <div className="flex items-center gap-8">

@@ -82,7 +82,7 @@ export async function saveAddressService(data: LocationData) {
 
     console.log(' [saveAddressService] response:', response);
 
-    revalidateTag('fetchSavedAddresses', 'max');
+    revalidateTag('fetchSavedAddresses' , 'default');
 
     return {
       success: true,

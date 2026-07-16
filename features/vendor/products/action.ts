@@ -202,8 +202,9 @@ export async function deleteProductAction(
 ): Promise<{ success: boolean; message: string }> {
   try {
     await deleteProductService(storeId, productId);
-    revalidateTag(`get-product-${productId}`, 'default');
-    revalidateTag(`get-products-store-${storeId}`, 'default');
+    revalidateTag(`get-product-${productId}` , 'default');
+    
+    revalidateTag(`get-products-store-${storeId}` , 'default');
 
     return { success: true, message: 'Product deleted successfully' };
   } catch (error) {

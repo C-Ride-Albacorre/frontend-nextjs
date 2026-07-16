@@ -35,8 +35,8 @@ export const CreateSubcategorySchema = z.object({
 });
 
 export const UpdateCategorySchema = z.object({
-  name: z.string().min(1, 'Category name is required'),
+  name: z.string().min(1, 'Category name is required').optional(),
   description: z.string().optional(),
-  displayOrder: z.number().int().nonnegative(),
-  isActive: z.boolean(),
+  displayOrder: z.number().int().nonnegative().optional(),
+  isActive: z.boolean().optional(),
 });

@@ -8,6 +8,7 @@ import {
   UpdateSubcategoryPayload,
   CategoryApiResponse,
   CreateCategoriesApiResponse,
+  CategoryStatusApiResponse,
 } from './types';
 import { authRequest } from '@/libs/api/auth-request';
 
@@ -22,7 +23,6 @@ export async function getCategoriesService() {
   );
 }
 
-
 export async function createCategoryService(payload: CreateCategoryPayload) {
   const formData = new FormData();
 
@@ -35,106 +35,138 @@ export async function createCategoryService(payload: CreateCategoryPayload) {
   formData.append('isActive', String(payload.isActive ?? true));
   formData.append('displayOrder', String(payload.displayOrder ?? 1));
 
-  if (payload.icon) {
+  console.log(
+    '[createCategoryService] Icon:',
+    payload.icon,
+    'Type:',
+    payload.icon?.constructor.name,
+    'Size:',
+    payload.icon instanceof File ? payload.icon.size : 'N/A',
+  );
+
+  console.log(
+    '[createCategoryService] Image:',
+    payload.image,
+    'Type:',
+    payload.image?.constructor.name,
+    'Size:',
+    payload.image instanceof File ? payload.image.size : 'N/A',
+  );
+
+  if (payload.icon instanceof File && payload.icon.size > 0) {
     formData.append('icon', payload.icon);
+    console.log('[createCategoryService] Icon appended');
   }
 
-  if (payload.image) {
+  if (payload.image instanceof File && payload.image.size > 0) {
     formData.append('image', payload.image);
+    console.log('[createCategoryService] Image appended');
   }
 
-
-
-  return await authRequest<CreateCategoriesApiResponse>(`${BASE_URL}/admin/category`, {
-    method: 'POST',
-    body: formData,
-
-    nextTags: ['create-category'],
-  });
-}
-
-export async function getCategoryByIdService(id: string) {
-  const res = await authFetch(`${BASE_URL}/admin/category/${id}`, {
-    method: 'GET',
+  console.log(' Creating category with payload:', {
+    name: payload.name,
+    description: payload.description,
+    isActive: payload.isActive,
+    displayOrder: payload.displayOrder,
+    hasIcon: payload.icon instanceof File,
+    hasImage: payload.image instanceof File,
   });
 
-  const data = await res.json();
+  return await authRequest<CreateCategoriesApiResponse>(
+    `${BASE_URL}/admin/category`,
+    {
+      method: 'POST',
+      body: formData,
 
-  if (!res.ok) {
-    throw new ApiError(
-      data?.message || 'Failed to fetch category',
-      data?.statusCode ?? res.status,
-    );
-  }
-
-  return data;
+      nextTags: ['create-category'],
+    },
+  );
 }
+
+
 
 export async function updateCategoryService(
   id: string,
   payload: UpdateCategoryPayload,
 ) {
-  const body: Record<string, unknown> = {};
+  const hasIcon = payload.icon instanceof File && payload.icon.size > 0;
+  const hasImage = payload.image instanceof File && payload.image.size > 0;
 
-  if (payload.name) body.name = payload.name;
-  if (payload.description !== undefined) body.description = payload.description;
-  if (payload.isActive !== undefined) body.isActive = payload.isActive;
-  if (payload.displayOrder !== undefined)
-    body.displayOrder = payload.displayOrder;
+  
 
-  console.log('Updating category with ID:', id, 'and payload:', body);
+  // If no files, send JSON (matches backend API)
+  if (!hasIcon && !hasImage) {
+    const body: Record<string, any> = {};
+    if (payload.name !== undefined) body.name = payload.name;
+    if (payload.description !== undefined)
+      body.description = payload.description;
+    if (payload.isActive !== undefined) body.isActive = payload.isActive;
+    if (payload.displayOrder !== undefined)
+      body.displayOrder = payload.displayOrder;
 
-  const res = await authFetch(`${BASE_URL}/admin/category/${id}`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  });
+    console.log('[updateCategoryService] Sending JSON payload:', body);
 
-  const data = await res.json();
-
-  console.log('Update category response:', data);
-
-  if (!res.ok) {
-    throw new Error(data?.message || 'Failed to update category');
+    return await authRequest(`${BASE_URL}/admin/category/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(body),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      nextTags: [`update-category-${id}`],
+    });
   }
 
-  return data;
+  // If files exist, send FormData
+  const formData = new FormData();
+
+  if (payload.name) formData.append('name', payload.name);
+  if (payload.description) formData.append('description', payload.description);
+  formData.append('isActive', String(payload.isActive ?? true));
+  formData.append('displayOrder', String(payload.displayOrder ?? 1));
+
+  if (hasIcon) {
+    formData.append('icon', payload.icon as File);
+    console.log('[updateCategoryService] Icon appended');
+  }
+
+  if (hasImage) {
+    formData.append('image', payload.image as File);
+    console.log('[updateCategoryService] Image appended');
+  }
+
+  console.log('[updateCategoryService] Sending FormData payload:', {
+    name: payload.name,
+    description: payload.description,
+    isActive: payload.isActive,
+    displayOrder: payload.displayOrder,
+    hasIcon,
+    hasImage,
+  });
+
+  return await authRequest(`${BASE_URL}/admin/category/${id}`, {
+    method: 'PUT',
+    body: formData,
+    nextTags: [`update-category-${id}`],
+  });
 }
 
+
+
 export async function deleteCategoryService(id: string) {
-  const res = await authFetch(`${BASE_URL}/admin/category/${id}`, {
+  return await authRequest<CategoryStatusApiResponse>(`${BASE_URL}/admin/category/${id}`, {
     method: 'DELETE',
+    nextTags: [`delete-category-${id}`],
+    
   });
-
-  const data = await res.json();
-
-  console.log('Delete category response:', data);
-
-  if (!res.ok) {
-    throw new ApiError(
-      data?.message || 'Failed to delete category',
-      data?.statusCode ?? res.status,
-    );
-  }
-
-  return data;
 }
 
 export async function toggleCategoryStatusService(id: string) {
-  const res = await authFetch(`${BASE_URL}/admin/${id}/toggle-status`, {
+  return await authRequest<CategoryStatusApiResponse>(`${BASE_URL}/admin/${id}/toggle-status`, {
     method: 'PUT',
+    nextTags: [`toggle-category-status-${id}`],
   });
 
-  const data = await res.json();
 
-  if (!res.ok) {
-    throw new ApiError(
-      data?.message || 'Failed to toggle category status',
-      data?.statusCode ?? res.status,
-    );
-  }
-
-  return data;
 }
 
 export async function reorderCategoryService(id: string, displayOrder: number) {

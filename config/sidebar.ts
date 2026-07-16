@@ -301,7 +301,7 @@ const ADMIN_SIDEBAR_SECTIONS: SidebarSection[] = [
 export const VENDOR_SIDEBAR_CONFIG: SidebarConfig = {
   sections: VENDOR_SIDEBAR,
   portalName: 'Vendor Portal',
-  logoHref: '/vendor/onboarding',
+  logoHref: '/vendor/store',
   showStoreCard: true,
   showAdminCard: false,
 };
@@ -309,7 +309,7 @@ export const VENDOR_SIDEBAR_CONFIG: SidebarConfig = {
 export const ADMIN_SIDEBAR_CONFIG: SidebarConfig = {
   sections: ADMIN_SIDEBAR_SECTIONS,
   portalName: 'Admin Portal',
-  logoHref: '/admin',
+  logoHref: '/admin/dashboard',
   showStoreCard: false,
   showAdminCard: true,
 };

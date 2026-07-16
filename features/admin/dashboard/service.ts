@@ -7,17 +7,21 @@ export type DashboardStats = {
   timestamp: string;
   path: string;
   data: {
-    totalUsers: number;
-    totalVendors: number;
-    totalStores: number;
-    totalProducts: number;
-    pendingApprovals: {
-      vendors: number;
-      stores: number;
-    };
-    approved: {
-      vendors: number;
-      stores: number;
+    success: boolean;
+
+    data: {
+      totalUsers: number;
+      totalVendors: number;
+      totalStores: number;
+      totalProducts: number;
+      pendingApprovals: {
+        vendors: number;
+        stores: number;
+      };
+      approved: {
+        vendors: number;
+        stores: number;
+      };
     };
   };
 };

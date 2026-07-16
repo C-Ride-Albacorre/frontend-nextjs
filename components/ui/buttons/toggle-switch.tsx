@@ -1,5 +1,5 @@
 type ToggleSwitchProps = {
-  checked: boolean;
+  checked: boolean | undefined;
   onChange: () => void;
   disabled?: boolean;
 };
