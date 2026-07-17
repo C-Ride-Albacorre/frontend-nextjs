@@ -24,6 +24,7 @@ import {
   EditIcon,
   Edit2Icon,
   LayersPlus,
+  Layers2,
 } from 'lucide-react';
 import CreateCategoryModal from './create-category-modal';
 import EditCategoryModal from './edit-category-modal';
@@ -31,10 +32,11 @@ import CreateSubcategoryModal from './create-subcategory-modal';
 import EditSubcategoryModal from './edit-subcategory-modal';
 import { IconButton } from '@/components/ui/buttons/icon-button';
 import ToggleSwitch from '@/components/ui/buttons/toggle-switch';
-import Modal from '@/components/layout/modal';
 import DeleteCategoryModal from './delete-category-modal';
 import DeleteSubCategoryModal from './delete-subcategory-modal';
 import EmptyState from '@/components/layout/empty-state';
+import Image from 'next/image';
+import { set } from 'zod';
 
 interface CategoryPageSectionProps {
   data: Category[];
@@ -55,6 +57,9 @@ export default function CategoryPageSection({
   } | null>(null);
 
   const [deleteSubCategoryModalOpen, setDeleteSubCategoryModalOpen] =
+    useState(false);
+  const [deleteCategoryLoading, setDeleteCategoryLoading] = useState(false);
+  const [deleteSubcategoryLoading, setDeleteSubcategoryLoading] =
     useState(false);
 
   const [subcategoryToDelete, setSubcategoryToDelete] = useState<{
@@ -103,6 +108,8 @@ export default function CategoryPageSection({
   ) => {
     console.log('[CategoryPage] Deleting category:', categoryId);
 
+    setDeleteCategoryLoading(true);
+
     const prev = categories;
 
     // remove instantly
@@ -112,9 +119,15 @@ export default function CategoryPageSection({
     console.log('[CategoryPage] Delete result:', result);
 
     if (result.success) {
-      toast.success(`"${categoryName}" deactivated successfully`);
+      setDeleteCategoryLoading(false);
+      setCategoryToDelete(null);
+      setDeleteCategoryModalOpen(false);
+      toast.success(`"${categoryName}" deleted successfully`);
     } else {
       setCategories(prev);
+      setDeleteCategoryLoading(false);
+      setCategoryToDelete(null);
+      setDeleteCategoryModalOpen(false);
       toast.error(result.message);
     }
   };
@@ -152,6 +165,9 @@ export default function CategoryPageSection({
     subcategoryId: string,
     subcategoryName: string,
   ) => {
+    console.log('[CategoryPage] Deleting subcategory:', subcategoryId);
+
+    setDeleteSubcategoryLoading(true);
     const prev = categories;
 
     setCategories((prevState) =>
@@ -166,9 +182,16 @@ export default function CategoryPageSection({
     const result = await deleteSubcategoryAction(subcategoryId);
 
     if (result.success) {
-      toast.success(`"${subcategoryName}" deleted`);
+      setDeleteSubcategoryLoading(false);
+      setSubcategoryToDelete(null);
+      setDeleteSubCategoryModalOpen(false);
+      toast.success(`"${subcategoryName}" deleted successfully`);
     } else {
       setCategories(prev);
+      setSubcategoryToDelete(null);
+      setDeleteSubCategoryModalOpen(false);
+
+      setDeleteSubcategoryLoading(false);
       toast.error(result.message);
     }
   };
@@ -287,10 +310,12 @@ export default function CategoryPageSection({
                     {/* Category icon/image */}
 
                     {category.icon || category.image ? (
-                      <div className="w-10 h-10 rounded-lg overflow-hidden bg-neutral-100 flex items-center justify-center shrink-0">
-                        <img
+                      <div className="relative w-10 h-10 rounded-lg overflow-hidden flex items-center justify-center shrink-0">
+                        <Image
                           src={category.icon || category.image || ''}
                           alt={category.name}
+                          fill
+                          priority
                           className="w-full h-full object-cover"
                         />
                       </div>
@@ -331,7 +356,7 @@ export default function CategoryPageSection({
                   </div>
 
                   {/* Category actions */}
-                  <div className="flex items-center justify-between md:justify-end    md:col-span-2 gap-4">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between md:justify-end    md:col-span-2 gap-4">
                     <div className="flex items-center gap-3 md:gap-6">
                       <IconButton
                         onClick={() => handleAddSubcategory(category.id)}
@@ -411,7 +436,23 @@ export default function CategoryPageSection({
                           key={sub.id}
                           className="flex flex-col md:flex-row  md:items-center gap-4 md:gap-0 justify-between px-4 py-3 border-b border-border last:border-b-0 hover:bg-neutral-100 transition-colors"
                         >
-                          <div className="flex-1 min-w-0">
+                          <div className="flex-1 space-y-2 min-w-0">
+                            {sub.icon || sub.image ? (
+                              <div className="relative w-10 h-10 rounded-lg overflow-hidden flex items-center justify-center shrink-0">
+                                <Image
+                                  src={sub.icon || sub.image || ''}
+                                  alt={sub.name}
+                                  fill
+                                  priority
+                                  className="w-full h-full object-cover"
+                                />
+                              </div>
+                            ) : (
+                              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                                <Layers2 size={20} className="text-primary" />
+                              </div>
+                            )}
+
                             <div className="flex items-center gap-4">
                               <p className="text-sm font-medium text-neutral-800 truncate ">
                                 {sub.name}
@@ -432,10 +473,13 @@ export default function CategoryPageSection({
                               </p>
                             )}
                             <p className="text-xs text-neutral-400 mt-0.5">
-                              Order: {sub.displayOrder}
-                              {sub.storeCount !== undefined &&
-                                ` · ${sub.storeCount} stores`}
+                              Display Order: {sub.displayOrder}
                             </p>
+
+                            {/* <p className="text-xs text-neutral-400 mt-0.5">
+                              Products : {sub._count?.products}
+
+                            </p> */}
                           </div>
 
                           <div className="flex items-center gap-4">
@@ -499,6 +543,7 @@ export default function CategoryPageSection({
         handleCloseDeleteCategoryModal={handleCloseDeleteCategoryModal}
         categoryToDelete={categoryToDelete}
         handleDeleteCategory={handleDeleteCategory}
+        deleteCategoryLoading={deleteCategoryLoading}
       />
 
       <DeleteSubCategoryModal
@@ -506,6 +551,7 @@ export default function CategoryPageSection({
         handleCloseDeleteSubcategoryModal={handleCloseDeleteSubcategoryModal}
         subcategoryToDelete={subcategoryToDelete}
         handleDeleteSubcategory={handleDeleteSubcategory}
+        deleteSubcategoryLoading={deleteSubcategoryLoading}
       />
 
       {/* Modals */}

@@ -105,29 +105,51 @@ export interface CategoryStatusApiResponse {
   };
 }
 
-
-
 // ─── Subcategory ─────────────────────────────────────────────────────────────
 
-export interface Subcategory {
-  id: string;
-  name: string;
-  description: string | null;
-  categoryId: string;
-  isActive: boolean;
-  displayOrder: number;
-  createdAt: string;
-  updatedAt: string;
-  category?: Category;
-  storeCount?: number;
+export interface Subcategory 
+  {
+    id: string;
+    name: string;
+    description: string;
+    categoryId: string;
+    isActive: boolean;
+    displayOrder: number;
+    createdAt: string;
+    updatedAt: string;
+    icon: string | null;
+    image: string | null;
+    category: {
+      id: string;
+      name: string;
+      description: string | null;
+      icon: string | null;
+      image: string | null;
+      isActive: boolean;
+      displayOrder: number;
+      createdAt: string;
+      updatedAt: string;
+    };
+    _count: { products: number };
+  }
+
+
+export interface SubcategoryApiResponse {
+  status: string;
+  statusCode: number;
+  timestamp: string;
+  message: string;
+  data: Subcategory[];
 }
 
 export interface CreateSubcategoryPayload {
   name: string;
   description?: string;
-  categoryId: string;
+  categoryId?: string;
   isActive?: boolean;
   displayOrder?: number;
+  icon?: File;
+  image?: File;
 }
 
 export interface UpdateSubcategoryPayload {
@@ -136,6 +158,8 @@ export interface UpdateSubcategoryPayload {
   categoryId?: string;
   isActive?: boolean;
   displayOrder?: number;
+  icon?: File;
+  image?: File;
 }
 
 export type CreateCategoryState = {

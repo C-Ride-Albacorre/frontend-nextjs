@@ -1,14 +1,13 @@
 import ErrorState from '@/components/layout/error-state';
 import { getCategoriesService } from '../service';
 import CategoryPageSection from './category-page-section';
-import { Barcode, LayersPlus } from 'lucide-react';
-import EmptyState from '@/components/layout/empty-state';
+import {  LayersPlus } from 'lucide-react';
+
 
 export default async function CategoryPageWrapper() {
   try {
     const response = await getCategoriesService();
 
-    console.log(' [CategoryPageWrapper] Response:', response);
 
     const data = response?.data ?? [];
 

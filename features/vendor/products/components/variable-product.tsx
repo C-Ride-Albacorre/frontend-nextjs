@@ -295,7 +295,7 @@ export default function VariableProductForm({
         <VariantsForm variants={variants} setVariants={setVariants} />
       )}
 
-      {activeStep === 2 && <AddOnsForm addons={addons} setAddons={setAddons} />}
+      {activeStep === 2 && <AddOnsForm addons={addons} setAddons={setAddons}   CATEGORIES={CATEGORIES} />}
 
       <div className="flex justify-between pt-6">
         {activeStep === 0 ? (

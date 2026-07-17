@@ -6,18 +6,13 @@ import {
   updateCategoryService,
   deleteCategoryService,
   toggleCategoryStatusService,
-  reorderCategoryService,
   createSubcategoryService,
-  getSubcategoriesService,
-  getSubcategoriesByCategoryIdService,
   updateSubcategoryService,
   deleteSubcategoryService,
   toggleSubcategoryStatusService,
-  reorderSubcategoryService,
 } from './service';
 import {
   UpdateCategoryPayload,
-  Subcategory,
   CreateCategoryState,
   CreateSubcategoryState,
   UpdateCategoryState,
@@ -250,9 +245,10 @@ export async function createSubcategoryAction(
 ): Promise<CreateSubcategoryState> {
   const rawData = {
     name: formData.get('name')?.toString(),
-    categoryId: formData.get('categoryId')?.toString(),
     description: formData.get('description')?.toString(),
     displayOrder: Number(formData.get('displayOrder')) || 1,
+    categoryId: formData.get('categoryId')?.toString(),
+
     isActive: formData.get('isActive') === 'true',
   };
 
@@ -267,9 +263,22 @@ export async function createSubcategoryAction(
   }
 
   try {
-    await createSubcategoryService(validatedFields.data);
+    const iconFile = formData.get('icon');
+    const imageFile = formData.get('image');
 
-    revalidatePath('/admin/category');
+    const icon =
+      iconFile instanceof File && iconFile.size > 0 ? iconFile : undefined;
+
+    const image =
+      imageFile instanceof File && imageFile.size > 0 ? imageFile : undefined;
+
+    await createSubcategoryService({
+      ...validatedFields.data,
+      icon,
+      image,
+    });
+
+    revalidateTag('get-subcategory', 'default');
 
     return {
       status: 'success',
@@ -282,33 +291,6 @@ export async function createSubcategoryAction(
         error instanceof Error ? error.message : 'Failed to create subcategory',
       data: rawData,
     };
-  }
-}
-
-export async function getSubcategoriesAction(): Promise<Subcategory[]> {
-  try {
-    const res = await getSubcategoriesService();
-    console.log('[getSubcategories] Response:', JSON.stringify(res, null, 2));
-    return res.data ?? res;
-  } catch (error) {
-    console.error('[getSubcategories] Error:', error);
-    return [];
-  }
-}
-
-export async function getSubcategoriesByCategoryIdAction(
-  categoryId: string,
-): Promise<Subcategory[]> {
-  try {
-    const res = await getSubcategoriesByCategoryIdService(categoryId);
-    console.log(
-      '[getSubcategoriesByCategoryId] Response:',
-      JSON.stringify(res, null, 2),
-    );
-    return res.data ?? res;
-  } catch (error) {
-    console.error('[getSubcategoriesByCategoryId] Error:', error);
-    return [];
   }
 }
 
@@ -336,7 +318,23 @@ export async function updateSubcategoryAction(
   }
 
   try {
-    await updateSubcategoryService(id, validatedFields.data);
+    const iconFile = formData.get('icon');
+    const imageFile = formData.get('image');
+
+    const icon =
+      iconFile instanceof File && iconFile.size > 0 ? iconFile : undefined;
+
+    const image =
+      imageFile instanceof File && imageFile.size > 0 ? imageFile : undefined;
+
+    await updateSubcategoryService(id, {
+      ...validatedFields.data,
+      icon,
+      image,
+    });
+
+    revalidateTag('get-subcategory', 'default');
+
     revalidatePath('/admin/category');
     return {
       status: 'success',
@@ -357,7 +355,7 @@ export async function deleteSubcategoryAction(
 ): Promise<{ success: boolean; message: string }> {
   try {
     const res = await deleteSubcategoryService(id);
-    console.log('[deleteSubcategory] Response:', JSON.stringify(res, null, 2));
+    console.log('[deleteSubcategory] Response:', res);
 
     if (res.status !== 'success') {
       return {
@@ -366,11 +364,12 @@ export async function deleteSubcategoryAction(
       };
     }
 
+    
     revalidatePath('/admin/category');
 
     return {
       success: true,
-      message: res.message || 'Subcategory deactivated successfully',
+      message: res.message || 'Subcategory deleted successfully',
     };
   } catch (error) {
     console.error('[deleteSubcategory] Error:', error);
@@ -412,40 +411,40 @@ export async function toggleSubcategoryStatusAction(
 
 // ─── Reorder Actions ─────────────────────────────────────────────────────────
 
-export async function reorderCategoryAction(
-  id: string,
-  displayOrder: number,
-): Promise<{ success: boolean; message: string }> {
-  try {
-    await reorderCategoryService(id, displayOrder);
-    revalidatePath('/admin/category');
-    return { success: true, message: 'Category reordered successfully' };
-  } catch (error) {
-    console.error('[reorderCategory] Error:', error);
-    return {
-      success: false,
-      message:
-        error instanceof Error ? error.message : 'Failed to reorder category',
-    };
-  }
-}
+// export async function reorderCategoryAction(
+//   id: string,
+//   displayOrder: number,
+// ): Promise<{ success: boolean; message: string }> {
+//   try {
+//     await reorderCategoryService(id, displayOrder);
+//     revalidatePath('/admin/category');
+//     return { success: true, message: 'Category reordered successfully' };
+//   } catch (error) {
+//     console.error('[reorderCategory] Error:', error);
+//     return {
+//       success: false,
+//       message:
+//         error instanceof Error ? error.message : 'Failed to reorder category',
+//     };
+//   }
+// }
 
-export async function reorderSubcategoryAction(
-  id: string,
-  displayOrder: number,
-): Promise<{ success: boolean; message: string }> {
-  try {
-    await reorderSubcategoryService(id, displayOrder);
-    revalidatePath('/admin/category');
-    return { success: true, message: 'Subcategory reordered successfully' };
-  } catch (error) {
-    console.error('[reorderSubcategory] Error:', error);
-    return {
-      success: false,
-      message:
-        error instanceof Error
-          ? error.message
-          : 'Failed to reorder subcategory',
-    };
-  }
-}
+// export async function reorderSubcategoryAction(
+//   id: string,
+//   displayOrder: number,
+// ): Promise<{ success: boolean; message: string }> {
+//   try {
+//     await reorderSubcategoryService(id, displayOrder);
+//     revalidatePath('/admin/category');
+//     return { success: true, message: 'Subcategory reordered successfully' };
+//   } catch (error) {
+//     console.error('[reorderSubcategory] Error:', error);
+//     return {
+//       success: false,
+//       message:
+//         error instanceof Error
+//           ? error.message
+//           : 'Failed to reorder subcategory',
+//     };
+//   }
+// }

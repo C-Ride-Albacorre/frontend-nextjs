@@ -14,6 +14,8 @@ import { Select } from '@/components/ui/inputs/select';
 import { Button } from '@/components/ui/buttons/button';
 import ToggleSwitch from '@/components/ui/buttons/toggle-switch';
 import { updateSubcategoryAction } from '../action';
+import FileDropzone from '@/components/ui/inputs/file-dropzone';
+import { sub } from 'framer-motion/client';
 
 interface Props {
   isOpen: boolean;
@@ -36,6 +38,8 @@ export default function EditSubcategoryModal({
 }: Props) {
   const [categoryId, setCategoryId] = useState(subcategory?.categoryId ?? '');
   const [isActive, setIsActive] = useState(subcategory?.isActive ?? true);
+  const [iconFile, setIconFile] = useState<File | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
   const boundAction = subcategory
     ? updateSubcategoryAction.bind(null, subcategory.id)
@@ -90,7 +94,7 @@ export default function EditSubcategoryModal({
           options={categoryOptions}
           value={categoryId}
           onChange={setCategoryId}
-          disabled={isPending}
+          disabled
           errorMessage={isError ? state.errors?.categoryId?.[0] : undefined}
         />
 
@@ -113,6 +117,26 @@ export default function EditSubcategoryModal({
           }
           errorMessage={isError ? state.errors?.description?.[0] : undefined}
           disabled={isPending}
+        />
+
+        <FileDropzone
+          label="Icon Image"
+          accept="image/png, image/jpeg, image/svg+xml"
+          name="icon"
+          maxSizeMB={5}
+          value={iconFile}
+          onChange={setIconFile}
+          existingImageUrl={subcategory?.icon ?? ''}
+        />
+
+        <FileDropzone
+          label="Subcategory Image"
+          accept="image/png, image/jpeg, image/svg+xml"
+          name="image"
+          maxSizeMB={10}
+          value={imageFile}
+          onChange={setImageFile}
+          existingImageUrl={subcategory?.image ?? ''}
         />
 
         {/* DISPLAY ORDER */}
@@ -139,12 +163,13 @@ export default function EditSubcategoryModal({
         />
 
         {/* ACTIONS */}
-        <div className="flex gap-3 pt-4">
-          <Button variant="outline" onClick={onClose}>
+
+        <div className="flex justify-between md:justify-around  pt-4">
+          <Button variant="outline" size="icon" onClick={onClose}>
             Cancel
           </Button>
 
-          <Button loading={isPending}>
+          <Button variant="primary" size="icon" loading={isPending}>
             {isPending ? 'Updating...' : 'Update'}
           </Button>
         </div>

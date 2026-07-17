@@ -1,3 +1,5 @@
+import { Subcategory, SubcategoryApiResponse } from "@/features/admin/category/types";
+
 // Stock status matches API
 export type StockStatus =
   | 'IN_STOCK'
@@ -134,6 +136,7 @@ export interface ProductFormProps {
   setIsModalOpen: (isOpen: boolean) => void;
   storeId: string;
   editProduct?: Product | null;
+  subCategories: Subcategory[]
   onSuccess?: () => void;
 }
 

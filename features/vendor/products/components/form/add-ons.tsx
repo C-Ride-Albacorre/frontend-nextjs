@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/buttons/button';
 import { CircleMinus, CirclePlus, Plus } from 'lucide-react';
 import { useState } from 'react';
 import Textarea from '@/components/ui/inputs/textarea';
+import { SelectOption } from '@/types/input';
 
 export interface Addon {
   addonName: string;
@@ -17,14 +18,18 @@ export interface Addon {
 interface AddOnsFormProps {
   addons: Addon[];
   setAddons: (addons: Addon[]) => void;
+    CATEGORIES: SelectOption[];
 }
 
-export default function AddOnsForm({ addons, setAddons }: AddOnsFormProps) {
+export default function AddOnsForm({ addons, setAddons, CATEGORIES }: AddOnsFormProps) {
   const [addonName, setAddonName] = useState('');
   const [addonPrice, setAddonPrice] = useState('');
   const [addonDescription, setAddonDescription] = useState('');
   const [addonMaxQuantity, setAddonMaxQuantity] = useState('');
   const [addonCategory, setAddonCategory] = useState('');
+  
+
+  console.log('CATEGORIES:', CATEGORIES);
 
   const handleAddAddon = () => {
     if (!addonName.trim() || !addonPrice) return;
@@ -97,13 +102,7 @@ export default function AddOnsForm({ addons, setAddons }: AddOnsFormProps) {
             label="Category"
             value={addonCategory}
             onChange={(v) => setAddonCategory(v)}
-            options={[
-              { label: 'Toppings', value: 'Toppings' },
-              { label: 'Sides', value: 'Sides' },
-              { label: 'Drinks', value: 'Drinks' },
-              { label: 'Sauces', value: 'Sauces' },
-              { label: 'Extras', value: 'Extras' },
-            ]}
+            options={CATEGORIES}
           />
 
           <div className="md:col-span-2">

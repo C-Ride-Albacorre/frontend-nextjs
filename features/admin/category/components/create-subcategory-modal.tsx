@@ -14,6 +14,7 @@ import { Select } from '@/components/ui/inputs/select';
 import { Button } from '@/components/ui/buttons/button';
 import ToggleSwitch from '@/components/ui/buttons/toggle-switch';
 import FileDropzone from '@/components/ui/inputs/file-dropzone';
+import { select } from 'framer-motion/client';
 
 interface Props {
   isOpen: boolean;
@@ -59,13 +60,20 @@ export default function CreateSubcategoryModal({
   useEffect(() => {
     if (state.data?.categoryId) {
       setCategoryId(state.data.categoryId);
+    } else if (preselectedCategoryId) {
+      setCategoryId(preselectedCategoryId);
     }
-  }, [state.data]);
+  }, [state.data?.categoryId, preselectedCategoryId]);
 
   const categoryOptions = categories.map((cat) => ({
     label: cat.name,
     value: cat.id,
   }));
+
+  console.log(
+    ' [CreateSubcategoryModal] categoryOptions:',
+    preselectedCategoryId,
+  );
 
   return (
     <Modal isModalOpen={isOpen} onClose={onClose}>
@@ -110,17 +118,6 @@ export default function CreateSubcategoryModal({
             disabled={isPending}
           />
 
-          <Input
-            id="sub-displayOrder"
-            name="displayOrder"
-            label="Display Order"
-            type="number"
-            placeholder="1"
-            defaultValue={String(state.data?.displayOrder) || ''}
-            errorMessage={isError ? state.errors?.displayOrder?.[0] : undefined}
-            disabled={isPending}
-          />
-
           <FileDropzone
             label="Icon Image"
             accept="image/png, image/jpeg, image/svg+xml"
@@ -137,6 +134,17 @@ export default function CreateSubcategoryModal({
             maxSizeMB={10}
             value={imageFile}
             onChange={setImageFile}
+          />
+
+          <Input
+            id="sub-displayOrder"
+            name="displayOrder"
+            label="Display Order"
+            type="number"
+            placeholder="1"
+            defaultValue={String(state.data?.displayOrder) || ''}
+            errorMessage={isError ? state.errors?.displayOrder?.[0] : undefined}
+            disabled={isPending}
           />
 
           <div className="flex items-center gap-8">

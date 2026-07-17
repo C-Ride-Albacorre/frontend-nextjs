@@ -8,20 +8,25 @@ import ProductForm from './add-product';
 import ViewProductModal from './view-product-modal';
 import DeleteConfirmModal from './delete-confirm-modal';
 import ProductRow from './product-row';
+import { Subcategory, SubcategoryApiResponse } from '@/features/admin/category/types';
 
 export default function ProductWrapper({
   selectedId,
   productData,
+  subCategories,
 }: {
   selectedId: string;
   productData: Product[];
+  subCategories: Subcategory[];
 }) {
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
-  console.log('Product data:', productData);
+  // console.log('Product data:', productData);
+
+console.log('Sub Categories:', subCategories);
 
   const handleAddProduct = () => {
     if (!selectedId) return;
@@ -73,6 +78,7 @@ export default function ProductWrapper({
         setIsModalOpen={setIsFormModalOpen}
         storeId={selectedId}
         editProduct={selectedProduct}
+        subCategories={subCategories}
       />
 
       <ViewProductModal

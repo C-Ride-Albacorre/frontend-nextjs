@@ -7,7 +7,7 @@ import { ProductFormProps } from '../type';
 import AddProductType from './add-product-type';
 import SingleProductForm from './form/single-product';
 import VariableProductForm from './variable-product';
-import { useSubcategories } from '@/features/admin/category/fetch';
+// import { useSubcategories } from '@/features/admin/category/fetch';
 
 const STOCK_STATUSES = [
   { label: 'In Stock', value: 'IN_STOCK' },
@@ -22,12 +22,13 @@ const PRODUCT_STATUSES = [
   { label: 'Draft', value: 'DRAFT' },
 ];
 
-export default function ProductForm({
+export default function AddProductForm({
   isModalOpen,
   setIsModalOpen,
   storeId,
   editProduct,
   onSuccess,
+  subCategories,
 }: ProductFormProps) {
   const isEditing = !!editProduct;
 
@@ -75,13 +76,17 @@ export default function ProductForm({
     onSuccess?.();
   };
 
-  const { data: subcategories = [] } = useSubcategories();
+  // const { data: subcategories = [] } = useSubcategories();
 
-  const CATEGORIES = subcategories.map((sub: any) => ({
+  const CATEGORIES = subCategories?.map((sub: any) => ({
     value: sub.id,
     label: sub.name,
   }));
 
+
+  console.log(' [AddProductForm] subCategories:', subCategories);
+
+  
   // ✅ shared fields passed down to both forms
   const sharedFields = {
     productName,

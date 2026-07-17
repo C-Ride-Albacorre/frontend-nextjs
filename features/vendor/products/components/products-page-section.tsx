@@ -1,9 +1,6 @@
-'use client';
-
 import Card from '@/components/layout/card';
 import { Button } from '@/components/ui/buttons/button';
 
-import { useRouter } from 'next/navigation';
 import { StoreData } from '@/features/vendor/store/types';
 import Image from 'next/image';
 import { formatDate } from '@/helpers/date-formatter';
@@ -13,12 +10,6 @@ type Props = {
 };
 
 export default function ProductsPageSection({ stores }: Props) {
-  const router = useRouter();
-
-  const handleSelectStore = (id: string) => {
-    router.push(`/vendor/products/${id}`);
-  };
-
   return (
     <>
       {/* SHOW STORES FIRST */}
@@ -44,7 +35,6 @@ export default function ProductsPageSection({ stores }: Props) {
                       alt={store.storeName ?? 'Store logo'}
                       fill
                       priority
-                      
                       className="object-cover transition-transform duration-300 group-hover:scale-105"
                     />
                   </div>
@@ -94,7 +84,7 @@ export default function ProductsPageSection({ stores }: Props) {
                 <Button
                   size="icon"
                   className="w-full"
-                  onClick={() => handleSelectStore(store.id)}
+                  href={`/vendor/products/${store.id}`}
                   disabled={store.status === 'PENDING_APPROVAL'}
                 >
                   {store.status === 'PENDING_APPROVAL'

@@ -6,11 +6,13 @@ export default function DeleteCategoryModal({
   handleCloseDeleteCategoryModal,
   categoryToDelete,
   handleDeleteCategory,
+  deleteCategoryLoading,
 }: {
   deleteCategoryModalOpen: boolean;
   handleCloseDeleteCategoryModal: () => void;
   categoryToDelete: { id: string; name: string } | null;
   handleDeleteCategory: (id: string, name: string) => void;
+  deleteCategoryLoading: boolean;
 }) {
   return (
     <Modal
@@ -31,8 +33,8 @@ export default function DeleteCategoryModal({
 
         <div className="flex gap-4">
           <Button
-            variant="outline"
             onClick={() => handleCloseDeleteCategoryModal()}
+            disabled={deleteCategoryLoading}
           >
             Cancel
           </Button>
@@ -46,10 +48,9 @@ export default function DeleteCategoryModal({
                   categoryToDelete.name,
                 );
               }
-              handleCloseDeleteCategoryModal();
             }}
           >
-            Confirm Delete
+            {deleteCategoryLoading ? 'Deleting...' : 'Yes, Confirm Delete'}
           </Button>
         </div>
       </div>
