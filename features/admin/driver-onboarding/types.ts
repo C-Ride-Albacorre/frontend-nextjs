@@ -15,11 +15,79 @@ export type DriverStatus =
 
 export type DriverApproveAction = 'APPROVED' | 'REJECTED';
 
+export interface GetDriversResponse {
+  status: string;
+  statusCode: number;
+  timestamp: string;
+  path: string;
+  data: {
+    success: true;
+    data: {
+      id: string;
+      name: string;
+      email: string;
+      phoneNumber: string;
+      status: string;
+      createdAt: string;
+    }[];
+    meta: { total: number; page: number; limit: number; totalPages: number };
+  };
+}
+
+export interface DriverProps {
+  id: string;
+  email: string;
+  phoneNumber: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  role: 'DISPATCHER';
+  isActive: boolean;
+  refreshTokenHash: string | null;
+  referralCode: string | null;
+  referredBy: string | null;
+  lastLoginAt: string | null;
+  isVerified: boolean;
+  verifiedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+  emailVerifiedAt: string | null;
+  isEmailVerified: boolean;
+  isPhoneVerified: boolean;
+  onboardingCompletedAt: string | null;
+  phoneVerifiedAt: string | null;
+  status: 'PENDING_EMAIL_VERIFICATION';
+  profilePicture: string | null;
+  onboardingStatus: 'NOT_STARTED';
+  onboardingStep: string | null;
+  approvedAt: string | null;
+  approvedBy: string | null;
+  rejectionReason: string | null;
+  isNewUser: boolean;
+  countryCode: string | null;
+  fcmToken: string | null;
+  deviceType: string | null;
+  driverProfile: DriverProfile | null;
+  orders: any[];
+  documents: DriverDocument[];
+}
+
+export interface GetDriverByIdResponse {
+  status: string;
+  statusCode: number;
+  timestamp: string;
+  path: string;
+  data: {
+    success: boolean;
+    data: DriverProps;
+  };
+}
+
 export interface DriverProfile {
   id: string;
   status: string;
- vehicleType: string;
- vehicleMake: string;
+  vehicleType: string;
+  vehicleMake: string;
   vehicleModel: string;
   licensePlate: string;
   description: string;
@@ -44,16 +112,11 @@ export interface DriverStore {
 
 export interface Driver {
   id: string;
-  email: string;
   name: string;
-  phoneNumber: string | null;
-  firstName: string;
-  lastName: string;
-  status: DriverStatus;
+  email: string;
+  phoneNumber: string;
+  status: string;
   createdAt: string;
-  driverProfile: DriverProfile | null;
-  stores: DriverStore[];
-  storeCount: number;
 }
 
 export interface DriverDocument {
@@ -86,7 +149,7 @@ export interface DriverDetail extends Driver {
 export type ViewDriverModalProps = {
   isModalOpen: boolean;
   setIsModalOpen: (open: boolean) => void;
-  driver: DriverDetail | null;
+  driver: DriverProps | null;
   isLoading: boolean;
   onAction: (
     driverId: string,
@@ -101,7 +164,6 @@ export type DriverPageSectionProps = {
   currentPage: number;
   currentStatus: string;
   currentSearch: string;
-  error: string | null;
 };
 
 export interface DriversMeta {
@@ -117,11 +179,6 @@ export interface GetDriversParams {
   hasStores?: boolean;
   page?: number;
   limit?: number;
-}
-
-export interface GetDriversResponse {
-  data: Driver[];
-  meta: DriversMeta;
 }
 
 export interface ApproveDriverPayload {

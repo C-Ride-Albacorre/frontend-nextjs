@@ -39,9 +39,9 @@ export default function DriverRow({ driver, onView, onAction }: Props) {
             <UserRound size={18} className="text-white" />
           </div>
           <div>
-            <p className="font-medium">{name}</p>
+            <p className="font-medium capitalize">{name}</p>
             <p className="text-neutral-400 text-xs">
-              {driver.id.slice(0, 8)}...
+              {driver.id.slice(0, 10)}...
             </p>
           </div>
         </div>
@@ -94,7 +94,7 @@ export default function DriverRow({ driver, onView, onAction }: Props) {
                 </Button>
               </>
             ))}
-          <Button onClick={() => onView(driver)} variant="outline" size="icon">
+          <Button onClick={() => onView(driver)} variant="white" size="icon">
             View
           </Button>
         </div>

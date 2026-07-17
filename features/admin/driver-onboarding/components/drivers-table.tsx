@@ -3,9 +3,10 @@ import { Button } from '@/components/ui/buttons/button';
 import { formatStatus } from '../helpers';
 import { statusStyles } from '../data';
 import clsx from 'clsx';
-import { UserRound } from 'lucide-react';
+import { Car, UserRound } from 'lucide-react';
 import DriverRow from './drivers-row';
 import { Driver } from '../types';
+import EmptyState from '@/components/layout/empty-state';
 
 type Props = {
   drivers: Driver[];
@@ -21,17 +22,18 @@ export default function DriversTable({ drivers, onView, onAction }: Props) {
   return (
     <>
       <div className="md:hidden space-y-6">
-        {drivers.length === 0 ? (
-          <div className="text-center py-10 text-neutral-400">
-            No driver found
-          </div>
+        {!drivers || drivers.length === 0 ? (
+          <EmptyState
+            icon={<Car className="text-neutral-500" size={36} />}
+            title="No drivers found"
+            message="There are no drivers to display."
+          />
         ) : (
           drivers.map((driver) => (
             <div
               key={driver.id}
               className="bg-white rounded-xl p-4 border border-border space-y-6"
             >
-              {/* Top */}
 
               <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
                 <UserRound size={18} className="text-white" />
@@ -39,9 +41,9 @@ export default function DriversTable({ drivers, onView, onAction }: Props) {
 
               <div className="flex flex-col md:flex-row gap-2 justify-between items-start">
                 <div>
-                  <p className="font-medium">{driver.name ?? '—'}</p>
+                  <h2 className="font-medium capitalize text-lg">{driver.name ?? 'N/A'}</h2>
                   <p className="text-xs text-neutral-400">
-                    {driver.id.slice(0, 8)}
+                    {driver.id}
                   </p>
                 </div>
 
@@ -60,11 +62,10 @@ export default function DriversTable({ drivers, onView, onAction }: Props) {
               <div className="text-sm">
                 <p className="text-neutral-400 text-xs">Owner</p>
                 <p>
-                  {driver.firstName} {driver.lastName}
+                  {driver.name}
                 </p>
               </div>
 
-              {/* Contact */}
               <div className="text-sm">
                 <p className="text-neutral-400 text-xs">Contact</p>
                 <p>{driver.email}</p>
@@ -85,11 +86,16 @@ export default function DriversTable({ drivers, onView, onAction }: Props) {
         <div className=" overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="border-b border-border bg-neutral-50 font-medium">
-              <tr className="text-left text-neutral-600 font-medium">
-                <th className="px-6 py-4">Driver</th>
-                <th className="px-6 py-4">Contact</th>
-                <th className="px-6 py-4">Status</th>
-                <th className="px-6 py-4 text-right">Actions</th>
+              <tr className="text-left text-neutral-800 font-medium">
+                <th className="px-6 py-4">
+                  <h6>Driver</h6>
+                </th>
+                <th className="px-6 py-4"><h6>
+                  Contact</h6></th>
+                <th className="px-6 py-4"><h6>Status</h6></th>
+                <th className="px-6 py-4 text-right">
+                  <h6>Actions</h6>
+                </th>
               </tr>
             </thead>
             <tbody>

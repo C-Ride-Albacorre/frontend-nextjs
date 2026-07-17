@@ -6,7 +6,11 @@ import {
   getDriverByIdService,
   getDriversService,
 } from './service';
-import { ApproveDriverPayload, DriverDetail } from './types';
+import {
+  ApproveDriverPayload,
+  DriverDetail,
+  GetDriverByIdResponse,
+} from './types';
 
 export async function getDriversAction(
   page = 1,
@@ -20,10 +24,9 @@ export async function getDriversAction(
   return { drivers: res.data.data, meta: res.data.meta };
 }
 
-export async function getDriverByIdAction(
-  driverId: string,
-): Promise<DriverDetail> {
+export async function getDriverByIdAction(driverId: string) {
   const res = await getDriverByIdService(driverId);
+
   return res.data.data;
 }
 
@@ -39,7 +42,9 @@ export async function approveDriverAction(
     return {
       success: false,
       message:
-        error instanceof Error ? error.message : 'Failed to update driver status',
+        error instanceof Error
+          ? error.message
+          : 'Failed to update driver status',
     };
   }
 }

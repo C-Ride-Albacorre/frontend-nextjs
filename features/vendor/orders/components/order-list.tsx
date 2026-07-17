@@ -17,7 +17,6 @@ const CATEGORIES = [
   { label: 'Accepted', value: 'ORDER_ACCEPTED' },
   { label: 'Declined', value: 'ORDER_DECLINED' },
   { label: 'Assigned', value: 'ORDER_ASSIGNED' },
-
   { label: 'Picked Up', value: 'PICKED_UP' },
   { label: 'Cancelled', value: 'CANCELLED' },
   { label: 'Delivered', value: 'DELIVERED' },

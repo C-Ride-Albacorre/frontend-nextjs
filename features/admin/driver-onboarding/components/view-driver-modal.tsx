@@ -3,13 +3,31 @@
 import { useState } from 'react';
 import Modal from '@/components/layout/modal';
 import { Button } from '@/components/ui/buttons/button';
-import { LoaderCircle, Car } from 'lucide-react';
+import {
+  LoaderCircle,
+  Car,
+  User,
+  UserRound,
+  Navigation,
+  Navigation2,
+  Locate,
+  Home,
+  MapPin,
+  MessageCircle,
+  Mail,
+  Phone,
+  CarFront,
+  FileText,
+  Bandage,
+  Info,
+} from 'lucide-react';
 import Image from 'next/image';
 import clsx from 'clsx';
 
 import { statusStyles } from '../data';
 import { formatStatus, REVIEWABLE_STATUSES } from '../helpers';
 import { ViewDriverModalProps } from '../types';
+import Card from '@/components/layout/card';
 
 export default function ViewDriverModal({
   isModalOpen,
@@ -71,7 +89,7 @@ export default function ViewDriverModal({
       ) : driver ? (
         <div className="space-y-6 py-4">
           {/* Profile Picture */}
-          <div className="relative w-full h-48 rounded-xl overflow-hidden bg-neutral-100">
+          <div className="relative w-full h-64 md:w-64 rounded-xl overflow-hidden bg-neutral-100">
             {driver.profilePicture ? (
               <Image
                 src={driver.profilePicture}
@@ -90,14 +108,15 @@ export default function ViewDriverModal({
           {/* Header */}
           <div className="flex flex-col md:flex-row gap-4 items-start justify-between">
             <div>
-              <h2 className="text-xl font-semibold text-neutral-900 flex-wrap">
-                {driver.name ?? `${driver.firstName} ${driver.lastName}`}
+              <h2 className="text-xl capitalize font-semibold text-neutral-900 flex-wrap">
+                {`${driver.firstName} ${driver.lastName}`}
               </h2>
               <p className="text-xs text-neutral-500 mt-0.5 flex-wrap">
                 {driver.id}
               </p>
             </div>
-            <span
+
+            <h6
               className={clsx(
                 'rounded-full px-3 py-1 text-[10px] font-medium',
                 statusStyles[driver.status] ??
@@ -105,92 +124,174 @@ export default function ViewDriverModal({
               )}
             >
               {formatStatus(driver.status)}
-            </span>
+            </h6>
           </div>
 
           {/* Details Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="p-4 bg-neutral-50 rounded-xl">
-              <p className="text-xs text-neutral-500 mb-1">Driver</p>
-              <p className="font-medium text-neutral-900 text-sm md:text-base  flex-wrap">
-                {driver.firstName} {driver.lastName}
-              </p>
-            </div>
+            <Card
+              gap="md"
+              border="none"
+              className="flex items-start gap-3  bg-neutral-50"
+            >
+              <UserRound size={18} className="text-green-100" />
 
-            <div className="p-4 bg-neutral-50 rounded-xl">
-              <p className="text-xs text-neutral-500 mb-1">
-                Address Information
-              </p>
-              <div className="font-medium text-neutral-900 flex-wrap text-sm md:text-base">
-                {driver.driverProfile ? (
-                  <>
-                    <p>{driver.driverProfile.address}</p>
-                    <p>{driver.driverProfile.city}</p>
-                    <p>{driver.driverProfile.state}</p>
-                  </>
-                ) : (
-                  '—'
-                )}
+              <div className="mb-0">
+                <p className="text-xs text-neutral-500 mb-1">Driver</p>
+                <p className="font-medium text-neutral-900 text-sm capitalize flex-wrap">
+                  {driver.firstName} {driver.lastName}
+                </p>
               </div>
-            </div>
+            </Card>
 
-            <div className="p-4 bg-neutral-50 rounded-xl  ">
-              <p className="text-xs text-neutral-500 mb-1">Email</p>
-              <p className="font-medium text-neutral-900 text-sm md:text-base">
-                {driver.email}
-              </p>
-            </div>
+            <Card
+              gap="md"
+              border="none"
+              className="flex items-start gap-3  bg-neutral-50"
+            >
+              <MapPin size={18} className="text-green-100" />
 
-            <div className="p-4 bg-neutral-50 rounded-xl">
-              <p className="text-xs text-neutral-500 mb-1">Phone</p>
-              <p className="font-medium text-neutral-900 text-sm md:text-base">
-                {driver.phoneNumber ?? '—'}
-              </p>
-            </div>
+              <div>
+                <p className="text-xs text-neutral-500 mb-1">
+                  Address Information
+                </p>
+                <div className="font-medium text-neutral-900 flex-wrap text-sm">
+                  {driver.driverProfile && (
+                    <div className="text-sm">
+                      <span>{driver.driverProfile.address}</span>
+                      <span>, {driver.driverProfile.city}</span>
+                      <span>, {driver.driverProfile.state}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </Card>
+
+            <Card
+              gap="md"
+              border="none"
+              className="flex items-start gap-3  bg-neutral-50"
+            >
+              <Mail size={18} className="text-green-100" />
+              <div>
+                <p className="text-xs text-neutral-500 mb-1">Email</p>
+                <p className="font-medium text-neutral-900 text-sm">
+                  {driver.email}
+                </p>
+              </div>
+            </Card>
+
+            <Card
+              gap="md"
+              border="none"
+              className="flex items-start gap-3  bg-neutral-50"
+            >
+              <Phone size={18} className="text-green-100" />
+              <div>
+                <p className="text-xs text-neutral-500 mb-1">Phone</p>
+                <p className="font-medium text-neutral-900 text-sm">
+                  {driver.phoneNumber ?? '—'}
+                </p>
+              </div>
+            </Card>
 
             {driver.driverProfile && (
               <>
-                <div className="p-4 bg-neutral-50 rounded-xl">
-                  <p className="text-xs text-neutral-500 mb-1">Vehicle Type</p>
-                  <p className="font-medium text-neutral-900 text-sm md:text-base capitalize">
-                    {driver.driverProfile.vehicleType?.toLocaleLowerCase()}
-                  </p>
-                </div>
+                <Card
+                  gap="md"
+                  border="none"
+                  className="flex items-start gap-3  bg-neutral-50"
+                >
+                  <Car size={18} className="text-green-100" />
 
-                <div className="p-4 bg-neutral-50 rounded-xl">
-                  <p className="text-xs text-neutral-500 mb-1">Vehicle Make</p>
-                  <p className="font-medium text-neutral-900 text-sm md:text-base">
-                    {driver.driverProfile.vehicleMake}
-                  </p>
-                </div>
+                  <div>
+                    <p className="text-xs text-neutral-500 mb-1">
+                      Vehicle Type
+                    </p>
+                    <p className="font-medium text-neutral-900 text-sm capitalize">
+                      {driver.driverProfile.vehicleType?.toLocaleLowerCase()}
+                    </p>
+                  </div>
+                </Card>
 
-                <div className="p-4 bg-neutral-50 rounded-xl">
-                  <p className="text-xs text-neutral-500 mb-1">Vehicle Model</p>
-                  <p className="font-medium text-neutral-900 text-sm md:text-base">
-                    {driver.driverProfile.vehicleModel}
-                  </p>
-                </div>
+                <Card
+                  gap="md"
+                  border="none"
+                  className="flex items-start gap-3  bg-neutral-50"
+                >
+                  <CarFront size={18} className="text-green-100" />
 
-                <div className="p-4 bg-neutral-50 rounded-xl">
-                  <p className="text-xs text-neutral-500 mb-1">License Plate</p>
-                  <p className="font-medium text-neutral-900 text-sm md:text-base">
-                    {driver.driverProfile.licensePlate}
-                  </p>
-                </div>
+                  <div>
+                    <p className="text-xs text-neutral-500 mb-1">
+                      Vehicle Make
+                    </p>
+                    <p className="font-medium text-neutral-900 text-sm">
+                      {driver.driverProfile.vehicleMake}
+                    </p>
+                  </div>
+                </Card>
 
-                <div className="p-4 bg-neutral-50 rounded-xl col-span-2">
-                  <p className="text-xs text-neutral-500 mb-1">Status</p>
-                  <p className="font-medium text-neutral-900 text-sm md:text-base capitalize">
-                    {driver.driverProfile.status?.toLocaleLowerCase()}
-                  </p>
-                </div>
+                <Card
+                  gap="md"
+                  border="none"
+                  className="flex items-start gap-3  bg-neutral-50"
+                >
+                  <FileText size={18} className="text-green-100" />
+
+                  <div>
+                    <p className="text-xs text-neutral-500 mb-1">
+                      Vehicle Model
+                    </p>
+                    <p className="font-medium text-neutral-900 text-sm">
+                      {driver.driverProfile.vehicleModel}
+                    </p>
+                  </div>
+                </Card>
+
+                <Card
+                  gap="md"
+                  border="none"
+                  className="flex items-start gap-3  bg-neutral-50"
+                >
+                  <Bandage size={18} className="text-green-100" />
+
+                  <div>
+                    <p className="text-xs text-neutral-500 mb-1">
+                      License Plate
+                    </p>
+                    <p className="font-medium text-neutral-900 text-sm">
+                      {driver.driverProfile.licensePlate}
+                    </p>
+                  </div>
+                </Card>
+
+                <Card
+                  gap="md"
+                  border="none"
+                  className=" bg-neutral-50 col-span-2 flex items-start gap-3"
+                >
+                  <Info size={18} className="text-green-100" />
+
+                  <div>
+                    <p className="text-xs text-neutral-500 mb-1">Status</p>
+                    <h6
+                      className={clsx(
+                        'rounded-full px-3 py-1 text-[10px] font-medium',
+                        statusStyles[driver.driverProfile.status] ??
+                          'bg-neutral-100 text-neutral-600',
+                      )}
+                    >
+                      {formatStatus(driver.driverProfile.status)}
+                    </h6>
+                  </div>
+                </Card>
               </>
             )}
           </div>
 
           {/* Documents */}
           <div className="space-y-3">
-            <p className="text-sm font-semibold">Documents</p>
+            <h6 className="text-sm font-semibold">Documents</h6>
 
             {driver.documents && driver.documents.length > 0 ? (
               <ul className="space-y-2">

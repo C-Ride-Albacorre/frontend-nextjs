@@ -2,22 +2,17 @@
 
 import { useState, useEffect, useTransition } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
-import {
-  LoaderCircle,
-  RefreshCcw,
-  ChevronLeft,
-  ChevronRight,
-} from 'lucide-react';
+import { Car } from 'lucide-react';
 import { toast } from 'sonner';
 import DriversTable from './drivers-table';
 
-import ErrorMessage from '@/components/layout/error-message';
-import { Button } from '@/components/ui/buttons/button';
 import ViewDriverModal from './view-driver-modal';
-import { DriverPageSectionProps, Driver, DriverDetail } from '../types';
+import { DriverPageSectionProps, Driver, DriverDetail, DriverProps } from '../types';
 import { approveDriverAction, getDriverByIdAction } from '../action';
 import Toolbar from '@/components/layout/tool-bar';
 import { DRIVER_STATUS_OPTIONS } from '../data';
+import PaginationControls from '@/components/ui/buttons/pagination-control';
+import { getDriverByIdService } from '../service';
 
 export default function DriverPageSection({
   drivers,
@@ -25,7 +20,6 @@ export default function DriverPageSection({
   currentPage,
   currentStatus,
   currentSearch,
-  error,
 }: DriverPageSectionProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -37,7 +31,7 @@ export default function DriverPageSection({
 
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [driverDetail, setDriverDetail] = useState<DriverDetail | null>(null);
+  const [driverDetail, setDriverDetail] = useState<DriverProps | null>(null);
   const [isLoadingDetail, setIsLoadingDetail] = useState(false);
 
   // Sync local state with URL params on external navigation
@@ -64,26 +58,8 @@ export default function DriverPageSection({
     return () => clearTimeout(timer);
   }, [search, currentSearch, searchParams, pathname, router, startTransition]);
 
-  const updateParams = (updates: Record<string, string>) => {
-    const params = new URLSearchParams(searchParams.toString());
-    for (const [key, value] of Object.entries(updates)) {
-      if (value) params.set(key, value);
-      else params.delete(key);
-      setSearch(currentSearch);
-      startTransition(() => {
-        router.push(`${pathname}?${params.toString()}`);
-      });
-      setStatusFilter(currentStatus);
-    }
-  };
-
   const handleStatusChange = (value: string) => {
     setStatusFilter(value);
-    updateParams({ status: value, page: '1' });
-  };
-
-  const handlePageChange = (newPage: number) => {
-    updateParams({ page: String(newPage) });
   };
 
   const handleViewDriver = async (driver: Driver) => {
@@ -92,7 +68,8 @@ export default function DriverPageSection({
     setDriverDetail(null);
 
     try {
-      const detail = await getDriverByIdAction(driver.id);
+      const detail: DriverProps = await getDriverByIdAction(driver.id);
+
       setDriverDetail(detail);
     } catch {
       setDriverDetail(null);
@@ -118,7 +95,6 @@ export default function DriverPageSection({
       );
       setIsModalOpen(false);
       setDriverDetail(null);
-      router.refresh();
     } else {
       toast.error(result.message);
     }
@@ -129,6 +105,11 @@ export default function DriverPageSection({
   return (
     <div className="space-y-6">
       <Toolbar
+        title={
+          statusFilter === ''
+            ? 'All Drivers'
+            : `${DRIVER_STATUS_OPTIONS.find((cat) => cat.value === statusFilter)?.label ?? statusFilter} `
+        }
         searchPlaceholder="Search drivers..."
         search={search}
         onSearchChange={setSearch}
@@ -138,62 +119,17 @@ export default function DriverPageSection({
         filterPlaceholder="Filter by status"
       />
 
-      {error ? (
-        <div className="flex justify-between items-center">
-          <ErrorMessage message={error} />
-          <Button
-            variant="white"
-            leftIcon={<RefreshCcw size={14} />}
-            size="icon"
-            onClick={() => router.refresh()}
-          >
-            Retry
-          </Button>
-        </div>
-      ) : (
-        <div className="relative">
-          {isPending && (
-            <div className="absolute inset-0 bg-white/60 flex justify-center pt-20 z-10">
-              <LoaderCircle className="animate-spin text-primary" size={32} />
-            </div>
-          )}
+      <DriversTable
+        drivers={drivers}
+        onView={handleViewDriver}
+        onAction={handleDriverAction}
+      />
 
-          <DriversTable
-            drivers={drivers}
-            onView={handleViewDriver}
-            onAction={handleDriverAction}
-          />
-
-          {meta.totalPages > 1 && (
-            <div className="flex items-center justify-between pt-2">
-              <p className="text-sm text-neutral-500">
-                Showing {(meta.page - 1) * meta.limit + 1}–
-                {Math.min(meta.page * meta.limit, meta.total)} of {meta.total}
-              </p>
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  disabled={currentPage === 1}
-                  onClick={() => handlePageChange(currentPage - 1)}
-                >
-                  <ChevronLeft size={16} />
-                </Button>
-                <span className="text-sm font-medium">
-                  {meta.page} / {meta.totalPages}
-                </span>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  disabled={currentPage >= meta.totalPages}
-                  onClick={() => handlePageChange(currentPage + 1)}
-                >
-                  <ChevronRight size={16} />
-                </Button>
-              </div>
-            </div>
-          )}
-        </div>
+      {meta.totalPages > 1 && (
+        <PaginationControls
+          currentPage={currentPage}
+          totalPages={meta.totalPages ?? 0}
+        />
       )}
 
       <ViewDriverModal

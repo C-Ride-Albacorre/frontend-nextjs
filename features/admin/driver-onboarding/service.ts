@@ -2,12 +2,13 @@
 import { BASE_URL } from '@/config/api';
 import { ApiError } from '@/features/libs/api-error';
 import { authFetch } from '@/features/libs/auth-fetch';
-import { redirect } from 'next/navigation';
-import { ApproveDriverPayload } from './types';
+import { ApproveDriverPayload, GetDriverByIdResponse, GetDriversResponse } from './types';
+import { authRequest } from '@/libs/api/auth-request';
+
 
 export async function getDriversService(
-  page = 1,
-  limit = 10,
+  page: number,
+  limit: number,
   status?: string,
   search?: string,
 ) {
@@ -18,40 +19,17 @@ export async function getDriversService(
     ...(search && { search }),
   });
 
-  const res = await authFetch(`${BASE_URL}/admin/dispatchers?${params}`, {
-    method: 'GET',
+  return await authRequest<GetDriversResponse>(`${BASE_URL}/admin/dispatchers?${params}`, {
+    nextTags: ['get-drivers'],
   });
-
-  const data = await res.json();
-
-  if (!res.ok) {
-    throw new ApiError(
-      data?.message || 'Failed to fetch drivers',
-      data?.statusCode ?? res.status,
-    );
-  }
-
-  return data;
 }
 
 export async function getDriverByIdService(driverId: string) {
-  const res = await authFetch(
-    `${BASE_URL}/admin/dispatchers/${driverId}`,
-    {
-      method: 'GET',
-    },
-  );
+ return await authRequest<GetDriverByIdResponse>(`${BASE_URL}/admin/dispatchers/${driverId}`, {
+    nextTags: [`get-driver-by-${driverId}`],
+  });
 
-  const data = await res.json();
 
-  if (!res.ok) {
-    throw new ApiError(
-      data?.message || 'Failed to fetch driver details',
-      data?.statusCode ?? res.status,
-    );
-  }
-
-  return data;
 }
 
 export async function approveDriverService(

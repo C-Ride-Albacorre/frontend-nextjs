@@ -25,4 +25,7 @@ export const statusStyles: Record<string, string> = {
   PENDING_PHONE_VERIFICATION: 'bg-orange-100 text-orange-600',
   REJECTED: 'bg-red-100 text-red-600',
   SUSPENDED: 'bg-red-100 text-red-600',
+  BUSY: 'bg-orange-100 text-orange-600',
+  OFFLINE: 'bg-neutral-100 text-neutral-600',
+  ONLINE: 'bg-emerald-100 text-emerald-600',
 };
