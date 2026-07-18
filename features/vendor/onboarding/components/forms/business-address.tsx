@@ -5,13 +5,19 @@ import OnboardingFormHeader from '../form-header';
 import Input from '@/components/ui/inputs/input';
 import { Button } from '@/components/ui/buttons/button';
 import { businessAddressAction } from '../../action';
-import { useActionState, useEffect } from 'react';
+import { useActionState, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { useOnboardingStore, useOnboardingHydrated } from '../../store';
 
+import { AddressSuggestion, searchAddress } from '@/helpers/address-search';
+import { getGoogleMapsEmbedUrl } from '@/helpers/google-maps-embed';
+
 export default function BusinessAddressForm() {
   const hydrated = useOnboardingHydrated();
+  const [suggestions, setSuggestions] = useState<AddressSuggestion[]>([]);
+  const [isFocused, setIsFocused] = useState(false);
+  const addressInputRef = useRef<HTMLDivElement>(null);
   const [state, action, pending] = useActionState(
     businessAddressAction,
     undefined,
@@ -34,6 +40,34 @@ export default function BusinessAddressForm() {
       router.push('/onboarding/business-bank');
     }
   }, [state, router]);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        addressInputRef.current &&
+        !addressInputRef.current.contains(e.target as Node)
+      ) {
+        setIsFocused(false);
+      }
+    };
+
+    if (isFocused) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () =>
+        document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [isFocused]);
+
+  useEffect(() => {
+    const timeout = setTimeout(async () => {
+      const results = await searchAddress(addressInfo.address);
+
+      setSuggestions(results);
+    }, 300);
+
+    return () => clearTimeout(timeout);
+  }, [addressInfo.address]);
 
   if (!hydrated) {
     return (
@@ -59,18 +93,65 @@ export default function BusinessAddressForm() {
       />
 
       <form action={action} className="space-y-6">
-        <Input
-          id="address"
-          name="address"
-          label="Business Street Address"
-          type="text"
-          placeholder="123 Business Street"
-          value={addressInfo.address}
-          onChange={(e) => setAddressInfo({ address: e.target.value })}
-          errorMessage={isError ? state?.errors?.address?.[0] : undefined}
-          inputMode='text'
-          required
-        />
+        <div className="relative" ref={addressInputRef}>
+          <Input
+            id="address"
+            name="address"
+            label="Business Street Address"
+            type="text"
+            placeholder="123 Business Street"
+            value={addressInfo.address}
+            onChange={(e) => setAddressInfo({ address: e.target.value })}
+            errorMessage={isError ? state?.errors?.address?.[0] : undefined}
+            inputMode="text"
+            required
+          />
+
+          {isFocused && suggestions.length > 0 && (
+            <div className="absolute z-50 mt-2 w-full rounded-xl border border-border bg-white shadow-lg overflow-hidden">
+              {suggestions.map((item) => (
+                <button
+                  key={Math.random()}
+                  type="button"
+                  className="w-full border-b border-border px-4 py-3 text-left hover:bg-neutral-50 last:border-b-0 text-sm text-neutral-700 cursor-pointer transition-colors"
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    setAddressInfo({ address: item.description });
+                    setSuggestions([]);
+                    setIsFocused(false);
+                  }}
+                >
+                  <div className="flex items-start gap-2">
+                    <MapPin
+                      size={16}
+                      className="text-neutral-500 mt-0.5 shrink-0"
+                    />
+                    <div className="flex-1">{item.description}</div>
+                  </div>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Map Preview */}
+        {addressInfo.address && (
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-neutral-900">
+              Location Preview
+            </label>
+            <iframe
+              title="store-location"
+              width="100%"
+              height="300"
+              loading="lazy"
+              allowFullScreen
+              referrerPolicy="no-referrer-when-downgrade"
+              src={getGoogleMapsEmbedUrl(addressInfo.address)}
+              className="rounded-lg "
+            ></iframe>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <Input

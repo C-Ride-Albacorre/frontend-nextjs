@@ -126,7 +126,7 @@ export function StoreInformation({
               name="storeAddress"
               label="Store Address"
               required
-              placeholder="12B Adeola Odaku street, Victoria Island Lag.."
+              placeholder="123 Main St, City, State"
               spacing="sm"
               onFocus={() => setIsFocused(true)}
               value={values.storeAddress}
@@ -175,7 +175,7 @@ export function StoreInformation({
                 allowFullScreen
                 referrerPolicy="no-referrer-when-downgrade"
                 src={getGoogleMapsEmbedUrl(values.storeAddress)}
-                className="rounded-lg border border-border"
+                className="rounded-lg "
               ></iframe>
             </div>
           )}
