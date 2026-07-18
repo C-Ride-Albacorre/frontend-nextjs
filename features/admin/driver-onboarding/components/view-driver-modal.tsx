@@ -136,7 +136,7 @@ export default function ViewDriverModal({
             >
               <UserRound size={18} className="text-green-100" />
 
-              <div className="mb-0">
+              <div>
                 <p className="text-xs text-neutral-500 mb-1">Driver</p>
                 <p className="font-medium text-neutral-900 text-sm capitalize flex-wrap">
                   {driver.firstName} {driver.lastName}
@@ -149,7 +149,7 @@ export default function ViewDriverModal({
               border="none"
               className="flex items-start gap-3  bg-neutral-50"
             >
-              <MapPin size={18} className="text-green-100" />
+              <MapPin size={18} className="text-green-100 shrink-0" />
 
               <div>
                 <p className="text-xs text-neutral-500 mb-1">
@@ -225,7 +225,7 @@ export default function ViewDriverModal({
                     <p className="text-xs text-neutral-500 mb-1">
                       Vehicle Make
                     </p>
-                    <p className="font-medium text-neutral-900 text-sm">
+                    <p className="font-medium text-neutral-900 text-sm capitalize">
                       {driver.driverProfile.vehicleMake}
                     </p>
                   </div>
@@ -242,7 +242,7 @@ export default function ViewDriverModal({
                     <p className="text-xs text-neutral-500 mb-1">
                       Vehicle Model
                     </p>
-                    <p className="font-medium text-neutral-900 text-sm">
+                    <p className="font-medium text-neutral-900 text-sm capitalize">
                       {driver.driverProfile.vehicleModel}
                     </p>
                   </div>
@@ -259,7 +259,7 @@ export default function ViewDriverModal({
                     <p className="text-xs text-neutral-500 mb-1">
                       License Plate
                     </p>
-                    <p className="font-medium text-neutral-900 text-sm">
+                    <p className="font-medium text-neutral-900 text-sm uppercase">
                       {driver.driverProfile.licensePlate}
                     </p>
                   </div>

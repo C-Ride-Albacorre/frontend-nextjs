@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useTransition } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
-import { Car } from 'lucide-react';
+import { Car, LoaderCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import DriversTable from './drivers-table';
 
@@ -12,7 +12,6 @@ import { approveDriverAction, getDriverByIdAction } from '../action';
 import Toolbar from '@/components/layout/tool-bar';
 import { DRIVER_STATUS_OPTIONS } from '../data';
 import PaginationControls from '@/components/ui/buttons/pagination-control';
-import { getDriverByIdService } from '../service';
 
 export default function DriverPageSection({
   drivers,
@@ -58,9 +57,25 @@ export default function DriverPageSection({
     return () => clearTimeout(timer);
   }, [search, currentSearch, searchParams, pathname, router, startTransition]);
 
+
+    const updateParams = (updates: Record<string, string>) => {
+    const params = new URLSearchParams(searchParams.toString());
+    for (const [key, value] of Object.entries(updates)) {
+      if (value) params.set(key, value);
+      else params.delete(key);
+    }
+    startTransition(() => {
+      router.push(`${pathname}?${params.toString()}`);
+    });
+  };
+
+
+
   const handleStatusChange = (value: string) => {
     setStatusFilter(value);
+    updateParams({ status: value, page: '1' });
   };
+
 
   const handleViewDriver = async (driver: Driver) => {
     setIsModalOpen(true);
@@ -93,6 +108,8 @@ export default function DriverPageSection({
           ? 'Driver approved successfully'
           : 'Driver declined successfully',
       );
+      
+      router.refresh();
       setIsModalOpen(false);
       setDriverDetail(null);
     } else {
@@ -119,6 +136,14 @@ export default function DriverPageSection({
         filterPlaceholder="Filter by status"
       />
 
+
+      <div className="relative">
+  {isPending && (
+            <div className="absolute inset-0 bg-white/60 flex justify-center pt-20 z-10">
+              <LoaderCircle className="animate-spin text-primary" size={32} />
+            </div>
+          )}
+
       <DriversTable
         drivers={drivers}
         onView={handleViewDriver}
@@ -129,8 +154,12 @@ export default function DriverPageSection({
         <PaginationControls
           currentPage={currentPage}
           totalPages={meta.totalPages ?? 0}
+          isLoading={isPending}
         />
       )}
+      </div>
+
+    
 
       <ViewDriverModal
         isModalOpen={isModalOpen}

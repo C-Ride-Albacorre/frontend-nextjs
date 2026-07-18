@@ -11,14 +11,13 @@ import ChangeStoreButton from '@/features/public/stores/components/change-store-
 import EmptyState from '@/components/layout/empty-state';
 import ErrorState from '@/components/layout/error-state';
 import ProceedButton from '@/features/user/delivery/components/proceed-button';
+import { div } from 'framer-motion/client';
 
 export default async function StoreProductsWrapper({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
-
-
   try {
     const { slug } = await params;
 
@@ -103,8 +102,10 @@ export default async function StoreProductsWrapper({
                     <div>
                       <MapPin size={14} className="text-primary" />
                     </div>
-                
-                  <span className="flex items-start gap-1 text-neutral-500">{store.data.storeAddress}</span>
+
+                    <span className="flex items-start gap-1 text-neutral-500">
+                      {store.data.storeAddress}
+                    </span>
                   </div>
                 )}
               </div>
@@ -143,18 +144,21 @@ export default async function StoreProductsWrapper({
               </li>
             ))
           ) : (
-            <EmptyState
-              icon={<Package size={36} className="text-neutral-400" />}
-              title="No products available"
-              message="There are currently no products available for this store."
-            />
+            <div className='col-span-1 md:col-span-2 xl:col-span-3'>
+              {' '}
+              <EmptyState
+                icon={<Package size={36} className="text-neutral-400" />}
+                title="No products available"
+                message="There are currently no products available for this store."
+              />
+            </div>
           )}
         </ul>
 
         <OrderSummary />
 
         <div className=" flex items-center justify-center">
-         <ProceedButton store={store} slug={slug} storeSlug={storeSlug} />
+          <ProceedButton store={store} slug={slug} storeSlug={storeSlug} />
         </div>
       </div>
     );

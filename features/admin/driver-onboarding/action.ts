@@ -1,6 +1,6 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import {
   approveDriverService,
   getDriverByIdService,
@@ -36,6 +36,11 @@ export async function approveDriverAction(
 ): Promise<{ success: boolean; message: string }> {
   try {
     await approveDriverService(driverId, payload);
+    
+    revalidateTag('get-drivers', 'default');
+
+    revalidateTag(`get-driver-by-${driverId}`, 'default');
+
     revalidatePath('/admin/driver-onboarding');
     return { success: true, message: 'Driver status updated successfully' };
   } catch (error) {

@@ -43,7 +43,7 @@ export default function StatCard({
 
         {icon && (
           <div
-            className={` group-hover:bg-[#FBF7EB] group-hover:text-primary w-10 h-10 rounded-full flex items-center justify-center shrink-0 aspect-square  ${iconBackground} transition-transform `}
+            className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 aspect-square  ${iconBackground} transition-transform `}
           >
             {icon}
           </div>

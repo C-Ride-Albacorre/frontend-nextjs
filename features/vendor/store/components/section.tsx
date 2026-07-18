@@ -122,7 +122,7 @@ export function StoreInformation({
               <div className="absolute z-50 mt-2 w-full rounded-xl border border-border bg-white shadow-lg overflow-hidden">
                 {suggestions.map((item) => (
                   <button
-                    key={item.id}
+                    key={Math.random()}
                     type="button"
                     className="w-full border-b border-border px-4 py-3 text-left hover:bg-neutral-50 last:border-b-0 text-sm text-neutral-700 cursor-pointer "
                     onClick={() => {

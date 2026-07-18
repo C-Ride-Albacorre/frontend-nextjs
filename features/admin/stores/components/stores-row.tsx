@@ -29,7 +29,7 @@ export default function StoreRow({ store, onView, onAction }: StoreRowProps) {
             <StoreIcon size={18} className="text-white" />
           </div>
           <div>
-            <p className="font-medium">{store.name}</p>
+            <p className="font-medium capitalize">{store.name}</p>
             <p className="text-neutral-400 text-xs">
               {store.id.slice(0, 8)}...
             </p>
@@ -38,10 +38,10 @@ export default function StoreRow({ store, onView, onAction }: StoreRowProps) {
       </td>
 
       {/* Vendor */}
-      <td className="px-6 py-5">
+      {/* <td className="px-6 py-5">
         <p className="font-medium">{store.user.name}</p>
         <p className="text-neutral-400 text-xs">{store.user.businessName}</p>
-      </td>
+      </td> */}
 
       {/* Contact */}
       <td className="px-6 py-5">
@@ -95,7 +95,7 @@ export default function StoreRow({ store, onView, onAction }: StoreRowProps) {
                 </Button>
               </>
             ))}
-          <Button onClick={() => onView(store)} variant="outline" size="icon">
+          <Button onClick={() => onView(store)} variant="white"  size="icon">
             View
           </Button>
         </div>

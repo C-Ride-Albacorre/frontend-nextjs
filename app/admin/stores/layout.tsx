@@ -2,7 +2,7 @@ import MainLayout from '@/components/layout/main-layout';
 import SectionLayout from '@/components/layout/section-layout';
 import AdminDashboardHeader from '@/components/ui/headers/admin-dashboard';
 
-export default function CategoryLayout({
+export default function AdminStoresLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -11,10 +11,7 @@ export default function CategoryLayout({
     <MainLayout>
       <AdminDashboardHeader />
 
-      <SectionLayout>
-        {children}
-
-      </SectionLayout>
+      <SectionLayout>{children}</SectionLayout>
     </MainLayout>
   );
 }

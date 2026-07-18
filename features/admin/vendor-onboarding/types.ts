@@ -1,9 +1,10 @@
-// features/admin/vendor-onboarding/types.ts
+
 
 export type VendorStatus =
   | 'PENDING_VERIFICATION'
   | 'PENDING_EMAIL_VERIFICATION'
   | 'PENDING_PHONE_VERIFICATION'
+  | 'SUSPENDED'
   | 'PENDING_ONBOARDING'
   | 'PENDING_DOCUMENTS'
   | 'READY_FOR_REVIEW'
@@ -25,26 +26,20 @@ export interface VendorBusinessInfo {
   address: string;
   city: string;
   state: string;
-  bankName: string;
-  accountNumber: string;
-  accountName: string;
-  registrationNumber: string;
-  taxId: string;
   userId: string;
   createdAt: string;
   updatedAt: string;
-}
-
-export interface VendorStore {
-  id: string;
-  storeName: string;
-  status: string;
+  accountName: string;
+  accountNumber: string;
+  bankName: string;
+  registrationNumber: string;
+  taxId: string;
 }
 
 export interface Vendor {
   id: string;
   email: string;
-  phoneNumber: string | null;
+  phoneNumber: string;
   firstName: string;
   lastName: string;
   status: VendorStatus;
@@ -52,7 +47,59 @@ export interface Vendor {
   businessInfo: VendorBusinessInfo | null;
   stores: VendorStore[];
   storeCount: number;
+  documents: any[];
+  documentsByType: { ID_PROOF: any[]; CAC: any[]; BUSINESS_PERMIT: any[] };
+  hasDocuments: boolean;
 }
+
+export interface GetVendorsApiResponse {
+  status: string;
+  statusCode: number;
+  timestamp: string;
+  path: string;
+  data: {
+    success: boolean;
+    data: Vendor[];
+    meta: { total: number; page: number; limit: number; totalPages: number };
+  };
+}
+
+export interface GetVendorByIdApiResponse {
+  status: string;
+  statusCode: number;
+  timestamp: string;
+  path: string;
+  data: {
+    success: boolean;
+    data: VendorDetail;
+  };
+}
+export interface VendorStore {
+
+    id: string,
+    storeName: string;
+    storeDescription: string;
+    storeAddress: string;
+    phoneNumber: string;
+    email: string;
+    preparationTime: number;
+    deliveryFee: number | null;
+    storeLogo: string;
+    status: string;
+    userId: string;
+    metadata: any;
+    createdAt: string;
+    updatedAt: string;
+    approvedAt: string;
+    approvedBy: string;
+    rejectionReason: string | null;
+    categoryId: string;
+    latitude: number;
+    longitude: number;
+    dailyOrderLimit: number;
+    _count: { products: number };
+  }
+
 
 export interface VendorDocument {
   id: string;
@@ -61,23 +108,35 @@ export interface VendorDocument {
   createdAt: string;
 }
 
-export interface VendorDetail extends Vendor {
-  profilePicture: string | null;
+export interface VendorDetail {
+  id: string;
+  email: string;
+  phoneNumber: string;
+  countryCode: string;
+  firstName: string;
+  lastName: string;
   role: string;
   isActive: boolean;
+  lastLoginAt: string;
   isVerified: boolean;
   verifiedAt: string | null;
-  isEmailVerified: boolean;
-  emailVerifiedAt: string | null;
-  isPhoneVerified: boolean;
-  phoneVerifiedAt: string | null;
-  onboardingCompletedAt: string | null;
-  onboardingStatus: string;
-  onboardingStep: string | null;
-  approvedAt: string | null;
-  approvedBy: string | null;
-  rejectionReason: string | null;
+  createdAt: string;
   updatedAt: string;
+  emailVerifiedAt: string | null;
+  isEmailVerified: boolean;
+  isPhoneVerified: boolean;
+  onboardingCompletedAt: string;
+  phoneVerifiedAt: string;
+  status: string;
+  profilePicture: string | null;
+  onboardingStatus: string;
+  onboardingStep: number;
+  approvedAt: string;
+  approvedBy: string;
+  rejectionReason: string | null;
+  isNewUser: boolean;
+  businessInfo: VendorBusinessInfo | null;
+  stores: VendorStore[];
   documents: VendorDocument[];
 }
 
@@ -99,7 +158,6 @@ export type VendorPageSectionProps = {
   currentPage: number;
   currentStatus: string;
   currentSearch: string;
-  error: string | null;
 };
 
 export interface VendorsMeta {
@@ -117,10 +175,10 @@ export interface GetVendorsParams {
   limit?: number;
 }
 
-export interface GetVendorsResponse {
-  data: Vendor[];
-  meta: VendorsMeta;
-}
+// export interface GetVendorsResponse {
+//   data: Vendor[];
+//   meta: VendorsMeta;
+// }
 
 export interface ApproveVendorPayload {
   action: 'APPROVED' | 'REJECTED';

@@ -57,7 +57,6 @@ export default function Toolbar({
                 leftIcon={<Search size={16} className="text-neutral-400" />}
                 placeholder={searchPlaceholder}
                 spacing="none"
-                variant="fill"
                 value={search}
                 onChange={(e) => onSearchChange?.(e.target.value)}
               />

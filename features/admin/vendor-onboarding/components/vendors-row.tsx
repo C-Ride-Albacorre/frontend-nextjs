@@ -20,6 +20,7 @@ type Props = {
 
 export default function VendorRow({ vendor, onView, onAction }: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
   const isPending = REVIEWABLE_STATUSES.includes(vendor.status);
 
   const businessName = vendor.businessInfo?.businessName ?? '—';
@@ -44,7 +45,7 @@ export default function VendorRow({ vendor, onView, onAction }: Props) {
             <UserRound size={18} className="text-white" />
           </div>
           <div>
-            <p className="font-medium">{businessName}</p>
+            <p className="font-medium capitalize">{businessName}</p>
             <p className="text-neutral-400 text-xs">
               {vendor.id.slice(0, 8)}...
             </p>
@@ -53,12 +54,12 @@ export default function VendorRow({ vendor, onView, onAction }: Props) {
       </td>
 
       {/* Owner */}
-      <td className="px-6 py-5">
+      {/* <td className="px-6 py-5">
         <p className="font-medium">
           {vendor.firstName} {vendor.lastName}
         </p>
         <p className="text-neutral-400 text-xs">{location}</p>
-      </td>
+      </td> */}
 
       {/* Contact */}
       <td className="px-6 py-5">
@@ -68,7 +69,7 @@ export default function VendorRow({ vendor, onView, onAction }: Props) {
 
       {/* Business Type */}
       <td className="px-6 py-5">
-        <p className="font-medium">{businessType}</p>
+        <p className="font-medium capitalize">{businessType}</p>
         <p className="text-neutral-400 text-xs">{rc}</p>
       </td>
 
@@ -113,7 +114,7 @@ export default function VendorRow({ vendor, onView, onAction }: Props) {
                 </Button>
               </>
             ))}
-          <Button onClick={() => onView(vendor)} variant="outline" size="icon">
+          <Button onClick={() => onView(vendor)} variant="white"  size="icon">
             View
           </Button>
         </div>

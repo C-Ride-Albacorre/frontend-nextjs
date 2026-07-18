@@ -2,27 +2,16 @@
 
 import { useState, useEffect, useTransition } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
-import {
-  LoaderCircle,
-  RefreshCcw,
-  ChevronLeft,
-  ChevronRight,
-} from 'lucide-react';
+import { LoaderCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import VendorsTable from './vendors-table';
 import ViewVendorModal from './view-vendor-modal';
 import { approveVendorAction, getVendorByIdAction } from '../action';
-import {
-  Vendor,
-  VendorDetail,
-  VendorPageSectionProps,
-  VendorsMeta,
-} from '../types';
-import ErrorMessage from '@/components/layout/error-message';
-import { Button } from '@/components/ui/buttons/button';
+import { Vendor, VendorDetail, VendorPageSectionProps } from '../types';
 
 import { VENDOR_STATUS_OPTIONS } from '../data';
 import Toolbar from '@/components/layout/tool-bar';
+import PaginationControls from '@/components/ui/buttons/pagination-control';
 
 export default function VendorPageSection({
   vendors,
@@ -30,7 +19,6 @@ export default function VendorPageSection({
   currentPage,
   currentStatus,
   currentSearch,
-  error,
 }: VendorPageSectionProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -85,10 +73,6 @@ export default function VendorPageSection({
     updateParams({ status: value, page: '1' });
   };
 
-  const handlePageChange = (newPage: number) => {
-    updateParams({ page: String(newPage) });
-  };
-
   const handleViewVendor = async (vendor: Vendor) => {
     setIsModalOpen(true);
     setIsLoadingDetail(true);
@@ -119,9 +103,10 @@ export default function VendorPageSection({
           ? 'Vendor approved successfully'
           : 'Vendor declined successfully',
       );
+
+      router.refresh();
       setIsModalOpen(false);
       setVendorDetail(null);
-      router.refresh();
     } else {
       toast.error(result.message);
     }
@@ -132,6 +117,11 @@ export default function VendorPageSection({
   return (
     <div className="space-y-6">
       <Toolbar
+        title={
+          statusFilter === ''
+            ? 'All Vendors'
+            : `${VENDOR_STATUS_OPTIONS.find((cat) => cat.value === statusFilter)?.label ?? statusFilter} `
+        }
         searchPlaceholder="Search vendors..."
         search={search}
         onSearchChange={setSearch}
@@ -141,26 +131,14 @@ export default function VendorPageSection({
         filterPlaceholder="Filter by status"
       />
 
-      {error ? (
-        <div className="flex justify-between items-center">
-          <ErrorMessage message={error} />
-          <Button
-            variant="white"
-            leftIcon={<RefreshCcw size={14} />}
-            size="icon"
-            onClick={() => router.refresh()}
-          >
-            Retry
-          </Button>
-        </div>
-      ) : (
-        <div className="relative">
-          {isPending && (
-            <div className="absolute inset-0 bg-white/60 flex justify-center pt-20 z-10">
-              <LoaderCircle className="animate-spin text-primary" size={32} />
-            </div>
-          )}
+      <div className="relative">
+        {isPending && (
+          <div className="absolute inset-0 bg-white/60 flex justify-center pt-20 z-10">
+            <LoaderCircle className="animate-spin text-primary" size={32} />
+          </div>
+        )}
 
+        <div className="space-y-8">
           <VendorsTable
             vendors={vendors}
             onView={handleViewVendor}
@@ -168,36 +146,14 @@ export default function VendorPageSection({
           />
 
           {meta.totalPages > 1 && (
-            <div className="flex items-center justify-between pt-2">
-              <p className="text-sm text-neutral-500">
-                Showing {(meta.page - 1) * meta.limit + 1}–
-                {Math.min(meta.page * meta.limit, meta.total)} of {meta.total}
-              </p>
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  disabled={currentPage === 1}
-                  onClick={() => handlePageChange(currentPage - 1)}
-                >
-                  <ChevronLeft size={16} />
-                </Button>
-                <span className="text-sm font-medium">
-                  {meta.page} / {meta.totalPages}
-                </span>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  disabled={currentPage >= meta.totalPages}
-                  onClick={() => handlePageChange(currentPage + 1)}
-                >
-                  <ChevronRight size={16} />
-                </Button>
-              </div>
-            </div>
+            <PaginationControls
+              currentPage={currentPage}
+              totalPages={meta.totalPages ?? 0}
+              isLoading={isPending}
+            />
           )}
         </div>
-      )}
+      </div>
 
       <ViewVendorModal
         isModalOpen={isModalOpen}

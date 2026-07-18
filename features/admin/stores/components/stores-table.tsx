@@ -1,15 +1,16 @@
 import Card from '@/components/layout/card';
-import { Store } from '../types';
 import StoreRow from './stores-row';
 import { Button } from '@/components/ui/buttons/button';
 import clsx from 'clsx';
 import { formatStatus } from '../helpers';
 import { statusStyles } from '../data';
-import { StoreIcon } from 'lucide-react';
+import { Store, StoreIcon } from 'lucide-react';
+import EmptyState from '@/components/layout/empty-state';
+import { StoreDetail } from '../types';
 
 type Props = {
-  stores: Store[];
-  onView: (store: Store) => void;
+  stores: StoreDetail[];
+  onView: (store: StoreDetail) => void;
   onAction: (
     storeId: string,
     action: 'ACTIVE' | 'REJECTED',
@@ -22,9 +23,11 @@ export default function StoresTable({ stores, onView, onAction }: Props) {
     <>
       <div className="md:hidden space-y-4">
         {stores.length === 0 ? (
-          <div className="text-center py-10 text-neutral-400">
-            No Stores found
-          </div>
+      <EmptyState
+            icon={<Store className="text-neutral-500" size={24} />}
+            title="No stores found"
+            message="There are no stores to display."
+          />
         ) : (
           stores.map((store) => (
             <div
@@ -34,7 +37,7 @@ export default function StoresTable({ stores, onView, onAction }: Props) {
               {/* Top */}
               <div className="flex flex-col md:flex-row gap-2 justify-between items-start">
                 <div>
-                  <p className="font-medium">{store.user.businessName}</p>
+                  <h4 className="font-medium capitalize text-lg">{store.user.businessName ?? 'N/A'}</h4>
                   <p className="text-xs text-neutral-400">{store.id}</p>
                 </div>
 
@@ -68,9 +71,10 @@ export default function StoresTable({ stores, onView, onAction }: Props) {
               {/* Actions */}
               <div className="flex gap-2 pt-2">
                 <Button
-                  size="full"
+                  size="icon"
                   onClick={() => onView(store)}
                   leftIcon={<StoreIcon size={16} />}
+                  className='flex-1'
                 >
                   View Store
                 </Button>
@@ -84,13 +88,13 @@ export default function StoresTable({ stores, onView, onAction }: Props) {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="border-b border-border bg-neutral-50">
-              <tr className="text-left text-neutral-600 font-medium">
-                <th className="px-6 py-4">Store</th>
-                <th className="px-6 py-4">Vendor</th>
-                <th className="px-6 py-4">Contact</th>
-                <th className="px-6 py-4">Products</th>
-                <th className="px-6 py-4">Status</th>
-                <th className="px-6 py-4 text-right">Actions</th>
+              <tr className="text-left text-neutral-800 font-medium">
+                <th className="px-6 py-4"><h6>Store</h6> </th>
+                {/* <th className="px-6 py-4"><h6>Vendor</h6></th> */}
+                <th className="px-6 py-4"><h6>Contact</h6></th>
+                <th className="px-6 py-4"><h6>Products</h6></th>
+                <th className="px-6 py-4"><h6>Status</h6></th>
+                <th className="px-6 py-4 text-right"><h6>Actions</h6></th>
               </tr>
             </thead>
             <tbody>

@@ -1,12 +1,5 @@
-import MainLayout from '@/components/layout/main-layout';
-import SectionLayout from '@/components/layout/section-layout';
-import AdminDashboardHeader from '@/components/ui/headers/admin-dashboard';
-import {
-  getDriverByIdAction,
-  getDriversAction,
-} from '@/features/admin/driver-onboarding/action';
+
 import DriverPageWrapper from '@/features/admin/driver-onboarding/components/driver-page-wrapper';
-import DriverPageSection from '@/features/admin/driver-onboarding/components/drivers-page-section';
 
 type Props = {
   searchParams: Promise<{

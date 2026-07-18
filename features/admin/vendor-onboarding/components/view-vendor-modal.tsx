@@ -3,12 +3,25 @@
 import { useState } from 'react';
 import Modal from '@/components/layout/modal';
 import { Button } from '@/components/ui/buttons/button';
-import { Store, LoaderCircle } from 'lucide-react';
+import {
+  Store,
+  LoaderCircle,
+  UserRound,
+  MapPin,
+  Mail,
+  Phone,
+  Bandage,
+  FileText,
+  Landmark,
+  CreditCard,
+  User,
+} from 'lucide-react';
 import Image from 'next/image';
 import clsx from 'clsx';
-import { VendorDetail, ViewVendorModalProps } from '../types';
+import { ViewVendorModalProps } from '../types';
 import { formatStatus, REVIEWABLE_STATUSES } from '../helpers';
 import { statusStyles } from '../data';
+import Card from '@/components/layout/card';
 
 export default function ViewVendorModal({
   isModalOpen,
@@ -68,7 +81,7 @@ export default function ViewVendorModal({
       ) : vendor ? (
         <div className="space-y-6 py-4">
           {/* Profile Picture */}
-          <div className="relative w-full h-48 rounded-xl overflow-hidden bg-neutral-100">
+          <div className="relative w-full h-64 md:w-64 rounded-xl overflow-hidden bg-neutral-100">
             {vendor.profilePicture ? (
               <Image
                 src={vendor.profilePicture}
@@ -87,7 +100,7 @@ export default function ViewVendorModal({
           {/* Header */}
           <div className="flex flex-col md:flex-row gap-4 items-start justify-between">
             <div>
-              <h2 className="text-xl font-semibold text-neutral-900 flex-wrap">
+              <h2 className="text-xl font-semibold text-neutral-900 flex-wrap capitalize">
                 {vendor.businessInfo?.businessName ??
                   `${vendor.firstName} ${vendor.lastName}`}
               </h2>
@@ -95,7 +108,7 @@ export default function ViewVendorModal({
                 {vendor.id}
               </p>
             </div>
-            <span
+            <h6
               className={clsx(
                 'rounded-full px-3 py-1 text-[10px] font-medium',
                 statusStyles[vendor.status] ??
@@ -103,84 +116,178 @@ export default function ViewVendorModal({
               )}
             >
               {formatStatus(vendor.status)}
-            </span>
+            </h6>
           </div>
 
           {/* Details Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="p-4 bg-neutral-50 rounded-xl">
-              <p className="text-xs text-neutral-500 mb-1">Owner</p>
-              <p className="font-medium text-neutral-900 text-sm md:text-base  flex-wrap">
-                {vendor.firstName} {vendor.lastName}
-              </p>
-            </div>
+            <Card
+              gap="md"
+              border="none"
+              className="flex items-start gap-3  bg-neutral-50"
+            >
+              <UserRound size={18} className="text-green-100" />
 
-            <div className="p-4 bg-neutral-50 rounded-xl">
-              <p className="text-xs text-neutral-500 mb-1">Location</p>
-              <p className="font-medium text-neutral-900 flex-wrap text-sm md:text-base">
-                {vendor.businessInfo
-                  ? `${vendor.businessInfo.city}, ${vendor.businessInfo.state}`
-                  : '—'}
-              </p>
-            </div>
+              <div>
+                <p className="text-xs text-neutral-500 mb-1">Owner</p>
+                <p className="font-medium text-neutral-900 text-sm  flex-wrap capitalize">
+                  {vendor.firstName} {vendor.lastName}
+                </p>
+              </div>
+            </Card>
 
-            <div className="p-4 bg-neutral-50 rounded-xl  ">
-              <p className="text-xs text-neutral-500 mb-1">Email</p>
-              <p className="font-medium text-neutral-900 text-sm md:text-base">
-                {vendor.email}
-              </p>
-            </div>
+            <Card
+              gap="md"
+              border="none"
+              className="flex items-start gap-3  bg-neutral-50"
+            >
+              <MapPin size={18} className="text-green-100 shrink-0" />
+              <div>
+                <p className="text-xs text-neutral-500 mb-1">Location</p>
+                <p className="font-medium text-neutral-900 flex-wrap text-sm capitalize">
+                  {vendor.businessInfo
+                    ? `${vendor.businessInfo.city}, ${vendor.businessInfo.state}`
+                    : '—'}
+                </p>
+              </div>
+            </Card>
 
-            <div className="p-4 bg-neutral-50 rounded-xl">
-              <p className="text-xs text-neutral-500 mb-1">Phone</p>
-              <p className="font-medium text-neutral-900 text-sm md:text-base">
-                {vendor.phoneNumber ?? '—'}
-              </p>
-            </div>
+            <Card
+              gap="md"
+              border="none"
+              className="flex items-start gap-3  bg-neutral-50"
+            >
+              <Mail size={18} className="text-green-100" />
+
+              <div>
+                <p className="text-xs text-neutral-500 mb-1">Email</p>
+                <p className="font-medium text-neutral-900 text-sm ">
+                  {vendor.email}
+                </p>
+              </div>
+            </Card>
+
+            <Card
+              gap="md"
+              border="none"
+              className="flex items-start gap-3  bg-neutral-50"
+            >
+              <Phone size={18} className="text-green-100" />
+
+              <div>
+                <p className="text-xs text-neutral-500 mb-1">Phone</p>
+                <p className="font-medium text-neutral-900 text-sm ">
+                  {vendor.phoneNumber ?? '—'}
+                </p>
+              </div>
+            </Card>
 
             {vendor.businessInfo && (
               <>
-                <div className="p-4 bg-neutral-50 rounded-xl">
-                  <p className="text-xs text-neutral-500 mb-1">Business Type</p>
-                  <p className="font-medium text-neutral-900 text-sm md:text-base">
-                    {vendor.businessInfo.businessType}
-                  </p>
-                </div>
+                <Card
+                  gap="md"
+                  border="none"
+                  className="flex items-start gap-3  bg-neutral-50"
+                >
+                  <Store size={18} className="text-green-100" />
 
-                <div className="p-4 bg-neutral-50 rounded-xl">
-                  <p className="text-xs text-neutral-500 mb-1">RC Number</p>
-                  <p className="font-medium text-neutral-900 text-sm md:text-base">
-                    {vendor.businessInfo.registrationNumber}
-                  </p>
-                </div>
+                  <div>
+                    <p className="text-xs text-neutral-500 mb-1">
+                      Business Type
+                    </p>
+                    <p className="font-medium text-neutral-900 text-sm capitalize">
+                      {vendor.businessInfo.businessType}
+                    </p>
+                  </div>
+                </Card>
 
-                <div className="p-4 bg-neutral-50 rounded-xl">
-                  <p className="text-xs text-neutral-500 mb-1">Bank</p>
-                  <p className="font-medium text-neutral-900 text-sm md:text-base">
-                    {vendor.businessInfo.bankName}
-                  </p>
-                </div>
+                <Card
+                  gap="md"
+                  border="none"
+                  className="flex items-start gap-3  bg-neutral-50"
+                >
+                  <FileText size={18} className="text-green-100" />
 
-                <div className="p-4 bg-neutral-50 rounded-xl">
-                  <p className="text-xs text-neutral-500 mb-1">Account</p>
-                  <p className="font-medium text-neutral-900 text-sm md:text-base">
-                    {vendor.businessInfo.accountNumber}
-                  </p>
-                </div>
+                  <div>
+                    <p className="text-xs text-neutral-500 mb-1">RC Number</p>
+                    <p className="font-medium text-neutral-900 text-sm uppercase">
+                      {vendor.businessInfo.registrationNumber}
+                    </p>
+                  </div>
+                </Card>
 
-                <div className="p-4 bg-neutral-50 rounded-xl col-span-2">
+
+                      <Card
+                  gap="md"
+                  border="none"
+                  className="flex items-start gap-3  bg-neutral-50"
+                >
+                  <FileText size={18} className="text-green-100" />
+
+                  <div>
+                    <p className="text-xs text-neutral-500 mb-1">Tax Id</p>
+                    <p className="font-medium text-neutral-900 text-sm uppercase">
+                      {vendor.businessInfo.taxId}
+                    </p>
+                  </div>
+                </Card>
+
+                <Card
+                  gap="md"
+                  border="none"
+                  className="flex items-start gap-3  bg-neutral-50"
+                >
+                  <Landmark size={18} className="text-green-100" />
+                  <div>
+                    <p className="text-xs text-neutral-500 mb-1">Bank</p>
+                    <p className="font-medium text-neutral-900 text-sm capitalize">
+                      {vendor.businessInfo.bankName}
+                    </p>
+                  </div>
+                </Card>
+
+                <Card
+                  gap="md"
+                  border="none"
+                  className="flex items-start gap-3  bg-neutral-50"
+                >
+                  <CreditCard size={18} className="text-green-100" />
+                  <div>
+                    <p className="text-xs text-neutral-500 mb-1">Account</p>
+                    <p className="font-medium text-neutral-900 text-sm">
+                      {vendor.businessInfo.accountNumber}
+                    </p>
+                  </div>
+                </Card>
+
+                  <Card
+                  gap="md"
+                  border="none"
+                  className="flex items-start gap-3  bg-neutral-50"
+                >
+                  <User size={18} className="text-green-100" />
+                  <div>
+                    <p className="text-xs text-neutral-500 mb-1">Account Name</p>
+                    <p className="font-medium text-neutral-900 text-sm capitalize">
+                      {vendor.businessInfo.accountName}
+                    </p>
+                  </div>
+                </Card>
+
+                <Card  gap="md"
+                  border="none" className="p-4 bg-neutral-50 col-span-2">
                   <p className="text-xs text-neutral-500 mb-1">Description</p>
-                  <p className="font-medium text-neutral-900 text-sm md:text-base">
+                  <p className="font-medium text-neutral-900 text-sm">
                     {vendor.businessInfo.description}
                   </p>
-                </div>
+                </Card>
               </>
             )}
           </div>
 
           {/* Documents */}
           <div className="space-y-3">
-            <p className="text-sm font-semibold">Documents</p>
+            <h4 className="text-sm font-semibold">Documents</h4>
 
             {vendor.documents && vendor.documents.length > 0 ? (
               <ul className="space-y-2">
@@ -198,10 +305,10 @@ export default function ViewVendorModal({
                     >
                       {/* Header row */}
                       <div className="p-3 bg-neutral-50 flex justify-between items-center">
-                        <p className="text-sm font-medium text-neutral-800">
+                        <h6 className="text-sm font-medium text-neutral-800">
                           {document.documentType.replace(/_/g, ' ')}
-                        </p>
-                        <div className="flex items-center gap-2">
+                        </h6>
+                        <div className="flex items-center gap-4">
                           <a
                             href={url}
                             target="_blank"
@@ -254,17 +361,19 @@ export default function ViewVendorModal({
 
           {/* Stores */}
           <div className="space-y-3">
-            <p className="text-sm font-semibold">
-              Stores ({vendor.storeCount ?? 0})
-            </p>
+            <h4 className="text-sm font-semibold">
+              Stores ({vendor.stores.length ?? 0})
+            </h4>
             {vendor.stores && vendor.stores.length > 0 ? (
               <div className="space-y-2">
                 {vendor.stores.map((store) => (
-                  <div
+                  <Card
                     key={store.id}
-                    className="p-3 rounded-lg bg-neutral-50 flex justify-between items-center"
+                    border='none'
+                    gap='md'
+                    className=" bg-neutral-50 flex justify-between items-center"
                   >
-                    <p className="font-medium">{store.storeName}</p>
+                    <p className="font-medium mb-0 capitalize">{store.storeName}</p>
                     <span
                       className={clsx(
                         'rounded-full px-2 py-0.5 text-[10px] font-medium',
@@ -274,7 +383,7 @@ export default function ViewVendorModal({
                     >
                       {formatStatus(store.status)}
                     </span>
-                  </div>
+                  </Card>
                 ))}
               </div>
             ) : (

@@ -1,13 +1,17 @@
-
 import { BASE_URL } from '@/config/api';
 import { ApiError } from '@/features/libs/api-error';
 import { authFetch } from '@/features/libs/auth-fetch';
 import { redirect } from 'next/navigation';
-import { ApproveStorePayload } from './types';
+import {
+  ApproveStorePayload,
+  GetStoreByIdApiResponse,
+  GetStoresApiResponse,
+} from './types';
+import { authRequest } from '@/libs/api/auth-request';
 
 export async function getStoresService(
-  page = 1,
-  limit = 10,
+  page: number,
+  limit: number,
   status?: string,
   search?: string,
   vendorId?: string,
@@ -20,63 +24,31 @@ export async function getStoresService(
     ...(vendorId && { vendorId }),
   });
 
-  const res = await authFetch(`${BASE_URL}/admin/stores?${params}`, {
-    method: 'GET',
-  });
-
-  if (res.status === 401) redirect('/admin/login');
-
-  const data = await res.json();
-
-  if (!res.ok) {
-    throw new ApiError(
-      data?.message || 'Failed to fetch stores',
-      data?.statusCode ?? res.status,
-    );
-  }
-
-  return data;
+  return await authRequest<GetStoresApiResponse>(
+    `${BASE_URL}/admin/stores?${params}`,
+    {
+      nextTags: ['get-stores'],
+    },
+  );
 }
 
 export async function getStoreByIdService(storeId: string) {
-  const res = await authFetch(`${BASE_URL}/admin/stores/${storeId}`, {
-    method: 'GET',
-  });
-
-  if (res.status === 401) redirect('/admin/login');
-
-  const data = await res.json();
-
-  if (!res.ok) {
-    throw new ApiError(
-      data?.message || 'Failed to fetch store details',
-      data?.statusCode ?? res.status,
-    );
-  }
-
-  return data;
+  return await authRequest<GetStoreByIdApiResponse>(
+    `${BASE_URL}/admin/stores/${storeId}`,
+    {
+      nextTags: [`get-store-${storeId}`],
+    },
+  );
 }
 
 export async function approveStoreService(
   storeId: string,
   payload: ApproveStorePayload,
 ) {
-  const res = await authFetch(`${BASE_URL}/admin/stores/${storeId}/approve`, {
+  return await authRequest(`${BASE_URL}/admin/stores/${storeId}/approve`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
+    nextTags: [`approve-store-${storeId}`],
   });
-
-  if (res.status === 401) redirect('/admin/login');
-
-  const data = await res.json();
-
-  if (!res.ok) {
-    throw new ApiError(
-      data?.message || 'Failed to update store status',
-      data?.statusCode ?? res.status,
-    );
-  }
-
-  return data;
 }

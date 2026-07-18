@@ -6,7 +6,8 @@ import { Button } from '@/components/ui/buttons/button';
 import { formatStatus } from '../helpers';
 import { statusStyles } from '../data';
 import clsx from 'clsx';
-import {  UserRound } from 'lucide-react';
+import { User, UserRound } from 'lucide-react';
+import EmptyState from '@/components/layout/empty-state';
 
 type Props = {
   vendors: Vendor[];
@@ -22,10 +23,12 @@ export default function VendorsTable({ vendors, onView, onAction }: Props) {
   return (
     <>
       <div className="md:hidden space-y-6">
-        {vendors.length === 0 ? (
-          <div className="text-center py-10 text-neutral-400">
-            No vendors found
-          </div>
+        {!vendors || vendors.length === 0 ? (
+          <EmptyState
+            icon={<UserRound className="text-neutral-500" size={24} />}
+            title="No vendors found"
+            message="There are no vendors to display."
+          />
         ) : (
           vendors.map((vendor) => (
             <div
@@ -40,12 +43,10 @@ export default function VendorsTable({ vendors, onView, onAction }: Props) {
 
               <div className="flex flex-col md:flex-row gap-2 justify-between items-start">
                 <div>
-                  <p className="font-medium">
+                  <h4 className="font-medium capitalize text-lg">
                     {vendor.businessInfo?.businessName ?? '—'}
-                  </p>
-                  <p className="text-xs text-neutral-400">
-                    {vendor.id.slice(0, 8)}
-                  </p>
+                  </h4>
+                  <p className="text-xs text-neutral-500">{vendor.id}</p>
                 </div>
 
                 <span
@@ -76,9 +77,10 @@ export default function VendorsTable({ vendors, onView, onAction }: Props) {
               {/* Actions */}
               <div className="flex gap-2 pt-2">
                 <Button
-                  size="full"
+                  size="icon"
                   onClick={() => onView(vendor)}
-                 
+                  leftIcon={<User size={16} />}
+                  className="flex-1"
                 >
                   View Vendor
                 </Button>
@@ -92,13 +94,23 @@ export default function VendorsTable({ vendors, onView, onAction }: Props) {
         <div className=" overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="border-b border-border bg-neutral-50 font-medium">
-              <tr className="text-left text-neutral-600 font-medium">
-                <th className="px-6 py-4">Vendor</th>
-                <th className="px-6 py-4">Owner</th>
-                <th className="px-6 py-4">Contact</th>
-                <th className="px-6 py-4">Business Type</th>
-                <th className="px-6 py-4">Status</th>
-                <th className="px-6 py-4 text-right">Actions</th>
+              <tr className="text-left text-neutral-800 font-medium">
+                <th className="px-6 py-4">
+                  <h6>Vendor</h6>{' '}
+                </th>
+                {/* <th className="px-6 py-4"><h6>Owner</h6></th> */}
+                <th className="px-6 py-4">
+                  <h6>Contact</h6>
+                </th>
+                <th className="px-6 py-4">
+                  <h6>Business Type</h6>
+                </th>
+                <th className="px-6 py-4">
+                  <h6>Status</h6>
+                </th>
+                <th className="px-6 py-4 text-right">
+                  <h6>Actions</h6>
+                </th>
               </tr>
             </thead>
             <tbody>

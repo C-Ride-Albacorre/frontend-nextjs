@@ -21,8 +21,11 @@ export async function getVendorsAction(
 
 export async function getVendorByIdAction(
   vendorId: string,
-): Promise<VendorDetail> {
+) {
   const res = await getVendorByIdService(vendorId);
+
+
+
   return res.data.data;
 }
 

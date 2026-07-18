@@ -2,21 +2,15 @@
 
 import { useState, useEffect, useTransition } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
-import {
-  LoaderCircle,
-  RefreshCcw,
-  ChevronLeft,
-  ChevronRight,
-} from 'lucide-react';
+import { LoaderCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import StoresTable from './stores-table';
 import ViewStoreModal from './view-store-modal';
 
 import { approveStoreAction } from '../action';
-import { Store, StoresMeta } from '../types';
-import ErrorMessage from '@/components/layout/error-message';
-import { Button } from '@/components/ui/buttons/button';
-import VendorToolbar from '@/components/layout/tool-bar';
+import {  StoreDetail,  StoresMeta } from '../types';
+import PaginationControls from '@/components/ui/buttons/pagination-control';
+import Toolbar from '@/components/layout/tool-bar';
 
 const STATUS_OPTIONS = [
   { label: 'All Stores', value: '' },
@@ -28,12 +22,11 @@ const STATUS_OPTIONS = [
 ];
 
 type Props = {
-  stores: Store[];
+  stores: StoreDetail[];
   meta: StoresMeta;
   currentPage: number;
   currentStatus: string;
   currentSearch: string;
-  error: string | null;
 };
 
 export default function StoresPageSection({
@@ -42,7 +35,6 @@ export default function StoresPageSection({
   currentPage,
   currentStatus,
   currentSearch,
-  error,
 }: Props) {
   const router = useRouter();
   const pathname = usePathname();
@@ -52,7 +44,7 @@ export default function StoresPageSection({
   const [search, setSearch] = useState(currentSearch);
   const [statusFilter, setStatusFilter] = useState(currentStatus);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedStore, setSelectedStore] = useState<Store | null>(null);
+  const [selectedStore, setSelectedStore] = useState<StoreDetail | null>(null);
 
   // Sync local state with URL params on external navigation (e.g. back/forward)
   useEffect(() => {
@@ -94,11 +86,7 @@ export default function StoresPageSection({
     updateParams({ status: value, page: '1' });
   };
 
-  const handlePageChange = (newPage: number) => {
-    updateParams({ page: String(newPage) });
-  };
-
-  const handleViewStore = (store: Store) => {
+  const handleViewStore = (store: StoreDetail) => {
     setSelectedStore(store);
     setIsModalOpen(true);
   };
@@ -117,9 +105,9 @@ export default function StoresPageSection({
           ? 'Store approved successfully'
           : 'Store declined successfully',
       );
+      router.refresh();
       setIsModalOpen(false);
       setSelectedStore(null);
-      router.refresh();
     } else {
       toast.error(result.message);
     }
@@ -129,7 +117,12 @@ export default function StoresPageSection({
 
   return (
     <div className="space-y-6">
-      <VendorToolbar
+      <Toolbar
+        title={
+          statusFilter === ''
+            ? 'All Stores'
+            : `${STATUS_OPTIONS.find((cat) => cat.value === statusFilter)?.label ?? statusFilter} `
+        }
         searchPlaceholder="Search stores..."
         search={search}
         onSearchChange={setSearch}
@@ -139,63 +132,33 @@ export default function StoresPageSection({
         filterPlaceholder="Filter by status"
       />
 
-      {error ? (
-        <div className="flex justify-between items-center gap-2">
-          <ErrorMessage message={error} />
-          <Button
-            variant="white"
-            leftIcon={<RefreshCcw size={14} />}
-            size="icon"
-            onClick={() => router.refresh()}
-          >
-            Retry
-          </Button>
-        </div>
-      ) : (
-        <div className="relative">
-          {isPending && (
-            <div className="absolute inset-0 bg-white/60 flex justify-center pt-20 z-10">
-              <LoaderCircle className="animate-spin text-primary" size={32} />
-            </div>
-          )}
+      <div className="relative">
+        {isPending && (
+          <div className="absolute inset-0 bg-white/60 flex justify-center pt-20 z-10">
+            <LoaderCircle className="animate-spin text-primary" size={32} />
+          </div>
+        )}
 
+        <div>
           <StoresTable
             stores={stores}
             onView={handleViewStore}
             onAction={handleStoreAction}
           />
 
-          {meta.totalPages > 1 && (
-            <div className="flex items-center justify-between pt-2">
-              <p className="text-sm text-neutral-500">
+          {/* <p className="text-sm text-neutral-500">
                 Showing {(meta.page - 1) * meta.limit + 1}–
                 {Math.min(meta.page * meta.limit, meta.total)} of {meta.total}
-              </p>
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  disabled={currentPage === 1}
-                  onClick={() => handlePageChange(currentPage - 1)}
-                >
-                  <ChevronLeft size={16} />
-                </Button>
-                <span className="text-sm font-medium">
-                  {meta.page} / {meta.totalPages}
-                </span>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  disabled={currentPage >= meta.totalPages}
-                  onClick={() => handlePageChange(currentPage + 1)}
-                >
-                  <ChevronRight size={16} />
-                </Button>
-              </div>
-            </div>
+              </p> */}
+          {meta.totalPages > 1 && (
+            <PaginationControls
+              currentPage={currentPage}
+              totalPages={meta.totalPages ?? 0}
+              isLoading={isPending}
+            />
           )}
         </div>
-      )}
+      </div>
 
       <ViewStoreModal
         isModalOpen={isModalOpen}
