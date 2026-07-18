@@ -113,7 +113,7 @@ export default function StoresTable({ stores, onView, onAction }: Props) {
                     key={store.id}
                     store={store}
                     onView={onView}
-                    onAction={onAction}
+                   
                   />
                 ))
               )}

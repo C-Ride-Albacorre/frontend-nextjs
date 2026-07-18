@@ -10,7 +10,7 @@ import { formatStatus } from '../helpers';
 import StoreActionModal from './store-action';
 
 
-export default function StoreRow({ store, onView, onAction }: StoreRowProps) {
+export default function StoreRow({ store, onView}: StoreRowProps) {
   const [submitAction, setSubmitAction] = useState<
     'ACTIVE' | 'REJECTED' | null
   >(null);
@@ -23,7 +23,7 @@ export default function StoreRow({ store, onView, onAction }: StoreRowProps) {
     setIsModalOpen(true);
     setSubmitAction(action);
 
-    // await onAction(store.id, action);
+
   };
 
   const handleSuccess = () => {

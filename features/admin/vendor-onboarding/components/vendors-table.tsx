@@ -12,14 +12,10 @@ import EmptyState from '@/components/layout/empty-state';
 type Props = {
   vendors: Vendor[];
   onView: (vendor: Vendor) => void;
-  onAction: (
-    vendorId: string,
-    action: 'APPROVED' | 'REJECTED',
-    rejectionReason?: string,
-  ) => Promise<{ success: boolean; message: string }>;
+ 
 };
 
-export default function VendorsTable({ vendors, onView, onAction }: Props) {
+export default function VendorsTable({ vendors, onView }: Props) {
   return (
     <>
       <div className="md:hidden space-y-6">
@@ -129,7 +125,6 @@ export default function VendorsTable({ vendors, onView, onAction }: Props) {
                     key={vendor.id}
                     vendor={vendor}
                     onView={onView}
-                    onAction={onAction}
                   />
                 ))
               )}

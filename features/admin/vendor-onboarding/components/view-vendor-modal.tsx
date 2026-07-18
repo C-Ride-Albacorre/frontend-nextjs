@@ -22,447 +22,409 @@ import { ViewVendorModalProps } from '../types';
 import { formatStatus, REVIEWABLE_STATUSES } from '../helpers';
 import { statusStyles } from '../data';
 import Card from '@/components/layout/card';
+import VendorActionModal from './vendor-action';
 
 export default function ViewVendorModal({
   isModalOpen,
   setIsModalOpen,
   vendor,
   isLoading,
-  onAction,
 }: ViewVendorModalProps) {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showRejectForm, setShowRejectForm] = useState(false);
-  const [rejectionReason, setRejectionReason] = useState('');
-  const [reasonError, setReasonError] = useState('');
+  const [submitAction, setSubmitAction] = useState<
+    'ACTIVE' | 'REJECTED' | null
+  >(null);
+  const [isModalActionOpen, setIsModalActionOpen] = useState(false);
 
   const isPending = vendor
     ? REVIEWABLE_STATUSES.includes(vendor.status)
     : false;
 
-  const handleApprove = async () => {
-    if (!vendor) return;
-    setIsSubmitting(true);
-    await onAction(vendor.id, 'APPROVED');
-    setIsSubmitting(false);
-  };
-
-  const handleReject = async () => {
-    if (!vendor) return;
-    const trimmed = rejectionReason.trim();
-    if (!trimmed) {
-      setReasonError('Please provide a reason for rejection');
-      return;
-    }
-    if (trimmed.length < 10) {
-      setReasonError('Reason must be at least 10 characters');
-      return;
-    }
-    setReasonError('');
-    setIsSubmitting(true);
-    await onAction(vendor.id, 'REJECTED', trimmed);
-    setIsSubmitting(false);
-    setShowRejectForm(false);
-    setRejectionReason('');
-  };
-
   const handleClose = () => {
     setIsModalOpen(false);
-    setShowRejectForm(false);
-    setRejectionReason('');
-    setReasonError('');
+  };
+
+  const handleAction = async (action: 'ACTIVE' | 'REJECTED') => {
+    setIsModalActionOpen(true);
+    setSubmitAction(action);
+
+  };
+
+  const handleSuccess = () => {
+    setSubmitAction(null);
+    setIsModalActionOpen(false);
+    setIsModalOpen(false);
+  };
+
+  const handleCloseModal = () => {
+    setSubmitAction(null);
+    setIsModalActionOpen(false);
   };
 
   return (
-    <Modal isModalOpen={isModalOpen} onClose={handleClose}>
-      {isLoading ? (
-        <div className="flex justify-center py-20">
-          <LoaderCircle className="animate-spin text-primary" size={32} />
-        </div>
-      ) : vendor ? (
-        <div className="space-y-6 py-4">
-          {/* Profile Picture */}
-          <div className="relative w-full h-64 md:w-64 rounded-xl overflow-hidden bg-neutral-100">
-            {vendor.profilePicture ? (
-              <Image
-                src={vendor.profilePicture}
-                alt={vendor.firstName}
-                fill
-                className="object-cover"
-                unoptimized
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center">
-                <Store size={40} className="text-neutral-300" />
-              </div>
-            )}
+    <>
+      <Modal isModalOpen={isModalOpen} onClose={handleClose}>
+        {isLoading ? (
+          <div className="flex justify-center py-20">
+            <LoaderCircle className="animate-spin text-primary" size={32} />
           </div>
-
-          {/* Header */}
-          <div className="flex flex-col md:flex-row gap-4 items-start justify-between">
-            <div>
-              <h2 className="text-xl font-semibold text-neutral-900 flex-wrap capitalize">
-                {vendor.businessInfo?.businessName ??
-                  `${vendor.firstName} ${vendor.lastName}`}
-              </h2>
-              <p className="text-xs text-neutral-500 mt-0.5 flex-wrap">
-                {vendor.id}
-              </p>
-            </div>
-            <h6
-              className={clsx(
-                'rounded-full px-3 py-1 text-[10px] font-medium',
-                statusStyles[vendor.status] ??
-                  'bg-neutral-100 text-neutral-600',
+        ) : vendor ? (
+          <div className="space-y-6 py-4">
+            {/* Profile Picture */}
+            <div className="relative w-full h-64 md:w-64 rounded-xl overflow-hidden bg-neutral-100">
+              {vendor.profilePicture ? (
+                <Image
+                  src={vendor.profilePicture}
+                  alt={vendor.firstName}
+                  fill
+                  className="object-cover"
+                  unoptimized
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center">
+                  <Store size={40} className="text-neutral-300" />
+                </div>
               )}
-            >
-              {formatStatus(vendor.status)}
-            </h6>
-          </div>
+            </div>
 
-          {/* Details Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Card
-              gap="md"
-              border="none"
-              className="flex items-start gap-3  bg-neutral-50"
-            >
-              <UserRound size={18} className="text-green-100" />
-
+            {/* Header */}
+            <div className="flex flex-col md:flex-row gap-4 items-start justify-between">
               <div>
-                <p className="text-xs text-neutral-500 mb-1">Owner</p>
-                <p className="font-medium text-neutral-900 text-sm  flex-wrap capitalize">
-                  {vendor.firstName} {vendor.lastName}
+                <h2 className="text-xl font-semibold text-neutral-900 flex-wrap capitalize">
+                  {vendor.businessInfo?.businessName ??
+                    `${vendor.firstName} ${vendor.lastName}`}
+                </h2>
+                <p className="text-xs text-neutral-500 mt-0.5 flex-wrap">
+                  {vendor.id}
                 </p>
               </div>
-            </Card>
+              <h6
+                className={clsx(
+                  'rounded-full px-3 py-1 text-[10px] font-medium',
+                  statusStyles[vendor.status] ??
+                    'bg-neutral-100 text-neutral-600',
+                )}
+              >
+                {formatStatus(vendor.status)}
+              </h6>
+            </div>
 
-            <Card
-              gap="md"
-              border="none"
-              className="flex items-start gap-3  bg-neutral-50"
-            >
-              <MapPin size={18} className="text-green-100 shrink-0" />
-              <div>
-                <p className="text-xs text-neutral-500 mb-1">Location</p>
-                <p className="font-medium text-neutral-900 flex-wrap text-sm capitalize">
-                  {vendor.businessInfo
-                    ? `${vendor.businessInfo.city}, ${vendor.businessInfo.state}`
-                    : '—'}
-                </p>
-              </div>
-            </Card>
+            {/* Details Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Card
+                gap="md"
+                border="none"
+                className="flex items-start gap-3  bg-neutral-50"
+              >
+                <UserRound size={18} className="text-green-100" />
 
-            <Card
-              gap="md"
-              border="none"
-              className="flex items-start gap-3  bg-neutral-50"
-            >
-              <Mail size={18} className="text-green-100" />
-
-              <div>
-                <p className="text-xs text-neutral-500 mb-1">Email</p>
-                <p className="font-medium text-neutral-900 text-sm ">
-                  {vendor.email}
-                </p>
-              </div>
-            </Card>
-
-            <Card
-              gap="md"
-              border="none"
-              className="flex items-start gap-3  bg-neutral-50"
-            >
-              <Phone size={18} className="text-green-100" />
-
-              <div>
-                <p className="text-xs text-neutral-500 mb-1">Phone</p>
-                <p className="font-medium text-neutral-900 text-sm ">
-                  {vendor.phoneNumber ?? '—'}
-                </p>
-              </div>
-            </Card>
-
-            {vendor.businessInfo && (
-              <>
-                <Card
-                  gap="md"
-                  border="none"
-                  className="flex items-start gap-3  bg-neutral-50"
-                >
-                  <Store size={18} className="text-green-100" />
-
-                  <div>
-                    <p className="text-xs text-neutral-500 mb-1">
-                      Business Type
-                    </p>
-                    <p className="font-medium text-neutral-900 text-sm capitalize">
-                      {vendor.businessInfo.businessType}
-                    </p>
-                  </div>
-                </Card>
-
-                <Card
-                  gap="md"
-                  border="none"
-                  className="flex items-start gap-3  bg-neutral-50"
-                >
-                  <FileText size={18} className="text-green-100" />
-
-                  <div>
-                    <p className="text-xs text-neutral-500 mb-1">RC Number</p>
-                    <p className="font-medium text-neutral-900 text-sm uppercase">
-                      {vendor.businessInfo.registrationNumber}
-                    </p>
-                  </div>
-                </Card>
-
-
-                      <Card
-                  gap="md"
-                  border="none"
-                  className="flex items-start gap-3  bg-neutral-50"
-                >
-                  <FileText size={18} className="text-green-100" />
-
-                  <div>
-                    <p className="text-xs text-neutral-500 mb-1">Tax Id</p>
-                    <p className="font-medium text-neutral-900 text-sm uppercase">
-                      {vendor.businessInfo.taxId}
-                    </p>
-                  </div>
-                </Card>
-
-                <Card
-                  gap="md"
-                  border="none"
-                  className="flex items-start gap-3  bg-neutral-50"
-                >
-                  <Landmark size={18} className="text-green-100" />
-                  <div>
-                    <p className="text-xs text-neutral-500 mb-1">Bank</p>
-                    <p className="font-medium text-neutral-900 text-sm capitalize">
-                      {vendor.businessInfo.bankName}
-                    </p>
-                  </div>
-                </Card>
-
-                <Card
-                  gap="md"
-                  border="none"
-                  className="flex items-start gap-3  bg-neutral-50"
-                >
-                  <CreditCard size={18} className="text-green-100" />
-                  <div>
-                    <p className="text-xs text-neutral-500 mb-1">Account</p>
-                    <p className="font-medium text-neutral-900 text-sm">
-                      {vendor.businessInfo.accountNumber}
-                    </p>
-                  </div>
-                </Card>
-
-                  <Card
-                  gap="md"
-                  border="none"
-                  className="flex items-start gap-3  bg-neutral-50"
-                >
-                  <User size={18} className="text-green-100" />
-                  <div>
-                    <p className="text-xs text-neutral-500 mb-1">Account Name</p>
-                    <p className="font-medium text-neutral-900 text-sm capitalize">
-                      {vendor.businessInfo.accountName}
-                    </p>
-                  </div>
-                </Card>
-
-                <Card  gap="md"
-                  border="none" className="p-4 bg-neutral-50 col-span-2">
-                  <p className="text-xs text-neutral-500 mb-1">Description</p>
-                  <p className="font-medium text-neutral-900 text-sm">
-                    {vendor.businessInfo.description}
+                <div>
+                  <p className="text-xs text-neutral-500 mb-1">Owner</p>
+                  <p className="font-medium text-neutral-900 text-sm  flex-wrap capitalize">
+                    {vendor.firstName} {vendor.lastName}
                   </p>
-                </Card>
-              </>
-            )}
-          </div>
+                </div>
+              </Card>
 
-          {/* Documents */}
-          <div className="space-y-3">
-            <h4 className="text-sm font-semibold">Documents</h4>
+              <Card
+                gap="md"
+                border="none"
+                className="flex items-start gap-3  bg-neutral-50"
+              >
+                <MapPin size={18} className="text-green-100 shrink-0" />
+                <div>
+                  <p className="text-xs text-neutral-500 mb-1">Location</p>
+                  <p className="font-medium text-neutral-900 flex-wrap text-sm capitalize">
+                    {vendor.businessInfo
+                      ? `${vendor.businessInfo.city}, ${vendor.businessInfo.state}`
+                      : '—'}
+                  </p>
+                </div>
+              </Card>
 
-            {vendor.documents && vendor.documents.length > 0 ? (
-              <ul className="space-y-2">
-                {vendor.documents.map((document) => {
-                  const url = document.documentUrl;
-                  const isImage = /\.(jpg|jpeg|png|webp|avif|gif)(\?|$)/i.test(
-                    url,
-                  );
-                  const isPdf = /\.pdf(\?|$)/i.test(url);
+              <Card
+                gap="md"
+                border="none"
+                className="flex items-start gap-3  bg-neutral-50"
+              >
+                <Mail size={18} className="text-green-100" />
 
-                  return (
-                    <li
-                      key={document.id}
-                      className="rounded-xl border border-neutral-100 overflow-hidden"
-                    >
-                      {/* Header row */}
-                      <div className="p-3 bg-neutral-50 flex justify-between items-center">
-                        <h6 className="text-sm font-medium text-neutral-800">
-                          {document.documentType.replace(/_/g, ' ')}
-                        </h6>
-                        <div className="flex items-center gap-4">
-                          <a
-                            href={url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-xs text-primary font-medium hover:underline"
-                          >
-                            Open
-                          </a>
+                <div>
+                  <p className="text-xs text-neutral-500 mb-1">Email</p>
+                  <p className="font-medium text-neutral-900 text-sm ">
+                    {vendor.email}
+                  </p>
+                </div>
+              </Card>
 
-                          <a
-                            href={url}
-                            download
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-xs text-neutral-500 hover:text-neutral-700 font-medium hover:underline"
-                          >
-                            Download
-                          </a>
-                        </div>
-                      </div>
+              <Card
+                gap="md"
+                border="none"
+                className="flex items-start gap-3  bg-neutral-50"
+              >
+                <Phone size={18} className="text-green-100" />
 
-                      {/* Preview — images only */}
-                      {isImage && (
-                        <div className="relative w-full h-40 bg-neutral-100">
-                          <Image
-                            src={url}
-                            alt={document.documentType}
-                            fill
-                            className="object-contain"
-                            unoptimized
-                          />
-                        </div>
-                      )}
+                <div>
+                  <p className="text-xs text-neutral-500 mb-1">Phone</p>
+                  <p className="font-medium text-neutral-900 text-sm ">
+                    {vendor.phoneNumber ?? '—'}
+                  </p>
+                </div>
+              </Card>
 
-                      {/* PDF indicator */}
-                      {isPdf && (
-                        <div className="px-3 py-2 bg-white flex items-center gap-2 text-xs text-neutral-400">
-                          <span>📄</span>
-                          <span>PDF document — click Open to view</span>
-                        </div>
-                      )}
-                    </li>
-                  );
-                })}
-              </ul>
-            ) : (
-              <p className="text-sm text-neutral-400">No documents yet</p>
-            )}
-          </div>
-
-          {/* Stores */}
-          <div className="space-y-3">
-            <h4 className="text-sm font-semibold">
-              Stores ({vendor.stores.length ?? 0})
-            </h4>
-            {vendor.stores && vendor.stores.length > 0 ? (
-              <div className="space-y-2">
-                {vendor.stores.map((store) => (
+              {vendor.businessInfo && (
+                <>
                   <Card
-                    key={store.id}
-                    border='none'
-                    gap='md'
-                    className=" bg-neutral-50 flex justify-between items-center"
+                    gap="md"
+                    border="none"
+                    className="flex items-start gap-3  bg-neutral-50"
                   >
-                    <p className="font-medium mb-0 capitalize">{store.storeName}</p>
-                    <span
-                      className={clsx(
-                        'rounded-full px-2 py-0.5 text-[10px] font-medium',
-                        statusStyles[store.status] ??
-                          'bg-neutral-100 text-neutral-600',
-                      )}
-                    >
-                      {formatStatus(store.status)}
-                    </span>
-                  </Card>
-                ))}
-              </div>
-            ) : (
-              <p className="text-sm text-neutral-400">No stores yet</p>
-            )}
-          </div>
+                    <Store size={18} className="text-green-100" />
 
-          {/* Actions */}
-          {isPending && (
-            <div className="pt-4 space-y-4">
-              {showRejectForm ? (
-                <div className="space-y-3">
-                  <label className="block text-sm font-medium text-neutral-700">
-                    Reason for rejection
-                  </label>
-                  <textarea
-                    value={rejectionReason}
-                    onChange={(e) => {
-                      setRejectionReason(e.target.value);
-                      if (reasonError) setReasonError('');
-                    }}
-                    placeholder="Explain why this vendor is being declined..."
-                    rows={4}
-                    className="w-full rounded-xl border border-neutral-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary resize-none"
-                  />
-                  {reasonError && (
-                    <p className="text-xs text-red-500">{reasonError}</p>
-                  )}
-                  <div className="flex justify-around gap-4">
-                    <Button
-                      variant="outline"
-                      size="lg"
-                      onClick={() => {
-                        setShowRejectForm(false);
-                        setRejectionReason('');
-                        setReasonError('');
-                      }}
-                      disabled={isSubmitting}
+                    <div>
+                      <p className="text-xs text-neutral-500 mb-1">
+                        Business Type
+                      </p>
+                      <p className="font-medium text-neutral-900 text-sm capitalize">
+                        {vendor.businessInfo.businessType}
+                      </p>
+                    </div>
+                  </Card>
+
+                  <Card
+                    gap="md"
+                    border="none"
+                    className="flex items-start gap-3  bg-neutral-50"
+                  >
+                    <FileText size={18} className="text-green-100" />
+
+                    <div>
+                      <p className="text-xs text-neutral-500 mb-1">RC Number</p>
+                      <p className="font-medium text-neutral-900 text-sm uppercase">
+                        {vendor.businessInfo.registrationNumber}
+                      </p>
+                    </div>
+                  </Card>
+
+                  <Card
+                    gap="md"
+                    border="none"
+                    className="flex items-start gap-3  bg-neutral-50"
+                  >
+                    <FileText size={18} className="text-green-100" />
+
+                    <div>
+                      <p className="text-xs text-neutral-500 mb-1">Tax Id</p>
+                      <p className="font-medium text-neutral-900 text-sm uppercase">
+                        {vendor.businessInfo.taxId}
+                      </p>
+                    </div>
+                  </Card>
+
+                  <Card
+                    gap="md"
+                    border="none"
+                    className="flex items-start gap-3  bg-neutral-50"
+                  >
+                    <Landmark size={18} className="text-green-100" />
+                    <div>
+                      <p className="text-xs text-neutral-500 mb-1">Bank</p>
+                      <p className="font-medium text-neutral-900 text-sm capitalize">
+                        {vendor.businessInfo.bankName}
+                      </p>
+                    </div>
+                  </Card>
+
+                  <Card
+                    gap="md"
+                    border="none"
+                    className="flex items-start gap-3  bg-neutral-50"
+                  >
+                    <CreditCard size={18} className="text-green-100" />
+                    <div>
+                      <p className="text-xs text-neutral-500 mb-1">Account</p>
+                      <p className="font-medium text-neutral-900 text-sm">
+                        {vendor.businessInfo.accountNumber}
+                      </p>
+                    </div>
+                  </Card>
+
+                  <Card
+                    gap="md"
+                    border="none"
+                    className="flex items-start gap-3  bg-neutral-50"
+                  >
+                    <User size={18} className="text-green-100" />
+                    <div>
+                      <p className="text-xs text-neutral-500 mb-1">
+                        Account Name
+                      </p>
+                      <p className="font-medium text-neutral-900 text-sm capitalize">
+                        {vendor.businessInfo.accountName}
+                      </p>
+                    </div>
+                  </Card>
+
+                  <Card
+                    gap="md"
+                    border="none"
+                    className="p-4 bg-neutral-50 col-span-2"
+                  >
+                    <p className="text-xs text-neutral-500 mb-1">Description</p>
+                    <p className="font-medium text-neutral-900 text-sm">
+                      {vendor.businessInfo.description}
+                    </p>
+                  </Card>
+                </>
+              )}
+            </div>
+
+            {/* Documents */}
+            <div className="space-y-3">
+              <h4 className="text-sm font-semibold">Documents</h4>
+
+              {vendor.documents && vendor.documents.length > 0 ? (
+                <ul className="space-y-2">
+                  {vendor.documents.map((document) => {
+                    const url = document.documentUrl;
+                    const isImage =
+                      /\.(jpg|jpeg|png|webp|avif|gif)(\?|$)/i.test(url);
+                    const isPdf = /\.pdf(\?|$)/i.test(url);
+
+                    return (
+                      <li
+                        key={document.id}
+                        className="rounded-xl border border-neutral-100 overflow-hidden"
+                      >
+                        {/* Header row */}
+                        <div className="p-3 bg-neutral-50 flex justify-between items-center">
+                          <h6 className="text-sm font-medium text-neutral-800">
+                            {document.documentType.replace(/_/g, ' ')}
+                          </h6>
+                          <div className="flex items-center gap-4">
+                            <a
+                              href={url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-xs text-primary font-medium hover:underline"
+                            >
+                              Open
+                            </a>
+
+                            <a
+                              href={url}
+                              download
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-xs text-neutral-500 hover:text-neutral-700 font-medium hover:underline"
+                            >
+                              Download
+                            </a>
+                          </div>
+                        </div>
+
+                        {/* Preview — images only */}
+                        {isImage && (
+                          <div className="relative w-full h-40 bg-neutral-100">
+                            <Image
+                              src={url}
+                              alt={document.documentType}
+                              fill
+                              className="object-contain"
+                              unoptimized
+                            />
+                          </div>
+                        )}
+
+                        {/* PDF indicator */}
+                        {isPdf && (
+                          <div className="px-3 py-2 bg-white flex items-center gap-2 text-xs text-neutral-400">
+                            <span>📄</span>
+                            <span>PDF document — click Open to view</span>
+                          </div>
+                        )}
+                      </li>
+                    );
+                  })}
+                </ul>
+              ) : (
+                <p className="text-sm text-neutral-400">No documents yet</p>
+              )}
+            </div>
+
+            {/* Stores */}
+            <div className="space-y-3">
+              <h4 className="text-sm font-semibold">
+                Stores ({vendor.stores.length ?? 0})
+              </h4>
+              {vendor.stores && vendor.stores.length > 0 ? (
+                <div className="space-y-2">
+                  {vendor.stores.map((store) => (
+                    <Card
+                      key={store.id}
+                      border="none"
+                      gap="md"
+                      className=" bg-neutral-50 flex justify-between items-center"
                     >
-                      Cancel
-                    </Button>
-                    <Button
-                      variant="red-secondary"
-                      size="lg"
-                      onClick={handleReject}
-                      disabled={isSubmitting}
-                    >
-                      {isSubmitting ? 'Processing...' : 'Confirm Rejection'}
-                    </Button>
-                  </div>
+                      <p className="font-medium mb-0 capitalize">
+                        {store.storeName}
+                      </p>
+                      <span
+                        className={clsx(
+                          'rounded-full px-2 py-0.5 text-[10px] font-medium',
+                          statusStyles[store.status] ??
+                            'bg-neutral-100 text-neutral-600',
+                        )}
+                      >
+                        {formatStatus(store.status)}
+                      </span>
+                    </Card>
+                  ))}
                 </div>
               ) : (
+                <p className="text-sm text-neutral-400">No stores yet</p>
+              )}
+            </div>
+
+            {/* Actions */}
+            {isPending && (
+              <div className="pt-4 space-y-4">
                 <div className="flex justify-around gap-4">
                   <Button
                     variant="red-secondary"
                     size="lg"
-                    onClick={() => setShowRejectForm(true)}
-                    disabled={isSubmitting}
+                    onClick={() => handleAction('REJECTED')}
                   >
                     Decline
                   </Button>
                   <Button
                     variant="green-secondary"
                     size="lg"
-                    onClick={handleApprove}
-                    disabled={isSubmitting}
+                    onClick={() => handleAction('ACTIVE')}
                   >
-                    {isSubmitting ? 'Processing...' : 'Accept'}
+                    Approve
                   </Button>
                 </div>
-              )}
-            </div>
-          )}
-        </div>
-      ) : (
-        <div className="py-20 text-center text-neutral-400">
-          Failed to load vendor details
-        </div>
-      )}
-    </Modal>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="py-20 text-center text-neutral-400">
+            Failed to load vendor details
+          </div>
+        )}
+      </Modal>
+
+      <VendorActionModal
+        vendorId={vendor?.id}
+        vendorName={
+          vendor?.businessInfo?.businessName ??
+          `${vendor?.firstName} ${vendor?.lastName}`
+        }
+        isModalOpen={isModalActionOpen}
+        onClose={handleCloseModal}
+        actionStatus={submitAction}
+        onSuccess={handleSuccess}
+      />
+    </>
   );
 }

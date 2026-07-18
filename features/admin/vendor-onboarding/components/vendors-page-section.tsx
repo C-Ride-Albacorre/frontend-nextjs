@@ -89,30 +89,7 @@ export default function VendorPageSection({
     }
   };
 
-  const handleVendorAction = async (
-    vendorId: string,
-    action: 'APPROVED' | 'REJECTED',
-    rejectionReason?: string,
-  ) => {
-    const payload = rejectionReason ? { action, rejectionReason } : { action };
-    const result = await approveVendorAction(vendorId, payload);
 
-    if (result.success) {
-      toast.success(
-        action === 'APPROVED'
-          ? 'Vendor approved successfully'
-          : 'Vendor declined successfully',
-      );
-
-      router.refresh();
-      setIsModalOpen(false);
-      setVendorDetail(null);
-    } else {
-      toast.error(result.message);
-    }
-
-    return result;
-  };
 
   return (
     <div className="space-y-6">
@@ -142,7 +119,6 @@ export default function VendorPageSection({
           <VendorsTable
             vendors={vendors}
             onView={handleViewVendor}
-            onAction={handleVendorAction}
           />
 
           {meta.totalPages > 1 && (
@@ -160,7 +136,6 @@ export default function VendorPageSection({
         setIsModalOpen={setIsModalOpen}
         vendor={vendorDetail}
         isLoading={isLoadingDetail}
-        onAction={handleVendorAction}
       />
     </div>
   );

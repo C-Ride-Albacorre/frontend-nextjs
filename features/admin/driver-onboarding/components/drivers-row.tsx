@@ -7,30 +7,42 @@ import { Button } from '@/components/ui/buttons/button';
 import { statusStyles } from '../data';
 import { Driver } from '../types';
 import { formatStatus, REVIEWABLE_STATUSES } from '../helpers';
+import DriverActionModal from './driver-action';
 
 type Props = {
   driver: Driver;
   onView: (driver: Driver) => void;
-  onAction: (
-    driverId: string,
-    action: 'APPROVED' | 'REJECTED',
-    rejectionReason?: string,
-  ) => Promise<{ success: boolean; message: string }>;
+ 
 };
 
-export default function DriverRow({ driver, onView, onAction }: Props) {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+export default function DriverRow({ driver, onView}: Props) {
+  const [submitAction, setSubmitAction] = useState<
+    'ACTIVE' | 'REJECTED' | null
+  >(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const isPending = REVIEWABLE_STATUSES.includes(driver.status);
 
   const name = driver?.name ?? '—';
 
-  const handleAction = async (action: 'APPROVED' | 'REJECTED') => {
-    setIsSubmitting(true);
-    await onAction(driver.id, action);
-    setIsSubmitting(false);
+   const handleAction = async (action: 'ACTIVE' | 'REJECTED') => {
+    setIsModalOpen(true);
+    setSubmitAction(action);
+
+  };
+
+  const handleSuccess = () => {
+    setSubmitAction(null);
+    setIsModalOpen(false);
+  };
+
+  const handleCloseModal = () => {
+    setSubmitAction(null);
+    setIsModalOpen(false);
   };
 
   return (
+
+   <>
     <tr className="border-b border-border hover:bg-neutral-50 text-sm">
       {/* Driver */}
       <td className="px-6 py-5">
@@ -69,36 +81,41 @@ export default function DriverRow({ driver, onView, onAction }: Props) {
       <td className="px-6 py-5">
         <div className="flex justify-end gap-1.5">
           {isPending &&
-            (isSubmitting ? (
-              <LoaderCircle
-                size={18}
-                className="animate-spin text-neutral-400"
-              />
-            ) : (
+          
               <>
                 <Button
-                  onClick={() => handleAction('APPROVED')}
-                  disabled={isSubmitting}
+                  onClick={() => handleAction('ACTIVE')}
+              
                   variant="green-secondary"
                   size="icon"
                 >
                   Approve
                 </Button>
                 <Button
-                  onClick={() => onView(driver)}
-                  disabled={isSubmitting}
+                  onClick={() => handleAction('REJECTED')}
                   variant="red-secondary"
                   size="icon"
                 >
                   Reject
                 </Button>
               </>
-            ))}
+            }
           <Button onClick={() => onView(driver)} variant="white" size="icon">
             View
           </Button>
         </div>
       </td>
     </tr>
+
+    <DriverActionModal
+            driverId={driver.id}
+            driverName={name}
+            isModalOpen={isModalOpen}
+            onClose={handleCloseModal}
+            actionStatus={submitAction}
+            onSuccess={handleSuccess}
+          />
+   </>
+   
   );
 }

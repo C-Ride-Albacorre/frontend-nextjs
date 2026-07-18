@@ -145,11 +145,7 @@ export type ViewVendorModalProps = {
   setIsModalOpen: (open: boolean) => void;
   vendor: VendorDetail | null;
   isLoading: boolean;
-  onAction: (
-    vendorId: string,
-    action: 'APPROVED' | 'REJECTED',
-    rejectionReason?: string,
-  ) => Promise<{ success: boolean; message: string }>;
+
 };
 
 export type VendorPageSectionProps = {
@@ -181,6 +177,6 @@ export interface GetVendorsParams {
 // }
 
 export interface ApproveVendorPayload {
-  action: 'APPROVED' | 'REJECTED';
+  action: 'ACTIVE' | 'REJECTED';
   rejectionReason?: string;
 }

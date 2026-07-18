@@ -151,11 +151,7 @@ export type ViewDriverModalProps = {
   setIsModalOpen: (open: boolean) => void;
   driver: DriverProps | null;
   isLoading: boolean;
-  onAction: (
-    driverId: string,
-    action: 'APPROVED' | 'REJECTED',
-    rejectionReason?: string,
-  ) => Promise<{ success: boolean; message: string }>;
+
 };
 
 export type DriverPageSectionProps = {
@@ -182,6 +178,6 @@ export interface GetDriversParams {
 }
 
 export interface ApproveDriverPayload {
-  action: 'APPROVED' | 'REJECTED';
+  action: 'ACTIVE' | 'REJECTED';
   rejectionReason?: string;
 }

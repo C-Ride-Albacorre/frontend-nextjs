@@ -268,9 +268,5 @@ export interface GetStoresParams {
 export type StoreRowProps = {
   store: StoreDetail;
   onView: (store: StoreDetail) => void;
-  onAction: (
-    storeId: string,
-    action: 'ACTIVE' | 'REJECTED',
-    rejectionReason?: string,
-  ) => Promise<{ success: boolean; message: string }>;
+
 };

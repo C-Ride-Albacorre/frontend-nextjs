@@ -94,30 +94,6 @@ export default function DriverPageSection({
     }
   };
 
-  const handleDriverAction = async (
-    driverId: string,
-    action: 'APPROVED' | 'REJECTED',
-    rejectionReason?: string,
-  ) => {
-    const payload = rejectionReason ? { action, rejectionReason } : { action };
-    const result = await approveDriverAction(driverId, payload);
-
-    if (result.success) {
-      toast.success(
-        action === 'APPROVED'
-          ? 'Driver approved successfully'
-          : 'Driver declined successfully',
-      );
-      
-      router.refresh();
-      setIsModalOpen(false);
-      setDriverDetail(null);
-    } else {
-      toast.error(result.message);
-    }
-
-    return result;
-  };
 
   return (
     <div className="space-y-6">
@@ -147,7 +123,6 @@ export default function DriverPageSection({
       <DriversTable
         drivers={drivers}
         onView={handleViewDriver}
-        onAction={handleDriverAction}
       />
 
       {meta.totalPages > 1 && (
@@ -166,7 +141,6 @@ export default function DriverPageSection({
         setIsModalOpen={setIsModalOpen}
         driver={driverDetail}
         isLoading={isLoadingDetail}
-        onAction={handleDriverAction}
       />
     </div>
   );

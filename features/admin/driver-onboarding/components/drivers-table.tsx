@@ -11,14 +11,10 @@ import EmptyState from '@/components/layout/empty-state';
 type Props = {
   drivers: Driver[];
   onView: (driver: Driver) => void;
-  onAction: (
-    driverId: string,
-    action: 'APPROVED' | 'REJECTED',
-    rejectionReason?: string,
-  ) => Promise<{ success: boolean; message: string }>;
+
 };
 
-export default function DriversTable({ drivers, onView, onAction }: Props) {
+export default function DriversTable({ drivers, onView }: Props) {
   return (
     <>
       <div className="md:hidden space-y-6">
@@ -119,7 +115,6 @@ export default function DriversTable({ drivers, onView, onAction }: Props) {
                     key={driver.id}
                     driver={driver}
                     onView={onView}
-                    onAction={onAction}
                   />
                 ))
               )}

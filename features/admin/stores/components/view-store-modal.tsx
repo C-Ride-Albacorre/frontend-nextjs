@@ -45,18 +45,13 @@ type Props = {
   isModalOpen: boolean;
   setIsModalOpen: (open: boolean) => void;
   store: StoreDetail | null;
-  onAction: (
-    storeId: string,
-    action: 'ACTIVE' | 'REJECTED',
-    rejectionReason?: string,
-  ) => Promise<{ success: boolean; message: string }>;
+
 };
 
 export default function ViewStoreModal({
   isModalOpen,
   setIsModalOpen,
   store,
-  onAction,
 }: Props) {
   const [storeDetail, setStoreDetail] = useState<StoreListItem | null>(null);
   const [isLoadingDetail, setIsLoadingDetail] = useState(false);

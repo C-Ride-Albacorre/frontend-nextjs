@@ -164,7 +164,6 @@ export default function StoresPageSection({
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
         store={selectedStore}
-        onAction={handleStoreAction}
       />
 
   
