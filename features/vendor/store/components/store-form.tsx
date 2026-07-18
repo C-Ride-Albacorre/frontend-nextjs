@@ -15,6 +15,7 @@ import { CheckCircle, Pencil, Lock, ChevronLeft, Store } from 'lucide-react';
 import { toast } from 'sonner';
 import Card from '@/components/layout/card';
 import Modal from '@/components/layout/modal';
+import ErrorMessage from '@/components/layout/error-message';
 
 const emptyValues: StoreFormValues = {
   storeName: '',
@@ -36,6 +37,8 @@ export default function StoreForm({ initialData }: StoreFormProps) {
   const isEditMode = Boolean(initialData?.id);
 
   const [isEditing, setIsEditing] = useState(!isEditMode);
+
+  const rejectionReason = initialData?.rejectionReason || null;
 
   // Convert initial data to form values
   const getInitialValues = (): StoreFormValues => {
@@ -161,34 +164,38 @@ export default function StoreForm({ initialData }: StoreFormProps) {
         Back
       </Button>
 
+      <div className='space-y-4'>
+        {rejectionReason && <ErrorMessage message={rejectionReason} />}
+
+      {/* Read-only banner when in edit mode but not editing */}
+      {isEditMode && !isEditing && (
+        <Card
+          spacing="none"
+          className="col-span-2 xl:col-span-4 flex flex-col md:flex-row gap-4 md:items-center justify-between bg-primary/10 px-4 md:px-6 py-3 border border-primary/20"
+        >
+          <div className="flex items-center gap-2 text-primary mb-0">
+            <Lock size={16} />
+            <span className="text-sm font-medium">
+              Fields are locked. Click Edit to make changes.
+            </span>
+          </div>
+          <Button
+            variant="white"
+            size="icon"
+            type="button"
+            onClick={handleEditToggle}
+            leftIcon={<Pencil size={14} />}
+          >
+            Edit Store
+          </Button>
+        </Card>
+      )}
+      </div>
+
       <form action={action} className="grid grid-cols-2 xl:grid-cols-4 gap-8">
         {/* Hidden field for store ID when editing */}
         {isEditMode && (
           <input type="hidden" name="storeId" value={initialData?.id} />
-        )}
-
-        {/* Read-only banner when in edit mode but not editing */}
-        {isEditMode && !isEditing && (
-          <Card
-            spacing="none"
-            className="col-span-2 xl:col-span-4 flex flex-col md:flex-row gap-4 md:items-center justify-between bg-primary/10 px-4 md:px-6 py-3 border border-primary/20"
-          >
-            <div className="flex items-center gap-2 text-primary mb-0">
-              <Lock size={16} />
-              <span className="text-sm font-medium">
-                Fields are locked. Click Edit to make changes.
-              </span>
-            </div>
-            <Button
-              variant="white"
-              size="icon"
-              type="button"
-              onClick={handleEditToggle}
-              leftIcon={<Pencil size={14} />}
-            >
-              Edit Store
-            </Button>
-          </Card>
         )}
 
         <div className="col-span-2 xl:col-span-2">
@@ -248,7 +255,7 @@ export default function StoreForm({ initialData }: StoreFormProps) {
       <Modal
         isModalOpen={showSuccessModal}
         onClose={() => setShowSuccessModal(false)}
-        wrapperClassName='max-w-md'
+        wrapperClassName="max-w-md"
       >
         <div className="flex flex-col items-center text-center space-y-6 py-6">
           <div className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100">

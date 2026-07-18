@@ -7,7 +7,7 @@ export type StoreStatus =
   | 'SUSPENDED'
   | 'INACTIVE';
 
-export type StoreApproveAction = 'ACTIVE' | 'REJECTED';
+export type StoreApproveAction = 'ACTIVE' | 'REJECTED' | null;
 
 // ─── Store List (from GET /admin/stores) ────────────────────────────────────
 

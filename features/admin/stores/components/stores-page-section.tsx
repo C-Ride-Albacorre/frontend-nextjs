@@ -166,6 +166,8 @@ export default function StoresPageSection({
         store={selectedStore}
         onAction={handleStoreAction}
       />
+
+  
     </div>
   );
 }

@@ -6,7 +6,7 @@ import {
   getStoreByIdService,
   approveStoreService,
 } from './service';
-import { ApproveStorePayload, StoreDetail } from './types';
+import { ApproveStorePayload} from './types';
 
 
 

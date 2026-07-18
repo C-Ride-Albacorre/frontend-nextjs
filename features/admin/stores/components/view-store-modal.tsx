@@ -23,6 +23,7 @@ import { StoreDetail, StoreListItem } from '../types';
 import { getStoreByIdAction } from '../action';
 import Textarea from '@/components/ui/inputs/textarea';
 import Card from '@/components/layout/card';
+import StoreActionModal from './store-action';
 
 const statusStyles: Record<string, string> = {
   ACTIVE: 'bg-emerald-100 text-emerald-600',
@@ -59,10 +60,10 @@ export default function ViewStoreModal({
 }: Props) {
   const [storeDetail, setStoreDetail] = useState<StoreListItem | null>(null);
   const [isLoadingDetail, setIsLoadingDetail] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showRejectForm, setShowRejectForm] = useState(false);
-  const [rejectionReason, setRejectionReason] = useState('');
-  const [reasonError, setReasonError] = useState('');
+  const [submitAction, setSubmitAction] = useState<
+    'ACTIVE' | 'REJECTED' | null
+  >(null);
+  const [isModalActionOpen, setIsModalActionOpen] = useState(false);
 
   useEffect(() => {
     if (!isModalOpen || !store) return;
@@ -91,419 +92,384 @@ export default function ViewStoreModal({
 
   const isPending = store?.status === 'PENDING_APPROVAL';
 
-  const handleApprove = async () => {
-    if (!store) return;
-    setIsSubmitting(true);
-    await onAction(store.id, 'ACTIVE');
-    setIsSubmitting(false);
-  };
-
-  const handleReject = async () => {
-    if (!store) return;
-    const trimmed = rejectionReason.trim();
-    if (!trimmed) {
-      setReasonError('Please provide a reason for rejection');
-      return;
-    }
-    if (trimmed.length < 10) {
-      setReasonError('Reason must be at least 10 characters');
-      return;
-    }
-    setReasonError('');
-    setIsSubmitting(true);
-    await onAction(store.id, 'REJECTED', trimmed);
-    setIsSubmitting(false);
-    setShowRejectForm(false);
-    setRejectionReason('');
-  };
-
   const handleClose = () => {
     setIsModalOpen(false);
     setStoreDetail(null);
-    setShowRejectForm(false);
-    setRejectionReason('');
-    setReasonError('');
+  };
+
+  const handleAction = async (action: 'ACTIVE' | 'REJECTED') => {
+    setIsModalActionOpen(true);
+    setSubmitAction(action);
+
+    // await onAction(store.id, action);
+  };
+
+  const handleSuccess = () => {
+    setSubmitAction(null);
+    setIsModalActionOpen(false);
+    setIsModalOpen(false);
+    setStoreDetail(null);
+  };
+
+  const handleCloseModal = () => {
+    setSubmitAction(null);
+    setIsModalActionOpen(false);
   };
 
   return (
-    <Modal isModalOpen={isModalOpen} onClose={handleClose}>
-      {isLoadingDetail ? (
-        <div className="flex justify-center py-20">
-          <LoaderCircle className="animate-spin text-primary" size={32} />
-        </div>
-      ) : storeDetail ? (
-        <div className="space-y-8 py-4">
-          {/* Store Logo */}
-          <div className="relative w-full h-64 md:w-64 rounded-xl overflow-hidden bg-neutral-100">
-            {storeDetail.storeLogo ? (
-              <Image
-                src={storeDetail.storeLogo}
-                alt={storeDetail.storeName}
-                fill
-                className="object-contain"
-                unoptimized
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center">
-                <StoreIcon size={40} className="text-neutral-300" />
-              </div>
-            )}
+    <>
+      <Modal isModalOpen={isModalOpen} onClose={handleClose}>
+        {isLoadingDetail ? (
+          <div className="flex justify-center py-20">
+            <LoaderCircle className="animate-spin text-primary" size={32} />
           </div>
-
-          {/* Header */}
-          <div className="flex flex-col md:flex-row gap-2 md:gap-0 items-start justify-between">
-            <div>
-              <h2 className="text-xl font-semibold text-neutral-900 flex-wrap capitalize">
-                {storeDetail.storeName}
-              </h2>
-              <p className="text-xs text-neutral-500 mt-0.5 flex-wrap">
-                {storeDetail.categoryId}
-              </p>
-            </div>
-            <h6
-              className={clsx(
-                'rounded-full px-3 py-1 text-[10px] font-medium',
-                statusStyles[storeDetail.status] ??
-                  'bg-neutral-100 text-neutral-600',
+        ) : storeDetail ? (
+          <div className="space-y-8 py-4">
+            {/* Store Logo */}
+            <div className="relative w-full h-64 md:w-64 rounded-xl overflow-hidden bg-neutral-100">
+              {storeDetail.storeLogo ? (
+                <Image
+                  src={storeDetail.storeLogo}
+                  alt={storeDetail.storeName}
+                  fill
+                  className="object-contain"
+                  unoptimized
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center">
+                  <StoreIcon size={40} className="text-neutral-300" />
+                </div>
               )}
-            >
-              {formatStatus(storeDetail.status)}
-            </h6>
-          </div>
+            </div>
 
-          {/* Store Info Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Card
-              gap="md"
-              border="none"
-              className="flex items-start gap-3  bg-neutral-50"
-            >
-              <Mail size={18} className="text-green-100" />
-
+            {/* Header */}
+            <div className="flex flex-col md:flex-row gap-2 md:gap-0 items-start justify-between">
               <div>
-                <p className="text-xs text-neutral-500 mb-1">Email</p>
-                <p className="font-medium text-neutral-900 text-sm ">
-                  {storeDetail.email}
+                <h2 className="text-xl font-semibold text-neutral-900 flex-wrap capitalize">
+                  {storeDetail.storeName}
+                </h2>
+                <p className="text-xs text-neutral-500 mt-0.5 flex-wrap">
+                  {storeDetail.categoryId}
                 </p>
               </div>
-            </Card>
+              <h6
+                className={clsx(
+                  'rounded-full px-3 py-1 text-[10px] font-medium',
+                  statusStyles[storeDetail.status] ??
+                    'bg-neutral-100 text-neutral-600',
+                )}
+              >
+                {formatStatus(storeDetail.status)}
+              </h6>
+            </div>
 
-            <Card
-              gap="md"
-              border="none"
-              className="flex items-start gap-3  bg-neutral-50"
-            >
-              <Phone size={18} className="text-green-100" />
-              <div>
-                <p className="text-xs text-neutral-500 mb-1">Phone</p>
-                <p className="font-medium text-neutral-900 text-sm ">
-                  {storeDetail.phoneNumber}
-                </p>
-              </div>
-            </Card>
-
-            <Card
-              gap="md"
-              border="none"
-              className="flex items-start gap-3  bg-neutral-50"
-            >
-              <MapPin size={18} className="text-green-100 shrink-0" />
-              <div>
-                {' '}
-                <p className="text-xs text-neutral-500 mb-1">Address</p>
-                <p className="font-medium text-neutral-900 text-sm">
-                  {storeDetail.storeAddress}
-                </p>
-              </div>
-            </Card>
-
-            {storeDetail.deliveryFee && (
+            {/* Store Info Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Card
                 gap="md"
                 border="none"
                 className="flex items-start gap-3  bg-neutral-50"
               >
-                <CreditCard size={18} className="text-green-100" />
+                <Mail size={18} className="text-green-100" />
 
                 <div>
-                  {' '}
-                  <p className="text-xs text-neutral-500 mb-1">Delivery Fee</p>
-                  <h6 className="font-medium text-primary text-sm ">
-                    NGN {storeDetail.deliveryFee?.toLocaleString()}
-                  </h6>
+                  <p className="text-xs text-neutral-500 mb-1">Email</p>
+                  <p className="font-medium text-neutral-900 text-sm ">
+                    {storeDetail.email}
+                  </p>
                 </div>
               </Card>
-            )}
 
-            <Card
-              gap="md"
-              border="none"
-              className="flex items-start gap-3  bg-neutral-50"
-            >
-              <ListOrdered size={18} className="text-green-100" />
-
-              <div>
-                <p className="text-xs text-neutral-500 mb-1">
-                  Daily Limit Order
-                </p>
-                <p className="font-medium text-neutral-900 text-sm ">
-                  {storeDetail.dailyOrderLimit}
-                </p>
-              </div>
-            </Card>
-
-            <Card
-              gap="md"
-              border="none"
-              className="flex items-start gap-3  bg-neutral-50"
-            >
-              <Timer size={18} className="text-green-100" />
-
-              <div>
-                <p className="text-xs text-neutral-500 mb-1">Prep Time</p>
-                <p className="font-medium text-neutral-900 text-sm ">
-                  {storeDetail.preparationTime} min
-                </p>
-              </div>
-            </Card>
-
-            {storeDetail.storeDescription && (
-              <div className="p-4 bg-neutral-50 rounded-xl md:col-span-2">
-                <p className="text-xs text-neutral-500 mb-1">Description</p>
-                <p className="font-medium text-neutral-900 text-sm ">
-                  {storeDetail.storeDescription}
-                </p>
-              </div>
-            )}
-          </div>
-
-          {/* Vendor Info */}
-          {storeDetail.user.businessInfo && (
-            <div className="space-y-3">
-              <h4 className="text-sm font-semibold">Vendor Information</h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Card
-              gap="md"
-              border="none"
-              className="flex items-start gap-3  bg-neutral-50"
-            >
-              <User size={18} className="text-green-100" />
+              <Card
+                gap="md"
+                border="none"
+                className="flex items-start gap-3  bg-neutral-50"
+              >
+                <Phone size={18} className="text-green-100" />
                 <div>
-                    <p className="text-xs text-neutral-500 mb-1">Vendor</p>
+                  <p className="text-xs text-neutral-500 mb-1">Phone</p>
                   <p className="font-medium text-neutral-900 text-sm ">
-                    {storeDetail.user.firstName} {storeDetail.user.lastName}
+                    {storeDetail.phoneNumber}
                   </p>
                 </div>
-                </Card>
+              </Card>
 
               <Card
-              gap="md"
-              border="none"
-              className="flex items-start gap-3  bg-neutral-50"
-            >
-                <StoreIcon size={18} className="text-green-100"  />
+                gap="md"
+                border="none"
+                className="flex items-start gap-3  bg-neutral-50"
+              >
+                <MapPin size={18} className="text-green-100 shrink-0" />
+                <div>
+                  {' '}
+                  <p className="text-xs text-neutral-500 mb-1">Address</p>
+                  <p className="font-medium text-neutral-900 text-sm">
+                    {storeDetail.storeAddress}
+                  </p>
+                </div>
+              </Card>
 
-                <div>  <p className="text-xs text-neutral-500 mb-1">Business Name</p>
-                  <p className="font-medium text-neutral-900 text-sm ">
-                    {storeDetail.user.businessInfo.businessName}
-                  </p></div>
-                </Card>
-
-              <Card
-                           gap="md"
-                           border="none"
-                           className="flex items-start gap-3  bg-neutral-50"
-                         >
-                  <Landmark size={18} className="text-green-100" />
+              {storeDetail.deliveryFee && (
+                <Card
+                  gap="md"
+                  border="none"
+                  className="flex items-start gap-3  bg-neutral-50"
+                >
+                  <CreditCard size={18} className="text-green-100" />
 
                   <div>
-                    <p className="text-xs text-neutral-500 mb-1">Bank</p>
-                    <p className="font-medium text-neutral-900 text-sm capitalize">
-                      {storeDetail.user.businessInfo.bankName}
+                    {' '}
+                    <p className="text-xs text-neutral-500 mb-1">
+                      Delivery Fee
                     </p>
+                    <h6 className="font-medium text-primary text-sm ">
+                      NGN {storeDetail.deliveryFee?.toLocaleString()}
+                    </h6>
                   </div>
                 </Card>
+              )}
 
-               <Card
-                           gap="md"
-                           border="none"
-                           className="flex items-start gap-3  bg-neutral-50"
-                         >
-                <CreditCard size={18} className="text-green-100" />
+              <Card
+                gap="md"
+                border="none"
+                className="flex items-start gap-3  bg-neutral-50"
+              >
+                <ListOrdered size={18} className="text-green-100" />
 
-                 <div>
-                   <p className="text-xs text-neutral-500 mb-1">Account No.</p>
-                  <p className="font-medium text-neutral-900 text-sm ">
-                    {storeDetail.user.businessInfo.accountNumber}
-                  </p>
-                 </div>
-                </Card>
-
-
-                      <Card
-                           gap="md"
-                           border="none"
-                           className="flex items-start gap-3  bg-neutral-50"
-                         >
-                <User size={18} className="text-green-100" />
-
-                 <div>
-                   <p className="text-xs text-neutral-500 mb-1">Account Name.</p>
-                  <p className="font-medium text-neutral-900 text-sm capitalize">
-                    {storeDetail.user.businessInfo.accountName}
-                  </p>
-                 </div>
-                </Card>
-
-                <Card
-                           gap="md"
-                           border="none"
-                           className="flex items-start gap-3  bg-neutral-50"
-                         >
-
-                          <MapPin size={18} className="text-green-100" />
-                
                 <div>
-                    <p className="text-xs text-neutral-500 mb-1">Location</p>
-                  <p className="font-medium text-neutral-900 text-sm">
-                    {storeDetail.user.businessInfo.address},{' '}
-                    {storeDetail.user.businessInfo.city},{' '}
-                    {storeDetail.user.businessInfo.state}
+                  <p className="text-xs text-neutral-500 mb-1">
+                    Daily Limit Order
+                  </p>
+                  <p className="font-medium text-neutral-900 text-sm ">
+                    {storeDetail.dailyOrderLimit}
                   </p>
                 </div>
-                </Card>
-              </div>
-            </div>
-          )}
+              </Card>
 
-          {/* Products */}
-          <div className="space-y-3">
-            <h4 className="text-sm font-semibold">
-              Products ({storeDetail.products.length})
-            </h4>
-            {storeDetail.products.length > 0 ? (
-              <div className="space-y-2">
-                {storeDetail.products.map((product) => (
-                  <Card
-                  border="none"
-                  gap="md"
-                    key={product.id}
-                    className=" bg-neutral-50 flex justify-between items-center"
-                  >
-                    <div className="flex items-center gap-3 mb-0">
-                      <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                        <Package size={14} className="text-primary" />
-                      </div>
-                      <div className='space-y-1'>
-                        <p className="font-medium text-sm">
-                          {product.productName}
-                        </p>
-                     <div className='flex items-center gap-4'>
-                         <p className="text-xs text-neutral-400">
-                          {product.subcategoryId} 
-                        </p>
-<span className='w-1 h-1 bg-neutral-400 rounded-full'>
+              <Card
+                gap="md"
+                border="none"
+                className="flex items-start gap-3  bg-neutral-50"
+              >
+                <Timer size={18} className="text-green-100" />
 
-</span>
-                        <p className="text-xs text-neutral-400">
-                           {product.sku}
-                        </p>
-                     </div>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <h6 className="font-medium text-sm">
-                        NGN {product.basePrice?.toLocaleString()}
-                      </h6>
-                      <span
-                        className={clsx(
-                          'text-[10px] rounded-full px-2 py-0.5',
-                          product.stockStatus === 'IN_STOCK'
-                            ? 'bg-emerald-100 text-emerald-600'
-                            : 'bg-red-100 text-red-600',
-                        )}
-                      >
-                        {formatStatus(product.stockStatus)}
-                      </span>
-                    </div>
-                  </Card>
-                ))}
-              </div>
-            ) : (
-              <p className="text-sm text-neutral-400">No products yet</p>
-            )}
-          </div>
-
-          {/* Actions */}
-          {isPending && (
-            <div className="pt-4 space-y-4">
-              {showRejectForm ? (
-                <div className="space-y-3">
-                  <Textarea
-                    id="reason"
-                    label="Reason for rejection"
-                    placeholder="Explain why this store is being declined..."
-                    value={rejectionReason}
-                    onChange={(e) => {
-                      setRejectionReason(e.target.value);
-                      if (reasonError) setReasonError('');
-                    }}
-                  />
-
-                  {reasonError && (
-                    <p className="text-xs text-red-500">{reasonError}</p>
-                  )}
-                  <div className="flex justify-around gap-4">
-                    <Button
-                      variant="outline"
-                      size="lg"
-                      onClick={() => {
-                        setShowRejectForm(false);
-                        setRejectionReason('');
-                        setReasonError('');
-                      }}
-                      disabled={isSubmitting}
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      variant="red-secondary"
-                      size="lg"
-                      onClick={handleReject}
-                      disabled={isSubmitting}
-                    >
-                      {isSubmitting ? 'Processing...' : 'Confirm Rejection'}
-                    </Button>
-                  </div>
+                <div>
+                  <p className="text-xs text-neutral-500 mb-1">Prep Time</p>
+                  <p className="font-medium text-neutral-900 text-sm ">
+                    {storeDetail.preparationTime} min
+                  </p>
                 </div>
-              ) : (
-                <div className="flex justify-around gap-4">
-                  <Button
-                    variant="red-secondary"
-                    size="lg"
-                    onClick={() => setShowRejectForm(true)}
-                    disabled={isSubmitting}
-                  >
-                    Decline
-                  </Button>
-                  <Button
-                    variant="green-secondary"
-                    size="lg"
-                    onClick={handleApprove}
-                    disabled={isSubmitting}
-                  >
-                    {isSubmitting ? 'Processing...' : 'Accept'}
-                  </Button>
+              </Card>
+
+              {storeDetail.storeDescription && (
+                <div className="p-4 bg-neutral-50 rounded-xl md:col-span-2">
+                  <p className="text-xs text-neutral-500 mb-1">Description</p>
+                  <p className="font-medium text-neutral-900 text-sm ">
+                    {storeDetail.storeDescription}
+                  </p>
                 </div>
               )}
             </div>
-          )}
-        </div>
-      ) : (
-        <div className="py-20 text-center text-neutral-400">
-          Failed to load store details
-        </div>
-      )}
-    </Modal>
+
+            {/* Vendor Info */}
+            {storeDetail.user.businessInfo && (
+              <div className="space-y-3">
+                <h4 className="text-sm font-semibold">Vendor Information</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Card
+                    gap="md"
+                    border="none"
+                    className="flex items-start gap-3  bg-neutral-50"
+                  >
+                    <User size={18} className="text-green-100" />
+                    <div>
+                      <p className="text-xs text-neutral-500 mb-1">Vendor</p>
+                      <p className="font-medium text-neutral-900 text-sm ">
+                        {storeDetail.user.firstName} {storeDetail.user.lastName}
+                      </p>
+                    </div>
+                  </Card>
+
+                  <Card
+                    gap="md"
+                    border="none"
+                    className="flex items-start gap-3  bg-neutral-50"
+                  >
+                    <StoreIcon size={18} className="text-green-100" />
+
+                    <div>
+                      {' '}
+                      <p className="text-xs text-neutral-500 mb-1">
+                        Business Name
+                      </p>
+                      <p className="font-medium text-neutral-900 text-sm ">
+                        {storeDetail.user.businessInfo.businessName}
+                      </p>
+                    </div>
+                  </Card>
+
+                  <Card
+                    gap="md"
+                    border="none"
+                    className="flex items-start gap-3  bg-neutral-50"
+                  >
+                    <Landmark size={18} className="text-green-100" />
+
+                    <div>
+                      <p className="text-xs text-neutral-500 mb-1">Bank</p>
+                      <p className="font-medium text-neutral-900 text-sm capitalize">
+                        {storeDetail.user.businessInfo.bankName}
+                      </p>
+                    </div>
+                  </Card>
+
+                  <Card
+                    gap="md"
+                    border="none"
+                    className="flex items-start gap-3  bg-neutral-50"
+                  >
+                    <CreditCard size={18} className="text-green-100" />
+
+                    <div>
+                      <p className="text-xs text-neutral-500 mb-1">
+                        Account No.
+                      </p>
+                      <p className="font-medium text-neutral-900 text-sm ">
+                        {storeDetail.user.businessInfo.accountNumber}
+                      </p>
+                    </div>
+                  </Card>
+
+                  <Card
+                    gap="md"
+                    border="none"
+                    className="flex items-start gap-3  bg-neutral-50"
+                  >
+                    <User size={18} className="text-green-100" />
+
+                    <div>
+                      <p className="text-xs text-neutral-500 mb-1">
+                        Account Name.
+                      </p>
+                      <p className="font-medium text-neutral-900 text-sm capitalize">
+                        {storeDetail.user.businessInfo.accountName}
+                      </p>
+                    </div>
+                  </Card>
+
+                  <Card
+                    gap="md"
+                    border="none"
+                    className="flex items-start gap-3  bg-neutral-50"
+                  >
+                    <MapPin size={18} className="text-green-100" />
+
+                    <div>
+                      <p className="text-xs text-neutral-500 mb-1">Location</p>
+                      <p className="font-medium text-neutral-900 text-sm">
+                        {storeDetail.user.businessInfo.address},{' '}
+                        {storeDetail.user.businessInfo.city},{' '}
+                        {storeDetail.user.businessInfo.state}
+                      </p>
+                    </div>
+                  </Card>
+                </div>
+              </div>
+            )}
+
+            {/* Products */}
+            <div className="space-y-3">
+              <h4 className="text-sm font-semibold">
+                Products ({storeDetail.products.length})
+              </h4>
+              {storeDetail.products.length > 0 ? (
+                <div className="space-y-2">
+                  {storeDetail.products.map((product) => (
+                    <Card
+                      border="none"
+                      gap="md"
+                      key={product.id}
+                      className=" bg-neutral-50 flex justify-between items-center"
+                    >
+                      <div className="flex items-center gap-3 mb-0">
+                        <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                          <Package size={14} className="text-primary" />
+                        </div>
+                        <div className="space-y-1">
+                          <p className="font-medium text-sm">
+                            {product.productName}
+                          </p>
+                          <div className="flex items-center gap-4">
+                            <p className="text-xs text-neutral-400">
+                              {product.subcategoryId}
+                            </p>
+                            <span className="w-1 h-1 bg-neutral-400 rounded-full"></span>
+                            <p className="text-xs text-neutral-400">
+                              {product.sku}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <h6 className="font-medium text-sm">
+                          NGN {product.basePrice?.toLocaleString()}
+                        </h6>
+                        <span
+                          className={clsx(
+                            'text-[10px] rounded-full px-2 py-0.5',
+                            product.stockStatus === 'IN_STOCK'
+                              ? 'bg-emerald-100 text-emerald-600'
+                              : 'bg-red-100 text-red-600',
+                          )}
+                        >
+                          {formatStatus(product.stockStatus)}
+                        </span>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-neutral-400">No products yet</p>
+              )}
+            </div>
+
+            {/* Actions */}
+            {isPending && (
+              <div className="pt-4 space-y-4">
+                <div className="flex justify-around gap-4">
+                  <Button
+                    variant="red-secondary"
+                    size="icon"
+                    onClick={() => handleAction('REJECTED')}
+                  >
+                  Reject
+                  </Button>
+                  <Button
+                    variant="green-secondary"
+                    size="icon"
+                    onClick={() => handleAction('ACTIVE')}
+                  >
+                    Approve
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="py-20 text-center text-neutral-400">
+            Failed to load store details
+          </div>
+        )}
+      </Modal>
+
+      <StoreActionModal
+        storeId={storeDetail?.id}
+        storeName={storeDetail?.storeName}
+        isModalOpen={isModalActionOpen}
+        onClose={handleCloseModal}
+        actionStatus={submitAction}
+        onSuccess={handleSuccess}
+      />
+    </>
   );
 }

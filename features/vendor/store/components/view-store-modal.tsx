@@ -18,6 +18,7 @@ import Image from 'next/image';
 import { ViewStoreModalProps } from '../types';
 import Card from '@/components/layout/card';
 import { formatDate } from '@/helpers/date-formatter';
+import ErrorMessage from '@/components/layout/error-message';
 
 export default function ViewStoreModal({
   isModalOpen,
@@ -44,6 +45,7 @@ export default function ViewStoreModal({
     status,
     createdAt,
     updatedAt,
+    rejectionReason,
   } = store;
 
   const statusMap = {
@@ -58,6 +60,10 @@ export default function ViewStoreModal({
     DRAFT: {
       label: 'Draft',
       className: 'bg-amber-500/10 text-amber-600',
+    },
+    REJECTED: {
+      label: 'Rejected',
+      className: 'bg-red-500/10 text-red-600',
     },
     INACTIVE: {
       label: 'Inactive',
@@ -101,18 +107,18 @@ export default function ViewStoreModal({
         </div>
 
         {/* Store Logo */}
-        
-          <div className="relative w-64 h-64 rounded-2xl overflow-hidden">
-            <Image
-              src={storeLogo ??'/assets/image/store-placeholder.png'}
-              alt={storeName ?? 'Store logo'}
-              fill
-              className="object-cover"
-              unoptimized
-            />
-          </div>
-        
 
+        <div className="relative w-64 h-64 rounded-2xl overflow-hidden">
+          <Image
+            src={storeLogo ?? '/assets/image/store-placeholder.png'}
+            alt={storeName ?? 'Store logo'}
+            fill
+            className="object-cover"
+            unoptimized
+          />
+        </div>
+
+        {rejectionReason  && <ErrorMessage message={rejectionReason} />}
         {/* Contact & Location Info */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Card
@@ -163,7 +169,9 @@ export default function ViewStoreModal({
               <ShoppingBag size={16} className="text-green-100" />
               <p className="text-xs text-neutral-500">Daily Order Limit</p>
             </div>
-            <p className="font-medium text-neutral-900 text-sm">{dailyOrderLimit}</p>
+            <p className="font-medium text-neutral-900 text-sm">
+              {dailyOrderLimit}
+            </p>
           </Card>
 
           <Card gap="md" border="none" className=" bg-neutral-50">
@@ -234,7 +242,7 @@ export default function ViewStoreModal({
         </div>
 
         {/* Actions */}
-     <div className="flex flex-col-reverse sm:flex-row justify-between gap-3">
+        <div className="flex flex-col-reverse sm:flex-row justify-between gap-3">
           <Button
             variant="white"
             size="icon"
@@ -243,7 +251,7 @@ export default function ViewStoreModal({
             Close
           </Button>
 
-          {onEdit && (
+          {onEdit && rejectionReason === null && (
             <Button variant="primary" size="icon" onClick={handleEdit}>
               <Edit size={16} />
               Edit Store

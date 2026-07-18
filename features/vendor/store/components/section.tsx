@@ -1,6 +1,7 @@
 import Card from '@/components/layout/card';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { searchAddress } from '@/helpers/address-search';
+import { getGoogleMapsEmbedUrl } from '@/helpers/google-maps-embed';
 import Input from '@/components/ui/inputs/input';
 import { Select } from '@/components/ui/inputs/select';
 import Textarea from '@/components/ui/inputs/textarea';
@@ -9,7 +10,7 @@ import { Button } from '@/components/ui/buttons/button';
 import { useBusinessTypes } from '../../onboarding/fetch';
 import { AddressSuggestion } from '@/helpers/address-search';
 import { useState } from 'react';
-import PhoneInput from '@/components/ui/inputs/phone-input';
+import { MapPin } from 'lucide-react';
 
 export interface StoreFormValues {
   storeName: string;
@@ -38,6 +39,7 @@ export function StoreInformation({
 }: StoreInformationProps) {
   const [suggestions, setSuggestions] = useState<AddressSuggestion[]>([]);
   const [isFocused, setIsFocused] = useState(false);
+  const addressInputRef = useRef<HTMLDivElement>(null);
 
   const { data: StoreCategory, isPending, error } = useBusinessTypes();
 
@@ -50,6 +52,24 @@ export function StoreInformation({
     })) ?? [];
 
   console.log('store category options :', options);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        addressInputRef.current &&
+        !addressInputRef.current.contains(e.target as Node)
+      ) {
+        setIsFocused(false);
+      }
+    };
+
+    if (isFocused) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () =>
+        document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [isFocused]);
 
   useEffect(() => {
     const timeout = setTimeout(async () => {
@@ -101,8 +121,7 @@ export function StoreInformation({
             disabled={disabled}
           />
 
-          <div className="relative">
-            {' '}
+          <div className="relative" ref={addressInputRef}>
             <Input
               name="storeAddress"
               label="Store Address"
@@ -110,9 +129,6 @@ export function StoreInformation({
               placeholder="12B Adeola Odaku street, Victoria Island Lag.."
               spacing="sm"
               onFocus={() => setIsFocused(true)}
-              onBlur={() => {
-                setTimeout(() => setIsFocused(false), 150);
-              }}
               value={values.storeAddress}
               onChange={(e) => onChange('storeAddress', e.target.value)}
               errorMessage={errors?.storeAddress?.[0]}
@@ -124,18 +140,45 @@ export function StoreInformation({
                   <button
                     key={Math.random()}
                     type="button"
-                    className="w-full border-b border-border px-4 py-3 text-left hover:bg-neutral-50 last:border-b-0 text-sm text-neutral-700 cursor-pointer "
-                    onClick={() => {
+                    className="w-full border-b border-border px-4 py-3 text-left hover:bg-neutral-50 last:border-b-0 text-sm text-neutral-700 cursor-pointer transition-colors"
+                    onMouseDown={(e) => {
+                      e.preventDefault();
                       onChange('storeAddress', item.description);
                       setSuggestions([]);
+                      setIsFocused(false);
                     }}
                   >
-                    {item.description}
+                    <div className="flex items-start gap-2">
+                      <MapPin
+                        size={16}
+                        className="text-neutral-500 mt-0.5 shrink-0"
+                      />
+                      <div className="flex-1">{item.description}</div>
+                    </div>
                   </button>
                 ))}
               </div>
             )}
           </div>
+
+          {/* Map Preview */}
+          {values.storeAddress && (
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-neutral-900">
+                Location Preview
+              </label>
+              <iframe
+                title="store-location"
+                width="100%"
+                height="300"
+                loading="lazy"
+                allowFullScreen
+                referrerPolicy="no-referrer-when-downgrade"
+                src={getGoogleMapsEmbedUrl(values.storeAddress)}
+                className="rounded-lg border border-border"
+              ></iframe>
+            </div>
+          )}
 
           <Input
             name="phoneNumber"
@@ -235,7 +278,8 @@ export function OperatingHours({
                 <div key={day} className="space-y-2">
                   <div className="grid grid-cols-5  xl:grid-cols-12 gap-4 items-center">
                     <span className="text-sm col-span-5 xl:col-span-3">
-                      {day}<span className="text-red-500">*</span>
+                      {day}
+                      <span className="text-red-500">*</span>
                     </span>
                     <div className="col-span-2 xl:col-span-4">
                       <TimePicker

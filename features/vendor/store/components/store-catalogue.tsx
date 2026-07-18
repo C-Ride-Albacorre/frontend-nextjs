@@ -1,10 +1,10 @@
-
 import Card from '@/components/layout/card';
 import { Button } from '@/components/ui/buttons/button';
 import clsx from 'clsx';
-import { Edit, Eye } from 'lucide-react';
+import { Edit, Eye, MapPin } from 'lucide-react';
 import Image from 'next/image';
 import { StoreCatalogueProps } from '../types';
+import ErrorMessage from '@/components/layout/error-message';
 
 export default function StoreCatalogue({
   storeData,
@@ -13,8 +13,14 @@ export default function StoreCatalogue({
   onSelectStore,
   isSelected,
 }: StoreCatalogueProps) {
-  const { storeLogo, storeName, storeAddress, status, operatingHours } =
-    storeData;
+  const {
+    storeLogo,
+    storeName,
+    storeAddress,
+    status,
+    operatingHours,
+    rejectionReason,
+  } = storeData;
 
   const statusMap = {
     ACTIVE: {
@@ -24,6 +30,10 @@ export default function StoreCatalogue({
     PENDING_APPROVAL: {
       label: 'Pending',
       className: 'bg-amber-100 text-amber-600',
+    },
+    REJECTED: {
+      label: 'Rejected',
+      className: 'bg-red-500/10 text-red-600',
     },
     DRAFT: {
       label: 'Draft',
@@ -65,6 +75,7 @@ export default function StoreCatalogue({
             }
           />
 
+
           {/* SELECT */}
           <div className="absolute right-3 top-3">
             <input
@@ -82,6 +93,10 @@ export default function StoreCatalogue({
             />
           </div>
         </div>
+
+
+        
+          {rejectionReason && <ErrorMessage message={rejectionReason} />}
 
         {/* CONTENT */}
         <div className="space-y-4">
@@ -102,12 +117,15 @@ export default function StoreCatalogue({
           </div>
 
           {/* ADDRESS */}
-          <p className="line-clamp-2 text-xs capitalize text-neutral-500">
-            {storeAddress}
-          </p>
+          <div className=" flex gap-2">
+            <MapPin size={16} className="text-green-100 shrink-0" />
+            <p className="line-clamp-2 text-xs capitalize text-neutral-500">
+              {storeAddress}
+            </p>
+          </div>
 
           {/* HOURS */}
-          {openDays.length > 0 && (
+          {openDays.length > 0 && rejectionReason === null && (
             <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-neutral-400">
               {openDays.map((item) => (
                 <span key={item.dayOfWeek}>
@@ -121,16 +139,18 @@ export default function StoreCatalogue({
 
         {/* ACTIONS */}
         <div className="grid grid-cols-2 gap-2">
-          <Button
-            variant="white"
-            leftIcon={<Edit size={14} />}
-            size="icon"
-            rounded="lg"
-            className="w-full"
-            onClick={onEdit}
-          >
-            Edit
-          </Button>
+          {rejectionReason === null && (
+            <Button
+              variant="white"
+              leftIcon={<Edit size={14} />}
+              size="icon"
+              rounded="lg"
+              className="w-full"
+              onClick={onEdit}
+            >
+              Edit
+            </Button>
+          )}
 
           <Button
             variant="primary"

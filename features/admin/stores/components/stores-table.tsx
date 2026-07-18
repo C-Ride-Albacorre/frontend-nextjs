@@ -121,6 +121,9 @@ export default function StoresTable({ stores, onView, onAction }: Props) {
           </table>
         </div>
       </Card>
+
+
+     
     </>
   );
 }

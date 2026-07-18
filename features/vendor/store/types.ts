@@ -52,6 +52,7 @@ export interface StoreData {
   products?: unknown[];
   createdAt: string;
   updatedAt: string;
+  rejectionReason?: string | null;
 }
 
 export interface StoreResponse {
