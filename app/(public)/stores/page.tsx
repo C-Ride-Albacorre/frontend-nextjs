@@ -54,6 +54,30 @@ export default async function StoresPage({
           : 'Stores available near you';
 
   return (
+    // <section>
+    //   <div className="space-y-4 md:space-y-10">
+    //     <div className="space-y-4">
+    //       <h2 className="text-2xl font-semibold">{title}</h2>
+    //       <p className="text-sm text-neutral-500">{subtitle}</p>
+    //     </div>
+
+    //     <StoreSearch initialSearch={search ?? ''} />
+
+    //     <Suspense fallback={<CategoryIconsSkeleton />}>
+    //       <SubCategoriesWrapper categoryId={categoryId} />
+    //     </Suspense>
+
+    //     <LocationChips />
+
+    //     <Suspense fallback={<StoreSkeleton />}>
+    //       <StoresWrapper
+    //         searchParams={resolvedSearchParams}
+    //         returnUrl={currentUrl}
+    //       />
+    //     </Suspense>
+    //   </div>
+    // </section>
+
     <section>
       <div className="space-y-4 md:space-y-10">
         <div className="space-y-4">
@@ -63,18 +87,14 @@ export default async function StoresPage({
 
         <StoreSearch initialSearch={search ?? ''} />
 
-        <Suspense fallback={<CategoryIconsSkeleton />}>
-          <SubCategoriesWrapper categoryId={categoryId} />
-        </Suspense>
+        <SubCategoriesWrapper categoryId={categoryId} />
 
         <LocationChips />
 
-        <Suspense fallback={<StoreSkeleton />}>
-          <StoresWrapper
-            searchParams={resolvedSearchParams}
-            returnUrl={currentUrl}
-          />
-        </Suspense>
+        <StoresWrapper
+          searchParams={resolvedSearchParams}
+          returnUrl={currentUrl}
+        />
       </div>
     </section>
   );

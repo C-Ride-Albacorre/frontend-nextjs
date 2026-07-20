@@ -1,9 +1,7 @@
 import DeliveryHeader from '@/features/user/delivery/components/delivery-header';
-import DeliveryAddressModal from '@/features/user/delivery/components/modals/delivery-address-modal';
 import Categories from '@/features/user/delivery/components/categories';
 import { Suspense } from 'react';
 import CategoriesSkeleton from '@/features/user/delivery/components/categories-skeleton';
-import CategoriesError from '@/features/user/delivery/components/error';
 import DeliveryAddressWrapper from '@/features/user/delivery/components/modals/delivery-address-wrapper';
 
 export default async function CreateDeliveryPage({

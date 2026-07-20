@@ -118,7 +118,7 @@ export default async function StoreProductsWrapper({
             <h2 className="text-lg font-semibold">Products</h2>
 
             <p className="text-sm text-neutral-500">
-              Browse products from {store.data.storeName}
+              Browse products from <span className='capitalize'>{store.data.storeName}</span>
             </p>
           </div>
 

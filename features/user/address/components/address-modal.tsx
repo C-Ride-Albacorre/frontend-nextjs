@@ -15,22 +15,19 @@ export default function AddressModal({
   onSuccess?: () => void;
   savedAddresses: AddressItem[];
 }) {
- 
   return (
     <Modal isModalOpen={isModalOpen} onClose={onClose}>
       <div className="py-8">
         <h2 className="text-xl font-semibold">Select Delivery Location</h2>
         <p className="text-sm text-gray-500">
-          Choose from saved locations or add a new one
+          Use Google Maps search, manual entry, or choose from saved locations
         </p>
 
-  
-          <AddressWrapper
-            shouldShowModal={shouldShowModal}
-            onSuccess={onSuccess}
-            savedAddresses={savedAddresses}
-          />
- 
+        <AddressWrapper
+          shouldShowModal={shouldShowModal}
+          onSuccess={onSuccess}
+          savedAddresses={savedAddresses}
+        />
       </div>
     </Modal>
   );

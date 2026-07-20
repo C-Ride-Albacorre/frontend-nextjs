@@ -9,17 +9,10 @@ import { LocationState } from '../schema';
 import { useQueryClient } from '@tanstack/react-query';
 import ErrorMessage from '@/components/layout/error-message';
 import { toast } from 'sonner';
+import { reverseGeocode } from '@/helpers/reverse-geocode-result';
+import { getGoogleMapsEmbedUrl } from '@/helpers/google-maps-embed';
 
-// const locations = [
-//   'Victoria Island',
-//   'Lekki Phase 1',
-//   'Ikoyi',
-//   'Banana Island',
-//   'Ikeja',
-//   'Surulere',
-//   'Eko Atlantic',
-//   'Yaba',
-// ];
+
 
 export default function MapLocations({
   onSuccess,
@@ -58,57 +51,54 @@ export default function MapLocations({
     }
   }, [state, onSuccess]);
 
-  const handleUseCurrentLocation = () => {
-    setIsLoading(true);
+const handleUseCurrentLocation = () => {
+  setIsLoading(true);
+  setError('');
 
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
+  navigator.geolocation.getCurrentPosition(
+    async (position) => {
+      try {
         const lat = position.coords.latitude;
         const lng = position.coords.longitude;
 
-        if (!lat || !lng) {
-          setError('Unable to retrieve your location');
-          setIsLoading(false);
+        setLocation({
+          latitude: lat,
+          longitude: lng,
+        });
+
+        const result = await reverseGeocode(lat, lng);
+
+        if (!result) {
+          setError('Unable to determine address.');
           return;
         }
 
-        setLocation({ latitude: lat, longitude: lng });
+        setPlace(result.address);
 
-        // ✅ reverse geocode
-        try {
-          const res = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=jsonv2&addressdetails=1&lat=${lat}&lon=${lng}`,
-          );
-
-          const data = await res.json();
-          const addr = data.address || {};
-
-          const city = addr.city || addr.town || addr.village || '';
-          const state = addr.state || '';
-          const country = addr.country || '';
-          const postalCode = addr.postcode || '';
-
-          setPlace(data.display_name);
-
-          setAddressData({
-            address: data.display_name || '',
-            city,
-            state,
-            country,
-            postalCode,
-          });
-        } catch {
-          setPlace('Unknown location');
-        }
-
+        setAddressData({
+          address: result.address,
+          city: result.city,
+          state: result.state,
+          country: result.country,
+          postalCode: result.postalCode,
+        });
+      } catch {
+        setError('Unable to determine your address.');
+      } finally {
         setIsLoading(false);
-      },
-      () => {
-        setError('Unable to retrieve your location');
-        setIsLoading(false);
-      },
-    );
-  };
+      }
+    },
+    () => {
+      setError('Unable to retrieve your location');
+      setIsLoading(false);
+    },
+    {
+      enableHighAccuracy: true,
+      timeout: 10000,
+      maximumAge: 0,
+    },
+  );
+};
 
   return (
     <div className=" space-y-6">
@@ -118,7 +108,7 @@ export default function MapLocations({
         <ErrorMessage message={error || 'An error occurred'} />
       ) : null}
 
-      <Card gap="sm" className="bg-foreground-200 flex flex-col">
+      <Card border='none' gap="sm" className="bg-foreground-200 flex flex-col">
         <span className="text-neutral-500 text-xs ">
           Select a popular location or use your current GPS location
         </span>
@@ -135,7 +125,27 @@ export default function MapLocations({
       </Card>
 
       <form action={action} className="space-y-4">
-        <Card className=" bg-foreground-200 flex items-start gap-4 ">
+
+              {addressData.address && (
+  <div className="space-y-4">
+    <label className="text-sm font-medium">
+      Location Preview
+    </label>
+
+    <iframe
+      title="selected-location"
+      width="100%"
+      height="300"
+      loading="lazy"
+      allowFullScreen
+      referrerPolicy="no-referrer-when-downgrade"
+      src={getGoogleMapsEmbedUrl(addressData.address)}
+      className="rounded-xl"
+    />
+  </div>
+)}
+
+        <Card border='none' className=" bg-foreground-200 flex items-start gap-4 ">
           <MapPin size={20} className="text-primary mb-0" />
 
           <div className="flex-1 space-y-4 mb-0">
@@ -194,6 +204,7 @@ export default function MapLocations({
           />
         </Card>
 
+  
         <div className="text-center">
           <Button
             size="2xl"

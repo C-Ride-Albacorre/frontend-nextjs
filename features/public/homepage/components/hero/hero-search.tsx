@@ -14,6 +14,7 @@ import { motion } from 'framer-motion';
 import Input from '@/components/ui/inputs/input';
 import { Button } from '@/components/ui/buttons/button';
 import { BASE_URL } from '@/config/api';
+import { reverseGeocode } from '@/helpers/reverse-geocode-result';
 
 type StoreSuggestion = {
   id: string;
@@ -23,9 +24,8 @@ type StoreSuggestion = {
 };
 
 type AddressSuggestion = {
-  display_name: string;
-  lat: string;
-  lon: string;
+  placeId: string;
+  description: string;
 };
 
 const DEFAULT_COORDS = {
@@ -76,11 +76,11 @@ export default function HeroSearch() {
   useEffect(() => {
     const fetchAddress = async () => {
       try {
-        const res = await fetch(
-          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${coords.lat}&lon=${coords.lng}`,
-        );
-        const data = await res.json();
-        if (data?.display_name) setAddress(data.display_name);
+        const result = await reverseGeocode(coords.lat, coords.lng);
+
+        if (result) {
+          setAddress(result.address);
+        }
       } catch {}
     };
     fetchAddress();
@@ -143,51 +143,27 @@ export default function HeroSearch() {
     [coords],
   );
 
-  const fetchAddresses = useCallback(
-    async (term: string) => {
-      if (!term.trim()) {
-        setAddressSuggestions([]);
-        setShowAddressDropdown(false);
-        return;
-      }
-      try {
-        const delta = 0.5;
-        const viewbox = [
-          coords.lng - delta,
-          coords.lat + delta,
-          coords.lng + delta,
-          coords.lat - delta,
-        ].join(',');
+const fetchAddresses = useCallback(async (term: string) => {
+  if (!term.trim()) {
+    setAddressSuggestions([]);
+    setShowAddressDropdown(false);
+    return;
+  }
 
-        const params = new URLSearchParams({
-          format: 'json',
-          q: term,
-          countrycodes: 'ng',
-          viewbox,
-          bounded: '0',
-          limit: '6',
-          addressdetails: '1',
-        });
+  try {
+    const res = await fetch(
+      `/api/google-autocomplete?q=${encodeURIComponent(term)}`
+    );
 
-        const res = await fetch(
-          `https://nominatim.openstreetmap.org/search?${params}`,
-        );
-        const data = await res.json();
+    const data = await res.json();
 
-        const mapped: AddressSuggestion[] = data.slice(0, 6).map((d: any) => ({
-          display_name: d.display_name,
-          lat: d.lat,
-          lon: d.lon,
-        }));
-
-        setAddressSuggestions(mapped);
-        setShowAddressDropdown(mapped.length > 0);
-      } catch {
-        setAddressSuggestions([]);
-      }
-    },
-    [coords],
-  );
+    setAddressSuggestions(data);
+    setShowAddressDropdown(data.length > 0);
+  } catch {
+    setAddressSuggestions([]);
+    setShowAddressDropdown(false);
+  }
+}, []);
 
   const handleStoreChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const v = e.target.value;
@@ -203,18 +179,29 @@ export default function HeroSearch() {
     debounceAddressRef.current = setTimeout(() => fetchAddresses(v), 400);
   };
 
-  const buildAndPush = (
-    query: string,
-    overrideCoords?: { lat: number; lng: number },
-  ) => {
-    const c = overrideCoords ?? coords;
-    const params = new URLSearchParams();
-    params.set('latitude', String(c.lat));
-    params.set('longitude', String(c.lng));
-    if (address) params.set('address', address);
-    if (query) params.set('search', query);
-    router.push(`/stores?${params}`);
-  };
+const buildAndPush = (
+  query: string,
+  overrideCoords?: { lat: number; lng: number },
+  overrideAddress?: string,
+) => {
+  const c = overrideCoords ?? coords;
+
+  const params = new URLSearchParams();
+
+  params.set('latitude', String(c.lat));
+  params.set('longitude', String(c.lng));
+
+  params.set(
+    'address',
+    overrideAddress ?? address,
+  );
+
+  if (query) {
+    params.set('search', query);
+  }
+
+  router.push(`/stores?${params}`);
+};
 
   const handleSearch = () => {
     setShowStoreDropdown(false);
@@ -228,16 +215,34 @@ export default function HeroSearch() {
     buildAndPush(store.storeName);
   };
 
-  const selectAddress = (suggestion: AddressSuggestion) => {
+const selectAddress = async (suggestion: AddressSuggestion) => {
+  try {
+    const res = await fetch(
+      `/api/place-details?placeId=${suggestion.placeId}`
+    );
+
+    if (!res.ok) return;
+
+    const place = await res.json();
+
     const newCoords = {
-      lat: parseFloat(suggestion.lat),
-      lng: parseFloat(suggestion.lon),
+      lat: place.lat,
+      lng: place.lng,
     };
-    setAddress(suggestion.display_name);
+
+    setAddress(place.address);
     setCoords(newCoords);
     setShowAddressDropdown(false);
-    buildAndPush(searchQuery, newCoords);
-  };
+
+    buildAndPush(
+      searchQuery,
+      newCoords,
+      place.address
+    );
+  } catch (error) {
+    console.error(error);
+  }
+};
 
   return (
     <motion.div
@@ -306,7 +311,7 @@ export default function HeroSearch() {
                       className="text-primary mt-0.5 shrink-0"
                     />
                     <span className="text-xs text-neutral-800 wrap-break-word">
-                      {a.display_name}
+                      {a.description}
                     </span>
                   </button>
                 </li>

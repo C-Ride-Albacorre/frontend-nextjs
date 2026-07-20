@@ -8,7 +8,6 @@ import {
   Briefcase,
   Edit,
   Home,
-  LoaderCircle,
   MapPin,
   MapPinHouse,
   Trash2,
@@ -62,7 +61,7 @@ export default function ProfileSavedAddress({
 
                     <div className="space-y-3 text-sm">
                       <div className="flex items-center gap-2">
-                        <p className="text-sm">{option.label}</p>
+                        <h4 className=" text-base capitalize">{option.label}</h4>
 
                         {option.isDefault && (
                           <span className="bg-[#10B981] px-2 py-1.5 text-white rounded-full text-[10px]">
@@ -78,7 +77,7 @@ export default function ProfileSavedAddress({
                   </div>
 
                   <div className="flex gap-4 items-center">
-                    {!option.isDefault && (
+                    {/* {!option.isDefault && (
                       <Button
                         variant="green-outline"
                         className="text-xs"
@@ -86,7 +85,7 @@ export default function ProfileSavedAddress({
                       >
                         Set Default
                       </Button>
-                    )}
+                    )} */}
                     <IconButton
                       variant="default"
                       size="sm"
@@ -123,6 +122,7 @@ export default function ProfileSavedAddress({
         isModalOpen={addLocation}
         onClose={() => setAddLocation(false)}
         savedAddresses={savedAddresses}
+              onSuccess={() => setAddLocation(false)}
       />
     </>
   );

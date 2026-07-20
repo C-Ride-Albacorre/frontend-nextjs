@@ -149,7 +149,7 @@ export default function BusinessDocumentForm() {
             onClick={handleSubmit}
             rightIcon={<ChevronRight size={16} />}
           >
-            {isPending ? 'Submitting...' : 'Proceed'}
+            {isPending ? 'Submitting...' : 'Save & Submit'}
           </Button>
         </div>
       </div>

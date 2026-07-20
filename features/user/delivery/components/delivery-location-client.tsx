@@ -8,8 +8,6 @@ import { useRouter } from 'next/navigation';
 
 import { toast } from 'sonner';
 
-import AddressModal from '@/features/user/address/components/address-modal';
-
 import { useOrderStore } from '@/features/user/delivery/hooks/order-store';
 import DeliveryAddressSection from './delivery-address-section';
 import RecipientDetailsSection from './recipient-details-section';
