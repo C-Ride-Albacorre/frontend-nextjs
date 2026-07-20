@@ -306,7 +306,7 @@ const selectAddress = async (suggestion: AddressSuggestion) => {
                     onClick={() => selectAddress(a)}
                     className="w-full px-4 py-3 text-left hover:bg-neutral-50 grid grid-cols-[16px_1fr] gap-2 items-start cursor-pointer"
                   >
-                    <Locate
+                    <MapPin
                       size={16}
                       className="text-primary mt-0.5 shrink-0"
                     />
