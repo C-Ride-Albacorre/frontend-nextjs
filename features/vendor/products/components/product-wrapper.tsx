@@ -9,6 +9,7 @@ import ViewProductModal from './view-product-modal';
 import DeleteConfirmModal from './delete-confirm-modal';
 import ProductRow from './product-row';
 import { Subcategory, SubcategoryApiResponse } from '@/features/admin/category/types';
+import EmptyState from '@/components/layout/empty-state';
 
 export default function ProductWrapper({
   selectedId,
@@ -58,18 +59,26 @@ console.log('Sub Categories:', subCategories);
         </Button>
       </div>
 
-      <ul className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 w-full">
-        {productData.map((product: Product) => (
-          <li key={product.id}>
-            <ProductRow
-              product={product}
-              onView={() => handleViewProduct(product)}
-              onEdit={() => handleEditProduct(product)}
-              onDelete={() => handleDeleteProduct(product)}
-            />
-          </li>
-        ))}
-      </ul>
+      {(!productData || productData.length === 0) ? (
+        <EmptyState
+          icon={<Package size={36} className="text-neutral-500" />}
+          title="No products found"
+          message="Please add a product to view its details."
+        />
+      ) : (
+        <ul className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 w-full">
+          {productData.map((product: Product) => (
+            <li key={product.id}>
+              <ProductRow
+                product={product}
+                onView={() => handleViewProduct(product)}
+                onEdit={() => handleEditProduct(product)}
+                onDelete={() => handleDeleteProduct(product)}
+              />
+            </li>
+          ))}
+        </ul>
+      )}
       {/* MODALS */}
 
       <ProductForm

@@ -1,7 +1,8 @@
 import EmptyState from '@/components/layout/empty-state';
 import ErrorState from '@/components/layout/error-state';
 import { getSubcategoriesService } from '@/features/admin/category/service';
-import Product from '@/features/vendor/products/components/product-wrapper';
+import ProductWrapper from '@/features/vendor/products/components/product-wrapper';
+// import Product from '@/features/vendor/products/components/product-wrapper';
 import { getStoreProductsService } from '@/features/vendor/products/service';
 import { Package } from 'lucide-react';
 
@@ -20,17 +21,17 @@ export default async function ProductIdWrapper({
 
       console.log('Fetching products for store ID:', id);
 
-      if (!data || data.length === 0) {
-        return (
-          <EmptyState
-            icon={<Package size={36} className="text-neutral-500" />}
-            title="No products found"
-            message="Please add a product to view its details."
-          />
-        );
-      }
+      // if (!data || data.length === 0) {
+      //   return (
+      //     <EmptyState
+      //       icon={<Package size={36} className="text-neutral-500" />}
+      //       title="No products found"
+      //       message="Please add a product to view its details."
+      //     />
+      //   );
+      // }
       return (
-        <Product
+        <ProductWrapper
           selectedId={id}
           productData={data}
           subCategories={subCategories}
