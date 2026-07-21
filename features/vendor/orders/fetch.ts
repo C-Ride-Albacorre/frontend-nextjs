@@ -28,7 +28,7 @@ export function useVendorOrders(
         totalPages: response.totalPages,
       };
     },
-    refetchInterval: 30000,
+    refetchInterval: 300000, 
     refetchIntervalInBackground: true,
     refetchOnWindowFocus: true,
     staleTime: 60000,

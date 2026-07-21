@@ -65,13 +65,21 @@ const Avatar = ({
           className="object-cover"
           onError={() => setError(true)}
         />
-      ) : (
+      ) : initials ? (
         <span
           className="select-none font-medium"
           style={{ fontSize: size * 0.4 }}
         >
           {initials || '?'}
         </span>
+      ) : (
+        <Image
+          src='/assets/image/avatar.png'
+          alt='User avatar'
+          fill
+          sizes={`${size}px`}
+          className="object-cover"
+        />
       )}
     </div>
   );

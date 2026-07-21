@@ -64,11 +64,11 @@ export default async function OrderHistoryPage() {
     return (
       <ErrorState
         icon={<Package size={48} className="text-orange-500" />}
-        title="Something went wrong"
+        title="Something went wrong!"
         message={
           error instanceof Error
             ? error.message
-            : 'There are currently no incoming orders. Once customers place orders, they will appear here for you to manage and fulfill.'
+            : 'Unable to load order history. Please try again later.'
         }
       />
     );
