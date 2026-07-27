@@ -17,6 +17,11 @@ export default function OrderSummary() {
 
   const isUpdatingCart = updatingItems.length > 0;
 
+console.log({
+  cart,
+  items,
+});
+
   if (!items.length) {
     return (
       <EmptyState

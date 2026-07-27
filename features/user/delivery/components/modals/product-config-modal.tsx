@@ -24,6 +24,8 @@ export default function ProductConfigModal({
 }: Props) {
   const { addItem, updatingItems } = useCartStore();
 
+  console.log(' Product Config Modal - Product:', product);
+
   const [selectedVariantId, setSelectedVariantId] = useState<
     string | undefined
   >(product.variants?.[0]?.id);
@@ -55,20 +57,36 @@ export default function ProductConfigModal({
     [addonQuantities],
   );
 
+  // const unitPrice = useMemo(() => {
+  //   const variantPrice = selectedVariant?.price ?? product.basePrice;
+
+  //   const addonsTotal = product.addons.reduce((sum, addon) => {
+  //     const addonId = addon.id;
+  //     if (!addonId) return sum;
+
+  //     const addonCount = addonQuantities[addonId] ?? 0;
+
+  //     return sum + addon.price * addonCount;
+  //   }, 0);
+
+  //   return product.basePrice + variantPrice + addonsTotal;
+  // }, [product.addons, product.basePrice, selectedVariant, addonQuantities]);
+
   const unitPrice = useMemo(() => {
-    const variantPrice = selectedVariant?.price ?? product.basePrice;
+    const variantExtra = selectedVariant?.price ?? 0;
 
     const addonsTotal = product.addons.reduce((sum, addon) => {
       const addonId = addon.id;
+
       if (!addonId) return sum;
 
-      const addonCount = addonQuantities[addonId] ?? 0;
+      const count = addonQuantities[addonId] ?? 0;
 
-      return sum + addon.price * addonCount;
+      return sum + addon.price * count;
     }, 0);
 
-    return variantPrice + addonsTotal;
-  }, [product.addons, product.basePrice, selectedVariant, addonQuantities]);
+    return product.basePrice + variantExtra + addonsTotal;
+  }, [product.basePrice, product.addons, selectedVariant, addonQuantities]);
 
   const totalPrice = unitPrice * quantity;
 
@@ -82,14 +100,18 @@ export default function ProductConfigModal({
   const handleConfirm = async () => {
     if (isUpdating) return;
 
-    await addItem(
-      {
-        ...product,
-        variantId: selectedVariantId,
-        addonIds: selectedAddonIds.length > 0 ? selectedAddonIds : undefined,
-      },
-      quantity,
-    );
+   await addItem(
+  {
+    ...product,
+    variantId: selectedVariantId,
+    addonIds: selectedAddonIds.length
+      ? selectedAddonIds
+      : undefined,
+
+    unitPrice,
+  },
+  quantity,
+);
 
     onClose();
   };
@@ -114,16 +136,20 @@ export default function ProductConfigModal({
             />
           </div>
 
-          <div className="space-y-1  flex-1">
-            <h2 className="text-lg font-semibold capitalize">
-              {product.productName}
-            </h2>
-            <p className="text-sm text-neutral-500">
-              {product.description || 'Customize your product before adding'}
-            </p>
+          <div className=" flex flex-1 items-end justify-between gap-4">
+            <div className="space-y-1">
+              <h2 className="text-lg font-semibold capitalize">
+                {product.productName}
+              </h2>
+              <p className="text-sm text-neutral-500">
+                {product.description || 'Customize your product before adding'}
+              </p>
 
-            <div className="flex items-center justify-between">
               <p className="text-sm text-neutral-600">Qty?</p>
+            </div>
+
+            <div className="space-y-3">
+           <h4>NGN {product.basePrice.toLocaleString()}</h4>
 
               <div className="flex items-center gap-2 ">
                 <IconButton
@@ -265,7 +291,7 @@ export default function ProductConfigModal({
               ) : null
             }
           >
-            Add to Order • NGN {totalPrice.toLocaleString()}
+            Add to Cart • NGN {totalPrice.toLocaleString()}
           </Button>
         </div>
       </div>

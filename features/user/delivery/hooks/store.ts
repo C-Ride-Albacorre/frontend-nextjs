@@ -12,10 +12,24 @@ import {
 
 // ─── Types ───
 
+// interface AddItemProduct {
+//   id: string;
+//   productName: string;
+//   basePrice: number;
+//   productImages?: { imageUrl: string }[];
+//   variantId?: string;
+//   packageId?: string;
+//   addonIds?: string[];
+//   specialInstructions?: string;
+// }
+
 interface AddItemProduct {
   id: string;
   productName: string;
   basePrice: number;
+
+  unitPrice: number;
+
   productImages?: { imageUrl: string }[];
   variantId?: string;
   packageId?: string;
@@ -53,12 +67,26 @@ function computeTotals(items: CartItem[]) {
 
 function normalizeCart(serverData: any): Cart | null {
   if (!serverData) return null;
+const items = (serverData.items || []).map((item: any) => {
+  const quantity = item.quantity ?? 1;
 
-  const items = (serverData.items || []).map((item: any) => ({
+  const unitPrice =
+    item.unitPrice ??
+    (item.totalPrice != null
+      ? item.totalPrice / quantity
+      : item.basePrice ?? 0);
+
+  return {
     ...item,
-    productName: item.name || 'Unknown Item',
-    totalPrice: item.totalPrice ?? (item.basePrice || 0) * (item.quantity || 1),
-  }));
+    productName: item.productName ?? item.name ?? 'Unknown Item',
+
+    unitPrice,
+
+    totalPrice:
+      item.totalPrice ??
+      unitPrice * quantity,
+  };
+});
 
   return {
     id: serverData.cartId || serverData.id || 'temp-cart',
@@ -129,19 +157,24 @@ export const useCartStore = create<CartStore>()(
         set((state) => {
           const currentItems = state.cart?.items ?? [];
 
-          const existing = currentItems.find((i) => i.productId === product.id);
+          const existing = currentItems.find(
+            (i) =>
+              i.productId === product.id &&
+              i.variantId === product.variantId &&
+              i.packageId === product.packageId &&
+              JSON.stringify(i.addonIds ?? []) ===
+                JSON.stringify(product.addonIds ?? []),
+          );
 
           let updatedItems: CartItem[];
 
           if (existing) {
             updatedItems = currentItems.map((i) =>
-              i.productId === product.id
+              i.id === existing.id
                 ? {
                     ...i,
                     quantity: i.quantity + quantity,
-                    totalPrice:
-                      (i.unitPrice ?? i.basePrice ?? 0) *
-                      (i.quantity + quantity),
+                    totalPrice: i.unitPrice * (i.quantity + quantity),
                   }
                 : i,
             );
@@ -167,11 +200,11 @@ export const useCartStore = create<CartStore>()(
 
               imageUrl: product.productImages?.[0]?.imageUrl,
 
-              unitPrice: product.basePrice,
+              unitPrice: product.unitPrice,
 
               basePrice: product.basePrice,
 
-              totalPrice: product.basePrice * quantity,
+              totalPrice: product.unitPrice * quantity,
             };
 
             updatedItems = [...currentItems, newItem];
@@ -319,7 +352,7 @@ export const useCartStore = create<CartStore>()(
                 ? {
                     ...i,
                     quantity,
-                    totalPrice: (i.unitPrice ?? i.basePrice ?? 0) * quantity,
+                    totalPrice: i.unitPrice * quantity,
                   }
                 : i,
             );

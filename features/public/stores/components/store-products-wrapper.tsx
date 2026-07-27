@@ -1,7 +1,7 @@
-import { Button } from '@/components/ui/buttons/button';
+
 
 import Image from 'next/image';
-import { Dot, Clock, ChevronRight, Package, MapPin } from 'lucide-react';
+import {  Clock,  Package, MapPin } from 'lucide-react';
 
 import Card from '@/components/layout/card';
 import OrderSummary from '@/features/user/delivery/components/order/order-summary';
@@ -11,7 +11,6 @@ import ChangeStoreButton from '@/features/public/stores/components/change-store-
 import EmptyState from '@/components/layout/empty-state';
 import ErrorState from '@/components/layout/error-state';
 import ProceedButton from '@/features/user/delivery/components/proceed-button';
-import { div } from 'framer-motion/client';
 
 export default async function StoreProductsWrapper({
   params,
@@ -24,6 +23,8 @@ export default async function StoreProductsWrapper({
     const store = await fetchStoreDetailsService(slug);
 
     console.log('Store details:', store);
+
+    
     console.log('Products:', store.data.products);
 
     const storeSlug = store.data.storeName

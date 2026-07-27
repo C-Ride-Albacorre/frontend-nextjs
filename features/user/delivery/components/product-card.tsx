@@ -45,13 +45,16 @@ export default function ProductCard({ item }: { item: Product }) {
     }
 
     if (!cartItem) {
-      await addItem(
-        {
-          ...item,
-          variantId: item.variants?.[0]?.id,
-        },
-        1,
-      );
+await addItem(
+  {
+    id: item.id,
+    productName: item.productName,
+    basePrice: item.basePrice,
+    unitPrice: item.basePrice,
+    productImages: item.productImages,
+  },
+  1,
+);
 
       return;
     }
@@ -242,7 +245,7 @@ export default function ProductCard({ item }: { item: Product }) {
                 ) : quantity > 0 ? (
                   `Add More (${quantity})`
                 ) : (
-                  'Add to Order'
+                  'Add to Cart'
                 )}
               </Button>
             </div>
