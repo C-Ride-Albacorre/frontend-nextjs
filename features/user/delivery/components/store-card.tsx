@@ -21,6 +21,10 @@ export default function StoreCard({
     .replace(/[^\w\s-]/g, '')
     .replace(/\s+/g, '-');
 
+  const storeLogo = image || '/assets/image/store-placeholder.png';
+
+  const isPlaceholder = !image?.trim();
+
   return (
     <Link
       href={`/user/delivery/${store}/${id}`}
@@ -43,11 +47,14 @@ export default function StoreCard({
       {/* Cover */}
       <div className="relative h-56 overflow-hidden bg-foreground-200">
         <Image
-          src={image ?? '/assets/image/store-placeholder.png'}
+          src={storeLogo}
           alt={name ?? 'Store Image'}
           fill
           loading="lazy"
-          className={`${image ? 'object-cover' : 'object-contain'} transition-transform duration-700 group-hover:scale-105`}
+          className={clsx(
+            'transition-transform duration-700 group-hover:scale-105',
+            isPlaceholder ? 'object-contain' : 'object-cover',
+          )}
         />
 
         {/* Gradient Overlay */}
@@ -79,7 +86,9 @@ export default function StoreCard({
           <div className="flex items-center gap-2 rounded-full bg-white px-3 py-2 shadow-lg">
             <Clock3 size={14} className="text-primary" />
 
-            <span className="text-xs font-medium">Ready in {time || 'N/A'}</span>
+            <span className="text-xs font-medium">
+              Ready in {time || 'N/A'}
+            </span>
           </div>
         </div>
       </div>
@@ -92,7 +101,7 @@ export default function StoreCard({
               {name}
             </h3>
 
-            <p className="mt-1 line-clamp-1 text-sm text-neutral-500">
+            <p className="mt-1 line-clamp-1 text-xs text-neutral-500">
               {cuisine}
             </p>
           </div>
@@ -126,7 +135,7 @@ export default function StoreCard({
         <div className="mt-4 flex items-start gap-2 text-sm text-neutral-500">
           <MapPin size={15} className="mt-0.5 shrink-0 text-primary  " />
 
-          <span className="line-clamp-2 capitalize text-xs">{location}</span>
+          <span className="line-clamp-2 capitalize text-xs leading-5">{location}</span>
         </div>
       </div>
     </Link>

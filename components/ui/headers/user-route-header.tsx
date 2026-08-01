@@ -22,6 +22,7 @@ export default function Header({ orderId }: { orderId?: string }) {
 
   const pageTitle = clsx({
     'Tracking Delivery': isOnTrackOrderPage,
+    'Chat': pathName.includes('/chat'),
     'Order History': pathName === '/user/order-history',
     'Profile & Address': pathName === '/user/profile',
     'Help Center': pathName === '/user/help-center',

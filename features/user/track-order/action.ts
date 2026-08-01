@@ -1,6 +1,4 @@
-
 'use server';
-
 
 import { submitRatingService } from './service';
 
@@ -18,7 +16,7 @@ export async function submitRatingAction(
   console.log(' [submitRatingAction] formData:', { orderId, rating, comment });
 
   try {
-   const response= await submitRatingService({
+    const response = await submitRatingService({
       orderId,
       rating,
       comment,
@@ -29,7 +27,7 @@ export async function submitRatingAction(
     return {
       success: true,
       message: 'Thanks for your feedback!',
-      data : response,
+      data: response,
     };
   } catch (error) {
     return {

@@ -37,11 +37,11 @@ export default async function StoreProductsWrapper({
       <div className="space-y-12">
         {/* Vendor */}
         <Card
-          border="none"
-          spacing="sm"
-          className="bg-foreground-200 flex items-start sm:items-center justify-between"
+          border='none'
+          spacing="md"
+          className="bg-primary/5 flex flex-col md:flex-row gap-8 items-start  justify-between shadow"
         >
-          <div className="lg:flex items-center flex-1 gap-6 space-y-6 lg:space-y-0 mb-0">
+          <div className="lg:flex  flex-1 gap-6 space-y-6 lg:space-y-0 mb-0">
             <div className="relative w-24 h-24 sm:w-40 sm:h-40 lg:w-32 lg:h-32 rounded-xl overflow-hidden">
               <Image
                 src={
@@ -54,7 +54,7 @@ export default async function StoreProductsWrapper({
               />
             </div>
 
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-6">
               <div className="flex flex-col md:flex-row md:items-center gap-3">
                 <h1 className="text-lg md:text-xl font-semibold capitalize">
                   {store.data.storeName}
@@ -79,7 +79,7 @@ export default async function StoreProductsWrapper({
               </div>
 
               {store.data.storeDescription && (
-                <p className="text-sm text-neutral-500 max-w-2xl">
+                <p className="text-sm text-neutral-500 max-w-2xl leading-6">
                   {store.data.storeDescription}
                 </p>
               )}

@@ -1,5 +1,4 @@
 'use client';
-
 import {
   Star,
   Phone,
@@ -20,8 +19,10 @@ import { useMemo } from 'react';
 import Avatar from '@/components/ui/avatar';
 import { formatDate } from '@/helpers/date-formatter';
 import { Button } from '@/components/ui/buttons/button';
+import DriverCard from './driver-card';
 
 export default function SideInfo({ orderData }: { orderData: any }) {
+
   // const activeOrder = useCustomerStore((s) => s.activeOrder);
 
   const etaToVendor = useCustomerStore((s) => s.tracking.eta.toVendor);
@@ -72,58 +73,7 @@ export default function SideInfo({ orderData }: { orderData: any }) {
   return (
     <div className="space-y-8">
       {/* DRIVER */}
-      <Card
-        border="none"
-        gap="md"
-        className="bg-foreground-200 flex items-start gap-4 "
-      >
-        <div className="flex items-start gap-3 mb-0">
-          <Avatar name={driverName} size={54} />
-
-          <div className="space-y-2 mb-0">
-            <h2 className="font-medium capitalize">
-              {orderData.driver?.fullName ?? 'Assigned Driver'}
-            </h2>
-
-            <p className="flex items-center gap-1 text-xs">
-              <Star size={14} fill="#D4AF37" strokeWidth={0} />
-              {orderData.driver?.rating}
-              <span className="text-neutral-400">
-                ({orderData.driver?.totalTrips} trips)
-              </span>
-            </p>
-
-            <p className=" text-neutral-600 text-xs">
-              {orderData.driver?.phone}
-            </p>
-          </div>
-        </div>
-
-        <div className="flex gap-3">
-          {/* <Button
-            leftIcon={<Phone size={16} />}
-            variant="primary-inverted"
-            size="full"
-            onClick={() => {
-              console.log('Call driver');
-            }}
-          >
-            Call
-          </Button> */}
-
-          {/* <Button
-            leftIcon={<MessageCircle size={16} />}
-            variant="black"
-            size="full"
-            onClick={() => {
-              console.log('Message driver');
-            }}
-          >
-            Message
-          </Button> */}
-        </div>
-      </Card>
-
+      <DriverCard orderId={orderData.order?.id} driver={orderData.driver} />
       {/* ORDER DETAILS */}
       <Card border="none" gap="md" className="bg-foreground-200">
         <h3 className="font-medium">Order Details</h3>
@@ -157,36 +107,30 @@ export default function SideInfo({ orderData }: { orderData: any }) {
       </Card>
 
       {/* SUPPORT */}
-      <Card border='none' gap="md" className="bg-foreground-200">
-
-
+      <Card border="none" gap="md" className="bg-foreground-200">
         <div className="flex items-start gap-4">
-
           <Headset size={24} className="text-primary" />
 
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <h3 className="font-medium">Need Assistance?</h3>
+              <p className="text-sm text-neutral-500">
+                Our care team is here to help
+              </p>
+            </div>
 
-<div className='space-y-4'>
-      <div className="space-y-2">
-          <h3 className="font-medium">Need Assistance?</h3>
-          <p className="text-sm text-neutral-500">
-            Our care team is here to help
-          </p>
+            <Button
+              leftIcon={<AlertCircle size={16} />}
+              size="icon"
+              variant="black"
+              onClick={() => {
+                window.location.href = 'mailto:support@c-ride.com';
+              }}
+            >
+              Report Issue
+            </Button>
+          </div>
         </div>
-
-        <Button
-          leftIcon={<AlertCircle size={16} />}
-          size="icon"
-          variant="black"
-          onClick={() => {
-            window.location.href = 'mailto:support@c-ride.com';
-          }}
-        >
-          Report Issue
-        </Button>
-</div>
-
-        </div>
-    
       </Card>
 
       {/* PREMIUM */}
