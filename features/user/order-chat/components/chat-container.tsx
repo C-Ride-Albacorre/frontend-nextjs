@@ -63,7 +63,7 @@ export default function ChatContainer({
     relative
         "
       >
-        <ChatMessageList messages={messages} />
+        <ChatMessageList messages={messages} orderId={orderId} />
 
         {typingUsers.length > 0 && <TypingIndicator />}
       </div>

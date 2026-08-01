@@ -4,16 +4,17 @@ import { useEffect, useRef } from 'react';
 
 import { ChatMessage } from '../types';
 import ChatBubble from './chat-bubble';
-import { useChatStore } from '@/store/chat-store';
-import TypingIndicator from './typing-indicator';
 
 type Props = {
   messages: ChatMessage[];
+  orderId: string;
 };
 
-export default function ChatMessageList({ messages }: Props) {
+export default function ChatMessageList({
+  messages,
+  orderId,
+}: Props) {
   const bottomRef = useRef<HTMLDivElement | null>(null);
-
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({
@@ -26,35 +27,43 @@ export default function ChatMessageList({ messages }: Props) {
       className="
         h-full
         overflow-y-auto
-
-   relative
-        space-y-4
       "
     >
-      {messages.length === 0 ? (
-        <div
-          className="
-              h-full
+      <div
+        className="
+          min-h-full
+          flex
+          flex-col
+          justify-end
+          gap-4
+          py-4
+        "
+      >
+        {messages.length === 0 ? (
+          <div
+            className="
               flex
+              flex-1
               items-center
               justify-center
               text-sm
               text-neutral-500
             "
-        >
-          No messages yet
-        </div>
-      ) : (
-        messages.map((message) => (
-          <ChatBubble key={message.id} message={message} />
-        ))
-      )}
+          >
+            No messages yet
+          </div>
+        ) : (
+          messages.map((message) => (
+            <ChatBubble
+              key={message.id}
+              message={message}
+              orderId={orderId}
+            />
+          ))
+        )}
 
-      {/* {isTyping && <TypingIndicator />} */}
-
-      {/* scroll anchor */}
-
-      <div ref={bottomRef} />
+        <div ref={bottomRef} />
+      </div>
     </div>
   );
 }

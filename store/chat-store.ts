@@ -123,17 +123,17 @@ export const useChatStore = create<ChatState>((set) => ({
       ),
     })),
 
-  deleteMessage: (messageId) =>
-    set((state) => ({
-      messages: state.messages.map((message) =>
-        message.id === messageId
-          ? {
-              ...message,
-              deletedAt: new Date().toISOString(),
-            }
-          : message,
-      ),
-    })),
+deleteMessage: (messageId) =>
+  set((state) => ({
+    messages: state.messages.map((message) =>
+      message.id === messageId
+        ? {
+            ...message,
+            deletedAt: new Date().toISOString(),
+          }
+        : message,
+    ),
+  })),
 
   markMessageRead: (messageId) =>
     set((state) => ({

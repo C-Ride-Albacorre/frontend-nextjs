@@ -125,26 +125,24 @@ export default function ChatInput({ orderId }: Props) {
         gap-4
       "
     >
+      <></>
 
-        <Input
-          value={message}
-          onChange={(event) => handleTyping(event.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder="Type a message... "
-          spacing='none'
-        />
+      <Input
+        value={message}
+        onChange={(event) => handleTyping(event.target.value)}
+        onKeyDown={handleKeyDown}
+        placeholder="Type a message... "
+        spacing="none"
+      />
 
-
-
-        <Button
-          size="icon"
-          variant="black"
-          onClick={sendMessage}
-          disabled={!message.trim()}
-        >
-          <Send size={20} />
-        </Button>
-
+      <Button
+        size="icon"
+        variant="black"
+        onClick={sendMessage}
+        disabled={!message.trim()}
+      >
+        <Send size={20} />
+      </Button>
     </div>
   );
 }

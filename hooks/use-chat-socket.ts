@@ -97,7 +97,7 @@ export function useChatSocket(orderId?: string, accessToken?: string) {
     const joinRoom = () => {
       console.log('Joining chat room:', orderId);
 
-socket.emit('join-chat', orderId);
+      socket.emit('join-chat', orderId);
     };
 
     socket.on('connect', () => {
@@ -175,17 +175,19 @@ socket.emit('join-chat', orderId);
      */
 
     socket.on('message-deleted', (payload: MessageDeletedPayload) => {
+      console.log('MESSAGE DELETED:', payload);
+
       deleteMessage(payload.messageId);
     });
-
     /**
      * Edit
      */
 
     socket.on('message-edited', (payload: MessageEditedPayload) => {
+      console.log('MESSAGE EDITED:', payload);
+
       editMessage(payload.messageId, {
         message: payload.newMessage,
-
         editedAt: payload.editedAt,
       });
     });
