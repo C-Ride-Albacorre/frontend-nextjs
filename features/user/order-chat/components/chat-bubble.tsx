@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Pencil, Trash2, MoreVertical } from 'lucide-react';
+import { Pencil, Trash2, MoreVertical, CheckCheck, Check } from 'lucide-react';
 
 import { ChatMessage } from '../types';
 import { formatDate } from '@/helpers/date-formatter';
@@ -241,60 +241,58 @@ export default function ChatBubble({ message, orderId }: Props) {
               whitespace-pre-wrap
             "
           >
-    {message.deletedAt ? (
-  <p className="italic text-sm opacity-60">
-    Message deleted
-  </p>
-) : message.type === 'IMAGE' ? (
-  <img
-    src={message.message}
-    alt="Chat image"
-    className="
+            {message.deletedAt ? (
+              <p className="italic text-sm opacity-60">Message deleted</p>
+            ) : message.type === 'IMAGE' ? (
+              <img
+                src={message.message}
+                alt="Chat image"
+                className="
       rounded-xl
       max-w-72
       max-h-80
       object-cover
     "
-  />
-) : editing ? (
-  <div className="space-y-2">
-    <Textarea
-      value={value}
-      onChange={(e) => setValue(e.target.value)}
-      rows={3}
-      placeholder="Edit your message..."
-    />
+              />
+            ) : editing ? (
+              <div className="space-y-2">
+                <Textarea
+                  value={value}
+                  onChange={(e) => setValue(e.target.value)}
+                  rows={3}
+                  placeholder="Edit your message..."
+                />
 
-    <div className="flex gap-2">
-      <button
-        onClick={saveEdit}
-        className="rounded-lg bg-black px-3 py-1 text-xs text-white"
-      >
-        Save
-      </button>
+                <div className="flex gap-2">
+                  <button
+                    onClick={saveEdit}
+                    className="rounded-lg bg-black px-3 py-1 text-xs text-white"
+                  >
+                    Save
+                  </button>
 
-      <button
-        onClick={() => {
-          setEditing(false);
-          setValue(message.message);
-        }}
-        className="text-xs text-neutral-500"
-      >
-        Cancel
-      </button>
-    </div>
-  </div>
-) : (
-  <p
-    className="
+                  <button
+                    onClick={() => {
+                      setEditing(false);
+                      setValue(message.message);
+                    }}
+                    className="text-xs text-neutral-500"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <p
+                className="
       text-sm
       leading-6
       whitespace-pre-wrap
     "
-  >
-    {message.message}
-  </p>
-)}
+              >
+                {message.message}
+              </p>
+            )}
           </div>
         )}
 
@@ -306,11 +304,15 @@ export default function ChatBubble({ message, orderId }: Props) {
             mt-2
             text-[11px]
             opacity-60
+            items-center
           "
         >
           {formatDate(message.createdAt)}
 
           {message.editedAt && <span>edited</span>}
+
+          {isMine &&
+            (message.isRead ? <CheckCheck size={12} /> : <Check size={12} />)}
         </div>
       </div>
     </div>

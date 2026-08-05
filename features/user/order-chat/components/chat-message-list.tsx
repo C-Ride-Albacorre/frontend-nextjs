@@ -4,23 +4,65 @@ import { useEffect, useRef } from 'react';
 
 import { ChatMessage } from '../types';
 import ChatBubble from './chat-bubble';
+import { useChatStore } from '@/store/chat-store';
 
 type Props = {
   messages: ChatMessage[];
   orderId: string;
 };
 
-export default function ChatMessageList({
-  messages,
-  orderId,
-}: Props) {
+export default function ChatMessageList({ messages, orderId }: Props) {
   const bottomRef = useRef<HTMLDivElement | null>(null);
+
+  const socket = useChatStore((state) => state.socket);
+
+  const markMessageRead = useChatStore((state) => state.markMessageRead);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({
       behavior: 'smooth',
     });
   }, [messages.length]);
+
+  // Track message visibility for read receipts
+  useEffect(() => {
+    if (!socket) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const messageId = entry.target.getAttribute('data-message-id');
+            const isFromDriver =
+              entry.target.getAttribute('data-from-driver') === 'true';
+
+            // Only mark driver messages as read
+            if (messageId && isFromDriver) {
+              // Mark as read in local state
+              markMessageRead(messageId);
+
+              // Notify server
+              socket.emit('mark-read', {
+                orderId,
+                messageId,
+              });
+            }
+          }
+        });
+      },
+      {
+        threshold: 0.5, // Message is 50% visible
+      },
+    );
+
+    // Observe all messages
+    const messageElements = document.querySelectorAll('[data-message-id]');
+    messageElements.forEach((el) => observer.observe(el));
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [socket, orderId, markMessageRead, messages]);
 
   return (
     <div
@@ -54,11 +96,13 @@ export default function ChatMessageList({
           </div>
         ) : (
           messages.map((message) => (
-            <ChatBubble
+            <div
               key={message.id}
-              message={message}
-              orderId={orderId}
-            />
+              data-message-id={message.id}
+              data-from-driver={message.senderRole === 'DRIVER'}
+            >
+              <ChatBubble message={message} orderId={orderId} />
+            </div>
           ))
         )}
 

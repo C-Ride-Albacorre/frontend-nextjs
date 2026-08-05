@@ -77,6 +77,19 @@ export default function MapOrderInfo({ orderData }: { orderData: any }) {
     hasHydrated.current = false;
   }, [orderData?.order?.id]);
 
+  // Fallback: Request polyline if missing but socket is connected
+  const socket = useCustomerStore((s) => s.socket);
+
+  useEffect(() => {
+    if (!socket || !orderData?.order?.id) return;
+
+    // If we don't have polylines but socket is connected, request them
+    if (!toVendorPolyline && !toCustomerPolyline) {
+      console.log('📍 Requesting polyline from server...');
+      socket.emit('request-polyline', { orderId: orderData.order.id });
+    }
+  }, [socket, orderData?.order?.id, toVendorPolyline, toCustomerPolyline]);
+
   useEffect(() => {
     if (!orderData || hasHydrated.current) return;
 
@@ -122,11 +135,19 @@ export default function MapOrderInfo({ orderData }: { orderData: any }) {
   const center = useMemo(() => {
     if (!orderData) return;
 
+    // Prioritize driver location, fallback to vendor store
+    if (driver) {
+      return {
+        lat: Number(driver.lat),
+        lng: Number(driver.lng),
+      };
+    }
+
     return {
       lat: orderData.store.lat,
       lng: orderData.store.lng,
     };
-  }, [orderData]);
+  }, [orderData, driver]);
 
   /**
    * Decode polyline
@@ -154,14 +175,10 @@ export default function MapOrderInfo({ orderData }: { orderData: any }) {
   useEffect(() => {
     if (!driver || !mapRef.current) return;
 
-    const id = setTimeout(() => {
-      mapRef.current?.panTo({
-        lat: driver.lat,
-        lng: driver.lng,
-      });
-    }, 300);
-
-    return () => clearTimeout(id);
+    mapRef.current.panTo({
+      lat: Number(driver.lat),
+      lng: Number(driver.lng),
+    });
   }, [driver]);
 
   const isToCustomer =
@@ -246,6 +263,46 @@ export default function MapOrderInfo({ orderData }: { orderData: any }) {
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!,
   });
 
+  const fitBounds = () => {
+    if (!mapRef.current) return;
+
+    const bounds = new google.maps.LatLngBounds();
+
+    if (driver) {
+      bounds.extend({
+        lat: Number(driver.lat),
+        lng: Number(driver.lng),
+      });
+    }
+
+    bounds.extend({
+      lat: Number(orderData.store.lat),
+      lng: Number(orderData.store.lng),
+    });
+
+    bounds.extend({
+      lat: Number(orderData.order.dropoffLocation.latitude),
+      lng: Number(orderData.order.dropoffLocation.longitude),
+    });
+
+    mapRef.current.fitBounds(bounds);
+  };
+
+  const driverIcon = useMemo(() => {
+    if (!isLoaded || !window.google) return undefined;
+
+    return {
+      url:
+        'data:image/svg+xml;charset=UTF-8,' +
+        encodeURIComponent(`
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40">
+          <circle cx="20" cy="20" r="16" fill="#22C55E" stroke="white" stroke-width="3"/>
+        </svg>
+      `),
+      scaledSize: new window.google.maps.Size(40, 40),
+    };
+  }, [isLoaded]);
+
   if (!isLoaded)
     return (
       <Card
@@ -273,98 +330,131 @@ export default function MapOrderInfo({ orderData }: { orderData: any }) {
               }}
               onLoad={(map) => {
                 mapRef.current = map;
+                fitBounds();
               }}
             >
               {/* DRIVER */}
               {driver && (
-                <OverlayView
+                <Marker
                   position={{
-                    lat: driver.lat,
-                    lng: driver.lng,
+                    lat: Number(driver.lat),
+                    lng: Number(driver.lng),
                   }}
-                  mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
-                  getPixelPositionOffset={(width, height) => ({
-                    x: -(width / 2),
-                    y: -(height / 2),
-                  })}
-                >
-                  <div
-                    style={{
-                      transform: `rotate(${driver.heading ?? 0}deg)`,
-                      transformOrigin: 'center',
-                    }}
-                  >
-                    <img
-                      src="/assets/image/3d-car.png"
-                      alt="car"
-                      style={{
-                        width: '28px',
-                        height: '28px',
-                        objectFit: 'contain',
-                      }}
-                    />
-                  </div>
-                </OverlayView>
+                  icon={driverIcon}
+                />
               )}
 
               {/* STORE */}
               {orderData && (
-                <OverlayView
-                  position={{
-                    lat: orderData.store.lat,
-                    lng: orderData.store.lng,
-                  }}
-                  mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
-                >
-                  <div className="w-8 h-8 rounded-full overflow-hidden border border-white shadow-md">
-                    <img
-                      src={orderData.store.logo ?? '/assets/image/store.png'}
-                      alt="store"
-                      className="w-full h-full object-cover"
+                <>
+                  {/* Store logo if available */}
+                  {orderData.store.logo && (
+                    <OverlayView
+                      position={{
+                        lat: orderData.store.lat,
+                        lng: orderData.store.lng,
+                      }}
+                      mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+                    >
+                      <div className="w-8 h-8 rounded-full overflow-hidden border border-white shadow-md">
+                        <img
+                          src={orderData.store.logo}
+                          alt="store"
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    </OverlayView>
+                  )}
+                  {/* Fallback: simple red circle if no logo */}
+                  {!orderData.store.logo && (
+                    <Marker
+                      position={{
+                        lat: orderData.store.lat,
+                        lng: orderData.store.lng,
+                      }}
+                      title="Store"
+                      icon={{
+                        url: 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2728%22 height=%2728%22 viewBox=%220 0 28 28%22%3E%3Ccircle cx=%2714%22 cy=%2714%22 r=%2711%22 fill=%22%23EF4444%22 stroke=%22white%22 stroke-width=%221.5%22/%3E%3C/svg%3E',
+                        scaledSize: new google.maps.Size(28, 28),
+                      }}
                     />
-                  </div>
-                </OverlayView>
+                  )}
+                </>
               )}
 
               {/* CUSTOMER */}
-              {typeof orderData?.order.dropoffLocation.latitude === 'number' &&
-                typeof orderData?.order.dropoffLocation.longitude ===
-                  'number' && (
-                  <Marker
-                    position={{
-                      lat: orderData.order.dropoffLocation.latitude,
-                      lng: orderData.order.dropoffLocation.longitude,
-                    }}
-                    icon={{
-                      url: '/assets/image/user.png',
-                      scaledSize: new google.maps.Size(26, 26),
-                    }}
-                  />
-                )}
+              {orderData?.order?.dropoffLocation && (
+                <Marker
+                  position={{
+                    lat: Number(orderData.order.dropoffLocation.latitude),
+                    lng: Number(orderData.order.dropoffLocation.longitude),
+                  }}
+                  title="Customer Location"
+                  icon={{
+                    url:
+                      'data:image/svg+xml;charset=UTF-8,' +
+                      encodeURIComponent(`
+        <svg xmlns="http://www.w3.org/2000/svg" width="42" height="52" viewBox="0 0 42 52">
+          <path
+            d="M21 2C11.6 2 4 9.6 4 19c0 13.2 17 31 17 31s17-17.8 17-31C38 9.6 30.4 2 21 2z"
+            fill="#3B82F6"
+            stroke="white"
+            stroke-width="2"
+          />
+          <path
+            d="M15 23l6-5 6 5v7h-4v-5h-4v5h-4z"
+            fill="white"
+          />
+        </svg>
+      `),
+                    scaledSize: new google.maps.Size(42, 52),
+                  }}
+                />
+              )}
 
               {/* ROUTE */}
               {/* VENDOR ROUTE */}
               {vendorRoute.length > 0 && (
-                <Polyline
-                  path={vendorRoute}
-                  options={{
-                    strokeColor: '#F59E0B', // orange
-                    strokeOpacity: 0.6,
-                    strokeWeight: 4,
-                  }}
-                />
+                <>
+                  <Polyline
+                    path={vendorRoute}
+                    options={{
+                      strokeColor: '#FFFFFF', // white border
+                      strokeOpacity: 1,
+                      strokeWeight: 16,
+                    }}
+                  />
+                  <Polyline
+                    path={vendorRoute}
+                    options={{
+                      strokeColor: '#000000', // black
+                      strokeOpacity: 0.8,
+                      strokeWeight: 8,
+                    }}
+                  />
+                </>
               )}
 
               {/* CUSTOMER ROUTE */}
               {customerRoute.length > 0 && (
-                <Polyline
-                  path={customerRoute}
-                  options={{
-                    strokeColor: '#10B981', // green
-                    strokeOpacity: 0.9,
-                    strokeWeight: 5,
-                  }}
-                />
+                <>
+                  <Polyline
+                    path={customerRoute}
+                    options={{
+                      strokeColor: '#FFFFFF', // white border
+                      strokeOpacity: 1,
+                      strokeWeight: 7,
+                    }}
+                  />
+                  <Polyline
+                    path={customerRoute}
+                    options={{
+                      strokeColor: '#000000', // black
+                      strokeOpacity: 0.9,
+                      strokeWeight: 5,
+                    }}
+                  />
+                </>
               )}
             </GoogleMap>
           </div>
@@ -377,7 +467,7 @@ export default function MapOrderInfo({ orderData }: { orderData: any }) {
 
                 <h2
                   className="
-                font-semibold text-lg"
+                font-semibold"
                 >
                   {isToCustomer
                     ? `Driver is on the way to your location `
@@ -403,16 +493,14 @@ export default function MapOrderInfo({ orderData }: { orderData: any }) {
         <Card
           border="none"
           gap="md"
-          className="flex items-start gap-4 bg-primary"
+          className="flex items-start gap-4 bg-primary/10"
         >
-          <Smile size={24} />
+          <Smile size={20} />
 
           <div className="space-y-3">
-            <h2 className="font-medium">{statusText}</h2>
+            <h2 className="font-medium text-sm">Order Code</h2>
 
-            <p className="text-sm text-neutral-600">
-              Your driver is delivering your order in real time.
-            </p>
+            <h1 className="text-3xl font-semibold">{orderData?.order.code}</h1>
           </div>
         </Card>
 

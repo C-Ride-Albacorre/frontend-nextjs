@@ -119,7 +119,7 @@ export default function OrderSummaryCard({
             </div>
 
             <span className="text-2xl font-bold text-primary">
-              ₦{order.totalAmount.toLocaleString()}
+              NGN {order.totalAmount.toLocaleString()}
             </span>
           </div>
         </div>

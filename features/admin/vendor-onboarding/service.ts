@@ -1,8 +1,5 @@
 // features/admin/vendor-onboarding/service.ts
 import { BASE_URL } from '@/config/api';
-import { ApiError } from '@/features/libs/api-error';
-import { authFetch } from '@/features/libs/auth-fetch';
-import { redirect } from 'next/navigation';
 import {
   ApproveVendorPayload,
   GetVendorByIdApiResponse,

@@ -21,7 +21,6 @@ import Image from 'next/image';
 import clsx from 'clsx';
 import { StoreDetail, StoreListItem } from '../types';
 import { getStoreByIdAction } from '../action';
-import Textarea from '@/components/ui/inputs/textarea';
 import Card from '@/components/layout/card';
 import StoreActionModal from './store-action';
 
@@ -56,7 +55,7 @@ export default function ViewStoreModal({
   const [storeDetail, setStoreDetail] = useState<StoreListItem | null>(null);
   const [isLoadingDetail, setIsLoadingDetail] = useState(false);
   const [submitAction, setSubmitAction] = useState<
-    'ACTIVE' | 'REJECTED' | null
+    'APPROVED' | 'REJECTED' | null
   >(null);
   const [isModalActionOpen, setIsModalActionOpen] = useState(false);
 
@@ -92,7 +91,7 @@ export default function ViewStoreModal({
     setStoreDetail(null);
   };
 
-  const handleAction = async (action: 'ACTIVE' | 'REJECTED') => {
+  const handleAction = async (action: 'APPROVED' | 'REJECTED') => {
     setIsModalActionOpen(true);
     setSubmitAction(action);
 
@@ -442,7 +441,7 @@ export default function ViewStoreModal({
                   <Button
                     variant="green-secondary"
                     size="icon"
-                    onClick={() => handleAction('ACTIVE')}
+                    onClick={() => handleAction('APPROVED')}
                   >
                     Approve
                   </Button>

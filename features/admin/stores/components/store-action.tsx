@@ -15,7 +15,7 @@ interface StoreActionModalProps {
   onClose: () => void;
   storeId?: string;
   storeName?: string;
-  actionStatus: 'ACTIVE' | 'REJECTED' | null;
+  actionStatus: 'APPROVED' | 'REJECTED' | null;
   onSuccess?: () => void;
 }
 

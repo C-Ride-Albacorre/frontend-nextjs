@@ -40,7 +40,7 @@ export default async function TrackingDeliveryPage({ searchParams }: Props) {
       <TrackingSocket orderId={orderId} accessToken={accessToken} />
 
       {/* Header */}
-      <Header />
+      <Header orderId={orderId} />
 
       <Suspense
         fallback={

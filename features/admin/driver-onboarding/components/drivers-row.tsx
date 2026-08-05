@@ -17,14 +17,14 @@ type Props = {
 
 export default function DriverRow({ driver, onView}: Props) {
   const [submitAction, setSubmitAction] = useState<
-    'ACTIVE' | 'REJECTED' | null
+    'APPROVED' | 'REJECTED' | null
   >(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const isPending = REVIEWABLE_STATUSES.includes(driver.status);
 
   const name = driver?.name ?? '—';
 
-   const handleAction = async (action: 'ACTIVE' | 'REJECTED') => {
+   const handleAction = async (action: 'APPROVED' | 'REJECTED') => {
     setIsModalOpen(true);
     setSubmitAction(action);
 
@@ -84,7 +84,7 @@ export default function DriverRow({ driver, onView}: Props) {
           
               <>
                 <Button
-                  onClick={() => handleAction('ACTIVE')}
+                  onClick={() => handleAction('APPROVED')}
               
                   variant="green-secondary"
                   size="icon"

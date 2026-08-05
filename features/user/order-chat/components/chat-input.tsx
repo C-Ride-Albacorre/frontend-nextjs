@@ -1,16 +1,18 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
-import { Send } from 'lucide-react';
+import { Send, Image as ImageIcon } from 'lucide-react';
 
 import { Button } from '@/components/ui/buttons/button';
 import { useChatStore } from '@/store/chat-store';
-import { ChatMessage } from '../types';
 import Input from '@/components/ui/inputs/input';
+import ImagePreviewModal from './image-preview-modal';
+import { IconButton } from '@/components/ui/buttons/icon-button';
 
 type Props = {
   orderId: string;
+  onSendQuickMessage?: (message: string) => void;
 };
 
 export default function ChatInput({ orderId }: Props) {
@@ -20,7 +22,13 @@ export default function ChatInput({ orderId }: Props) {
 
   const [typing, setTyping] = useState(false);
 
-  const addMessage = useChatStore((state) => state.addMessage);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  const [sendingImage, setSendingImage] = useState(false);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!socket) return;
@@ -61,32 +69,7 @@ export default function ChatInput({ orderId }: Props) {
       return;
     }
 
-    const tempMessage: ChatMessage = {
-      id: crypto.randomUUID(),
-
-      orderId,
-
-      senderId: 'customer',
-
-      senderRole: 'CUSTOMER',
-
-      message: trimmed,
-
-      type: 'TEXT',
-
-      createdAt: new Date().toISOString(),
-
-      isRead: false,
-
-      deletedAt: null,
-
-      editedAt: null,
-    };
-
-    // show instantly
-    addMessage(tempMessage);
-
-    // send to server
+    // send to server - wait for server echo instead of showing temp message
     socket.emit('send-message', {
       orderId,
       message: trimmed,
@@ -102,6 +85,80 @@ export default function ChatInput({ orderId }: Props) {
 
     setTyping(false);
   }
+
+  function sendQuickMessage(quickMessage: string) {
+    if (!socket) {
+      return;
+    }
+
+    // send to server
+    socket.emit('send-message', {
+      orderId,
+      message: quickMessage,
+      type: 'TEXT',
+    });
+
+    socket.emit('typing', {
+      orderId,
+      isTyping: false,
+    });
+
+    setTyping(false);
+  }
+
+  function handleImageSelect(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file is an image
+    if (!file.type.startsWith('image/')) {
+      alert('Please select an image file');
+      return;
+    }
+
+    setSelectedFile(file);
+
+    // Create preview URL
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setImagePreview(e.target?.result as string);
+    };
+    reader.readAsDataURL(file);
+
+    // Reset input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  }
+
+  function sendImage() {
+    if (!selectedFile || !socket) return;
+
+    setSendingImage(true);
+
+    // Convert file to base64
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const base64 = e.target?.result as string;
+
+      socket.emit('send-message', {
+        orderId,
+        message: base64,
+        type: 'IMAGE',
+      });
+
+      // Clear preview
+      setImagePreview(null);
+      setSelectedFile(null);
+      setSendingImage(false);
+    };
+    reader.readAsDataURL(selectedFile);
+  }
+
+  function cancelImagePreview() {
+    setImagePreview(null);
+    setSelectedFile(null);
+  }
   function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
     if (event.key === 'Enter') {
       event.preventDefault();
@@ -111,38 +168,72 @@ export default function ChatInput({ orderId }: Props) {
   }
 
   return (
-    <div
-      className="
-        border-t
-        border-border
-  px-6
-
-      pt-5
-        pb-5
-        flex
-        items-center
-        justify-between
-        gap-4
-      "
-    >
-      <></>
-
-      <Input
-        value={message}
-        onChange={(event) => handleTyping(event.target.value)}
-        onKeyDown={handleKeyDown}
-        placeholder="Type a message... "
-        spacing="none"
+    <div>
+      {/* Hidden file input */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        onChange={handleImageSelect}
+        className="hidden"
       />
 
-      <Button
-        size="icon"
-        variant="black"
-        onClick={sendMessage}
-        disabled={!message.trim()}
+      {/* Image preview modal */}
+      {imagePreview && (
+        <ImagePreviewModal
+          imageUrl={imagePreview}
+          onConfirm={sendImage}
+          onCancel={cancelImagePreview}
+          isLoading={sendingImage}
+        />
+      )}
+
+      <div
+        className="
+          border-t
+          border-border
+    px-6
+
+        pt-5
+          pb-5
+          flex
+          items-center
+          justify-between
+          gap-4
+        "
       >
-        <Send size={20} />
-      </Button>
+        <IconButton
+          onClick={() => fileInputRef.current?.click()}
+          className="
+            p-2
+            hover:bg-neutral-100
+            rounded-lg
+            transition
+            text-neutral-600
+          "
+          title="Upload image"
+          variant='white'
+        >
+          <ImageIcon size={20} />
+        </IconButton>
+
+        <Input
+          value={message}
+          onChange={(event) => handleTyping(event.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder="Type a message... "
+          spacing="none"
+        />
+
+        <Button
+          size="icon"
+          variant="black"
+          onClick={sendMessage}
+          disabled={!message.trim()}
+        >
+          <Send size={20} />
+        </Button>
+      </div>
     </div>
   );
 }

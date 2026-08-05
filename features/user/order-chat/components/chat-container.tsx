@@ -10,6 +10,7 @@ import ChatHeader from './chat-header';
 import ChatInput from './chat-input';
 import { ChatMessage } from '../types';
 import TypingIndicator from './typing-indicator';
+import QuickSuggestions from './quick-suggestions';
 
 type Props = {
   orderId: string;
@@ -28,6 +29,8 @@ export default function ChatContainer({
 
   const typingUsers = useChatStore((state) => state.typingUsers);
 
+  const socket = useChatStore((state) => state.socket);
+
   console.log('typingUsers', typingUsers);
 
   const isTyping = typingUsers.length > 0;
@@ -35,6 +38,18 @@ export default function ChatContainer({
   useEffect(() => {
     setMessages(initialMessages);
   }, [initialMessages, setMessages]);
+
+  function handleSendQuickMessage(message: string) {
+    if (!socket) {
+      return;
+    }
+
+    socket.emit('send-message', {
+      orderId,
+      message,
+      type: 'TEXT',
+    });
+  }
 
   return (
     <Card
@@ -69,6 +84,10 @@ export default function ChatContainer({
       </div>
 
       {/* input */}
+
+      {messages.length === 0 && (
+        <QuickSuggestions onSelectSuggestion={handleSendQuickMessage} />
+      )}
 
       <ChatInput orderId={orderId} />
     </Card>

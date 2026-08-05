@@ -12,14 +12,14 @@ import StoreActionModal from './store-action';
 
 export default function StoreRow({ store, onView}: StoreRowProps) {
   const [submitAction, setSubmitAction] = useState<
-    'ACTIVE' | 'REJECTED' | null
+    'APPROVED' | 'REJECTED' | null
   >(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const isPending = store.status === 'PENDING_APPROVAL';
 
   console.log('store', store);
 
-  const handleAction = async (action: 'ACTIVE' | 'REJECTED') => {
+  const handleAction = async (action: 'APPROVED' | 'REJECTED') => {
     setIsModalOpen(true);
     setSubmitAction(action);
 
@@ -90,7 +90,7 @@ export default function StoreRow({ store, onView}: StoreRowProps) {
             {isPending && (
               <>
                 <Button
-                  onClick={() => handleAction('ACTIVE')}
+                  onClick={() => handleAction('APPROVED')}
                   disabled={submitAction !== null}
                   variant="green-secondary"
                   size="icon"

@@ -31,7 +31,7 @@ export default function ViewVendorModal({
   isLoading,
 }: ViewVendorModalProps) {
   const [submitAction, setSubmitAction] = useState<
-    'ACTIVE' | 'REJECTED' | null
+    'APPROVED' | 'REJECTED' | null
   >(null);
   const [isModalActionOpen, setIsModalActionOpen] = useState(false);
 
@@ -43,7 +43,7 @@ export default function ViewVendorModal({
     setIsModalOpen(false);
   };
 
-  const handleAction = async (action: 'ACTIVE' | 'REJECTED') => {
+  const handleAction = async (action: 'APPROVED' | 'REJECTED') => {
     setIsModalActionOpen(true);
     setSubmitAction(action);
 
@@ -399,7 +399,7 @@ export default function ViewVendorModal({
                   <Button
                     variant="green-secondary"
                     size="lg"
-                    onClick={() => handleAction('ACTIVE')}
+                    onClick={() => handleAction('APPROVED')}
                   >
                     Approve
                   </Button>

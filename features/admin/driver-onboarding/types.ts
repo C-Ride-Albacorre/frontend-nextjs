@@ -178,6 +178,6 @@ export interface GetDriversParams {
 }
 
 export interface ApproveDriverPayload {
-  action: 'ACTIVE' | 'REJECTED';
+  action: 'APPROVED' | 'REJECTED';
   rejectionReason?: string;
 }

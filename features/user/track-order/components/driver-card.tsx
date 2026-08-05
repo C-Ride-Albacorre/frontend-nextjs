@@ -100,7 +100,7 @@ export default function DriverCard({ orderId, driver }: DriverCardProps) {
 
         {/* Actions */}
 
-        <div className="mt-6 grid grid-cols-2 gap-3">
+        <div className="mt-6 grid grid-cols-1 xl:grid-cols-2 gap-3">
           <Button
             variant="secondary"
             leftIcon={<Phone size={16} />}

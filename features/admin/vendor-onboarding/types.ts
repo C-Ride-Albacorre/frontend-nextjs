@@ -177,6 +177,6 @@ export interface GetVendorsParams {
 // }
 
 export interface ApproveVendorPayload {
-  action: 'ACTIVE' | 'REJECTED';
+  action: 'APPROVED' | 'REJECTED';
   rejectionReason?: string;
 }

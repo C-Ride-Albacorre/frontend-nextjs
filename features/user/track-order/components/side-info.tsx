@@ -79,29 +79,29 @@ export default function SideInfo({ orderData }: { orderData: any }) {
         <h3 className="font-medium">Order Details</h3>
 
         <ul className="space-y-6">
-          <li className="flex justify-between">
-            <p className="text-neutral-500 text-sm">Order ID</p>
-            <p className="text-sm truncate w-44">
+          <li className="flex flex-col justify-between gap-2">
+            <p className="text-neutral-500 text-xs">Order ID</p>
+            <p className="text-sm">
               {' '}
               {orderData.order?.id ?? ''}
             </p>
           </li>
 
-          <li className="flex justify-between">
-            <p className="text-neutral-500 text-sm">Order Code</p>
+        <li className="flex flex-col justify-between gap-2">
+            <p className="text-neutral-500 text-xs">Order Code</p>
             <p className="text-sm">{orderData.order?.code ?? ''}</p>
           </li>
 
-          <li className="flex justify-between">
-            <p className="text-neutral-500 text-sm">Created at</p>
+        <li className="flex flex-col justify-between gap-2">
+            <p className="text-neutral-500 text-xs">Created at</p>
             <p className="text-sm">{formatDate(orderData?.order?.createdAt)}</p>
           </li>
 
           <li className="flex justify-between border-t border-border pt-4">
-            <p className="font-medium">Total Paid</p>
-            <p className="font-medium">
-              ₦{orderData.order?.totalAmount.toLocaleString()}
-            </p>
+            <h5 className="font-semibold">Total Paid</h5>
+            <h5 className="font-semibold">
+              NGN {orderData.order?.totalAmount.toLocaleString()}
+            </h5>
           </li>
         </ul>
       </Card>

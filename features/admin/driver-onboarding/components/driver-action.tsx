@@ -15,7 +15,7 @@ interface DriverActionModalProps {
   onClose: () => void;
   driverId?: string;
   driverName?: string;
-  actionStatus: 'ACTIVE' | 'REJECTED' | null;
+  actionStatus: 'APPROVED' | 'REJECTED' | null;
   onSuccess?: () => void;
 }
 
@@ -50,7 +50,7 @@ export default function DriverActionModal({
   const isDecline = actionStatus === 'REJECTED';
 
   const handleAction = () => {
-    let actionReason = 'Driver accepted order';
+    let actionReason = 'Driver approved';
 
     if (isDecline) {
       if (!selectedReason) {

@@ -8,8 +8,6 @@ import {
 } from './service';
 import {
   ApproveDriverPayload,
-  DriverDetail,
-  GetDriverByIdResponse,
 } from './types';
 
 export async function getDriversAction(

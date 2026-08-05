@@ -109,6 +109,8 @@ export function useCustomerSocket(orderId?: string, accessToken?: string) {
     const joinRoom = () => {
       socket.emit('subscribe-order', activeOrderId);
       socket.emit('trackOrder', activeOrderId);
+      // Request polyline if available
+      socket.emit('request-polyline', { orderId: activeOrderId });
     };
 
     socket.on('connect', () => {
@@ -118,7 +120,11 @@ export function useCustomerSocket(orderId?: string, accessToken?: string) {
     });
 
     socket.io.on('reconnect', () => {
+      console.log('🔄 Reconnected - rejoining room');
       joinRoom();
+
+      // Request polyline after reconnect
+      socket.emit('request-polyline', { orderId: activeOrderId });
     });
 
     /**

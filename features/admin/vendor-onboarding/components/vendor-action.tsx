@@ -15,7 +15,7 @@ interface VendorActionModalProps {
   onClose: () => void;
   vendorId?: string;
   vendorName?: string;
-  actionStatus: 'ACTIVE' | 'REJECTED' | null;
+  actionStatus: 'APPROVED' | 'REJECTED' | null;
   onSuccess?: () => void;
 }
 
@@ -50,7 +50,7 @@ export default function VendorActionModal({
   const isDecline = actionStatus === 'REJECTED';
 
   const handleAction = () => {
-    let actionReason = 'Vendor accepted order';
+    let actionReason = 'Vendor approved!';
 
     if (isDecline) {
       if (!selectedReason) {

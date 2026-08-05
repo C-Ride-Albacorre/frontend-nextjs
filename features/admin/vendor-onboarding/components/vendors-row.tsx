@@ -16,7 +16,7 @@ type Props = {
 
 export default function VendorRow({ vendor, onView }: Props) {
   const [submitAction, setSubmitAction] = useState<
-    'ACTIVE' | 'REJECTED' | null
+    'APPROVED' | 'REJECTED' | null
   >(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -29,7 +29,7 @@ export default function VendorRow({ vendor, onView }: Props) {
   //   ? `${vendor.businessInfo.city}, ${vendor.businessInfo.state}`
   //   : '—';
 
-  const handleAction = async (action: 'ACTIVE' | 'REJECTED') => {
+  const handleAction = async (action: 'APPROVED' | 'REJECTED') => {
     setIsModalOpen(true);
     setSubmitAction(action);
 
@@ -103,7 +103,7 @@ export default function VendorRow({ vendor, onView }: Props) {
             {isPending && (
               <>
                 <Button
-                  onClick={() => handleAction('ACTIVE')}
+                  onClick={() => handleAction('APPROVED')}
                   disabled={submitAction !== null}
                   variant="green-secondary"
                   size="icon"
