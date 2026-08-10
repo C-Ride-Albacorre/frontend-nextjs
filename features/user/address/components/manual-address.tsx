@@ -46,7 +46,6 @@
 //         queryKey: ['addresses'],
 //       });
 
-
 //       if (typeof window !== 'undefined' && window.history.replaceState) {
 //         const url = new URL(window.location.href);
 
@@ -57,14 +56,12 @@
 //     }
 //   }, [state, onSuccess, queryClient]);
 
-
 //   const countryOptions = useMemo<Option[]>(() => {
 //     return Country.getAllCountries().map((country) => ({
 //       label: country.name,
 //       value: country.isoCode,
 //     }));
 //   }, []);
-
 
 //   const stateOptions = useMemo<Option[]>(() => {
 //     if (!countryCode) return [];
@@ -88,7 +85,7 @@
 //       )}
 
 //       <form action={action} className="space-y-5">
-  
+
 //         <Input
 //           label="Location Name"
 //           name="locationName"
@@ -98,7 +95,6 @@
 //           errorMessage={isError ? state.errors?.label?.[0] : undefined}
 //         />
 
-   
 //         <Input
 //           label="Street Address"
 //           name="streetAddress"
@@ -108,7 +104,6 @@
 //           errorMessage={isError ? state.errors?.address?.[0] : undefined}
 //         />
 
-     
 //         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 //           <Select
 //             id="country"
@@ -137,7 +132,6 @@
 //           />
 //         </div>
 
-
 //         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 //           <Input
 //             label="City"
@@ -160,14 +154,12 @@
 //           />
 //         </div>
 
-   
 //         <input
 //           type="hidden"
 //           name="isDefault"
 //           value={isDefault ? 'true' : 'false'}
 //         />
 
-    
 //         <div className="text-center pt-4">
 //           <Button
 //             variant="primary"
@@ -182,8 +174,6 @@
 //     </div>
 //   );
 // }
-
-
 
 import { Button } from '@/components/ui/buttons/button';
 import Input from '@/components/ui/inputs/input';
@@ -291,7 +281,7 @@ export default function ManualAddressForm({
       <form action={action} className="space-y-6">
         {/* Address Search with Map Preview */}
 
-          {/* Location Name */}
+        {/* Location Name */}
         <Input
           id="locationName"
           name="locationName"
@@ -300,9 +290,8 @@ export default function ManualAddressForm({
           placeholder="e.g. Home, Office, Gym"
           errorMessage={isError ? state?.errors?.label?.[0] : undefined}
           spacing="sm"
+          required
         />
-
-
 
         <div className="relative" ref={addressInputRef}>
           <Input
@@ -394,8 +383,6 @@ export default function ManualAddressForm({
             inputMode="text"
           /> */}
         </div>
-
-      
 
         {/* Country */}
         <Input

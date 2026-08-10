@@ -13,7 +13,6 @@
 //   return (await res.json()) as AddressSuggestion[];
 // }
 
-
 export type AddressSuggestion = {
   description: string;
   placeId: string;
@@ -22,14 +21,20 @@ export type AddressSuggestion = {
 export async function searchAddress(
   query: string,
 ): Promise<AddressSuggestion[]> {
-  const response = await fetch(
-    `/api/address-search?input=${encodeURIComponent(query)}`,
-  );
+  if (!query || query.length < 2) return [];
 
-  const data = await response.json();
+  try {
+    const response = await fetch(
+      `/api/google-autocomplete?q=${encodeURIComponent(query)}`,
+    );
 
-  return data.predictions.map((prediction: any) => ({
-    description: prediction.description,
-    placeId: prediction.place_id,
-  }));
+    if (!response.ok) return [];
+
+    const data = await response.json();
+
+    return data;
+  } catch (error) {
+    console.error('Address search error:', error);
+    return [];
+  }
 }
