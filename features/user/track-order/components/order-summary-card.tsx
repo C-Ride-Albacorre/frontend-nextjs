@@ -62,7 +62,7 @@ export default function OrderSummaryCard({
             </span>
           </div>
 
-          <p className="max-w-[180px] truncate text-right text-sm font-medium">
+          <p className="max-w-45 truncate text-right text-sm font-medium">
             {order.id}
           </p>
         </div>

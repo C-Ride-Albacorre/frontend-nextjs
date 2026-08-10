@@ -300,6 +300,7 @@ export default function MapOrderInfo({ orderData }: { orderData: any }) {
         </svg>
       `),
       scaledSize: new window.google.maps.Size(40, 40),
+      anchor: new window.google.maps.Point(20, 20), // Center the icon at marker position
     };
   }, [isLoaded]);
 
@@ -376,6 +377,7 @@ export default function MapOrderInfo({ orderData }: { orderData: any }) {
                       icon={{
                         url: 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2728%22 height=%2728%22 viewBox=%220 0 28 28%22%3E%3Ccircle cx=%2714%22 cy=%2714%22 r=%2711%22 fill=%22%23EF4444%22 stroke=%22white%22 stroke-width=%221.5%22/%3E%3C/svg%3E',
                         scaledSize: new google.maps.Size(28, 28),
+                        anchor: new google.maps.Point(14, 14), // Center the circle at marker position
                       }}
                     />
                   )}
@@ -408,6 +410,7 @@ export default function MapOrderInfo({ orderData }: { orderData: any }) {
         </svg>
       `),
                     scaledSize: new google.maps.Size(42, 52),
+                    anchor: new google.maps.Point(21, 52), // Point at the bottom tip of the pin
                   }}
                 />
               )}

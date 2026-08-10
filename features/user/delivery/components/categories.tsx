@@ -39,9 +39,9 @@ export default async function Categories() {
               {/* Left */}
               <div className="flex flex-col justify-around h-full py-2">
                 {/* <item.icon className="h-6 w-6 text-primary-text-100" /> */}
-                <p className="mt-6 font-medium text-primary-text-100 ">
+                <h3 className="mt-6 font-medium text-primary-text-100 ">
                   {item.name}
-                </p>
+                </h3>
               </div>
 
               {/* Image */}

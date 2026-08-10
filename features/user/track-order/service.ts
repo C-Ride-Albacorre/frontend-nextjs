@@ -6,7 +6,7 @@ import { TrackingDetails } from './types';
 
 export async function trackingDetailsService({ orderId }: { orderId: string }) {
   return await authRequest<TrackingDetails>(
-    `${BASE_URL}/vendor/orders/${orderId}/tracking`,
+    `${BASE_URL}/customer/orders/${orderId}/tracking`,
     {
       nextTags: ['fetchTrackingDetails'],
     },
