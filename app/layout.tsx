@@ -8,7 +8,7 @@ import SessionProvider from './providers/session-provider';
 export const metadata: Metadata = {
   title: "C-ride — Beyond Delivery, It's Care",
   description: 'Fast food, grocery and gift delivery at your doorstep.',
-  verification: { google: 'google495d12937f4e7eaa.html', },
+  verification: { google: '1D-djCV74SRY3IQHcP4YkYR494PhETsFtMUKbEDT9cg' },
 };
 
 export default function RootLayout({
