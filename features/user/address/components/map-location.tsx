@@ -12,8 +12,6 @@ import { toast } from 'sonner';
 import { reverseGeocode } from '@/helpers/reverse-geocode-result';
 import { getGoogleMapsEmbedUrl } from '@/helpers/google-maps-embed';
 
-
-
 export default function MapLocations({
   onSuccess,
 }: {
@@ -51,54 +49,54 @@ export default function MapLocations({
     }
   }, [state, onSuccess]);
 
-const handleUseCurrentLocation = () => {
-  setIsLoading(true);
-  setError('');
+  const handleUseCurrentLocation = () => {
+    setIsLoading(true);
+    setError('');
 
-  navigator.geolocation.getCurrentPosition(
-    async (position) => {
-      try {
-        const lat = position.coords.latitude;
-        const lng = position.coords.longitude;
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        try {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
 
-        setLocation({
-          latitude: lat,
-          longitude: lng,
-        });
+          setLocation({
+            latitude: lat,
+            longitude: lng,
+          });
 
-        const result = await reverseGeocode(lat, lng);
+          const result = await reverseGeocode(lat, lng);
 
-        if (!result) {
-          setError('Unable to determine address.');
-          return;
+          if (!result) {
+            setError('Unable to determine address.');
+            return;
+          }
+
+          setPlace(result.address);
+
+          setAddressData({
+            address: result.address,
+            city: result.city,
+            state: result.state,
+            country: result.country,
+            postalCode: result.postalCode,
+          });
+        } catch {
+          setError('Unable to determine your address.');
+        } finally {
+          setIsLoading(false);
         }
-
-        setPlace(result.address);
-
-        setAddressData({
-          address: result.address,
-          city: result.city,
-          state: result.state,
-          country: result.country,
-          postalCode: result.postalCode,
-        });
-      } catch {
-        setError('Unable to determine your address.');
-      } finally {
+      },
+      () => {
+        setError('Unable to retrieve your location');
         setIsLoading(false);
-      }
-    },
-    () => {
-      setError('Unable to retrieve your location');
-      setIsLoading(false);
-    },
-    {
-      enableHighAccuracy: true,
-      timeout: 10000,
-      maximumAge: 0,
-    },
-  );
-};
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0,
+      },
+    );
+  };
 
   return (
     <div className=" space-y-6">
@@ -108,7 +106,7 @@ const handleUseCurrentLocation = () => {
         <ErrorMessage message={error || 'An error occurred'} />
       ) : null}
 
-      <Card border='none' gap="sm" className="bg-foreground-200 flex flex-col">
+      <Card border="none" gap="sm" className="bg-foreground-200 flex flex-col">
         <span className="text-neutral-500 text-xs ">
           Select a popular location or use your current GPS location
         </span>
@@ -125,27 +123,27 @@ const handleUseCurrentLocation = () => {
       </Card>
 
       <form action={action} className="space-y-4">
+        {addressData.address && (
+          <div className="space-y-4">
+            <label className="text-sm font-medium">Location Preview</label>
 
-              {addressData.address && (
-  <div className="space-y-4">
-    <label className="text-sm font-medium">
-      Location Preview
-    </label>
+            <iframe
+              title="selected-location"
+              width="100%"
+              height="300"
+              loading="lazy"
+              allowFullScreen
+              referrerPolicy="strict-origin-when-cross-origin"
+              src={getGoogleMapsEmbedUrl(addressData.address)}
+              className="rounded-xl"
+            />
+          </div>
+        )}
 
-    <iframe
-      title="selected-location"
-      width="100%"
-      height="300"
-      loading="lazy"
-      allowFullScreen
-      referrerPolicy="no-referrer-when-downgrade"
-      src={getGoogleMapsEmbedUrl(addressData.address)}
-      className="rounded-xl"
-    />
-  </div>
-)}
-
-        <Card border='none' className=" bg-foreground-200 flex items-start gap-4 ">
+        <Card
+          border="none"
+          className=" bg-foreground-200 flex items-start gap-4 "
+        >
           <MapPin size={20} className="text-primary mb-0" />
 
           <div className="flex-1 space-y-4 mb-0">
@@ -204,7 +202,6 @@ const handleUseCurrentLocation = () => {
           />
         </Card>
 
-  
         <div className="text-center">
           <Button
             size="2xl"

@@ -173,7 +173,7 @@ export function StoreInformation({
                 height="300"
                 loading="lazy"
                 allowFullScreen
-                referrerPolicy="no-referrer-when-downgrade"
+                referrerPolicy="strict-origin-when-cross-origin"
                 src={getGoogleMapsEmbedUrl(values.storeAddress)}
                 className="rounded-lg "
               ></iframe>

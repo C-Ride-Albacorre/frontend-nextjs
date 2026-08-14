@@ -346,7 +346,7 @@ export default function ManualAddressForm({
               height="300"
               loading="lazy"
               allowFullScreen
-              referrerPolicy="no-referrer-when-downgrade"
+              referrerPolicy="strict-origin-when-cross-origin"
               src={getGoogleMapsEmbedUrl(selectedAddress)}
               className="rounded-lg"
             ></iframe>

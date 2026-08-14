@@ -146,7 +146,7 @@ export default function BusinessAddressForm() {
               height="300"
               loading="lazy"
               allowFullScreen
-              referrerPolicy="no-referrer-when-downgrade"
+              referrerPolicy="strict-origin-when-cross-origin"
               src={getGoogleMapsEmbedUrl(addressInfo.address)}
               className="rounded-lg "
             ></iframe>
