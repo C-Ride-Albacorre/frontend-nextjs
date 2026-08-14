@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
   url.searchParams.set('components', 'country:ng');
   url.searchParams.set(
     'key',
-    process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!,
+    process.env.GOOGLE_MAPS_SERVER_API_KEY!,
   );
 
   const response = await fetch(url);
