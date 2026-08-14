@@ -1,4 +1,4 @@
-// app/api/place-details/route.ts
+
 
 import { NextRequest, NextResponse } from 'next/server';
 
