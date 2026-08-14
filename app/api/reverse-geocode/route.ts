@@ -66,7 +66,7 @@ export async function GET(request: NextRequest) {
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 
   if (!apiKey) {
-    console.error('❌ GOOGLE MAPS API KEY IS MISSING');
+    console.error('❌ - GOOGLE MAPS API KEY IS MISSING');
 
     return NextResponse.json(
       { message: 'Google Maps API key is not configured.' },
