@@ -6,6 +6,8 @@ frontend:
         - npm ci
     build:
       commands:
+        - env | grep -e GOOGLE_MAPS_SERVER_API_KEY >> .env.production
+        - env | grep -e NEXT_PUBLIC_ >> .env.production
         - npm run build
   artifacts:
     baseDirectory: .next
