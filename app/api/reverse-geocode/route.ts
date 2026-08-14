@@ -63,7 +63,7 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+const apiKey = process.env.GOOGLE_MAPS_SERVER_API_KEY;
 
   if (!apiKey) {
     console.error('❌ - GOOGLE MAPS API KEY IS MISSING');
