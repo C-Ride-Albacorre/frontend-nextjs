@@ -65,6 +65,12 @@ export async function GET(request: NextRequest) {
 
 const apiKey = process.env.GOOGLE_MAPS_SERVER_API_KEY;
 
+console.log('Google server key check:', {
+  exists: !!apiKey,
+  length: apiKey?.length,
+  prefix: apiKey?.slice(0, 6),
+});
+
   if (!apiKey) {
     console.error('❌ - GOOGLE MAPS API KEY IS MISSING');
 
