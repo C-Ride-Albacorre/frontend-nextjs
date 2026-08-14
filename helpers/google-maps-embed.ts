@@ -6,14 +6,30 @@
  */
 export function getGoogleMapsEmbedUrl(
   address: string,
-  apiKey: string = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '',
+  apiKey: string = process.env.NEXT_PUBLIC_GOOGLE_MAPS_EMBED_API_KEY || '',
 ): string {
-  if (!address || !apiKey) {
-    return '';
-  }
+  if (!address || !apiKey) return '';
 
-  return `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${encodeURIComponent(address)}`;
+  return `https://www.google.com/maps/embed/v1/place?key=${encodeURIComponent(
+    apiKey,
+  )}&q=${encodeURIComponent(address)}`;
 }
+
+
+export function getGoogleMapsEmbedCoordinatesUrl(
+  latitude: number,
+  longitude: number,
+  apiKey: string =
+    process.env.NEXT_PUBLIC_GOOGLE_MAPS_EMBED_API_KEY || '',
+): string {
+  if (!apiKey) return '';
+
+  return `https://www.google.com/maps/embed/v1/view?key=${encodeURIComponent(
+    apiKey,
+  )}&center=${latitude},${longitude}&zoom=15`;
+}
+
+
 
 /**
  * Get Google Maps static image URL for displaying location thumbnail
