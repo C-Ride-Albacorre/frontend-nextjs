@@ -93,7 +93,7 @@ export default function StoresPageSection({
 
   const handleStoreAction = async (
     storeId: string,
-    action: 'APPROVED' | 'REJECTED',
+    action: 'ACTIVE' | 'REJECTED',
     rejectionReason?: string,
   ) => {
     const payload = rejectionReason ? { action, rejectionReason } : { action };
@@ -101,8 +101,8 @@ export default function StoresPageSection({
 
     if (result.success) {
       toast.success(
-        action === 'APPROVED'
-          ? 'Store approved successfully'
+        action === 'ACTIVE'
+          ? 'Store activated successfully'
           : 'Store declined successfully',
       );
       router.refresh();

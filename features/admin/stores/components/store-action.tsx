@@ -15,7 +15,7 @@ interface StoreActionModalProps {
   onClose: () => void;
   storeId?: string;
   storeName?: string;
-  actionStatus: 'APPROVED' | 'REJECTED' | null;
+  actionStatus: 'ACTIVE' | 'REJECTED' | null;
   onSuccess?: () => void;
 }
 
@@ -51,7 +51,7 @@ export default function StoreActionModal({
   const isDecline = actionStatus === 'REJECTED';
 
   const handleAction = () => {
-    let actionReason = 'Vendor accepted order';
+    let actionReason = 'Store activated';
 
     if (isDecline) {
       if (!selectedReason) {

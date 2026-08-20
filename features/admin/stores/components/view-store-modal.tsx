@@ -55,7 +55,7 @@ export default function ViewStoreModal({
   const [storeDetail, setStoreDetail] = useState<StoreListItem | null>(null);
   const [isLoadingDetail, setIsLoadingDetail] = useState(false);
   const [submitAction, setSubmitAction] = useState<
-    'APPROVED' | 'REJECTED' | null
+    'ACTIVE' | 'REJECTED' | null
   >(null);
   const [isModalActionOpen, setIsModalActionOpen] = useState(false);
 
@@ -91,7 +91,7 @@ export default function ViewStoreModal({
     setStoreDetail(null);
   };
 
-  const handleAction = async (action: 'APPROVED' | 'REJECTED') => {
+  const handleAction = async (action: 'ACTIVE' | 'REJECTED') => {
     setIsModalActionOpen(true);
     setSubmitAction(action);
 
@@ -441,7 +441,7 @@ export default function ViewStoreModal({
                   <Button
                     variant="green-secondary"
                     size="icon"
-                    onClick={() => handleAction('APPROVED')}
+                    onClick={() => handleAction('ACTIVE')}
                   >
                     Approve
                   </Button>

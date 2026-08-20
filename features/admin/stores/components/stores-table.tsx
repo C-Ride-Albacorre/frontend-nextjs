@@ -13,7 +13,7 @@ type Props = {
   onView: (store: StoreDetail) => void;
   onAction: (
     storeId: string,
-     action: 'APPROVED'| 'REJECTED',
+     action: 'ACTIVE'| 'REJECTED',
     rejectionReason?: string,
   ) => Promise<{ success: boolean; message: string }>;
 };
